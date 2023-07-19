@@ -1,39 +1,41 @@
 import cookieParser from "cookie-parser";
 import express from "express";
 import { __dirname } from "./dirname.js"
-import { connectDB } from './utils/connections.js';
-import passport from 'passport';
-import { iniPassport } from "./config/passport.config.js";
+//import passport from 'passport';
+//import { iniPassport } from "./config/passport.config.js";
 import { RouterUser } from "./routes/user.router.js";
-
+import { RouterLogin } from "./routes/login.router.js";
+import { sequelize } from "./utils/connections.js";
 const app = express();
 const port = 8080;
 
+async function connectDB() {
+  await sequelize.sync({force: false});
+  app.listen(3001);
+  console.log("Server on port "+port);
+}
+
 connectDB();
-
-
 
 app.use(express.urlencoded({extended:true}))
 app.use(express.json());
 app.use(cookieParser());
 
-iniPassport();
+/*iniPassport();
 app.use(passport.initialize());
 app.use(passport.session());
-
+*/
 //para todo lo que este en public
 app.use(express.static(__dirname + "/public"));
 
 //urls
 //app.use("/admin/", RouterAdmin);
-app.use("/user/", RouterUser);
+app.use("/user", RouterUser);
 app.use("/acciones/", RouterUser);
-app.use("/user/", RouterUser);
 //app.use("/consumidor/", RouterConsumidor);
 //app.use("/consumidor/", RouterConsumidor);
-app.use("/user/login", RouterUser);
-app.use("/user/recuperarcontrasenia", RouterUser);
-app.use("/user/recuperarcontrasenia/:codigo", RouterUser);
+app.use("/login", RouterLogin);
+
 
 //app.use("/api/products", routerProductos);
 //app.use("/api/carts", routerCarts);

@@ -1,29 +1,45 @@
-import { Schema, model } from 'mongoose';
-import monsoosePaginate from 'mongoose-paginate-v2';
+import { DataTypes } from "sequelize";
+import { sequelize } from "./../../utils/connections.js";
+import { Consumidor } from "./consumidor.model.js";
 
-const schema = new Schema({
-  firstName: {
-    type: String,
-    max: 100,
-  },
-  lastName: {
-    type: String,
-    max: 100,
-  },
-  rol: {
-    type: String,
-    max: 100,
-  },
-  password: {
-    type: String,
-    max: 100,
-  },
-  email: {
-    type: String,
-    required: true,
-    max: 100,
-    unique: true,
-  },
+export const Usuario = sequelize.define(
+  "usuarios",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    usuario: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    contraseña: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    fechaAlta: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    codigoRecuperacion:{
+      type: DataTypes.STRING,
+      allowNull: true
+    }
+  }
+);
+
+Usuario.hasOne(Consumidor, {
+  foreinkey: "consumidorId",
+  sourceKey: "id",
 });
-schema.plugin(monsoosePaginate);
-export const UserModel = model('users', schema);
+
+Consumidor.belongsTo(Usuario, {
+  foreinkey: "consumidorId", 
+  targetId: "id" 
+});
