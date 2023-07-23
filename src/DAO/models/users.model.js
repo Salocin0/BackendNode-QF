@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "./../../utils/connections.js";
 import { Consumidor } from "./consumidor.model.js";
+import { EncargadosPuestos } from "./encargadoPuesto.model.js";
 
 export const Usuario = sequelize.define(
   "usuarios",
@@ -41,5 +42,15 @@ Usuario.hasOne(Consumidor, {
 
 Consumidor.belongsTo(Usuario, {
   foreinkey: "consumidorId", 
+  targetId: "id" 
+});
+
+Usuario.hasOne(EncargadosPuestos, {
+  foreinkey: "encargadoId",
+  sourceKey: "id",
+});
+
+EncargadosPuestos.belongsTo(Usuario, {
+  foreinkey: "encargadoId", 
   targetId: "id" 
 });
