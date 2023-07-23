@@ -98,18 +98,19 @@ RouterUser.get('/', async (req, res) => {
 
   RouterUser.put("/recuperarcontrasenia", async (req, res) => {
     try {
-      const { email } = req.body;
+      const { correoElectronico } = req.body;
       const usuario = await Usuario.findOne({
         where: {
-          email: email
+          email: correoElectronico
       }      
       },);
 
       if(usuario!== null){
-        const hash = createHash('sha256').update(email+Date.now().toString()).digest('hex');
+        const hash = createHash('sha256').update(correoElectronico+Date.now().toString()).digest('hex');
         usuario.codigoRecuperacion=hash
         await usuario.save()
-        sendEmail(email,'Recuperar contraseña','Se solicitó un cambio de contraseña. Para cambiar tu contraseña, haz clic en el siguiente enlace: http://localhost:3000/cambiar-contrasenia/' + hash,)
+        console.log(correoElectronico)
+        sendEmail(correoElectronico,'Recuperar contraseña','Se solicitó un cambio de contraseña. Para cambiar tu contraseña, haz clic en el siguiente enlace: http://localhost:3000/cambiar-contrasenia/' + hash,)
 
         return res.status(200).json({
           status: 'success',
@@ -139,18 +140,21 @@ RouterUser.get('/', async (req, res) => {
   RouterUser.put("/recuperarcontrasenia/:codigo", async (req, res) => {
     try {
       const { codigo } = req.params;
+      const { contraseña } = req.body;
       const usuario = await Usuario.findOne({
         where: {
           codigoRecuperacion: codigo
       }      
       },);
       if(usuario !== null){
-        //actualizar contraseña
+        usuario.contraseña=contraseña
+        usuario.codigoRecuperacion=null;
+        await usuario.save()
         return res.status(200).json({
           status: 'sucess',
           msg: 'contraseña actualizada',
           code: 200,
-          data: null,
+          data: usuario,
         });
       }else{
         return res.status(400).json({

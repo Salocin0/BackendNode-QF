@@ -4,10 +4,10 @@ import { Usuario } from "../DAO/models/users.model.js";
 
 RouterLogin.post("/", async (req, res) => {
     try {
-        const { email,contraseña } = req.body;
+        const { correoElectronico,contraseña } = req.body;
         const usuario = await Usuario.findOne({
             where: {
-              email: email,         
+              email: correoElectronico,         
               contraseña: contraseña 
             },
           });

@@ -9,11 +9,11 @@ const transporter = nodemailer.createTransport({
   });
   
   // Función para enviar el correo electrónico
-  export async function sendEmail(destino, asunto,mensaje) {
+  export async function sendEmail(destino, asuntoemail,mensajeemail) {
     try {
       const correoDestino = destino;
-      const asunto = asunto;
-      const mensaje = mensaje;
+      const asunto = asuntoemail;
+      const mensaje = mensajeemail;
   
       const info = await transporter.sendMail({
         from: 'quickfoodrecuperacion@gmail.com',

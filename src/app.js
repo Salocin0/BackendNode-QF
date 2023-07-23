@@ -5,6 +5,7 @@ import { __dirname } from "./dirname.js"
 //import { iniPassport } from "./config/passport.config.js";
 import { RouterUser } from "./routes/user.router.js";
 import { RouterLogin } from "./routes/login.router.js";
+import { RouterConsumidor } from "./routes/consumidor.router.js";
 import { sequelize } from "./utils/connections.js";
 const app = express();
 const port = 8080;
@@ -31,10 +32,11 @@ app.use(express.static(__dirname + "/public"));
 //urls
 //app.use("/admin/", RouterAdmin);
 app.use("/user", RouterUser);
-app.use("/acciones/", RouterUser);
-//app.use("/consumidor/", RouterConsumidor);
-//app.use("/consumidor/", RouterConsumidor);
+//app.use("/acciones/", RouterUser);
+app.use("/consumidor/", RouterConsumidor);
+app.use("/consumidor/", RouterConsumidor);
 app.use("/login", RouterLogin);
+
 
 
 //app.use("/api/products", routerProductos);
