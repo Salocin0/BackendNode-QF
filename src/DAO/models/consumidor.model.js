@@ -28,7 +28,7 @@ export const Consumidor = sequelize.define(
       allowNull: false,
     },
     telefono: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         allowNull: false,
     },
   },

@@ -84,6 +84,7 @@ RouterUser.get('/', async (req, res) => {
       return res.status(201).json({
         status: 'success',
         msg: 'user created',
+        code: 200,
         data: {usuarioCreado,consumidorCreado}
       });
     } catch (e) {

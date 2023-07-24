@@ -16,14 +16,14 @@ RouterLogin.post("/", async (req, res) => {
             return res.status(200).json({
                 status: 'success',
                 msg: 'user login',
-                codigo:200,
+                code:200,
                 data: usuario
               });
         }else{
             return res.status(400).json({
                 status: 'error',
                 msg: 'email o contraseña incorrecto',
-                codigo:1000,
+                code:1000,
                 data: null
               });
         }
