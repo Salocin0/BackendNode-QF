@@ -53,3 +53,37 @@ RouterConsumidor.get('/', async (req, res) => {
         });
       }
     });
+
+    RouterConsumidor.get('/user/:id', async(req, res) => {
+      try {
+        const usuarioId = req.params.id;
+        const consumidor = await Consumidor.findOne({
+          where: {
+            usuarioId: usuarioId
+          },
+        });
+        if (consumidor !== null) {
+          return res.status(200).json({
+            status: "sucess",
+            msg: "consumidor found",
+            data: consumidor,
+          })
+        } else {
+          return res.status(404).json({
+            status: "Error",
+            msg: "consumidor with id " + req.params.id + " not found",
+            data: {},
+          })
+        }
+      } catch (e) {
+        console.log(e);
+        return res.status(500).json({
+          status: 'error',
+          msg: 'something went wrong :(',
+          data: {},
+        });
+      }
+    });
+
+
+    
