@@ -54,6 +54,41 @@ RouterEncargadoPuesto.get('/', async (req, res) => {
       }
     });
 
+    RouterEncargadoPuesto.get('/user/:id', async (req, res) => {
+      try {
+        const usuarioId = req.params.id;
+        const encargado = await EncargadosPuestos.findOne({
+          where: {
+            usuarioId: usuarioId
+          },
+        });
+    
+        console.log(usuarioId);
+    
+        if (encargado !== null) {
+          return res.status(200).json({
+            status: "success",
+            msg: "Encargado found",
+            data: encargado,
+          });
+        } else {
+          return res.status(404).json({
+            status: "error",
+            msg: "Encargado with id " + req.params.id + " not found",
+            data: {},
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+          status: 'error',
+          msg: 'Internal server error',
+          data: {},
+        });
+      }
+    });
+    
+
     RouterEncargadoPuesto.put("/:id", async (req, res) => {
     try {
       const { id } = req.params;
@@ -66,6 +101,7 @@ RouterEncargadoPuesto.get('/', async (req, res) => {
       return res.status(200).json({
         status: 'success',
         msg: 'encargado is updated',
+        code: 200,
         data: encargado,
       });
     } catch (e) {
@@ -81,24 +117,41 @@ RouterEncargadoPuesto.get('/', async (req, res) => {
   RouterEncargadoPuesto.post("/", async (req, res) => {
     try {
       const { encargado } = req.body;
+      console.log(encargado)
       const nuevoEncargado = {
         usuarioId:encargado.id,
         cuit:encargado.cuit,
         razonSocial:encargado.razonSocial,
         fechaBromatologica:encargado.fechaBromatologica,
       }
-      const encargadoCreado = await EncargadosPuestos.create(nuevoEncargado);
-
-      return res.status(201).json({
-        status: 'success',
-        msg: 'encargado created',
-        data: encargadoCreado
+      const encargadoendb = await EncargadosPuestos.findOne({
+        where: {
+          razonSocial: nuevoEncargado.razonSocial
+        },
       });
+      console.log(encargadoendb)
+      if(encargadoendb){
+        return res.status(200).json({
+          status: 'error',
+          msg: 'encargado used',
+          code: 400,
+          data: {}
+        });
+      }else{
+        const encargadoCreado = await EncargadosPuestos.create(nuevoEncargado);
+        return res.status(201).json({
+          status: 'success',
+          msg: 'encargado created',
+          code: 200,
+          data: encargadoCreado
+        });
+      }
     } catch (e) {
       console.log(e);
     return res.status(500).json({
       status: 'error',
       msg: 'something went wrong :(',
+      code :500,
       data: {},
     });
     }
