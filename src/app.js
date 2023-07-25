@@ -7,6 +7,7 @@ import { RouterConsumidor } from './routes/consumidor.router.js';
 import { sequelize } from './util/connections.js';
 import cors from 'cors';
 import { RouterEncargadoPuesto } from './routes/encargadoPuesto.router.js';
+import { RouterProductor } from './routes/Productor.router.js';
 
 const app = express();
 const port = 8000;
@@ -33,3 +34,4 @@ app.use('/user', RouterUser);
 app.use('/consumidor', RouterConsumidor);
 app.use('/login', RouterLogin);
 app.use('/encargado', RouterEncargadoPuesto);
+app.use('/productor', RouterProductor)

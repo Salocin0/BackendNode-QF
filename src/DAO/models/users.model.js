@@ -2,6 +2,7 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from './../../util/connections.js';
 import { Consumidor } from './consumidor.model.js';
 import { EncargadosPuestos } from './encargadoPuesto.model.js';
+import { Productores } from './Productor.model.js';
 
 export const Usuario = sequelize.define('usuarios', {
   id: {
@@ -55,3 +56,14 @@ EncargadosPuestos.belongsTo(Usuario, {
   foreinkey: 'encargadoId',
   targetId: 'id',
 });
+
+Usuario.hasOne(Productores, {
+  foreinkey: 'productorId',
+  sourceKey: 'id',
+});
+
+Productores.belongsTo(Usuario, {
+  foreinkey: 'productorId',
+  targetId: 'id',
+});
+
