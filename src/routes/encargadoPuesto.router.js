@@ -161,10 +161,12 @@ RouterEncargadoPuesto.get('/', async (req, res) => {
     try {
       const id = req.params.id;
       const encargado = await EncargadosPuestos.findByPk(id);
-      await encargado.destroy()
+      encargado.habilitado=false;
+      await encargado.save()
       return res.status(200).json({
         status: 'success',
         msg: 'encargado deleted',
+        code: 200,
         data: encargado,
       });
     } catch (e) {
@@ -172,6 +174,7 @@ RouterEncargadoPuesto.get('/', async (req, res) => {
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',
+        code: 500,
         data: {},
       });
     }
