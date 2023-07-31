@@ -67,8 +67,8 @@ RouterUser.post('/', async (req, res) => {
     });
     if(usuariorepetido){
       return res.status(400).json({
-        status: 'success',
-        msg: 'user email used',
+        status: 'error',
+        msg: 'user already added',
         code: 300,
         data: { },
       });

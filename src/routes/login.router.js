@@ -5,13 +5,23 @@ import { Usuario } from "../DAO/models/users.model.js";
 RouterLogin.post("/", async (req, res) => {
     try {
         const { correoElectronico,contraseña } = req.body;
-        const usuario = await Usuario.findOne({
+        let usuario = await Usuario.findOne({
             where: {
               email: correoElectronico,         
               contraseña: contraseña 
             },
           });
+
+          if (!usuario) {
+            usuario = await Usuario.findOne({
+              where: {
+                usuario: correoElectronico,
+                contraseña: contraseña,
+              },
+            });
+          }
       
+
         if (usuario !== null){
             return res.status(200).json({
                 status: 'success',
