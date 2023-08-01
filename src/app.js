@@ -35,3 +35,5 @@ app.use('/consumidor', RouterConsumidor);
 app.use('/login', RouterLogin);
 app.use('/encargado', RouterEncargadoPuesto);
 app.use('/productor', RouterProductor)
+
+export default app;
