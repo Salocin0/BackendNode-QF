@@ -4,6 +4,7 @@ import { Usuario } from '../DAO/models/users.model.js';
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { createHash } from 'crypto';
 import { sendEmail } from '../util/emailSender.js';
+import { createHashPW } from '../util/bcrypt.js';
 
 RouterUser.get('/', async (req, res) => {
   try {
@@ -62,19 +63,19 @@ RouterUser.post('/', async (req, res) => {
     const { consumidor } = req.body;
     const usuariorepetido = await Usuario.findOne({
       where: {
-        email: consumidor.usuario.correoElectronico
+        email: consumidor.usuario.correoElectronico,
       },
     });
-    if(usuariorepetido){
+    if (usuariorepetido) {
       return res.status(400).json({
         status: 'error',
         msg: 'user already added',
         code: 300,
-        data: { },
+        data: {},
       });
-    }else{
+    } else {
       const user = {
-        contraseña: consumidor.usuario.contraseña,
+        contraseña: createHashPW(consumidor.usuario.contraseña),
         usuario: consumidor.usuario.nombreDeUsuario,
         email: consumidor.usuario.correoElectronico,
         fechaAlta: Date.now(),
@@ -91,6 +92,8 @@ RouterUser.post('/', async (req, res) => {
         usuarioId: usuarioCreado.id,
       };
       const consumidorCreado = await Consumidor.create(consum);
+      usuarioCreado.consumidoreId = consumidorCreado.id;
+      usuarioCreado.save();
       return res.status(201).json({
         status: 'success',
         msg: 'user created',
@@ -103,7 +106,7 @@ RouterUser.post('/', async (req, res) => {
     return res.status(500).json({
       status: 'error',
       msg: 'something went wrong :(',
-      code:400,
+      code: 400,
       data: {},
     });
   }
@@ -119,9 +122,7 @@ RouterUser.put('/recuperarcontrasenia', async (req, res) => {
     });
 
     if (usuario !== null) {
-      const hash = createHash('sha256')
-        .update(correoElectronico + Date.now().toString())
-        .digest('hex');
+      const hash = createHash('sha256').update(Date.now().toString()).digest('hex');
       usuario.codigoRecuperacion = hash;
       await usuario.save();
       console.log(correoElectronico);
@@ -165,7 +166,7 @@ RouterUser.put('/recuperarcontrasenia/:codigo', async (req, res) => {
       },
     });
     if (usuario !== null) {
-      usuario.contraseña = contraseña;
+      usuario.contraseña = createHashPW(contraseña);
       usuario.codigoRecuperacion = null;
       await usuario.save();
       return res.status(200).json({

@@ -54,7 +54,7 @@ RouterProductor.get('/', async (req, res) => {
       }
     });
 
-    RouterProductor.get('/user/:id', async (req, res) => {
+    /*RouterProductor.get('/user/:id', async (req, res) => {
       try {
         const usuarioId = req.params.id;
         const productor = await Productores.findOne({
@@ -84,8 +84,7 @@ RouterProductor.get('/', async (req, res) => {
           data: {},
         });
       }
-    });
-    
+    });*/
 
     RouterProductor.put("/:id", async (req, res) => {
     try {

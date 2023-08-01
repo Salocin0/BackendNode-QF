@@ -22,26 +22,26 @@ class ProductService {
     }
   }
 
-  validateSort(sort){
+  validateSort(sort) {
     if (sort === 'asc' || sort === 'desc') {
       sort = { price: sort };
-    }else{
+    } else {
       sort = {};
     }
-    return sort
+    return sort;
   }
-  
+
   /*async getAllProducts() {
     const products = await ProductsModel.find({});
     return products;
   }*/
-  
-  async getAllProducts(limit,page,query,sort) {
+
+  async getAllProducts(limit, page, query, sort) {
     let products = null;
-    if(typeof query === "string"){
-      products = await ProductsModel.paginate({$or: [{ status: query },{ category: query }]},{limit:limit, page:page, sort: this.validateSort(sort)});
-    }else{
-      products = await ProductsModel.paginate({},{limit:limit, page:page, sort: this.validateSort(sort)});
+    if (typeof query === 'string') {
+      products = await ProductsModel.paginate({ $or: [{ status: query }, { category: query }] }, { limit: limit, page: page, sort: this.validateSort(sort) });
+    } else {
+      products = await ProductsModel.paginate({}, { limit: limit, page: page, sort: this.validateSort(sort) });
     }
     return products;
   }
@@ -57,10 +57,10 @@ class ProductService {
     const userCreated = await ProductsModel.create({ title, description, code, price, status, stock, category, thumbnails });
     return userCreated;
   }
-  
+
   async updateProduct(id, title, description, code, price, status, stock, category, thumbnails) {
     this.validatePostProduct(id, title, description, code, price, status, stock, category, thumbnails);
-    const userUptaded = await ProductsModel.updateOne({ _id: id }, { title, description, code, price, status, stock, category, thumbnails});
+    const userUptaded = await ProductsModel.updateOne({ _id: id }, { title, description, code, price, status, stock, category, thumbnails });
     return userUptaded;
   }
 
@@ -70,29 +70,29 @@ class ProductService {
     return deleted;
   }
 
-  async getNextLink(link,page,hasNextPage){
-    if(hasNextPage==true){
+  async getNextLink(link, page, hasNextPage) {
+    if (hasNextPage == true) {
       if (link.includes('page=')) {
         const regex = /page=(\d+)/;
-        const updatedUrl = link.replace(regex, `page=${page-(-1)}`);
-        return "http://localhost:8080"+updatedUrl;
+        const updatedUrl = link.replace(regex, `page=${page - -1}`);
+        return 'http://localhost:8080' + updatedUrl;
       } else {
         const updatedUrl = link + `?page=${2}`;
-        return "http://localhost:8080"+updatedUrl;
+        return 'http://localhost:8080' + updatedUrl;
       }
-    }else{
+    } else {
       return null;
     }
   }
 
-  async getPrevLink(link,page,hasPrevPage){
-    if(hasPrevPage==true){
+  async getPrevLink(link, page, hasPrevPage) {
+    if (hasPrevPage == true) {
       if (link.includes('page=')) {
         const regex = /page=(\d+)/;
-        const updatedUrl = link.replace(regex, `page=${page-1}`);
-        return "http://localhost:8080"+updatedUrl;
+        const updatedUrl = link.replace(regex, `page=${page - 1}`);
+        return 'http://localhost:8080' + updatedUrl;
       }
-    }else{
+    } else {
       return null;
     }
   }

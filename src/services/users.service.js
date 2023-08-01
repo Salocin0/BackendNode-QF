@@ -31,7 +31,7 @@ class UserService {
     const userCreated = await UserModel.create({ firstName, lastName, email });
     return userCreated;
   }
-  
+
   async updateUser(id, firstName, lastName, email) {
     this.validatePostUser(id, firstName, lastName, email);
     const userUptaded = await UserModel.updateOne({ _id: id }, { firstName, lastName, email });

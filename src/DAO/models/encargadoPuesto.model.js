@@ -16,10 +16,6 @@ export const EncargadosPuestos = sequelize.define('encargadosPuestos', {
     allowNull: false,
     unique: true,
   },
-  fechaBromatologica: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
   estaValido: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
