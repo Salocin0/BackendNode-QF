@@ -119,7 +119,6 @@ RouterEncargadoPuesto.post('/', async (req, res) => {
     const { encargado } = req.body;
     console.log(encargado);
     const nuevoEncargado = {
-      usuarioId: encargado.id,
       cuit: encargado.cuit,
       razonSocial: encargado.razonSocial,
     };

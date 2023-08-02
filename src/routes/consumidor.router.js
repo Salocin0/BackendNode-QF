@@ -32,10 +32,14 @@ RouterConsumidor.get('/', async (req, res) => {
 RouterConsumidor.get('/:id', async (req, res) => {
   try {
     const consumidorId = req.params.id;
-    const consumidor = await Consumidor.findByPk(consumidorId, { include: [EncargadosPuestos, Productores /*,Repartidores*/] });
+    const consumidor = await Consumidor.findOne({
+      where: { id: consumidorId },
+      include: [EncargadosPuestos, Productores/*, Repartidores*/]
+    });
+
     if (consumidor !== null) {
       return res.status(200).json({
-        status: 'sucess',
+        status: 'success',
         msg: 'consumidor found',
         data: consumidor,
       });
@@ -56,40 +60,42 @@ RouterConsumidor.get('/:id', async (req, res) => {
   }
 });
 
+
 //todo put para guardar consumidor con todos los include juntos
 RouterConsumidor.put('/:id', async (req, res) => {
   try {
-    const id = req.params;
-    const { consumidor: consumidorguardar } = req.body;
-    const consumidor = await Consumidor.findByPk(id);
-    const encargado = await EncargadosPuestos.findOne({
-      where: {
-        razonSocial: consumidorguardar.encargado.razonSocial,
-      },
-    });
-    const productor = await Productores.findOne({
-      where: {
-        razonSocial: consumidorguardar.productor.razonSocial,
-      },
-    });
-    consumidor.nombre = consumidorguardar.nombre;
-    consumidor.apellido = consumidorguardar.apellido;
-    consumidor.fechaNacimiento = consumidorguardar.fechaNacimiento;
-    consumidor.dni = consumidorguardar.dni;
-    consumidor.localidad = consumidorguardar.localidad;
-    consumidor.telefono = consumidorguardar.telefono;
-    consumidor.habilidato = consumidorguardar.habilidato;
-    await consumidor.save();
-    encargado.cuit = consumidorguardar.encargado.cuit;
-    encargado.razonSocial = consumidorguardar.encargado.razonSocial;
-    encargado.estaValido = consumidorguardar.encargado.estaValido;
-    encargado.habilidato = consumidorguardar.encargado.habilidato;
-    await encargado.save();
-    productor.cuit = consumidorguardar.productor.cuit;
-    productor.razonSocial = consumidorguardar.productor.razonSocial;
-    productor.estaValido = consumidorguardar.productor.estaValido;
-    productor.habilidato = consumidorguardar.productor.habilidato;
-    await productor.save();
+    const id = req.params.id;
+    const { consumidor } = req.body;
+    console.log(consumidor)
+    const consumidorbase = await Consumidor.findByPk(id);
+    const encargado = await EncargadosPuestos.findByPk(consumidor.encargadoId);
+    const productor = await Productores.findByPk(consumidor.productorId);
+    if(consumidorbase){
+      consumidorbase.nombre = consumidor.nombre;
+      consumidorbase.apellido = consumidor.apellido;
+      consumidorbase.fechaNacimiento = consumidor.fechaNacimiento;
+      consumidorbase.dni = consumidor.dni;
+      consumidorbase.localidad = consumidor.localidad;
+      consumidorbase.telefono = consumidor.telefono;
+      consumidorbase.habilidato = consumidor.habilidato;
+      consumidorbase.encargadoId = consumidor.encargadoId;
+      consumidorbase.productorId = consumidor.productorId;
+      await consumidorbase.save();
+    }
+    if(encargado && consumidor.encargadosPuesto){
+      encargado.cuit = consumidor.encargadosPuesto.cuit;
+      encargado.razonSocial = consumidor.encargadosPuesto.razonSocial;
+      encargado.estaValido = consumidor.encargadosPuesto.estaValido;
+      encargado.habilidato = consumidor.encargadosPuesto.habilidato;
+      await encargado.save();
+    }
+    if(productor && consumidor.productore){
+      productor.cuit = consumidor.productor.cuit;
+      productor.razonSocial = consumidor.productor.razonSocial;
+      productor.estaValido = consumidor.productor.estaValido;
+      productor.habilidato = consumidor.productor.habilidato;
+      await productor.save();
+    }    
     return res.status(200).json({
       status: 'success',
       msg: 'encargado is updated',

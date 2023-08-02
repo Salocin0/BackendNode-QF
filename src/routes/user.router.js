@@ -5,31 +5,9 @@ import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { createHash } from 'crypto';
 import { sendEmail } from '../util/emailSender.js';
 import { createHashPW } from '../util/bcrypt.js';
+import { userController } from '../controllers/users.controller.js';
 
-RouterUser.get('/', async (req, res) => {
-  try {
-    const usuarios = await Usuario.findAll();
-    if (usuarios.length > 0) {
-      return res.status(200).json({
-        status: 'sucess',
-        msg: 'Found all users',
-        data: usuarios,
-      });
-    } else {
-      return res.status(404).json({
-        status: 'Error',
-        msg: 'Users not found',
-        data: {},
-      });
-    }
-  } catch (e) {
-    return res.status(500).json({
-      status: 'error',
-      msg: 'something went wrong :(',
-      data: {},
-    });
-  }
-});
+RouterUser.get('/', userController.getAllcontroller);
 
 RouterUser.get('/:id', async (req, res) => {
   try {
