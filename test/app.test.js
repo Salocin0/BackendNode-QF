@@ -10,10 +10,6 @@ test('Existe /consumidor', async () => {
   expect(response.status === 200 || response.status === 404).toBe(true);
 });
 
-test("", async ()=>{
-
-})
-
 test('Existe /login', async () => {
   const requestBody = {
     email: 'correo@example.com',

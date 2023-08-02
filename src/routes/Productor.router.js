@@ -115,7 +115,6 @@ RouterProductor.get('/', async (req, res) => {
       const { productor } = req.body;
       console.log(productor)
       const nuevoProductor = {
-        usuarioId:productor.id,
         cuit:productor.cuit,
         razonSocial:productor.razonSocial,
       }
@@ -156,8 +155,9 @@ RouterProductor.get('/', async (req, res) => {
     try {
       const id = req.params.id;
       const productor = await Productores.findByPk(id);
-      productor.habilitado=false;
+      productor.habilitado=false
       await productor.save()
+      console.log(productor)
       return res.status(200).json({
         status: 'success',
         msg: 'encargado deleted',

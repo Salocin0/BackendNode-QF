@@ -21,7 +21,7 @@ export const EncargadosPuestos = sequelize.define('encargadosPuestos', {
     allowNull: false,
     defaultValue: true,
   },
-  habilidato: {
+  habilitado: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },

@@ -21,7 +21,7 @@ export const Productores = sequelize.define('Productores', {
     allowNull: false,
     defaultValue: true,
   },
-  habilidato: {
+  habilitado: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },

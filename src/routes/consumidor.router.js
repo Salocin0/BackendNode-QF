@@ -60,7 +60,6 @@ RouterConsumidor.get('/:id', async (req, res) => {
   }
 });
 
-
 //todo put para guardar consumidor con todos los include juntos
 RouterConsumidor.put('/:id', async (req, res) => {
   try {
@@ -98,7 +97,7 @@ RouterConsumidor.put('/:id', async (req, res) => {
     }    
     return res.status(200).json({
       status: 'success',
-      msg: 'encargado is updated',
+      msg: 'consumidor is updated',
       code: 200,
       data: { consumidor, encargado, productor },
     });
