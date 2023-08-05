@@ -1,33 +1,12 @@
 import express from 'express';
 export const RouterConsumidor = express.Router();
 import { Consumidor } from '../DAO/models/consumidor.model.js';
-import { EncargadosPuestos } from '../DAO/models/encargadoPuesto.model.js';
+import { EncargadosPuestos } from '../DAO/models/encargado.model.js';
 import { Productores } from '../DAO/models/Productor.model.js';
+import { consumidorController } from '../controllers/consumidor.controller.js';
 
-RouterConsumidor.get('/', async (req, res) => {
-  try {
-    const consumidores = await Consumidor.findAll({ include: [EncargadosPuestos, Productores /*,Repartidores*/] });
-    if (consumidores.length > 0) {
-      return res.status(200).json({
-        status: 'sucess',
-        msg: 'Found all consumidores',
-        data: consumidores,
-      });
-    } else {
-      return res.status(404).json({
-        status: 'Error',
-        msg: 'consumidores not found',
-        data: {},
-      });
-    }
-  } catch (e) {
-    return res.status(500).json({
-      status: 'error',
-      msg: 'something went wrong :(',
-      data: {},
-    });
-  }
-});
+
+RouterConsumidor.get('/', consumidorController.getAllcontroller())
 
 RouterConsumidor.get('/:id', async (req, res) => {
   try {

@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from './../../util/connections.js';
-import { EncargadosPuestos } from './encargadoPuesto.model.js';
+import { EncargadosPuestos } from './encargado.model.js';
 import { Productores } from './Productor.model.js';
 
 export const Consumidor = sequelize.define('consumidores', {
