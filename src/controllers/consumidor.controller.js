@@ -1,4 +1,4 @@
-import { consumidorService } from "../services/consumidor.service";
+import { consumidorService } from "../services/consumidor.service.js";
 
 class ConsumidorController{
     async getAllcontroller(req,res){

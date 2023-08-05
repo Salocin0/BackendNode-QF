@@ -1,6 +1,6 @@
 import express from 'express';
 export const RouterEncargado= express.Router();
-import { EncargadosPuestos } from '../DAO/models/encargado.model.js';
+import { Encargado } from '../DAO/models/encargado.model.js';
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { encargadoController } from '../controllers/encargado.controller.js';
 
@@ -11,7 +11,7 @@ RouterEncargado.get('/', encargadoController.getAllcontroller)
 RouterEncargado.get('/:id', async (req, res) => {
   try {
     const encargadoId = req.params.id;
-    const encargado = await EncargadosPuestos.findByPk(encargadoId);
+    const encargado = await Encargado.findByPk(encargadoId);
     if (encargado !== null) {
       return res.status(200).json({
         status: 'sucess',
@@ -38,7 +38,7 @@ RouterEncargado.get('/:id', async (req, res) => {
 /*RouterEncargado.get('/user/:id', async (req, res) => {
       try {
         const usuarioId = req.params.id;
-        const encargado = await EncargadosPuestos.findOne({
+        const encargado = await Encargado.findOne({
           where: {
             usuarioId: usuarioId
           },
@@ -74,7 +74,7 @@ RouterEncargado.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { razonSocial, cuit } = req.body;
-    const encargado = await EncargadosPuestos.findByPk(id);
+    const encargado = await Encargado.findByPk(id);
     encargado.razonSocial = razonSocial;
     encargado.cuit = cuit;
     await encargado.save();
@@ -102,7 +102,7 @@ RouterEncargado.post('/', async (req, res) => {
       cuit: encargado.cuit,
       razonSocial: encargado.razonSocial,
     };
-    const encargadoendb = await EncargadosPuestos.findOne({
+    const encargadoendb = await Encargado.findOne({
       where: {
         razonSocial: nuevoEncargado.razonSocial,
       },
@@ -116,7 +116,7 @@ RouterEncargado.post('/', async (req, res) => {
         data: {},
       });
     } else {
-      const encargadoCreado = await EncargadosPuestos.create(nuevoEncargado);
+      const encargadoCreado = await Encargado.create(nuevoEncargado);
       return res.status(201).json({
         status: 'success',
         msg: 'encargado created',
@@ -138,7 +138,7 @@ RouterEncargado.post('/', async (req, res) => {
 RouterEncargado.delete('/:id', async (req, res) => {
   try {
     const id = req.params.id;
-    const encargado = await EncargadosPuestos.findByPk(id);
+    const encargado = await Encargado.findByPk(id);
     encargado.habilitado = false;
     await encargado.save();
     return res.status(200).json({

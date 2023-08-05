@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from './../../util/connections.js';
-import { EncargadosPuestos } from './encargado.model.js';
-import { Productores } from './Productor.model.js';
+import { Encargado } from './encargado.model.js';
+import { Productor } from './Productor.model.js';
 
 export const Consumidor = sequelize.define('consumidores', {
   id: {
@@ -37,22 +37,22 @@ export const Consumidor = sequelize.define('consumidores', {
   },
 });
 
-EncargadosPuestos.hasOne(Consumidor, {
+Encargado.hasOne(Consumidor, {
   foreignKey: 'encargadoId',
   sourceKey: 'id',
 });
 
-Consumidor.belongsTo(EncargadosPuestos, {
+Consumidor.belongsTo(Encargado, {
   foreignKey: 'encargadoId',
   targetKey: 'id',
 });
 
-Productores.hasOne(Consumidor, {
+Productor.hasOne(Consumidor, {
   foreignKey: 'productorId',
   sourceKey: 'id',
 });
 
-Consumidor.belongsTo(Productores, {
+Consumidor.belongsTo(Productor, {
   foreignKey: 'productorId',
   targetKey: 'id',
 });

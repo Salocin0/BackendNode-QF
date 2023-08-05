@@ -7,14 +7,14 @@ import { RouterConsumidor } from './routes/consumidor.router.js';
 import { sequelize } from './util/connections.js';
 import cors from 'cors';
 
-import { RouterProductor } from './routes/Productor.router.js';
+import { RouterProductor } from './routes/productor.router.js';
 import { RouterEncargado } from './routes/encargado.router.js';
 
 const app = express();
 const port = 8000;
 
 async function connectDB() {
-  await sequelize.sync({ force: false });
+  await sequelize.sync({ force: true });
   app.listen(port, () => {
     console.log('Servidor escuchando en el puerto ' + port);
   });

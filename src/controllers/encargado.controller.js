@@ -1,4 +1,4 @@
-import { encargadoService } from "../services/encargado.service";
+import { encargadoService } from "../services/encargado.service.js";
 
 
 class EncargadoController {

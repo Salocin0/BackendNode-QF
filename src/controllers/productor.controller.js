@@ -1,4 +1,4 @@
-import { productorService } from "../services/productor.service";
+import { productorService } from "../services/productor.service.js";
 
 
 

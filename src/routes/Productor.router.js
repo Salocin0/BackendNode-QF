@@ -1,6 +1,6 @@
 import express from "express";
 export const RouterProductor = express.Router();
-import { Productores } from "../DAO/models/Productor.model.js";
+import { Productor } from "../DAO/models/Productor.model.js";
 import { productorController } from "../controllers/productor.controller.js";
 
 
@@ -10,7 +10,7 @@ RouterProductor.get('/', productorController.getAllcontroller)
 RouterProductor.get('/:id', async(req, res) => {
   try {
     const productorId = req.params.id;
-    const productor = await Productores.findByPk(productorId)
+    const productor = await Productor.findByPk(productorId)
     if (productor !== null) {
       return res.status(200).json({
         status: "sucess",
@@ -37,7 +37,7 @@ RouterProductor.get('/:id', async(req, res) => {
 /*RouterProductor.get('/user/:id', async (req, res) => {
   try {
     const usuarioId = req.params.id;
-    const productor = await Productores.findOne({
+    const productor = await Productor.findOne({
       where: {
         usuarioId: usuarioId
       },
@@ -70,7 +70,7 @@ RouterProductor.put("/:id", async (req, res) => {
 try {
   const { id } = req.params;
   const { razonSocial,cuit } = req.body;
-  const productor = await Productores.findByPk(id)
+  const productor = await Productor.findByPk(id)
   productor.razonSocial=razonSocial
   productor.cuit = cuit
   await productor.save()
@@ -98,7 +98,7 @@ try {
     cuit:productor.cuit,
     razonSocial:productor.razonSocial,
   }
-  const productorendb = await Productores.findOne({
+  const productorendb = await Productor.findOne({
     where: {
       razonSocial: nuevoProductor.razonSocial
     },
@@ -112,7 +112,7 @@ try {
       data: {}
     });
   }else{
-    const productorCreado = await Productores.create(nuevoProductor);
+    const productorCreado = await Productor.create(nuevoProductor);
     return res.status(201).json({
       status: 'success',
       msg: 'encargado created',
@@ -134,7 +134,7 @@ return res.status(500).json({
 RouterProductor.delete("/:id", async (req, res) => {
 try {
   const id = req.params.id;
-  const productor = await Productores.findByPk(id);
+  const productor = await Productor.findByPk(id);
   productor.habilitado=false
   await productor.save()
   console.log(productor)

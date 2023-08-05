@@ -1,22 +1,20 @@
 import express from 'express';
 export const RouterConsumidor = express.Router();
 import { Consumidor } from '../DAO/models/consumidor.model.js';
-import { EncargadosPuestos } from '../DAO/models/encargado.model.js';
-import { Productores } from '../DAO/models/Productor.model.js';
+import { Encargado } from '../DAO/models/encargado.model.js';
+import { Productor } from '../DAO/models/Productor.model.js';
 import { consumidorController } from '../controllers/consumidor.controller.js';
 
 
-RouterConsumidor.get('/', consumidorController.getAllcontroller())
+RouterConsumidor.get('/', consumidorController.getAllcontroller)
 
 RouterConsumidor.get('/:id', async (req, res) => {
   try {
     const consumidorId = req.params.id;
     const consumidor = await Consumidor.findOne({
       where: { id: consumidorId },
-      include: [EncargadosPuestos, Productores/*, Repartidores*/]
-    });
-
-    if (consumidor !== null) {
+      include: [Encargado, Productores/*, Repartidores*/]
+    });    if (consumidor !== null) {
       return res.status(200).json({
         status: 'success',
         msg: 'consumidor found',
@@ -46,8 +44,8 @@ RouterConsumidor.put('/:id', async (req, res) => {
     const { consumidor } = req.body;
     console.log(consumidor)
     const consumidorbase = await Consumidor.findByPk(id);
-    const encargado = await EncargadosPuestos.findByPk(consumidor.encargadoId);
-    const productor = await Productores.findByPk(consumidor.productorId);
+    const encargado = await Encargado.findByPk(consumidor.encargadoId);
+    const productor = await Productor.findByPk(consumidor.productorId);
     if(consumidorbase){
       consumidorbase.nombre = consumidor.nombre;
       consumidorbase.apellido = consumidor.apellido;
