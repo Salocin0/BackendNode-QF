@@ -55,3 +55,4 @@ Usuario.belongsTo(Consumidor, {
   foreinkey: 'consumidorId',
   targetId: 'id',
 });
+

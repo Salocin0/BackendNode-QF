@@ -36,6 +36,9 @@ RouterUser.get('/:id', async (req, res) => {
   }
 });
 
+
+
+
 RouterUser.post('/', async (req, res) => {
   try {
     const { consumidor } = req.body;
@@ -89,6 +92,7 @@ RouterUser.post('/', async (req, res) => {
     });
   }
 });
+
 
 RouterUser.put('/recuperarcontrasenia', async (req, res) => {
   try {

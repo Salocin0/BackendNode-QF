@@ -1,5 +1,13 @@
 import express from 'express';
-export const RouterLogin = express.Router();
 import { loginController } from '../controllers/login.controller.js';
+import passport from 'passport';
+export const RouterLogin = express.Router();
 
-RouterLogin.post('/', loginController.login);
+/*RouterLogin.post('/', loginController.login);*/
+
+RouterLogin.post('/', passport.authenticate('login', { failureRedirect: '/login/faillogin' }), loginController.login);
+
+RouterLogin.get('/faillogin', async (req, res) => {
+    console.log("error error error")
+    return res.json({ error: 'fail to login' });
+  });
