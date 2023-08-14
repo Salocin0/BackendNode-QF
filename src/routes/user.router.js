@@ -6,8 +6,15 @@ import { createHash } from 'crypto';
 import { sendEmail } from '../util/emailSender.js';
 import { createHashPW } from '../util/bcrypt.js';
 import { userController } from '../controllers/users.controller.js';
+import passport from 'passport';
 
 RouterUser.get('/', userController.getAllcontroller);
+
+RouterUser.get('/failregister', async (req, res) => {
+  console.log("error error error")
+  return res.json({ error: 'fail to register' });
+});
+
 
 RouterUser.get('/:id', async (req, res) => {
   try {
@@ -36,11 +43,9 @@ RouterUser.get('/:id', async (req, res) => {
   }
 });
 
-
-
-
-RouterUser.post('/', async (req, res) => {
+RouterUser.post('/'/*,passport.authenticate('register', { failureRedirect: '/user/failregister' })*/, async (req, res) => {
   try {
+    console.log(req.user,req.newuser)
     const { consumidor } = req.body;
     const usuariorepetido = await Usuario.findOne({
       where: {
@@ -88,10 +93,11 @@ RouterUser.post('/', async (req, res) => {
       status: 'error',
       msg: 'something went wrong :(',
       code: 400,
-      data: {},
+      data: {e},
     });
   }
 });
+
 
 
 RouterUser.put('/recuperarcontrasenia', async (req, res) => {
