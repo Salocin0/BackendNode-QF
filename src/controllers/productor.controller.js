@@ -81,7 +81,7 @@ class ProductorController {
         cuit: productor.cuit,
         razonSocial: productor.razonSocial,
       };
-      const productorCreado = await productorService.createOne(nuevoProductor);
+      const productorCreado = await productorService.create(nuevoProductor);
       if (productorCreado === false) {
         return res.status(200).json({
           status: 'error',
