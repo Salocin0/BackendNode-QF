@@ -4,15 +4,17 @@ import { Usuario } from '../DAO/models/users.model.js';
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { createHash } from 'crypto';
 import { sendEmail } from '../util/emailSender.js';
+import flash from 'connect-flash';
 import { createHashPW } from '../util/bcrypt.js';
 import { userController } from '../controllers/users.controller.js';
+import { userService } from '../services/users.service.js';
 import passport from 'passport';
 
 RouterUser.get('/', userController.getAllcontroller);
 
-RouterUser.get('/failregister', async (req, res) => {
-  console.log("error error error")
-  return res.json({ error: 'fail to register' });
+RouterUser.get('/fail/register', async (req, res) => {
+ 
+ res.status(200).json({ error: "errorMessage" });
 });
 
 
@@ -43,16 +45,10 @@ RouterUser.get('/:id', async (req, res) => {
   }
 });
 
-RouterUser.post('/'/*,passport.authenticate('register', { failureRedirect: '/user/failregister' })*/, async (req, res) => {
+RouterUser.post('/'/*,passport.authenticate('register', { failureRedirect: '/user/fail/register' })*/, async (req, res) => {
   try {
-    console.log(req.user,req.newuser)
     const { consumidor } = req.body;
-    const usuariorepetido = await Usuario.findOne({
-      where: {
-        email: consumidor.usuario.correoElectronico,
-      },
-    });
-    if (usuariorepetido) {
+    if (await userService.existeUsuario(consumidor.usuario.correoElectronico,consumidor.usuario.nombreDeUsuario)) {
       return res.status(400).json({
         status: 'error',
         msg: 'user already added',
@@ -60,31 +56,12 @@ RouterUser.post('/'/*,passport.authenticate('register', { failureRedirect: '/use
         data: {},
       });
     } else {
-      const user = {
-        contraseña: createHashPW(consumidor.usuario.contraseña),
-        usuario: consumidor.usuario.nombreDeUsuario,
-        email: consumidor.usuario.correoElectronico,
-        fechaAlta: Date.now(),
-      };
-      const usuarioCreado = await Usuario.create(user);
-      console.log(usuarioCreado);
-      const consum = {
-        nombre: consumidor.nombre,
-        apellido: consumidor.apellido,
-        dni: consumidor.dni,
-        localidad: consumidor.localidad,
-        telefono: consumidor.telefono,
-        fechaNacimiento: consumidor.fechaDeNacimiento,
-        usuarioId: usuarioCreado.id,
-      };
-      const consumidorCreado = await Consumidor.create(consum);
-      usuarioCreado.consumidoreId = consumidorCreado.id;
-      usuarioCreado.save();
+      const data = userService.create(consumidor)
       return res.status(201).json({
         status: 'success',
         msg: 'user created',
         code: 200,
-        data: { usuarioCreado, consumidorCreado },
+        data: data,
       });
     }
   } catch (e) {
@@ -97,8 +74,6 @@ RouterUser.post('/'/*,passport.authenticate('register', { failureRedirect: '/use
     });
   }
 });
-
-
 
 RouterUser.put('/recuperarcontrasenia', async (req, res) => {
   try {

@@ -7,17 +7,19 @@ import { RouterLogin } from './routes/login.router.js';
 import { RouterConsumidor } from './routes/consumidor.router.js';
 import { sequelize } from './util/connections.js';
 import cors from 'cors';
-
+import flash from 'connect-flash';
 import { RouterProductor } from './routes/productor.router.js';
 import { RouterEncargado } from './routes/encargado.router.js';
 import { initPassport } from './config/passport.config.js';
 import passport from 'passport';
+import bodyParser from 'body-parser';
+import compression from 'express-compression';
 
 const app = express();
 const port = 8000;
 
 async function connectDB() {
-  await sequelize.sync({ force: false }); //ESTE !!!
+  await sequelize.sync({ force: true }); //ESTE !!!
   app.listen(port, () => {
     console.log('Servidor escuchando en el puerto ' + port);
   });
@@ -32,7 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-
+app.use(compression({brotli:{enable:true,zlib:{}},}));
 
 app.use(session({
   secret: 'secret-key',
@@ -45,7 +47,10 @@ app.use(session({
 initPassport();
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(bodyParser.urlencoded({ extended: false }))
 
+// parse application/json
+app.use(bodyParser.json())
 
 
 // URLs
