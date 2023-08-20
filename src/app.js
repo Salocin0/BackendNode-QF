@@ -14,6 +14,7 @@ import { initPassport } from './config/passport.config.js';
 import passport from 'passport';
 import bodyParser from 'body-parser';
 import compression from 'express-compression';
+import { RouterPuesto } from './routes/puesto.router.js';
 
 const app = express();
 const port = 8000;
@@ -60,3 +61,5 @@ app.use('/consumidor', RouterConsumidor);
 app.use('/login', RouterLogin);
 app.use('/encargado', RouterEncargado);
 app.use('/productor', RouterProductor);
+app.use('/puesto', RouterPuesto)
+
