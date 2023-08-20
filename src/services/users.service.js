@@ -9,8 +9,12 @@ class UserService {
       return usuarios
     }
 
+    async getOne(id){
+      const usuarios = await Usuario.findOne({where: { id: id  }}); 
+      return usuarios
+    }
+
     async existeUsuario(correo,usuario){
-      
       const existingUser = await Usuario.findOne({
         where: {
           [Op.or]: [{ usuario: usuario }, { email: correo }],
