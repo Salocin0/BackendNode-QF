@@ -11,13 +11,13 @@ class PuestoService {
         return puesto;
       }
   
-    async update(id, nombre, fechaBromatologica, descripcion) {
-        const puesto = Puesto.findByPk(id);
-        puesto.nombre = nombre;
-        puesto.fechaBromatologica = fechaBromatologica;
-        puesto.descripcion = descripcion;
-        await puesto.save();
-        return puesto;
+    async update(id, puesto) {
+        const puestodb = await Puesto.findByPk(id);
+        puestodb.nombre = puesto.nombre;
+        puestodb.fechaBromatologica = puesto.fechaBromatologica;
+        puestodb.descripcion = puesto.descripcion;
+        await puestodb.save();
+        return puestodb;
     }
 
     async create(nuevoPuesto) {
