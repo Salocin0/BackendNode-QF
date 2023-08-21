@@ -1,7 +1,7 @@
 import { puestoService } from '../services/puesto.service.js';
 
 class PuestoController {
-  async getAllController(res) {
+  async getAllController(req, res) {
     try {
       const puestos = await puestoService.getAll();
       if (puestos.length > 0) {
@@ -57,7 +57,7 @@ class PuestoController {
     try {
       const id = req.params.id;
       const { puesto } = req.body;
-      const result = await puestoService.updateOne(id, puesto);    
+      const result = await puestoService.update(id, puesto);    
       return res.status(200).json({
         status: 'success',
         msg: 'puesto is updated',
@@ -112,7 +112,7 @@ class PuestoController {
   async deleteOneController(req, res) {
     try {
       const id = req.params.id;
-      const puesto = await puestoService.deleteOne(id);
+      const puesto = await puestoService.delete(id);
       return res.status(200).json({
         status: 'success',
         msg: 'encargado deleted',
