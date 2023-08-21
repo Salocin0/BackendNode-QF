@@ -16,6 +16,7 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import compression from 'express-compression';
 import { RouterPuesto } from './routes/puesto.router.js';
+import { RouterRepartidor } from './routes/repartidor.router.js';
 
 const app = express();
 const port = 8000;
@@ -62,5 +63,5 @@ app.use('/consumidor', RouterConsumidor);
 app.use('/login', RouterLogin);
 app.use('/encargado', RouterEncargado);
 app.use('/productor', RouterProductor);
-app.use('/puesto', RouterPuesto)
-
+app.use('/puesto', RouterPuesto);
+app.use('/repartidor', RouterRepartidor);
