@@ -17,8 +17,6 @@ RouterUser.get('/fail/register', async (req, res) => {
   res.status(200).json({ error: errorMessage });
 });
 
-
-
 RouterUser.get('/:id', async (req, res) => {
   try {
     const userId = req.params.id;
@@ -46,32 +44,20 @@ RouterUser.get('/:id', async (req, res) => {
   }
 });
 
-RouterUser.post('/',passport.authenticate('local-signup', { failureRedirect: '/user/fail/register',failureFlash : true }), async (req, res) => {
+RouterUser.post('/', passport.authenticate('local-signup', { failureRedirect: '/user/fail/register', failureFlash: true }), async (req, res) => {
   try {
-    //const { consumidor } = req.body;
-    //if (await userService.existeUsuario(consumidor.usuario.correoElectronico,consumidor.usuario.nombreDeUsuario)) {
-    //  return res.status(400).json({
-    //    status: 'error',
-    //    msg: 'user already added',
-    //    code: 300,
-    //    data: {},
-    //  });
-    //} else {
-      //const data = userService.create(consumidor)
-      return res.status(201).json({
-        status: 'success',
-        msg: 'user created',
-        code: 200,
-        //data: user,
-      });
-    //}
+    return res.status(201).json({
+      status: 'success',
+      msg: 'user created',
+      code: 200,
+    });
   } catch (e) {
     console.log(e);
     return res.status(500).json({
       status: 'error',
       msg: 'something went wrong :(',
       code: 400,
-      data: {e},
+      data: { e },
     });
   }
 });

@@ -80,6 +80,8 @@ class RepartidorController {
       const { repartidor } = req.body;
       const nuevorepartidor = { // atributos para crear el repartidoooor
         nombre: repartidor.nombre,
+        idconsumidor: repartidor.idconsumidor,
+        consumidor: repartidor.consumidor,
       };
       const repartidorCreado = await repartidorService.create(nuevorepartidor);
       if (repartidorCreado === false) {

@@ -33,6 +33,7 @@ class UserService {
         contraseña: createHashPW(consumidor.usuario.contraseña),
         usuario: consumidor.usuario.nombreDeUsuario,
         email: consumidor.usuario.correoElectronico,
+        tipoUsuario: consumidor.usuario.tipoUsuario,
         fechaAlta: Date.now(),
       };
       const usuarioCreado = await Usuario.create(user);
@@ -41,6 +42,7 @@ class UserService {
         apellido: consumidor.apellido,
         dni: consumidor.dni,
         localidad: consumidor.localidad,
+        provincia: consumidor.provincia,
         telefono: consumidor.telefono,
         fechaNacimiento: consumidor.fechaDeNacimiento,
         usuarioId: usuarioCreado.id,

@@ -23,6 +23,7 @@ class ProductorService {
     const productorendb = await Productor.findOne({
       where: {
         razonSocial: nuevoProductor.razonSocial,
+        cuit: nuevoProductor.cuit,
       },
     });
     if (productorendb) {

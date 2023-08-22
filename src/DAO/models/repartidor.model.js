@@ -7,7 +7,7 @@ import { estado } from './estado.model.js';
 import { butaca } from './butaca.model.js';
 */
 
-export const Repartidor = sequelize.define('repartidor', {
+export const Repartidor = sequelize.define('repartidores', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -21,6 +21,11 @@ export const Repartidor = sequelize.define('repartidor', {
     habilitado: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
+    },
+    nombre: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: false,
     },
     /*Ver relación con la clase ESTADO 
     estado: {

@@ -2,6 +2,7 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from './../../util/connections.js';
 import { Encargado } from './encargado.model.js';
 import { Productor } from './Productor.model.js';
+import { Repartidor } from './repartidor.model.js';
 
 export const Consumidor = sequelize.define('consumidores', {
   id: {
@@ -24,6 +25,10 @@ export const Consumidor = sequelize.define('consumidores', {
     allowNull: false,
   },
   localidad: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  provincia: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -57,7 +62,7 @@ Consumidor.belongsTo(Productor, {
   targetKey: 'id',
 });
 
-/*
+
 Repartidor.hasOne(Consumidor, {
   foreignKey: 'repartidorId',
   sourceKey: 'id',
@@ -66,4 +71,4 @@ Repartidor.hasOne(Consumidor, {
 Consumidor.belongsTo(Repartidor, {
   foreignKey: 'repartidorId',
   targetKey: 'id',
-});*/
+});

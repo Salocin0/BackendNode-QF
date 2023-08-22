@@ -34,6 +34,10 @@ export const Usuario = sequelize.define('usuarios', {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
+  tipoUsuario: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });
 
 Usuario.hasOne(Consumidor, {
