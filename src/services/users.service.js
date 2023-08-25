@@ -53,9 +53,6 @@ class UserService {
       return { usuarioCreado, consumidorCreado }
     }
 
-    async llego(){
-      console.log("llego")
-    }
 }
 
 export const userService = new UserService();

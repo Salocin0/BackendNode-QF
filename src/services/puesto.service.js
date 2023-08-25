@@ -1,8 +1,16 @@
 import { Puesto } from "../DAO/models/puesto.model.js";
+import { Usuario } from "../DAO/models/users.model.js";
+import { Consumidor } from "../DAO/models/consumidor.model.js";
 
 class PuestoService {
-    async getAll(){
-      const puestos = await Puesto.findAll(); 
+    async getAll(userid){
+      const user = await Usuario.getOne({where: {
+        id: userid
+      }})
+      const consumidor = await Consumidor.findByPk(user.consumidorId);
+      const puestos = await Puesto.findAll({where: {
+        encargadoId: consumidor.encargadoId,
+      }}); 
       return puestos
     }
 

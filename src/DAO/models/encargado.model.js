@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from './../../util/connections.js';
+import { Puesto } from './puesto.model.js';
 
 export const Encargado = sequelize.define('encargado', {
   id: {
@@ -25,4 +26,14 @@ export const Encargado = sequelize.define('encargado', {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
+});
+
+Encargado.hasOne(Puesto, {
+  foreinkey: 'PuestoId',
+  sourceKey: 'id',
+});
+
+Puesto.belongsTo(Encargado, {
+  foreinkey: 'PuestoId',
+  targetId: 'id',
 });

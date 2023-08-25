@@ -3,7 +3,9 @@ import { puestoService } from '../services/puesto.service.js';
 class PuestoController {
   async getAllController(req, res) {
     try {
-      const puestos = await puestoService.getAll();
+      const userid= req.user
+      console.log(userid)
+      const puestos = await puestoService.getAll(userid);
       if (puestos.length > 0) {
         return res.status(200).json({
           status: 'sucess',
