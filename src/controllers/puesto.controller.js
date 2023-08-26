@@ -79,12 +79,13 @@ class PuestoController {
   async createOneController(req, res) {
     try {
       const { puesto } = req.body;
+      const {consumidorId} = req.session.user.consumidoreId
       const nuevoPuesto = {
         nombre: puesto.nombre,
         fechaBromatologica: puesto.fechaBromatologica,
         descripcion: puesto.descripcion,
       };
-      const puestoCreado = await puestoService.create(nuevoPuesto);
+      const puestoCreado = await puestoService.create(nuevoPuesto,consumidorId);
       if (puestoCreado === false) {
         return res.status(200).json({
           status: 'error',

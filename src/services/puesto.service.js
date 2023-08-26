@@ -1,6 +1,8 @@
 import { Puesto } from "../DAO/models/puesto.model.js";
 import { Usuario } from "../DAO/models/users.model.js";
 import { Consumidor } from "../DAO/models/consumidor.model.js";
+import { encargadoService } from "./encargado.service.js";
+import { consumidorService } from "./consumidor.service.js";
 
 class PuestoService {
     async getAll(userid){
@@ -28,16 +30,24 @@ class PuestoService {
         return puestodb;
     }
 
-    async create(nuevoPuesto) {
+    async create(nuevoPuesto,consumidorId) {
+        const consumidor = await consumidorService.getOne(consumidorId)
         const puestoendb = await Puesto.findOne({
           where: {
-            nombre: nuevoPuesto.nombre,
+            nombreCarro: nuevoPuesto.nombreCarro,
+            encargadoId: consumidor.encargadoId
           },
         });
         if (puestoendb) {
           return false;
         } else {
-          const puestoCreado = await Puesto.create(nuevoPuesto);
+          Puesto={
+            numeroCarro:nuevoPuesto.numeroCarro,
+            nombreCarro:nuevoPuesto.nombreCarro,
+            tipoNegocio:nuevoPuesto.tipoNegocio,
+            consumidorId:consumidorId,
+          }
+          const puestoCreado = await Puesto.create(Puesto);
           return puestoCreado;
         }
       }

@@ -12,21 +12,7 @@ import passport from 'passport';
 
 RouterUser.get('/', userController.getAllcontroller);
 
-app.get('/user/session', (req, res) => {
-  if(req.session.user){
-    return res.status(200).json({
-      status: 'sucess',
-      msg: 'user session found',
-      data: req.session.user,
-    });
-  }else{
-    return res.status(400).json({
-      status: 'error',
-      msg: 'user session not found',
-      data: null
-    });
-  }
-});
+
 
 RouterUser.get('/fail/register', async (req, res) => {
   const errorMessage = req.flash();

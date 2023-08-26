@@ -1,19 +1,21 @@
 class LoginController {
   async login(req, res) {
     try {
+      const sessionId = req.sessionID;
       req.session.user = {
         email: req.user.email,
         usuario: req.user.usuario,
         consumidorId: req.user.consumidoreId,
         tipoUsuario: req.user.tipoUsuario,
         id: req.user.id,
+        sessionId: sessionId,
       };
-      if (req.user) {
+      if (req.session.user) {
         return res.status(200).json({
           status: 'success',
           msg: 'user login',
           code: 200,
-          data: req.session.user,
+          data: req.session.user
         });
       } else {
         return res.status(401).json({
