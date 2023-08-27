@@ -21,9 +21,14 @@ class PuestoService {
   
     async update(id, puesto) {
         const puestodb = await Puesto.findByPk(id);
-        puestodb.nombre = puesto.nombre;
-        puestodb.fechaBromatologica = puesto.fechaBromatologica;
-        puestodb.descripcion = puesto.descripcion;
+        console.log(puesto)
+        puestodb.numeroCarro = puesto.numeroCarro;
+        puestodb.nombreCarro = puesto.nombreCarro;  
+        puestodb.tipoNegocio = puesto.tipoNegocio;
+        puestodb.telefonoContacto = puesto.telefonoContacto;
+        puestodb.razonSocial = puesto.razonSocial;
+        puestodb.cuit = puesto.cuit;  
+        puestodb.telefonoCarro = puesto.telefonoCarro;
         await puestodb.save();
         return puestodb;
     }

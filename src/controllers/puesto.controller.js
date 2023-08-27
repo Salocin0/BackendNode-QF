@@ -59,6 +59,7 @@ class PuestoController {
     try {
       const id = req.params.id;
       const { puesto } = req.body;
+      console.log(puesto)
       const result = await puestoService.update(id, puesto);    
       return res.status(200).json({
         status: 'success',
