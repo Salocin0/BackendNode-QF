@@ -1,23 +1,23 @@
-import cookieParser from 'cookie-parser';
-import express from 'express';
-import session from 'express-session';
-import { __dirname } from './dirname.js';
-import { RouterUser } from './routes/user.router.js';
-import { RouterLogin } from './routes/login.router.js';
-import { RouterConsumidor } from './routes/consumidor.router.js';
-import { sequelize } from './util/connections.js';
-import cors from 'cors';
-import flash from 'connect-flash';
 import bodyParser from 'body-parser';
-import morgan from 'morgan';
-import { RouterProductor } from './routes/productor.router.js';
-import { RouterEncargado } from './routes/encargado.router.js';
-import { initPassport } from './config/passport.config.js';
-import passport from 'passport';
+import flash from 'connect-flash';
+import SequelizeStoreInit from 'connect-session-sequelize';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express from 'express';
 import compression from 'express-compression';
+import session from 'express-session';
+import morgan from 'morgan';
+import passport from 'passport';
+import { initPassport } from './config/passport.config.js';
+import { __dirname } from './dirname.js';
+import { RouterConsumidor } from './routes/consumidor.router.js';
+import { RouterEncargado } from './routes/encargado.router.js';
+import { RouterLogin } from './routes/login.router.js';
+import { RouterProductor } from './routes/productor.router.js';
 import { RouterPuesto } from './routes/puesto.router.js';
 import { RouterRepartidor } from './routes/repartidor.router.js';
-import SequelizeStoreInit from 'connect-session-sequelize';
+import { RouterUser } from './routes/user.router.js';
+import { sequelize } from './util/connections.js';
 
 const app = express();
 const port = 8000;
@@ -96,7 +96,7 @@ app.use('/repartidor', RouterRepartidor);
 
 // Sincronizar la base de datos y luego iniciar el servidor
 async function connectDB() {
-  await sequelize.sync({ force: false });
+  await sequelize.sync({ force: false }); //FALSE NO CAMBIA
   app.listen(port, () => {
     console.log('Servidor escuchando en el puerto ' + port);
   });
