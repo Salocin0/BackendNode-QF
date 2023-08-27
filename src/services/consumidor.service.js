@@ -3,16 +3,17 @@ import { Encargado } from '../DAO/models/encargado.model.js';
 import { Productor } from '../DAO/models/Productor.model.js';
 import { Repartidor } from '../DAO/models/repartidor.model.js';
 
+
 class ConsumidorService {
   async getAll() {
-    const consumidores = await Consumidor.findAll({ include: [Encargado, Productor ,Repartidor] });
+    const consumidores = await Consumidor.findAll({ include: [EncargadosPuestos, Productores ,Repartidores] });
     return consumidores;
   }
 
   async getOne(id) {
     const consumidor = await Consumidor.findOne({
       where: { id: id },
-      include: [Encargado, Productor , Repartidor],
+      include: [Encargado, Productor , Repartidores],
     });
     return consumidor;
   }
