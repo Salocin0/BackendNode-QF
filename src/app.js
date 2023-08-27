@@ -58,8 +58,8 @@ app.use(flash());
 
 // URLs
 app.use(express.static(__dirname + '/public'));
-app.get('/user/session', async (req, res) => {
-  sessionStore.get(req.sessionID, async (error, sessionData) => {
+app.post('/user/session', async (req, res) => {
+  sessionStore.get(req.body.sessionID, async (error, sessionData) => {
     if (error) {
       console.error('Error al obtener la sesión:', error);
       return res.status(500).json({
@@ -96,7 +96,7 @@ app.use('/repartidor', RouterRepartidor);
 
 // Sincronizar la base de datos y luego iniciar el servidor
 async function connectDB() {
-  await sequelize.sync({ force: false });
+  await sequelize.sync({ force: true });
   app.listen(port, () => {
     console.log('Servidor escuchando en el puerto ' + port);
   });

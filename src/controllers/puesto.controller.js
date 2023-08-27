@@ -3,9 +3,9 @@ import { puestoService } from '../services/puesto.service.js';
 class PuestoController {
   async getAllController(req, res) {
     try {
-      const userid= req.user
-      console.log(userid)
-      const puestos = await puestoService.getAll(userid);
+      const consumidorId = req.headers["consumidorid"];
+      console.log(consumidorId)
+      const puestos = await puestoService.getAll(consumidorId);
       if (puestos.length > 0) {
         return res.status(200).json({
           status: 'sucess',
@@ -78,14 +78,19 @@ class PuestoController {
 
   async createOneController(req, res) {
     try {
-      const { puesto } = req.body;
-      const {consumidorId} = req.session.user.consumidoreId
+      const { nombreCarro, numeroCarro, tipoNegocio, telefonoContacto, razonSocial, cuit, telefonoCarro ,consumidorId } = req.body;
       const nuevoPuesto = {
-        nombre: puesto.nombre,
-        fechaBromatologica: puesto.fechaBromatologica,
-        descripcion: puesto.descripcion,
+        nombreCarro: nombreCarro,
+        numeroCarro: numeroCarro,
+        tipoNegocio: tipoNegocio,
+        telefonoContacto: telefonoContacto,
+        razonSocial: razonSocial,
+        cuit: cuit,
+        telefonoCarro: telefonoCarro,
+        consumidorId:consumidorId
       };
-      const puestoCreado = await puestoService.create(nuevoPuesto,consumidorId);
+      console.log(nuevoPuesto);
+      const puestoCreado = await puestoService.create(nuevoPuesto);
       if (puestoCreado === false) {
         return res.status(200).json({
           status: 'error',

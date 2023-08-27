@@ -12,12 +12,32 @@ export const Puesto = sequelize.define('puesto', {
       primaryKey: true,
       autoIncrement: true,
     },
-    nombre: {
+    nombreCarro: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    fechaBromatologica: {
-      type: DataTypes.DATE,
+    numeroCarro: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    tipoNegocio: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    telefonoContacto: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    razonSocial: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    cuit: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    telefonoCarro: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     /*Ver relación con la clase ESTADO [CREADO,HABILITADO,DESHABILITADO,ACTIVO,INACTIVO] 
@@ -30,10 +50,6 @@ export const Puesto = sequelize.define('puesto', {
     habilitado: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
-    },
-    descripcion: {
-      type: DataTypes.STRING,
-      allowNull: true,
     },
     
   });

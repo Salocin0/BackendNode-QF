@@ -5,13 +5,11 @@ import { encargadoService } from "./encargado.service.js";
 import { consumidorService } from "./consumidor.service.js";
 
 class PuestoService {
-    async getAll(userid){
-      const user = await Usuario.getOne({where: {
-        id: userid
-      }})
-      const consumidor = await Consumidor.findByPk(user.consumidorId);
+    async getAll(consumidorId){
+      const consumidor = await Consumidor.findByPk(consumidorId);
       const puestos = await Puesto.findAll({where: {
         encargadoId: consumidor.encargadoId,
+        habilitado: true
       }}); 
       return puestos
     }
@@ -30,8 +28,8 @@ class PuestoService {
         return puestodb;
     }
 
-    async create(nuevoPuesto,consumidorId) {
-        const consumidor = await consumidorService.getOne(consumidorId)
+    async create(nuevoPuesto) {
+        const consumidor = await consumidorService.getOne(nuevoPuesto.consumidorId)
         const puestoendb = await Puesto.findOne({
           where: {
             nombreCarro: nuevoPuesto.nombreCarro,
@@ -41,13 +39,7 @@ class PuestoService {
         if (puestoendb) {
           return false;
         } else {
-          Puesto={
-            numeroCarro:nuevoPuesto.numeroCarro,
-            nombreCarro:nuevoPuesto.nombreCarro,
-            tipoNegocio:nuevoPuesto.tipoNegocio,
-            consumidorId:consumidorId,
-          }
-          const puestoCreado = await Puesto.create(Puesto);
+          const puestoCreado = await Puesto.create(nuevoPuesto);
           return puestoCreado;
         }
       }
