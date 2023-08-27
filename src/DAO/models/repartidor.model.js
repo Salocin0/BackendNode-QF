@@ -22,7 +22,7 @@ export const Repartidor = sequelize.define('repartidores', {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
     },
-    nombre: {
+    cuit: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: false,

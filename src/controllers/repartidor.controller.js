@@ -78,10 +78,9 @@ class RepartidorController {
   async createOneController(req, res) {
     try {
       const { repartidor } = req.body;
-      const nuevorepartidor = { // atributos para crear el repartidoooor
-        nombre: repartidor.nombre,
-        idconsumidor: repartidor.idconsumidor,
-        consumidor: repartidor.consumidor,
+      console.log(repartidor);
+      const nuevorepartidor = { 
+        cuit: repartidor.cuit
       };
       const repartidorCreado = await repartidorService.create(nuevorepartidor);
       if (repartidorCreado === false) {

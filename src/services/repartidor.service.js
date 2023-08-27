@@ -23,7 +23,7 @@ class RepartidorService {
         const repartidorendb = await Repartidor.findOne({
           where: {
             // Algun atributo del repartidor
-            nombre: nuevorepartidor.nombre,
+            cuit: nuevorepartidor.cuit,
           },
         });
         if (repartidorendb) {
