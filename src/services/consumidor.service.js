@@ -13,7 +13,7 @@ class ConsumidorService {
   async getOne(id) {
     const consumidor = await Consumidor.findOne({
       where: { id: id },
-      include: [Encargado, Productor , Repartidores],
+      include: [Encargado, Productor , Repartidor],
     });
     return consumidor;
   }
@@ -22,6 +22,8 @@ class ConsumidorService {
     const consumidorbase = await Consumidor.findByPk(id);
     const encargado = await Encargado.findByPk(consumidor.encargadoId);
     const productor = await Productor.findByPk(consumidor.productorId);
+    const repartidor = await Repartidor.findByPk(consumidor.repartidorId);
+
     if (consumidorbase) {
       consumidorbase.nombre = consumidor.nombre;
       consumidorbase.apellido = consumidor.apellido;
@@ -32,6 +34,7 @@ class ConsumidorService {
       consumidorbase.habilidato = consumidor.habilidato;
       consumidorbase.encargadoId = consumidor.encargadoId;
       consumidorbase.productorId = consumidor.productorId;
+      consumidorbase.repartidorId = consumidor.repartidorId;
       await consumidorbase.save();
     }
     if (encargado && consumidor.encargadosPuesto) {
@@ -48,7 +51,11 @@ class ConsumidorService {
       productor.habilidato = consumidor.productor.habilidato;
       await productor.save();
     }
-    return { consumidorbase, encargado, productor };
+    if (repartidor && consumidor.repartidore) {
+      repartidor.cuit = consumidor.repartidor.cuit;
+      await repartidor.save();
+    }
+    return { consumidorbase, encargado, productor , repartidor };
   }
 }
 
