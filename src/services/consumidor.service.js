@@ -23,8 +23,8 @@ class ConsumidorService {
     const encargado = await Encargado.findByPk(consumidor.encargadoId);
     const productor = await Productor.findByPk(consumidor.productorId);
     const repartidor = await Repartidor.findByPk(consumidor.repartidorId);
-    const usuario = await Usuario.findByPk(consumidor.usuarioId);
-    console.log(usuario.dataValues.tipoUsuario);
+    //const usuario = await Usuario.findByPk(consumidor.usuarioId);
+    //console.log(usuario.dataValues.tipoUsuario);
     if (consumidorbase) {
       consumidorbase.nombre = consumidor.nombre;
       consumidorbase.apellido = consumidor.apellido;
@@ -39,14 +39,14 @@ class ConsumidorService {
       await consumidorbase.save();
     }
     if (encargado && consumidor.encargado) {
-      //encargado.cuit = consumidor.encargado.cuit;
-      //encargado.razonSocial = consumidor.encargado.razonSocial;
-      //encargado.estaValido = consumidor.encargado.estaValido;
-      //encargado.habilidato = consumidor.encargado.habilidato;
-      //await encargado.save();
-      usuario.tipoUsuario = 'Responsable';
-      console.log('Nuevo tipo de usuario:', usuario.tipoUsuario); 
-      await usuario.save();
+      encargado.cuit = consumidor.encargado.cuit;
+      encargado.razonSocial = consumidor.encargado.razonSocial;
+      encargado.estaValido = consumidor.encargado.estaValido;
+      encargado.habilidato = consumidor.encargado.habilidato;
+      await encargado.save();
+      //usuario.tipoUsuario = 'Responsable';
+      //console.log('Nuevo tipo de usuario:', usuario.tipoUsuario); 
+      //await usuario.save();
     }
     if (productor && consumidor.Productor) {
       productor.cuit = consumidor.Productor.cuit;
@@ -54,20 +54,20 @@ class ConsumidorService {
       productor.estaValido = consumidor.Productor.estaValido;
       productor.habilidato = consumidor.Productor.habilidato;
       await productor.save();
-      usuario.tipoUsuario = 'Productor'; 
-      console.log('Nuevo tipo de usuario:', usuario.tipoUsuario); 
-      await usuario.save();
+      //usuario.tipoUsuario = 'Productor'; 
+      //console.log('Nuevo tipo de usuario:', usuario.tipoUsuario); 
+      //await usuario.save();
     }
     if (repartidor && consumidor.repartidore) {
       repartidor.cuit = consumidor.repartidore.cuit;
       await repartidor.save();
-      usuario.tipoUsuario = 'Repartidor'; 
-      console.log('Nuevo tipo de usuario:', usuario.tipoUsuario);
-      await usuario.save();
+      //usuario.tipoUsuario = 'Repartidor'; 
+      //console.log('Nuevo tipo de usuario:', usuario.tipoUsuario);
+      //await usuario.save();
     }
 
-    console.log(usuario);
-    return { consumidorbase, encargado, productor, repartidor, usuario };
+    //console.log(usuario);
+    return { consumidorbase, encargado, productor, repartidor/*, usuario*/ };
   }
 }
 
