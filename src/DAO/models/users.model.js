@@ -37,6 +37,12 @@ export const Usuario = sequelize.define('usuarios', {
   tipoUsuario: {
     type: DataTypes.STRING,
     allowNull: true,
+    get() {
+      return this.getDataValue('tipoUsuario');
+    },
+    set(value) {
+      this.setDataValue('tipoUsuario', value);
+    },
   },
 });
 
