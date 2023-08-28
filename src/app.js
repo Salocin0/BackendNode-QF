@@ -68,7 +68,6 @@ app.post('/user/session', async (req, res) => {
         data: null,
       });
     }
-
     if (sessionData && sessionData.user) {
       return res.status(200).json({
         status: 'success',

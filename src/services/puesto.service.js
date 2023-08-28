@@ -41,6 +41,7 @@ class PuestoService {
             encargadoId: consumidor.encargadoId
           },
         });
+        nuevoPuesto.encargadoId = consumidor.encargadoId;
         if (puestoendb) {
           return false;
         } else {
