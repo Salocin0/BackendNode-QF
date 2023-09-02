@@ -55,7 +55,7 @@ export function initPassport() {
       },
       async (req, email, password, done) => {
         try {
-          const { consumidor,encargado,repartidor,productor } = req.body;
+          const { consumidor, encargado, repartidor, productor } = req.body;
           if (
             !consumidor.nombre ||
             !consumidor.apellido ||
@@ -71,32 +71,31 @@ export function initPassport() {
           ) {
             return done(null, false, req.flash('signupMessage', 'faltan datos.'));
           }
-          try {            
-            if(consumidor.usuario.tipoUsuario==="Repartidor"){
+          try {
+            if (consumidor.usuario.tipoUsuario === 'Repartidor') {
               const user = await userService.create(consumidor);
               const rep = await repartidorService.create(repartidor);
-              user.consumidorCreado.repartidorId=rep.id
+              user.consumidorCreado.repartidorId = rep.id;
               await user.consumidorCreado.save();
               return done(null, user.usuarioCreado.dataValues);
-            }else if(consumidor.usuario.tipoUsuario==="Productor"){
+            } else if (consumidor.usuario.tipoUsuario === 'Productor') {
               const user = await userService.create(consumidor);
               const prod = await productorService.create(productor);
-              user.consumidorCreado.productorId=prod.id
+              user.consumidorCreado.productorId = prod.id;
               await user.consumidorCreado.save();
               return done(null, user.usuarioCreado.dataValues);
-            }else if(consumidor.usuario.tipoUsuario==="Encargado"){
+            } else if (consumidor.usuario.tipoUsuario === 'Encargado') {
               const user = await userService.create(consumidor);
               const enc = await encargadoService.create(encargado);
-              user.consumidorCreado.encargadoId=enc.id
+              user.consumidorCreado.encargadoId = enc.id;
               await user.consumidorCreado.save();
               return done(null, user.usuarioCreado.dataValues);
-            }else{
+            } else {
               const user = await userService.create(consumidor);
               return done(null, user.usuarioCreado.dataValues);
             }
-            
           } catch (error) {
-            return done(null, false, req.flash('signupMessage', 'error al registrar',error));
+            return done(null, false, req.flash('signupMessage', 'error al registrar', error));
           }
         } catch (err) {
           return done(err);
@@ -106,7 +105,7 @@ export function initPassport() {
   );
 
   passport.serializeUser(async (user, done) => {
-      done(null, user.id);
+    done(null, user.id);
   });
 
   passport.deserializeUser(async (id, done) => {

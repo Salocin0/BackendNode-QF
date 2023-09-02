@@ -12,8 +12,6 @@ import passport from 'passport';
 
 RouterUser.get('/', userController.getAllcontroller);
 
-
-
 RouterUser.get('/fail/register', async (req, res) => {
   const errorMessage = req.flash();
   res.status(200).json({ error: errorMessage });

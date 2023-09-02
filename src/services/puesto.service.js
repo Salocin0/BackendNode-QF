@@ -5,6 +5,7 @@ import { encargadoService } from "./encargado.service.js";
 import { consumidorService } from "./consumidor.service.js";
 
 class PuestoService {
+  //hacer que los metodos llamen a los service, no a los models
     async getAll(consumidorId){
       const consumidor = await Consumidor.findByPk(consumidorId);
       const puestos = await Puesto.findAll({where: {

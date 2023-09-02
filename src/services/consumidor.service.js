@@ -5,6 +5,7 @@ import { Repartidor } from '../DAO/models/repartidor.model.js';
 import { Usuario } from '../DAO/models/users.model.js';
 
 class ConsumidorService {
+  //TODO revisar getall y getone por el include distinto
   async getAll() {
     const consumidores = await Consumidor.findAll({ include: [EncargadosPuestos, Productores, Repartidores] });
     return consumidores;
@@ -17,7 +18,7 @@ class ConsumidorService {
     });
     return consumidor;
   }
-
+  //TODO refactorizar esto para que actualice consumidor, despues llame a los service correspondiente si tiene el rango, y los actualice
   async updateOne(id, consumidor) {
     const consumidorbase = await Consumidor.findByPk(id);
     const encargado = await Encargado.findByPk(consumidor.encargadoId);

@@ -7,21 +7,18 @@ const transporter = nodemailer.createTransport({
     pass: 'rzwfkerzhmtfhisx',
   },
 });
-
 // Función para enviar el correo electrónico
 export async function sendEmail(destino, asuntoemail, mensajeemail) {
   try {
     const correoDestino = destino;
     const asunto = asuntoemail;
     const mensaje = mensajeemail;
-
     const info = await transporter.sendMail({
       from: 'quickfoodrecuperacion@gmail.com',
       to: correoDestino,
       subject: asunto,
       text: mensaje,
     });
-
     console.log('Correo electrónico enviado:', info.messageId);
   } catch (error) {
     console.error('Error al enviar el correo electrónico:', error);

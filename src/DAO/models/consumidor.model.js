@@ -62,7 +62,6 @@ Consumidor.belongsTo(Productor, {
   targetKey: 'id',
 });
 
-
 Repartidor.hasOne(Consumidor, {
   foreignKey: 'repartidorId',
   sourceKey: 'id',

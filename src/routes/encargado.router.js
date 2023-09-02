@@ -4,9 +4,7 @@ import { Encargado } from '../DAO/models/encargado.model.js';
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { encargadoController } from '../controllers/encargado.controller.js';
 
-
 RouterEncargado.get('/', encargadoController.getAllcontroller)
-
 
 RouterEncargado.get('/:id', async (req, res) => {
   try {

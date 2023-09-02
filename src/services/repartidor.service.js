@@ -1,6 +1,7 @@
 import { Repartidor } from "../DAO/models/repartidor.model.js";
 
 class RepartidorService {
+  //ACTUALIZAR METODOS CON LOS NUEVOS ATRIBUTOS DE REPARTIDOR
     async getAll(){
       const repartidores = await Repartidor.findAll(); 
       return repartidores

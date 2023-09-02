@@ -1,6 +1,5 @@
 import express from 'express';
 export const RouterProductor = express.Router();
-import { Productor } from '../DAO/models/Productor.model.js';
 import { productorController } from '../controllers/productor.controller.js';
 
 RouterProductor.get('/', productorController.getAllController);
