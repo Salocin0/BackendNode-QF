@@ -18,6 +18,22 @@ class ConsumidorService {
     });
     return consumidor;
   }
+
+  async create(consumidor,id) {
+    const consum = {
+      nombre: consumidor.nombre,
+      apellido: consumidor.apellido,
+      dni: consumidor.dni,
+      localidad: consumidor.localidad,
+      provincia: consumidor.provincia,
+      telefono: consumidor.telefono,
+      fechaNacimiento: consumidor.fechaDeNacimiento,
+      usuarioId: id,
+    };
+    const consumidorCreado = await Consumidor.create(consum);
+    return consumidorCreado
+  }
+
   //TODO refactorizar esto para que actualice consumidor, despues llame a los service correspondiente si tiene el rango, y los actualice
   async updateOne(id, consumidor) {
     const consumidorbase = await Consumidor.findByPk(id);

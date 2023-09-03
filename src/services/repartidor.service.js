@@ -20,20 +20,10 @@ class RepartidorService {
         return repartidor;
     }
 
-    async create(nuevorepartidor) {
-        const repartidorendb = await Repartidor.findOne({
-          where: {
-            // Algun atributo del repartidor
-            cuit: nuevorepartidor.cuit,
-          },
-        });
-        if (repartidorendb) {
-          return false;
-        } else {
-          const repartidorCreado = await Repartidor.create(nuevorepartidor);
+    async create() {
+          const repartidorCreado = await Repartidor.create();
           return repartidorCreado;
         }
-      }
 
     async delete(id) {
         const repartidor = await Repartidor.findByPk(id);

@@ -25,4 +25,8 @@ export const Productor = sequelize.define('Productor', {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
+  condicionIva: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  }
 });

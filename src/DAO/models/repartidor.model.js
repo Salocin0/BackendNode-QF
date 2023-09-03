@@ -22,11 +22,6 @@ export const Repartidor = sequelize.define('repartidores', {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
     },
-    cuit: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: false,
-    },
     /*Ver relación con la clase ESTADO 
     estado: {
       type: DataTypes.ARRAY,

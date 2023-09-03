@@ -26,6 +26,10 @@ export const Encargado = sequelize.define('encargado', {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
+  condicionIva: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  }
 });
 
 Encargado.hasOne(Puesto, {

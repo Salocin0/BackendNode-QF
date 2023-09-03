@@ -55,50 +55,27 @@ export function initPassport() {
       },
       async (req, email, password, done) => {
         try {
-          const { consumidor, encargado, repartidor, productor } = req.body;
-          if (
-            !consumidor.nombre ||
-            !consumidor.apellido ||
-            !consumidor.telefono ||
-            !consumidor.fechaDeNacimiento ||
-            !consumidor.dni ||
-            !consumidor.localidad ||
-            !consumidor.provincia ||
-            !consumidor.usuario.contraseña ||
-            !consumidor.usuario.nombreDeUsuario ||
-            !consumidor.usuario.correoElectronico ||
-            !consumidor.usuario.tipoUsuario
-          ) {
-            return done(null, false, req.flash('signupMessage', 'faltan datos.'));
+          const { usuario, consumidor, encargado, repartidor, productor } = req.body;
+          if (!consumidor.nombre || !consumidor.apellido || !consumidor.telefono || !consumidor.fechaDeNacimiento || !consumidor.dni || !consumidor.localidad || !consumidor.provincia) {
+            return done(null, false, req.flash('signupMessage', 'faltan datos consumidor.'));
           }
-          try {
-            if (consumidor.usuario.tipoUsuario === 'Repartidor') {
-              const user = await userService.create(consumidor);
-              const rep = await repartidorService.create(repartidor);
-              user.consumidorCreado.repartidorId = rep.id;
-              await user.consumidorCreado.save();
-              return done(null, user.usuarioCreado.dataValues);
-            } else if (consumidor.usuario.tipoUsuario === 'Productor') {
-              const user = await userService.create(consumidor);
-              const prod = await productorService.create(productor);
-              user.consumidorCreado.productorId = prod.id;
-              await user.consumidorCreado.save();
-              return done(null, user.usuarioCreado.dataValues);
-            } else if (consumidor.usuario.tipoUsuario === 'Encargado') {
-              const user = await userService.create(consumidor);
-              const enc = await encargadoService.create(encargado);
-              user.consumidorCreado.encargadoId = enc.id;
-              await user.consumidorCreado.save();
-              return done(null, user.usuarioCreado.dataValues);
-            } else {
-              const user = await userService.create(consumidor);
-              return done(null, user.usuarioCreado.dataValues);
-            }
-          } catch (error) {
-            return done(null, false, req.flash('signupMessage', 'error al registrar', error));
+
+          if (!usuario.contraseña || !usuario.nombreDeUsuario || !usuario.correoElectronico || !usuario.tipoUsuario) {
+            return done(null, false, req.flash('signupMessage', 'faltan datos usuario.'));
           }
-        } catch (err) {
-          return done(err);
+
+          if (usuario.tipoUsuario === 'encargado' && (!encargado.cuit || !encargado.razonSocial || !encargado.condicionIva)) {
+            return done(null, false, req.flash('signupMessage', 'faltan datos encargado.'));
+          }
+
+          if (usuario.tipoUsuario === 'productor' && (!productor.cuit || !productor.razonSocial || !productor.condicionIva)) {
+            return done(null, false, req.flash('signupMessage', 'faltan datos productor.'));
+          }
+          
+          const usercreado = await userService.register(usuario,consumidor,productor,encargado,repartidor);
+          return done(null, usercreado.user.dataValues);
+        } catch (error) {
+          return done(null, false, req.flash('signupMessage', 'error al registrar', error));
         }
       }
     )

@@ -2,6 +2,10 @@ import { Usuario } from '../DAO/models/users.model.js';
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Op } from 'sequelize';
 import { createHashPW } from '../util/bcrypt.js';
+import { consumidorService } from './consumidor.service.js';
+import { encargadoService } from './encargado.service.js';
+import { productorService } from './productor.service.js';
+import { repartidorService } from './repartidor.service.js';
 
 class UserService {
   async getAll() {
@@ -27,30 +31,42 @@ class UserService {
       return false;
     }
   }
-  //TODO ESTE METODO TENDRIA QUE CREAR AL USUARIO Y LLAMAR AL SERVICE DE CONSUMIDOR PARA QUE CREE LA OTRA PARTE Y QUE DESPUES ESTE TOME EL COSUMIDOR Y LO ACTUALICE ACA
-  async create(consumidor) {
+  async create(usuario) {
     const user = {
-      contraseña: createHashPW(consumidor.usuario.contraseña),
-      usuario: consumidor.usuario.nombreDeUsuario,
-      email: consumidor.usuario.correoElectronico,
-      tipoUsuario: consumidor.usuario.tipoUsuario,
+      contraseña: createHashPW(usuario.contraseña),
+      usuario: usuario.nombreDeUsuario,
+      email: usuario.correoElectronico,
+      tipoUsuario: usuario.tipoUsuario,
       fechaAlta: Date.now(),
     };
-    const usuarioCreado = await Usuario.create(user);
-    const consum = {
-      nombre: consumidor.nombre,
-      apellido: consumidor.apellido,
-      dni: consumidor.dni,
-      localidad: consumidor.localidad,
-      provincia: consumidor.provincia,
-      telefono: consumidor.telefono,
-      fechaNacimiento: consumidor.fechaDeNacimiento,
-      usuarioId: usuarioCreado.id,
-    };
-    const consumidorCreado = await Consumidor.create(consum);
-    usuarioCreado.consumidoreId = consumidorCreado.id;
-    usuarioCreado.save();
-    return { usuarioCreado, consumidorCreado };
+    const usuariocreado = await Usuario.create(user);
+    return usuariocreado;
+  }
+  //TODO ESTE METODO TENDRIA QUE CREAR AL USUARIO Y LLAMAR AL SERVICE DE CONSUMIDOR PARA QUE CREE LA OTRA PARTE Y QUE DESPUES ESTE TOME EL COSUMIDOR Y LO ACTUALICE ACA
+  
+
+  async register(usuario,consumidor,productor,encargado,repartidor) {
+    const user = await this.create(usuario);
+    const consu = await consumidorService.create(consumidor,user.id)
+    let prod = null;
+    let enca = null;
+    let repa = null;
+    user.consumidoreId = consu.id;
+    user.save();
+    if(user.tipoUsuario == "productor"){
+      prod = await productorService.create(productor)
+      consu.productorId = prod.id;
+      consu.save();
+    }else if(user.tipoUsuario == "encargado"){
+      enca = await encargadoService.create(encargado)
+      consu.encargadoId = enca.id;
+      consu.save();
+    }else if(user.tipoUsuario == "repartidor"){
+      repa = await repartidorService.create()
+      consu.repartidorId = repa.id;
+      consu.save();
+    }
+    return { user, consu, prod, enca, repa };
   }
 }
 
