@@ -87,7 +87,7 @@ app.use('/puesto', RouterPuesto);
 app.use('/repartidor', RouterRepartidor);
 // Sincronizar la base de datos y luego iniciar el servidor
 async function connectDB() {
-  await sequelize.sync({ force: true }); //FALSE NO CAMBIA
+  await sequelize.sync({ force: false }); //FALSE NO CAMBIA
   app.listen(port, () => {
     console.log('Servidor escuchando en el puerto ' + port);
   });
