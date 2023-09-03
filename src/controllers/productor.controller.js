@@ -1,5 +1,5 @@
+import { consumidorService } from '../services/consumidor.service.js';
 import { productorService } from '../services/productor.service.js';
-
 class ProductorController {
   async getAllController(req, res) {
     try {
@@ -55,24 +55,33 @@ class ProductorController {
 
   async updateOneController(req, res) {
     try {
-      const { id } = req.params;
-      const { razonSocial, cuit } = req.body;
-      const productor = await productorService.updateOne(id, razonSocial, cuit);
+      const id = req.params.id;
+      const consumidor = await consumidorService.getOne(id);
+
+      console.log("Este  es el ID: " + consumidor.productorId);
+
+      const { razonSocialPE, cuitPE } = req.body;
+
+      console.log(id, razonSocialPE, cuitPE);
+
+      const result = await productorService.updateOne(consumidor.productorId, { razonSocialPE, cuitPE });
+
       return res.status(200).json({
         status: 'success',
-        msg: 'encargado is updated',
+        msg: 'Productor actualizado correctamente',
         code: 200,
-        data: productor,
+        data: result,
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return res.status(500).json({
         status: 'error',
-        msg: 'something went wrong :(',
+        msg: 'Ocurrió un error al actualizar el Productor :(',
         data: {},
       });
     }
   }
+
 
   async createOneController(req, res) {
     try {
