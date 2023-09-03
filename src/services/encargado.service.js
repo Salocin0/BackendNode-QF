@@ -6,6 +6,15 @@ class EncargadoService {
     return encargados;
   }
 
+  async getOne(id){
+    const encargado = await Encargado.findOne({
+      where: {
+        id : id,
+      }
+    })
+    return encargado
+  }
+
   async create(nuevoEncargado) {
     const encargadoendb = await Encargado.findOne({
       where: {
@@ -18,6 +27,35 @@ class EncargadoService {
     } else {
       const encargadoCreado = await Encargado.create(nuevoEncargado);
       return encargadoCreado;
+    }
+  }
+
+  async updateOne(id, newData) {
+
+    console.log("New data" + newData.razonSocialEPC);
+    console.log("New data" + newData.cuitEPC)
+
+    try {
+      const encargado = await Encargado.findByPk(id);
+      console.log(encargado.cuit);
+      console.log(encargado.razonSocial);
+
+
+      if (!encargado) {
+        return null;
+      } else {
+        encargado.razonSocial = newData.razonSocialEPC;
+        encargado.cuit = newData.cuitEPC;
+
+      }
+
+      await encargado.save();
+
+      console.log("Actualizado" + encargado.cuit + " " + encargado.razonSocial);
+
+      return encargado;
+    } catch (error) {
+      throw error;
     }
   }
 }

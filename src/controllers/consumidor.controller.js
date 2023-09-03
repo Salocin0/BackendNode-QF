@@ -76,3 +76,4 @@ class ConsumidorController {
 }
 
 export const consumidorController = new ConsumidorController();
+

@@ -1,8 +1,7 @@
 import express from 'express';
-export const RouterEncargado= express.Router();
 import { Encargado } from '../DAO/models/encargado.model.js';
-import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { encargadoController } from '../controllers/encargado.controller.js';
+export const RouterEncargado= express.Router();
 
 RouterEncargado.get('/', encargadoController.getAllcontroller)
 
@@ -68,29 +67,8 @@ RouterEncargado.get('/:id', async (req, res) => {
       }
     });*/
 
-RouterEncargado.put('/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { razonSocial, cuit } = req.body;
-    const encargado = await Encargado.findByPk(id);
-    encargado.razonSocial = razonSocial;
-    encargado.cuit = cuit;
-    await encargado.save();
-    return res.status(200).json({
-      status: 'success',
-      msg: 'encargado is updated',
-      code: 200,
-      data: encargado,
-    });
-  } catch (e) {
-    console.log(e);
-    return res.status(500).json({
-      status: 'error',
-      msg: 'something went wrong :(',
-      data: {},
-    });
-  }
-});
+RouterEncargado.put('/:id', encargadoController.updateOneController)
+
 
 RouterEncargado.post('/', async (req, res) => {
   try {

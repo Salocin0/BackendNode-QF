@@ -13,13 +13,21 @@ class RepartidorService {
       }
   
       // Atributos del repartidor
-    async update(id) {
-        const repartidor = Repartidor.findByPk(id);
-        // atributos para actualizar el repartidoooor
-        await repartidor.save();
-        return repartidor;
-    }
+      async updateOne(id, repartidorData) {
+        const repartidor = await Repartidor.findByPk(id);
 
+        if (repartidor) {
+          repartidor.razonSocial = repartidorData.razonSocial;
+          repartidor.cuit = repartidorData.cuit;
+
+          await repartidor.save();
+
+          return repartidor;
+        } else {
+          console.log("No lo encontre")
+          return null;
+        }
+      }
     async create(nuevorepartidor) {
         const repartidorendb = await Repartidor.findOne({
           where: {

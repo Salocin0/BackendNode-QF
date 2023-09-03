@@ -1,3 +1,4 @@
+import { consumidorService } from '../services/consumidor.service.js';
 import { encargadoService } from '../services/encargado.service.js';
 
 class EncargadoController {
@@ -21,6 +22,35 @@ class EncargadoController {
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+  async updateOneController(req, res) {
+    try {
+      const id = req.params.id;
+      const consumidor = await consumidorService.getOne(id);
+
+      console.log("Este  es el ID: " + consumidor.encargadoId);
+
+      const { razonSocialEPC, cuitEPC } = req.body;
+
+      console.log(id, razonSocialEPC, cuitEPC);
+
+      const result = await encargadoService.updateOne(consumidor.encargadoId, { razonSocialEPC, cuitEPC });
+
+      return res.status(200).json({
+        status: 'success',
+        msg: 'Encargado actualizado correctamente',
+        code: 200,
+        data: result,
+      });
+    } catch (e) {
+      console.error(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'Ocurrió un error al actualizar el encargado :(',
         data: {},
       });
     }
