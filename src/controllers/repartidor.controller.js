@@ -57,29 +57,38 @@ class RepartidorController {
     try {
       const id = req.params.id;
       const { repartidor } = req.body;
-      const result = await repartidorService.updateOne(id, repartidor);    
-      return res.status(200).json({
-        status: 'success',
-        msg: 'repartidor is updated',
-        code: 200,
-        data: result,
-      });
+      const result = await repartidorService.updateOne(id, repartidor);
+      if (result) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Repartidor is updated',
+          code: 200,
+          data: result,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'error',
+          msg: 'Repartidor not found',
+          data: {},
+        });
+      }
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return res.status(500).json({
         status: 'error',
-        msg: 'something went wrong :(',
+        msg: 'Something went wrong :(',
         data: {},
       });
     }
   }
+  
 
   //// atributos para crear el repartidoooor
   async createOneController(req, res) {
     try {
       const { repartidor } = req.body;
       console.log(repartidor);
-      const nuevorepartidor = { 
+      const nuevorepartidor = {
         cuit: repartidor.cuit
       };
       const repartidorCreado = await repartidorService.create(nuevorepartidor);

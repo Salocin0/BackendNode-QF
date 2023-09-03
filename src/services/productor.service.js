@@ -11,12 +11,33 @@ class ProductorService {
     return productor;
   }
 
-  async update(id, razonSocial, cuit) {
-    const productor = Productor.findByPk(id);
-    productor.razonSocial = razonSocial;
-    productor.cuit = cuit;
-    await productor.save();
-    return productor;
+  async updateOne(id, newData) {
+
+    console.log("New data" + newData.razonSocialPE);
+    console.log("New data" + newData.cuitPE)
+
+    try {
+      const productor = await Productor.findByPk(id);
+      console.log(productor.cuit);
+      console.log(productor.razonSocial);
+
+
+      if (!productor) {
+        return null;
+      } else {
+        productor.razonSocial = newData.razonSocialPE;
+        productor.cuit = newData.cuitPE;
+
+      }
+
+      await productor.save();
+
+      console.log("Actualizado" + productor.cuit + " " + productor.razonSocial);
+
+      return productor;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async create(nuevoProductor) {
