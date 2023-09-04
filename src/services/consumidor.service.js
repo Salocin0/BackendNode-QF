@@ -2,7 +2,6 @@ import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Encargado } from '../DAO/models/encargado.model.js';
 import { Productor } from '../DAO/models/Productor.model.js';
 import { Repartidor } from '../DAO/models/repartidor.model.js';
-import { Usuario } from '../DAO/models/users.model.js';
 
 class ConsumidorService {
   //TODO revisar getall y getone por el include distinto
@@ -18,22 +17,6 @@ class ConsumidorService {
     });
     return consumidor;
   }
-
-  async create(consumidor,id) {
-    const consum = {
-      nombre: consumidor.nombre,
-      apellido: consumidor.apellido,
-      dni: consumidor.dni,
-      localidad: consumidor.localidad,
-      provincia: consumidor.provincia,
-      telefono: consumidor.telefono,
-      fechaNacimiento: consumidor.fechaDeNacimiento,
-      usuarioId: id,
-    };
-    const consumidorCreado = await Consumidor.create(consum);
-    return consumidorCreado
-  }
-
   //TODO refactorizar esto para que actualice consumidor, despues llame a los service correspondiente si tiene el rango, y los actualice
   async updateOne(id, consumidor) {
     const consumidorbase = await Consumidor.findByPk(id);
@@ -86,6 +69,48 @@ class ConsumidorService {
     //console.log(usuario);
     return { consumidorbase, encargado, productor, repartidor/*, usuario*/ };
   }
+
+  async updateOneNew(id, newData) {
+
+    console.log("New data" + newData.nombreC);
+    console.log("New data" + newData.apellidoC)
+    console.log("New data" + newData.fechaNacimiento)
+    console.log("New data" + newData.provinciaC)
+    console.log("New data" + newData.localidad)
+    console.log("New data" + newData.telefono)
+
+
+
+
+
+    try {
+      const consumidor = await Consumidor.findByPk(id);
+
+
+
+      if (!consumidor) {
+        return null;
+      } else {
+        consumidor.nombre = newData.nombreC;
+        consumidor.apellido = newData.apellidoC;
+        consumidor.provincia = newData.provinciaC;
+        consumidor.localidad = newData.localidad;
+        consumidor.telefono = newData.telefono;
+
+      }
+
+      await consumidor.save();
+
+      console.log("Actualizado" + consumidor.nombre + " " + consumidor.apellido + " " + consumidor.fechaNacimiento + " " + consumidor.provincia + " " + consumidor.localidad + " " + consumidor.telefono);
+
+      return consumidor;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+
 }
 
 export const consumidorService = new ConsumidorService();

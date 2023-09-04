@@ -56,19 +56,27 @@ class ConsumidorController {
   async updateOneController(req, res) {
     try {
       const id = req.params.id;
-      const { consumidor } = req.body;
-      const result = await consumidorService.updateOne(id, consumidor);    
+      const consumidor = await consumidorService.getOne(id);
+
+      console.log("Este  es el ID: " + consumidor.id);
+
+      const { nombreC,apellidoC, dniC , fechaNacimiento, provinciaC , localidad , telefono } = req.body;
+
+      console.log(id, nombreC, apellidoC , dniC , fechaNacimiento, provinciaC, localidad , telefono);
+
+      const result = await consumidorService.updateOneNew(consumidor.id, { nombreC, apellidoC , dniC , fechaNacimiento, provinciaC, localidad , telefono });
+
       return res.status(200).json({
         status: 'success',
-        msg: 'consumidor is updated',
+        msg: 'Encargado actualizado correctamente',
         code: 200,
         data: result,
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return res.status(500).json({
         status: 'error',
-        msg: 'something went wrong :(',
+        msg: 'Ocurrió un error al actualizar el encargado :(',
         data: {},
       });
     }
@@ -76,4 +84,3 @@ class ConsumidorController {
 }
 
 export const consumidorController = new ConsumidorController();
-
