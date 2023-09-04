@@ -28,7 +28,7 @@ class ConsumidorService {
     if (consumidorbase) {
       consumidorbase.nombre = consumidor.nombre;
       consumidorbase.apellido = consumidor.apellido;
-      consumidorbase.fechaNacimiento = consumidor.fechaNacimiento;
+      consumidorbase.fechaNacimiento = datetime.datetime.strptime(consumidor.fechaNacimiento, '%Y-%m-%d %H:%M:%S') ;
       consumidorbase.dni = consumidor.dni;
       consumidorbase.localidad = consumidor.localidad;
       consumidorbase.telefono = consumidor.telefono;
@@ -45,7 +45,7 @@ class ConsumidorService {
       encargado.habilidato = consumidor.encargado.habilidato;
       await encargado.save();
       //usuario.tipoUsuario = 'Responsable';
-      //console.log('Nuevo tipo de usuario:', usuario.tipoUsuario); 
+      //console.log('Nuevo tipo de usuario:', usuario.tipoUsuario);
       //await usuario.save();
     }
     if (productor && consumidor.Productor) {
@@ -54,40 +54,31 @@ class ConsumidorService {
       productor.estaValido = consumidor.Productor.estaValido;
       productor.habilidato = consumidor.Productor.habilidato;
       await productor.save();
-      //usuario.tipoUsuario = 'Productor'; 
-      //console.log('Nuevo tipo de usuario:', usuario.tipoUsuario); 
+      //usuario.tipoUsuario = 'Productor';
+      //console.log('Nuevo tipo de usuario:', usuario.tipoUsuario);
       //await usuario.save();
     }
     if (repartidor && consumidor.repartidore) {
       repartidor.cuit = consumidor.repartidore.cuit;
       await repartidor.save();
-      //usuario.tipoUsuario = 'Repartidor'; 
+      //usuario.tipoUsuario = 'Repartidor';
       //console.log('Nuevo tipo de usuario:', usuario.tipoUsuario);
       //await usuario.save();
     }
 
     //console.log(usuario);
-    return { consumidorbase, encargado, productor, repartidor/*, usuario*/ };
+    return { consumidorbase, encargado, productor, repartidor /*, usuario*/ };
   }
 
   async updateOneNew(id, newData) {
-
-    console.log("New data" + newData.nombreC);
-    console.log("New data" + newData.apellidoC)
-    console.log("New data" + newData.fechaNacimiento)
-    console.log("New data" + newData.provinciaC)
-    console.log("New data" + newData.localidad)
-    console.log("New data" + newData.telefono)
-
-
-
-
-
+    console.log('New data' + newData.nombreC);
+    console.log('New data' + newData.apellidoC);
+    console.log('New data' + newData.fechaNacimiento);
+    console.log('New data' + newData.provinciaC);
+    console.log('New data' + newData.localidad);
+    console.log('New data' + newData.telefono);
     try {
       const consumidor = await Consumidor.findByPk(id);
-
-
-
       if (!consumidor) {
         return null;
       } else {
@@ -96,12 +87,15 @@ class ConsumidorService {
         consumidor.provincia = newData.provinciaC;
         consumidor.localidad = newData.localidad;
         consumidor.telefono = newData.telefono;
-
+        consumidor.fechaNacimiento = newData.fechaNacimiento//datetime.datetime.strptime(newData.fechaNacimiento, '%Y-%m-%d %H:%M:%S') ;;
+      
       }
 
       await consumidor.save();
 
-      console.log("Actualizado" + consumidor.nombre + " " + consumidor.apellido + " " + consumidor.fechaNacimiento + " " + consumidor.provincia + " " + consumidor.localidad + " " + consumidor.telefono);
+      console.log(
+        'Actualizado' + consumidor.nombre + ' ' + consumidor.apellido + ' ' + consumidor.fechaNacimiento + ' ' + consumidor.provincia + ' ' + consumidor.localidad + ' ' + consumidor.telefono
+      );
 
       return consumidor;
     } catch (error) {
@@ -109,8 +103,20 @@ class ConsumidorService {
     }
   }
 
-
-
+  async create(consumidor,id) {
+    const consum = {
+      nombre: consumidor.nombre,
+      apellido: consumidor.apellido,
+      dni: consumidor.dni,
+      localidad: consumidor.localidad,
+      provincia: consumidor.provincia,
+      telefono: consumidor.telefono,
+      fechaNacimiento: consumidor.fechaDeNacimiento,
+      usuarioId: id,
+    };
+    const consumidorCreado = await Consumidor.create(consum);
+    return consumidorCreado
+  }
 }
 
 export const consumidorService = new ConsumidorService();
