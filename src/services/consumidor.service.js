@@ -87,7 +87,7 @@ class ConsumidorService {
         consumidor.provincia = newData.provinciaC;
         consumidor.localidad = newData.localidad;
         consumidor.telefono = newData.telefono;
-        consumidor.fechaNacimiento = newData.fechaNacimiento//datetime.datetime.strptime(newData.fechaNacimiento, '%Y-%m-%d %H:%M:%S') ;;
+        consumidor.fechaNacimiento = newData.fechaNacimiento;
       
       }
 
