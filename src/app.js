@@ -17,6 +17,7 @@ import { RouterProductor } from './routes/productor.router.js';
 import { RouterPuesto } from './routes/puesto.router.js';
 import { RouterRepartidor } from './routes/repartidor.router.js';
 import { RouterUser } from './routes/user.router.js';
+import { RouterProducto } from './routes/producto.router.js';
 import { sequelize } from './util/connections.js';
 //definicion de server de express
 const app = express();
@@ -83,8 +84,11 @@ app.use('/consumidor', RouterConsumidor);
 app.use('/login', RouterLogin);
 app.use('/encargado', RouterEncargado);
 app.use('/productor', RouterProductor);
-app.use('/puesto', RouterPuesto);
 app.use('/repartidor', RouterRepartidor);
+app.use('/puesto', RouterPuesto);
+app.use('/producto', RouterProducto);
+
+
 // Sincronizar la base de datos y luego iniciar el servidor
 async function connectDB() {
   await sequelize.sync({ force: false }); //FALSE NO CAMBIA

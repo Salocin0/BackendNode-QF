@@ -1,4 +1,4 @@
-import { Productor } from '../DAO/models/Productor.model.js';
+import { Productor } from '../DAO/models/productor.model.js';
 
 class ProductorService {
   async getAll() {

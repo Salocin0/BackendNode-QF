@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { sequelize } from './../../util/connections.js';
+import { sequelize } from '../../util/connections.js';
 
 export const Productor = sequelize.define('Productor', {
   id: {
