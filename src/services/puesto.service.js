@@ -36,7 +36,8 @@ class PuestoService {
         const consumidor = await consumidorService.getOne(nuevoPuesto.consumidorId)
         const puestoendb = await Puesto.findOne({
           where: {
-            nombreCarro: nuevoPuesto.nombreCarro,
+            numeroCarro: nuevoPuesto.numeroCarro,
+            /*nombreCarro: nuevoPuesto.nombreCarro,*/
             encargadoId: consumidor.encargadoId
           },
         });
