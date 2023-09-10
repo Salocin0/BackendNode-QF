@@ -24,7 +24,7 @@ export const Puesto = sequelize.define('puesto', {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    telefonoContacto: {
+    /*telefonoContacto: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -35,7 +35,7 @@ export const Puesto = sequelize.define('puesto', {
     cuit: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
+    },*/
     telefonoCarro: {
       type: DataTypes.STRING,
       allowNull: false,

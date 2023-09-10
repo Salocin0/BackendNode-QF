@@ -13,11 +13,11 @@ import { __dirname } from './dirname.js';
 import { RouterConsumidor } from './routes/consumidor.router.js';
 import { RouterEncargado } from './routes/encargado.router.js';
 import { RouterLogin } from './routes/login.router.js';
+import { RouterProducto } from './routes/producto.router.js';
 import { RouterProductor } from './routes/productor.router.js';
 import { RouterPuesto } from './routes/puesto.router.js';
 import { RouterRepartidor } from './routes/repartidor.router.js';
 import { RouterUser } from './routes/user.router.js';
-import { RouterProducto } from './routes/producto.router.js';
 import { sequelize } from './util/connections.js';
 //definicion de server de express
 const app = express();

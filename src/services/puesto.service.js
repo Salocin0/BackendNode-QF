@@ -1,7 +1,5 @@
-import { Puesto } from "../DAO/models/puesto.model.js";
-import { Usuario } from "../DAO/models/users.model.js";
 import { Consumidor } from "../DAO/models/consumidor.model.js";
-import { encargadoService } from "./encargado.service.js";
+import { Puesto } from "../DAO/models/puesto.model.js";
 import { consumidorService } from "./consumidor.service.js";
 
 class PuestoService {
@@ -26,9 +24,9 @@ class PuestoService {
         puestodb.numeroCarro = puesto.numeroCarro;
         puestodb.nombreCarro = puesto.nombreCarro;  
         puestodb.tipoNegocio = puesto.tipoNegocio;
-        puestodb.telefonoContacto = puesto.telefonoContacto;
-        puestodb.razonSocial = puesto.razonSocial;
-        puestodb.cuit = puesto.cuit;  
+        //puestodb.telefonoContacto = puesto.telefonoContacto;
+        //puestodb.razonSocial = puesto.razonSocial;
+        //puestodb.cuit = puesto.cuit;
         puestodb.telefonoCarro = puesto.telefonoCarro;
         await puestodb.save();
         return puestodb;

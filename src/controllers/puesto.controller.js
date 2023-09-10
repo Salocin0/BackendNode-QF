@@ -79,14 +79,14 @@ class PuestoController {
 
   async createOneController(req, res) {
     try {
-      const { nombreCarro, numeroCarro, tipoNegocio, telefonoContacto, razonSocial, cuit, telefonoCarro ,consumidorId } = req.body;
+      const { nombreCarro, numeroCarro, tipoNegocio,  telefonoCarro ,consumidorId } = req.body;
       const nuevoPuesto = {
         nombreCarro: nombreCarro,
         numeroCarro: numeroCarro,
         tipoNegocio: tipoNegocio,
-        telefonoContacto: telefonoContacto,
-        razonSocial: razonSocial,
-        cuit: cuit,
+          /* telefonoContacto: telefonoContacto,
+     razonSocial: razonSocial,
+        cuit: cuit,*/
         telefonoCarro: telefonoCarro,
         consumidorId:consumidorId
       };
