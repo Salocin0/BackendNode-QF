@@ -4,9 +4,8 @@ class ProductoController {
   async getAllController(req, res) {
     try {
       const puestoId = req.headers["puestoid"];
-      console.log(puestoId)
-      const productos = await productoService.getAll(puestoId); /* Obtiene los productos de un puesto específico*/
-      if (productos.length > 0) {
+      const productos = await productoService.getAll(puestoId);
+      if (productos) {
         return res.status(200).json({
           status: 'sucess',
           msg: 'Found all productos',
@@ -20,6 +19,7 @@ class ProductoController {
         });
       }
     } catch (e) {
+      console.log(e)
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',
@@ -59,7 +59,6 @@ class ProductoController {
     try {
       const id = req.params.id;
       const { producto } = req.body;
-      console.log(producto)
       const result = await productoService.update(id, producto);    
       return res.status(200).json({
         status: 'success',
@@ -79,15 +78,15 @@ class ProductoController {
 
   async createOneController(req, res) {
     try {
-      const { nombreProducto, descripcion, stock, img, precio, estado, tipoProducto } = req.body;
+      const { nombre, descripcion, stock, imagen, precio, estado, tipoProducto } = req.body;
       const nuevoProducto = {
-        nombreProducto: nombreProducto,
+        nombre: nombre,
         descripcion: descripcion,
         stock: stock,
-        img: img,
+        img: imagen,
         precio: precio,
         estado: estado,
-        tipoProducto: tipoProducto
+        //tipoProducto: tipoProducto
       };
       console.log(nuevoProducto);
       const productoCreado = await productoService.create(nuevoProducto);

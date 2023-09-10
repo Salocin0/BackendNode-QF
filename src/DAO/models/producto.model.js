@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from './../../util/connections.js';
+import { Puesto } from './puesto.model.js';
 
 /* Librerias de las clase relacionada con Puesto 
 import { Puesto } from './puesto.model.js';
@@ -11,7 +12,7 @@ export const Producto = sequelize.define('producto', {
       primaryKey: true,
       autoIncrement: true,
     },
-    nombreProducto: {
+    nombre: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -45,14 +46,9 @@ export const Producto = sequelize.define('producto', {
         allowNull: false,
     },*/
   });
-  
-
-/*  
-//Ver relación con la clase PUESTO
-//---------------------------------------------------------------------
  
    Puesto.hasMany(Producto, {
-    foreignKey: 'productoId', 
+    foreignKey: 'puestoId', 
     sourceKey: 'id', 
   });
   
@@ -60,5 +56,3 @@ export const Producto = sequelize.define('producto', {
     foreignKey: 'puestoId', 
     targetKey: 'id', 
   });
-//-----------------------------------------------------------------------
-*/

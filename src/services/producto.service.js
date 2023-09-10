@@ -5,12 +5,14 @@ import { puestoService } from "./puesto.service.js";
 class ProductoService {
   //hacer que los metodos llamen a los service, no a los models
     async getAll(puestoId){
-      const puesto = await Puesto.findByPk(puestoId);
-      const productos = await Producto.findAll({where: {
-        puestoId: puesto.puestoId,
-        estado: true
-      }}); 
-      return productos
+      const puesto = await puestoService.getOne(puestoId);
+      if(puesto){
+        const productos = await Producto.findAll({where: {
+          puestoId: puestoId,
+          estado: true
+        }}); 
+        return productos
+      }
     }
 
     async getOne(id) {
@@ -20,39 +22,41 @@ class ProductoService {
   
     async update(id, producto) {
         const productodb = await Producto.findByPk(id);
-        console.log(producto)
-        productodb.nombreProducto = producto.nombreProducto;  
+        productodb.nombre = producto.nombre;  
         productodb.descripcion = producto.descripcion;
         productodb.stock = producto.stock;
         productodb.img = producto.img;
         productodb.precio = producto.precio;  
         productodb.estado = producto.estado;
-        productodb.tipoProducto = producto.tipoProducto;
+        //productodb.tipoProducto = producto.tipoProducto;
         await productodb.save();
         return productodb;
     }
 
     async create(nuevoProducto) {
         const puesto = await puestoService.getOne(nuevoProducto.puestoId)
-        const productoendb = await Producto.findOne({
+        /*const productoendb = await Producto.findOne({
           where: {
-            nombreProducto: nuevoProducto.nombreProducto,        
-            descripcion: descripcion,
-            stock: stock,
-            img: img,
-            precio: precio,
-            estado: estado,
-            tipoProducto: tipoProducto,
-            puestoId: puesto.puestoId
+            nombre: nuevoProducto.nombre,        
+            descripcion: nuevoProducto.descripcion,
+            stock: nuevoProducto.stock,
+            img: "1",
+            precio: nuevoProducto.precio,
+            estado: true,
+            //tipoProducto: tipoProducto,
+            puestoId: 1
           },
-        });
-        nuevoProducto.puestoId = puesto.puestoId;
-        if (productoendb) {
-          return false;
-        } else {
+        });*/
+        //nuevoProducto.puestoId = puesto.puestoId;
+        //if (productoendb) {
+        //  return false;
+        //} else {
+          nuevoProducto.img="1"
+          nuevoProducto.estado = true;
+          nuevoProducto.puestoId = puesto.puestoId;
           const productoCreado = await Producto.create(nuevoProducto);
           return productoCreado;
-        }
+        //}
       }
 
     async delete(id) {
