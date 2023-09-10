@@ -143,6 +143,8 @@ RouterUser.put('/recuperarcontrasenia/:codigo', async (req, res) => {
   }
 });
 
+  RouterUser.post('/update/:id/to/:rol',userController.updateRolController);
+
 /* TO DO
   RouterUser.delete("/:cid", async (req, res) => {
     try {

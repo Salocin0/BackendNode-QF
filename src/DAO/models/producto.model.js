@@ -39,10 +39,11 @@ export const Producto = sequelize.define('producto', {
     },
     /*Ver si se crea una relación con la clase tipoProducto o si se arma un array [HeladoChocolate,HeladoVainilla,etc] 
     */
+   /*
     tipoProducto: {
         type: DataTypes.ARRAY,
         allowNull: false,
-    },
+    },*/
   });
   
 

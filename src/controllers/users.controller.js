@@ -49,6 +49,26 @@ class UserController {
       });
     }
   }
+
+  async updateRolController(req,res) {
+    const { id,rol } = req.params;
+    const datosRol = req.body;
+    console.log(id,rol,datosRol);
+    const user = await userService.updateRol(id,rol,datosRol);
+    if(user!==undefined){
+      return res.status(200).json({
+        status: 'sucess',
+        msg: 'user updated',
+        data: user,
+      });
+    }else{
+      return res.status(404).json({
+        status: 'Error',
+        msg: 'user or rol not found',
+        data: {},
+      });
+    }
+  }
 }
 
 export const userController = new UserController();
