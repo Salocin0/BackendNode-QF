@@ -55,6 +55,34 @@ class EncargadoController {
       });
     }
   }
+
+  async deleteOneController(req, res) {
+    try {
+      const id = req.params.id;
+      const consumidor = await consumidorService.getOne(id);
+
+      console.log("Este  es el ID: " + consumidor.encargadoId);
+
+      const result = await encargadoService.deleteOne(consumidor.encargadoId);
+
+      return res.status(200).json({
+        status: 'success',
+        msg: 'Encargado eliminado correctamente',
+        code: 200,
+        data: result,
+      });
+    } catch (e) {
+      console.error(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'Ocurrió un error al eliminar el encargado :(',
+        data: {},
+      });
+    }
+  }
+
+
+
 }
 
 export const encargadoController = new EncargadoController();

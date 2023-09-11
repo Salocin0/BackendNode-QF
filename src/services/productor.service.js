@@ -54,12 +54,26 @@ class ProductorService {
       return productorCreado;
     }
   }
+  async deleteOne(id) {
+    try {
+      const productor = await Productor.findByPk(id);
 
-  async delete(id) {
-    const productor = await Productor.findByPk(id);
-    productor.habilitado = false;
-    await productor.save();
+      if (!productor) {
+        return null; // El encargado no existe
+      }
+
+      productor.habilitado = 0;
+
+      await productor.save();
+
+      console.log(`Productor deshabilitado con ID: ${id}`);
+
+      return productor;
+    } catch (error) {
+      throw error;
+    }
   }
+
 }
 
 export const productorService = new ProductorService();

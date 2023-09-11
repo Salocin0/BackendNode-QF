@@ -120,19 +120,23 @@ class ProductorController {
   async deleteOneController(req, res) {
     try {
       const id = req.params.id;
-      const productor = await productorService.deleteOne(id);
+      const consumidor = await consumidorService.getOne(id);
+
+      console.log("Este  es el ID: " + consumidor.productorId);
+
+      const result = await productorService.deleteOne(consumidor.productorId);
+
       return res.status(200).json({
         status: 'success',
-        msg: 'encargado deleted',
+        msg: 'Productor eliminado correctamente',
         code: 200,
-        data: productor,
+        data: result,
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return res.status(500).json({
         status: 'error',
-        msg: 'something went wrong :(',
-        code: 500,
+        msg: 'Ocurrió un error al eliminar el productor :(',
         data: {},
       });
     }

@@ -58,6 +58,28 @@ class EncargadoService {
       throw error;
     }
   }
+
+
+  async deleteOne(id) {
+    try {
+      const encargado = await Encargado.findByPk(id);
+
+      if (!encargado) {
+        return null; // El encargado no existe
+      }
+
+      encargado.habilitado = 0;
+
+      await encargado.save();
+
+      console.log(`Encargado deshabilitado con ID: ${id}`);
+
+      return encargado;
+    } catch (error) {
+      throw error;
+    }
+  }
+
 }
 
 export const encargadoService = new EncargadoService();

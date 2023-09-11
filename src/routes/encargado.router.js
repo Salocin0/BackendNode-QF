@@ -41,9 +41,9 @@ RouterEncargado.get('/:id', async (req, res) => {
           },
           //incliude:[Consumidor]
         });
-    
+
         console.log(usuarioId);
-    
+
         if (encargado !== null) {
           return res.status(200).json({
             status: "success",
@@ -111,7 +111,10 @@ RouterEncargado.post('/', async (req, res) => {
   }
 });
 
-RouterEncargado.delete('/:id', async (req, res) => {
+RouterEncargado.delete('/:id', encargadoController.deleteOneController);
+
+
+/*RouterEncargado.delete('/:id', async (req, res) => {
   try {
     const id = req.params.id;
     const encargado = await Encargado.findByPk(id);
@@ -132,4 +135,5 @@ RouterEncargado.delete('/:id', async (req, res) => {
       data: {},
     });
   }
-});
+});*/
+

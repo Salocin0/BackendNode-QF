@@ -32,10 +32,24 @@ class RepartidorService {
     const repartidorCreado = await Repartidor.create(nuevorepartidor);
     return repartidorCreado;
   }
-  async delete(id) {
-    const repartidor = await Repartidor.findByPk(id);
-    repartidor.habilitado = false;
-    await repartidor.save();
+  async deleteOne(id) {
+    try {
+      const repartidor = await Repartidor.findByPk(id);
+
+      if (!repartidor) {
+        return null; // El encargado no existe
+      }
+
+      repartidor.habilitado = 0;
+
+      await repartidor.save();
+
+      console.log(`Encargado deshabilitado con ID: ${id}`);
+
+      return repartidor;
+    } catch (error) {
+      throw error;
+    }
   }
 }
 

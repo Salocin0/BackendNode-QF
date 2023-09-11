@@ -1,5 +1,5 @@
+import { consumidorService } from '../services/consumidor.service.js';
 import { repartidorService } from '../services/repartidor.service.js';
-
 class RepartidorController {
   async getAllController(res) {
     try {
@@ -121,24 +121,27 @@ class RepartidorController {
   async deleteOneController(req, res) {
     try {
       const id = req.params.id;
-      const repartidor = await repartidorService.deleteOne(id);
+      const consumidor = await consumidorService.getOne(id);
+
+      console.log("Este  es el ID: " + consumidor.repartidorId);
+
+      const result = await repartidorService.deleteOne(consumidor.repartidorId);
+
       return res.status(200).json({
         status: 'success',
-        msg: 'encargado deleted',
+        msg: 'Repartidor eliminado correctamente',
         code: 200,
-        data: repartidor,
+        data: result,
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return res.status(500).json({
         status: 'error',
-        msg: 'something went wrong :(',
-        code: 500,
+        msg: 'Ocurrió un error al eliminar el repartidor :(',
         data: {},
       });
     }
   }
-
 }
 
 export const repartidorController = new RepartidorController();
