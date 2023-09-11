@@ -78,17 +78,16 @@ class ProductoController {
 
   async createOneController(req, res) {
     try {
-      const { nombre, descripcion, stock, imagen, precio, estado, tipoProducto } = req.body;
+      const { nombre, descripcion, imagen, precio, estado, aderezos, puestoId } = req.body;
       const nuevoProducto = {
         nombre: nombre,
         descripcion: descripcion,
-        stock: stock,
         img: imagen,
         precio: precio,
         estado: estado,
-        //tipoProducto: tipoProducto
+        aderezos: aderezos,
+        puestoId: puestoId
       };
-      console.log(nuevoProducto);
       const productoCreado = await productoService.create(nuevoProducto);
       if (productoCreado === false) {
         return res.status(200).json({

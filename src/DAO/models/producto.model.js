@@ -20,10 +20,14 @@ export const Producto = sequelize.define('producto', {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    aderezos: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },/*
     stock: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    },
+    },*/
     img: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -32,6 +36,7 @@ export const Producto = sequelize.define('producto', {
       type: DataTypes.FLOAT,
       allowNull: false,
     },
+
     /*Ver relación con la clase ESTADO [HABILITADO,DESHABILITADO] 
     */
     estado: {

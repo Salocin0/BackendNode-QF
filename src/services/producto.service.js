@@ -51,9 +51,6 @@ class ProductoService {
         //if (productoendb) {
         //  return false;
         //} else {
-          nuevoProducto.img="1"
-          nuevoProducto.estado = true;
-          nuevoProducto.puestoId = puesto.puestoId;
           const productoCreado = await Producto.create(nuevoProducto);
           return productoCreado;
         //}
