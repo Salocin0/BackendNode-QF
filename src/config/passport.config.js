@@ -60,11 +60,12 @@ export function initPassport() {
             return done(null, false, req.flash('signupMessage', 'faltan datos usuario.'));
           }
 
-          const usuarioResultado = await userService.existeUsuarioNombre(usuario.nombreDeUsuario);
+          const usuarioResultadoUserName = await userService.existeUsuarioNombre(usuario.nombreDeUsuario);
 
-          if (usuarioResultado.code === 500) {
+          if (usuarioResultadoUserName.code === 500) {
             return done(null, false, req.flash('signupMessage', 'Nombre de Usuario ya está en uso.'));
           }
+
 
 
           if (usuario.tipoUsuario === 'encargado' && (!encargado.cuit || !encargado.razonSocial || !encargado.condicionIva)) {
