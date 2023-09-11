@@ -87,7 +87,7 @@ class ConsumidorService {
         consumidor.provincia = newData.provinciaC;
         consumidor.localidad = newData.localidad;
         consumidor.telefono = newData.telefono;
-        consumidor.fechaNacimiento = newData.fechaNacimiento;
+        //consumidor.fechaNacimiento = newData.fechaNacimiento;
       
       }
 

@@ -1,6 +1,5 @@
-import { Usuario } from '../DAO/models/users.model.js';
-import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Op } from 'sequelize';
+import { Usuario } from '../DAO/models/users.model.js';
 import { createHashPW } from '../util/bcrypt.js';
 import { consumidorService } from './consumidor.service.js';
 import { encargadoService } from './encargado.service.js';
@@ -31,6 +30,36 @@ class UserService {
       return false;
     }
   }
+
+  async existeUsuarioNombre(usuario) {
+    try {
+      const existingUser = await Usuario.findOne({
+        where: {
+          [Op.or]: [{ usuario: usuario }],
+        },
+      });
+
+      if (existingUser) {
+        return {
+          exists: true,
+          code: 200, // Usuario existe
+        };
+      } else {
+        return {
+          exists: false,
+          code: 200, // Usuario no existe
+        };
+      }
+    } catch (error) {
+      console.error(error);
+      return {
+        exists: false,
+        code: 500, // Error interno del servidor
+        error: error.message,
+      };
+    }
+  }
+
   async create(usuario) {
     const user = {
       contraseña: createHashPW(usuario.contraseña),

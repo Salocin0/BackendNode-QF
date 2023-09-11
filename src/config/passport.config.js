@@ -1,13 +1,9 @@
 import passport from 'passport';
 import local from 'passport-local';
-import { createHashPW, isValidPassword } from '../util/bcrypt.js';
-import { Usuario } from '../DAO/models/users.model.js';
-import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Op } from 'sequelize';
+import { Usuario } from '../DAO/models/users.model.js';
 import { userService } from '../services/users.service.js';
-import { repartidorService } from '../services/repartidor.service.js';
-import { encargadoService } from '../services/encargado.service.js';
-import { productorService } from '../services/productor.service.js';
+import { isValidPassword } from '../util/bcrypt.js';
 const LocalStrategy = local.Strategy;
 
 export function initPassport() {
@@ -60,9 +56,16 @@ export function initPassport() {
             return done(null, false, req.flash('signupMessage', 'faltan datos consumidor.'));
           }
 
-          if (!usuario.contraseña || !usuario.nombreDeUsuario || !usuario.correoElectronico || !usuario.tipoUsuario) {
+          if (!usuario.contraseña || !usuario.nombreDeUsuario || !usuario.tipoUsuario) {
             return done(null, false, req.flash('signupMessage', 'faltan datos usuario.'));
           }
+
+          const usuarioResultado = await userService.existeUsuarioNombre(usuario.nombreDeUsuario);
+
+          if (usuarioResultado.code === 500) {
+            return done(null, false, req.flash('signupMessage', 'Nombre de Usuario ya está en uso.'));
+          }
+
 
           if (usuario.tipoUsuario === 'encargado' && (!encargado.cuit || !encargado.razonSocial || !encargado.condicionIva)) {
             return done(null, false, req.flash('signupMessage', 'faltan datos encargado.'));
@@ -71,15 +74,16 @@ export function initPassport() {
           if (usuario.tipoUsuario === 'productor' && (!productor.cuit || !productor.razonSocial || !productor.condicionIva)) {
             return done(null, false, req.flash('signupMessage', 'faltan datos productor.'));
           }
-          
-          const usercreado = await userService.register(usuario,consumidor,productor,encargado,repartidor);
+
+          const usercreado = await userService.register(usuario, consumidor, productor, encargado, repartidor);
           return done(null, usercreado.user.dataValues);
         } catch (error) {
-          return done(null, false, req.flash('signupMessage', 'error al registrar', error));
+          return done(null, false, req.flash('signupMessage', 'error al           ar', error));
         }
       }
     )
   );
+
 
   passport.serializeUser(async (user, done) => {
     done(null, user.id);

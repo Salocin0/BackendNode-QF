@@ -1,14 +1,11 @@
-import express from 'express';
-export const RouterUser = express.Router();
-import { Usuario } from '../DAO/models/users.model.js';
-import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { createHash } from 'crypto';
-import { sendEmail } from '../util/emailSender.js';
-import flash from 'connect-flash';
-import { createHashPW } from '../util/bcrypt.js';
-import { userController } from '../controllers/users.controller.js';
-import { userService } from '../services/users.service.js';
+import express from 'express';
 import passport from 'passport';
+import { Usuario } from '../DAO/models/users.model.js';
+import { userController } from '../controllers/users.controller.js';
+import { createHashPW } from '../util/bcrypt.js';
+import { sendEmail } from '../util/emailSender.js';
+export const RouterUser = express.Router();
 
 RouterUser.get('/', userController.getAllcontroller);
 
@@ -44,22 +41,31 @@ RouterUser.get('/:id', async (req, res) => {
   }
 });
 
-RouterUser.post('/', passport.authenticate('local-signup', { failureRedirect: '/user/fail/register', failureFlash: true }), async (req, res) => {
-  try {
-    return res.status(201).json({
+RouterUser.post('/', (req, res, next) => {
+  passport.authenticate('local-signup', async (err, user, info) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'error',
+        msg: 'Error interno del servidor',
+        code: 500,
+        error: err.message,
+      });
+    }
+
+    if (!user) {
+      return res.status(400).json({
+        status: 'error',
+        msg: 'Error interno del servidor',
+        code: 400,
+      });
+    }
+
+    return res.status(200).json({
       status: 'success',
-      msg: 'user created',
+      msg: 'Usuario creado con éxito',
       code: 200,
     });
-  } catch (e) {
-    console.log(e);
-    return res.status(500).json({
-      status: 'error',
-      msg: 'something went wrong :(',
-      code: 400,
-      data: { e },
-    });
-  }
+  })(req, res, next);
 });
 
 RouterUser.put('/recuperarcontrasenia', async (req, res) => {
