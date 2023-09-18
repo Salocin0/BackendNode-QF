@@ -13,13 +13,13 @@ class RepartidorService {
   }
 
   // Atributos del repartidor
-  async updateOne(id, repartidorData) {
-    const repartidor = await Repartidor.findByPk(id);
+  async updateOne(idRepartidor) {
 
+
+    const repartidor = await Repartidor.findByPk(idRepartidor);
+    console.log(repartidor);
     if (repartidor) {
-      repartidor.razonSocial = repartidorData.razonSocial;
-      repartidor.cuit = repartidorData.cuit;
-
+      repartidor.habilitado = true;
       await repartidor.save();
 
       return repartidor;

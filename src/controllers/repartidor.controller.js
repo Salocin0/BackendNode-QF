@@ -56,8 +56,10 @@ class RepartidorController {
   async updateOneController(req, res) {
     try {
       const id = req.params.id;
-      const { repartidor } = req.body;
-      const result = await repartidorService.updateOne(id, repartidor);
+      const consumidor = await consumidorService.getOne(id);
+     const idRepartidor =  consumidor.repartidorId;
+
+      const result = await repartidorService.updateOne(idRepartidor);
       if (result) {
         return res.status(200).json({
           status: 'success',
