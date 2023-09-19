@@ -29,7 +29,7 @@ export const Producto = sequelize.define('producto', {
       allowNull: false,
     },*/
     img: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT('long'),
       allowNull: false,
     },
     precio: {

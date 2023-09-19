@@ -24,6 +24,14 @@ export const Puesto = sequelize.define('puesto', {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    banner:{
+      type: DataTypes.TEXT('long'),
+      allowNull: false,
+    },
+    img:{
+      type: DataTypes.TEXT('long'),
+      allowNull: false,
+    },
     /*telefonoContacto: {
       type: DataTypes.STRING,
       allowNull: false,
