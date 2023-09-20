@@ -79,7 +79,7 @@ class PuestoController {
 
   async createOneController(req, res) {
     try {
-      const { nombreCarro, numeroCarro, tipoNegocio,  telefonoCarro ,consumidorId } = req.body;
+      const { nombreCarro, numeroCarro, tipoNegocio,  telefonoCarro ,consumidorId , banner , logo  } = req.body;
       const nuevoPuesto = {
         nombreCarro: nombreCarro,
         numeroCarro: numeroCarro,
@@ -88,7 +88,9 @@ class PuestoController {
      razonSocial: razonSocial,
         cuit: cuit,*/
         telefonoCarro: telefonoCarro,
-        consumidorId:consumidorId
+        consumidorId:consumidorId,
+        img: logo,
+        banner: banner
       };
       console.log(nuevoPuesto);
       const puestoCreado = await puestoService.create(nuevoPuesto);
