@@ -1,5 +1,4 @@
 import { Producto } from '../DAO/models/producto.model.js';
-import { Puesto } from '../DAO/models/puesto.model.js';
 import { puestoService } from './puesto.service.js';
 
 class ProductoService {
@@ -24,6 +23,11 @@ class ProductoService {
 
   async update(id, producto) {
     const productodb = await Producto.findByPk(id);
+
+    if (!productodb) {
+      return null;
+    }
+
     productodb.nombre = producto.nombre;
     productodb.descripcion = producto.descripcion;
     productodb.stock = producto.stock;
@@ -36,33 +40,41 @@ class ProductoService {
   }
 
   async create(nuevoProducto) {
-    const puesto = await puestoService.getOne(nuevoProducto.puestoId);
-    /*const productoendb = await Producto.findOne({
-          where: {
-            nombre: nuevoProducto.nombre,        
-            descripcion: nuevoProducto.descripcion,
-            stock: nuevoProducto.stock,
-            img: "1",
-            precio: nuevoProducto.precio,
-            estado: true,
-            //tipoProducto: tipoProducto,
-            puestoId: 1
-          },
-        });*/
-    //nuevoProducto.puestoId = puesto.puestoId;
-    //if (productoendb) {
-    //  return false;
-    //} else {
-    const productoCreado = await Producto.create(nuevoProducto);
-    return productoCreado;
-    //}
+
+    const productoExistente = await Producto.findOne({
+      where: {
+        nombre: nuevoProducto.nombre,
+        puestoId: nuevoProducto.puestoId,
+      },
+    });
+
+    if (productoExistente) {
+      console.log("entre aca");
+      return false;
+    } else {
+      const productoCreado = await Producto.create(nuevoProducto);
+      return productoCreado;
+    }
   }
 
+
   async delete(id) {
-    console.log(id);
-    const producto = await Producto.findByPk(id);
-    producto.estado = false;
-    await producto.save();
+    try {
+      console.log(id);
+      const producto = await Producto.findByPk(id);
+      console.log(producto);
+
+      if (!producto) {
+        return null;
+      }
+
+      producto.estado = false;
+      await producto.save();
+      return producto;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 }
 
