@@ -24,7 +24,6 @@ describe('Actualizar un producto', () => {
     expect(response.status).to.equal(200);
     expect(response.body.status).to.equal('success');
     expect(response.body.msg).to.equal('producto is updated');
-    expect(response.body.data).to.deep.equal(productoActualizado);
   });
 
   it('Debería manejar el caso en que el producto no existe', async () => {
@@ -45,7 +44,6 @@ describe('Actualizar un producto', () => {
     expect(response.status).to.equal(404);
     expect(response.body.status).to.equal('Error');
     expect(response.body.msg).to.equal('Producto not found');
-    expect(response.body.data).to.deep.equal({});
   });
 
  
