@@ -10,7 +10,7 @@
   "scripts": {
     "start": "nodemon ./src/app.js",
     "dev": "nodemon ./src/app.js",
-    "test": "mocha ./src/test/ModificarProducto.test.js"
+    "test": "mocha ./src/test/"
   },
   "repository": {
     "type": "git",

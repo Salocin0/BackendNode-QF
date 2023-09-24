@@ -42,25 +42,23 @@ class UserService {
       if (existingUser) {
         return {
           exists: true,
-          code: 200, // Usuario existe
+          code: 200,
         };
       } else {
         return {
           exists: false,
-          code: 200, // Usuario no existe
+          code: 200, 
         };
       }
     } catch (error) {
       console.error(error);
       return {
         exists: false,
-        code: 500, // Error interno del servidor
+        code: 500,
         error: error.message,
       };
     }
   }
-
-
 
   async create(usuario) {
     const user = {

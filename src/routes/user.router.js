@@ -53,10 +53,10 @@ RouterUser.post('/', (req, res, next) => {
     }
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(401).json({
         status: 'error',
         msg: 'Error interno del servidor',
-        code: 400,
+        code: 401,
       });
     }
 
@@ -64,6 +64,7 @@ RouterUser.post('/', (req, res, next) => {
       status: 'success',
       msg: 'Usuario creado con éxito',
       code: 200,
+      data: user,
     });
   })(req, res, next);
 });

@@ -80,6 +80,18 @@ class EncargadoService {
     }
   }
 
+  async existeEncargadoRazonSocial(razonSocial) {
+    const encargado = await Encargado.findOne({
+      where: {
+        razonSocial: razonSocial,
+      },
+    });
+    if(encargado){
+      return true;
+    }else{
+      return false;
+    }
+  }
 }
 
 export const encargadoService = new EncargadoService();

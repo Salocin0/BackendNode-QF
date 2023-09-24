@@ -4,6 +4,10 @@ import { Op } from 'sequelize';
 import { Usuario } from '../DAO/models/users.model.js';
 import { userService } from '../services/users.service.js';
 import { isValidPassword } from '../util/bcrypt.js';
+import { encargadoService } from '../services/encargado.service.js';
+import { productoService } from '../services/producto.service.js';
+import { error } from 'console';
+import { productorService } from '../services/productor.service.js';
 const LocalStrategy = local.Strategy;
 
 export function initPassport() {
@@ -66,20 +70,26 @@ export function initPassport() {
             return done(null, false, req.flash('signupMessage', 'Nombre de Usuario ya está en uso.'));
           }
 
-
-
-          if (usuario.tipoUsuario === 'encargado' && (!encargado.cuit || !encargado.razonSocial || !encargado.condicionIva)) {
-            return done(null, false, req.flash('signupMessage', 'faltan datos encargado.'));
+          if(usuario.tipoUsuario === 'encargado'){
+            if (!encargado.cuit || !encargado.razonSocial || !encargado.condicionIva) {
+              return done(null, false, req.flash('signupMessage', 'faltan datos encargado.'));
+            }else if(await encargadoService.existeEncargadoRazonSocial(encargado.razonSocial)){
+              return done(null, false, req.flash('signupMessage', 'Rason social usada.'));
+            }
           }
 
-          if (usuario.tipoUsuario === 'productor' && (!productor.cuit || !productor.razonSocial || !productor.condicionIva)) {
-            return done(null, false, req.flash('signupMessage', 'faltan datos productor.'));
+          if(usuario.tipoUsuario === 'productor'){
+            if (!productor.cuit || !productor.razonSocial || !productor.condicionIva) {
+              return done(null, false, req.flash('signupMessage', 'faltan datos productor.'));
+            }else if(await productorService.existeProductorRazonSocial(productor.razonSocial)){
+              return done(null, false, req.flash('signupMessage', 'Rason social usada.'));
+            }
           }
 
           const usercreado = await userService.register(usuario, consumidor, productor, encargado, repartidor);
           return done(null, usercreado.user.dataValues);
         } catch (error) {
-          return done(null, false, req.flash('signupMessage', 'error al           ar', error));
+          return done(null, false, req.flash('signupMessage', 'error al registrar', error));
         }
       }
     )

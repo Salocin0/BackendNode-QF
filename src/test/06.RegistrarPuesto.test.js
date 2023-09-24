@@ -12,7 +12,7 @@ describe('Creación de Puestos de Comida', () => {
       numeroCarro: '999',
       tipoNegocio: 'TipoNegocioPrueba',
       telefonoCarro: '987654321',
-      consumidorId: 1,
+      consumidorId: 2,
       banner: 'base64Banner',
       logo: 'base64Logo',
     };
@@ -31,7 +31,7 @@ describe('Creación de Puestos de Comida', () => {
       numeroCarro: '999',
       tipoNegocio: 'TipoNegocioPrueba',
       telefonoCarro: '987654321',
-      consumidorId: 1,
+      consumidorId: 2,
       banner: 'base64Banner',
       logo: 'base64Logo',
     };

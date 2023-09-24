@@ -5,27 +5,27 @@ import supertest from 'supertest';
 const expect = chai.expect;
 const requester = supertest('http://localhost:8000');
 
-describe('Obtener todos los puestos de comida', () => {
-  it('Debería devolver una lista de puestos si existen', async () => {
-    const consumidorId = 1; 
+describe('Obtener todos los productos', () => {
+  it('Debería devolver una lista de productos si existen', async () => {
+    const puestoId = 1;
     const response = await requester
-      .get('/puesto') 
-      .set('consumidorid', consumidorId); 
+      .get('/producto')
+      .set('puestoid', puestoId);
 
     expect(response.status).to.equal(200);
     expect(response.body.status).to.equal('success');
     expect(response.body.data).to.be.an('array');
   });
 
-  it('Debería manejar el caso en que no existen puestos', async () => {
-    const consumidorId = 2; 
+  it('Debería manejar el caso en que no existan el puesto', async () => {
+    const puestoId = 3;
     const response = await requester
-      .get('/puesto') 
-      .set('consumidorid', consumidorId);
+      .get('/producto')
+      .set('puestoid', puestoId);
 
     expect(response.status).to.equal(404);
     expect(response.body.status).to.equal('Error');
-    expect(response.body.msg).to.equal('puestos not found');
-    expect(response.body.data).to.deep.equal({}); 
+    expect(response.body.msg).to.equal("Productos not found");
+    expect(response.body.data).to.deep.equal({});
   });
 });

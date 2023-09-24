@@ -4,8 +4,8 @@ import supertest from 'supertest';
 
 const expect = chai.expect;
 const requester = supertest('http://localhost:8000');
-
-it('Debería crear un producto con éxito', async () => {
+describe('Registrar Producto', () => {
+  it('Debería crear un producto con éxito', async () => {
     const formData = {
       nombre: 'PruebaProducto',
       descripcion: 'Descripción del producto de prueba',
@@ -15,15 +15,12 @@ it('Debería crear un producto con éxito', async () => {
       aderezos: 'Aderezos del producto de prueba',
       puestoId: 1,
     };
-  
-    const response = await requester
-      .post('/producto')
-      .send(formData);
-  
+
+    const response = await requester.post('/producto').send(formData);
+
     expect(response.status).to.equal(200);
     expect(response.body.status).to.equal('success');
   });
-
 
   it('Debería manejar un intento de crear un producto con nombre duplicado', async () => {
     const formData = {
@@ -36,13 +33,10 @@ it('Debería crear un producto con éxito', async () => {
       puestoId: 1,
     };
 
-    const response = await requester
-      .post('/producto')
-      .send(formData);
+    const response = await requester.post('/producto').send(formData);
 
     expect(response.status).to.equal(400);
     expect(response.body.status).to.equal('error');
     expect(response.body.msg).to.equal('Producto used');
   });
-
-  
+});

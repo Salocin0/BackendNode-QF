@@ -14,12 +14,12 @@ class ProductoController {
       } else {
         return res.status(404).json({
           status: 'Error',
-          msg: 'carrito not found',
+          msg: 'Productos not found',
           data: {},
         });
       }
     } catch (e) {
-      console.log(e)
+      console.log(e);
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',

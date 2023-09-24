@@ -74,6 +74,19 @@ class ProductorService {
     }
   }
 
+  async existeProductorRazonSocial(razonSocial) {
+    const productor = await Productor.findOne({
+      where: {
+        razonSocial: razonSocial,
+      },
+    });
+    if(productor){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
 }
 
 export const productorService = new ProductorService();
