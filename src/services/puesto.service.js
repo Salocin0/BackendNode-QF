@@ -34,23 +34,24 @@ class PuestoService {
     return puestodb;
   }
 
-  async create(nuevoPuesto) {
-    const consumidor = await consumidorService.getOne(nuevoPuesto.consumidorId);
-    const puestoendb = await Puesto.findOne({
-      where: {
-        numeroCarro: nuevoPuesto.numeroCarro,
-        /*nombreCarro: nuevoPuesto.nombreCarro,*/
-        encargadoId: consumidor.encargadoId,
-      },
-    });
-    nuevoPuesto.encargadoId = consumidor.encargadoId;
-    if (puestoendb) {
-      return false;
-    } else {
-      const puestoCreado = await Puesto.create(nuevoPuesto);
-      return puestoCreado;
-    }
-  }
+    async create(nuevoPuesto) {
+        const consumidor = await consumidorService.getOne(nuevoPuesto.consumidorId)
+        const puestoendb = await Puesto.findOne({
+          where: {
+            numeroCarro: nuevoPuesto.numeroCarro,
+            /*nombreCarro: nuevoPuesto.nombreCarro,*/
+            encargadoId: consumidor.encargadoId
+          },
+        });
+
+        nuevoPuesto.encargadoId = consumidor.encargadoId;
+        if (puestoendb) {
+          return false;
+        } else {
+          const puestoCreado = await Puesto.create(nuevoPuesto);
+          return puestoCreado;
+        }
+      }
 
   async delete(id) {
     const puesto = await Puesto.findByPk(id);

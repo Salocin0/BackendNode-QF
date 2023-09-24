@@ -92,7 +92,7 @@ RouterUser.put('/recuperarcontrasenia', async (req, res) => {
         status: 'success',
         msg: 'Email enviado',
         code: 200,
-        data: null,
+        data: usuario.codigoRecuperacion,
       });
     } else {
       return res.status(400).json({

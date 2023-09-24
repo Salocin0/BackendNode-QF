@@ -7,14 +7,14 @@ class ProductoController {
       const productos = await productoService.getAll(puestoId);
       if (productos) {
         return res.status(200).json({
-          status: 'sucess',
+          status: 'success',
           msg: 'Found all productos',
           data: productos,
         });
       } else {
         return res.status(404).json({
           status: 'Error',
-          msg: 'productos not found',
+          msg: 'carrito not found',
           data: {},
         });
       }
@@ -59,13 +59,23 @@ class ProductoController {
     try {
       const id = req.params.id;
       const { producto } = req.body;
-      const result = await productoService.update(id, producto);    
-      return res.status(200).json({
-        status: 'success',
-        msg: 'producto is updated',
-        code: 200,
-        data: result,
-      });
+      const result = await productoService.update(id, producto);
+
+      if (result) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'producto is updated',
+          code: 200,
+          data: result,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'Producto not found',
+          code: 404,
+          data: {},
+        });
+      }
     } catch (e) {
       console.log(e);
       return res.status(500).json({
@@ -88,16 +98,17 @@ class ProductoController {
         aderezos: aderezos,
         puestoId: puestoId
       };
+
       const productoCreado = await productoService.create(nuevoProducto);
       if (productoCreado === false) {
-        return res.status(200).json({
+        return res.status(400).json({
           status: 'error',
           msg: 'Producto used',
           code: 400,
           data: {},
         });
       } else {
-        return res.status(201).json({
+        return res.status(200).json({
           status: 'success',
           msg: 'Producto created',
           code: 200,
@@ -119,17 +130,26 @@ class ProductoController {
     try {
       const id = req.params.id;
       const producto = await productoService.delete(id);
-      return res.status(200).json({
-        status: 'success',
-        msg: 'encargado deleted',
-        code: 200,
-        data: producto,
-      });
+      if (producto) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Producto deleted',
+          code: 200,
+          data: producto,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'Producto not found',
+          code: 404,
+          data: {},
+        });
+      }
     } catch (e) {
       console.log(e);
       return res.status(500).json({
         status: 'error',
-        msg: 'something went wrong :(',
+        msg: 'Something went wrong :(',
         code: 500,
         data: {},
       });

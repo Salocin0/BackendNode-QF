@@ -8,7 +8,7 @@ class PuestoController {
       const puestos = await puestoService.getAll(consumidorId);
       if (puestos.length > 0) {
         return res.status(200).json({
-          status: 'sucess',
+          status: 'success',
           msg: 'Found all puestos',
           data: puestos,
         });
@@ -95,14 +95,14 @@ class PuestoController {
       console.log(nuevoPuesto);
       const puestoCreado = await puestoService.create(nuevoPuesto);
       if (puestoCreado === false) {
-        return res.status(200).json({
+        return res.status(400).json({
           status: 'error',
-          msg: 'encargado used',
+          msg: 'puesto used',
           code: 400,
           data: {},
         });
       } else {
-        return res.status(201).json({
+        return res.status(200).json({
           status: 'success',
           msg: 'encargado created',
           code: 200,
