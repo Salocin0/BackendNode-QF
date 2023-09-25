@@ -5,7 +5,7 @@ import supertest from 'supertest';
 const expect = chai.expect;
 const requester = supertest('http://127.0.0.1:8000');
 
-describe('Inicio de sesión de usuario', () => {
+describe('Modificar usuario', () => {
 
     it('Debería dar error al actualizar el consumidor', async () => {
         const user = {

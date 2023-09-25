@@ -9,7 +9,7 @@ describe('Recuperación de contraseña', () => {
   let recoveryCode = null;
 
   it('Debería enviar un correo de recuperación de contraseña', async () => {
-    const email = 'nachosachetto1998@hotmail.com';
+    const email = 'consumidor@consumidor.com';
 
     const response = await requester
       .put('/user/recuperarcontrasenia')
