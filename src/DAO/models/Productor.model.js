@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../../util/connections.js';
+import { Evento } from './evento.model.js';
 
 export const Productor = sequelize.define('Productor', {
   id: {
@@ -29,4 +30,13 @@ export const Productor = sequelize.define('Productor', {
     type: DataTypes.STRING,
     allowNull: false,
   }
+});
+Productor.hasOne(Evento, {
+  foreinkey: 'eventoId',
+  sourceKey: 'id',
+});
+
+Evento.belongsTo(Productor, {
+  foreinkey: 'eventoId',
+  targetId: 'id',
 });

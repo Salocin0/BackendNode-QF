@@ -19,6 +19,7 @@ import { RouterPuesto } from './routes/puesto.router.js';
 import { RouterRepartidor } from './routes/repartidor.router.js';
 import { RouterUser } from './routes/user.router.js';
 import { sequelize } from './util/connections.js';
+import { RouterEvento } from './routes/evento.router.js';
 //definicion de server de express
 const app = express();
 const port = 8000;
@@ -90,11 +91,12 @@ app.use('/productor', RouterProductor);
 app.use('/repartidor', RouterRepartidor);
 app.use('/puesto', RouterPuesto);
 app.use('/producto', RouterProducto);
+app.use('/evento', RouterEvento);
 
 
 // Sincronizar la base de datos y luego iniciar el servidor
 async function connectDB() {
-  await sequelize.sync({ force: false }); //FALSE NO CAMBIA
+  await sequelize.sync({ force: true }); //FALSE NO CAMBIA
   app.listen(port, () => {
     console.log('Servidor escuchando en el puerto ' + port);
   });
