@@ -58,8 +58,8 @@ class RepartidorController {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
      const idRepartidor =  consumidor.repartidorId;
-
-      const result = await repartidorService.updateOne(idRepartidor);
+     const idUser = consumidor.usuarioId;
+      const result = await repartidorService.updateOne(idRepartidor, idUser);
       if (result) {
         return res.status(200).json({
           status: 'success',
@@ -125,9 +125,9 @@ class RepartidorController {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
 
-      console.log("Este  es el ID: " + consumidor.repartidorId);
+      console.log("Este  es el ID: " +  consumidor.usuarioId);
 
-      const result = await repartidorService.deleteOne(consumidor.repartidorId);
+      const result = await repartidorService.deleteOne(consumidor.repartidorId, consumidor.usuarioId);
 
       return res.status(200).json({
         status: 'success',

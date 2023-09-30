@@ -1,5 +1,5 @@
+import { Consumidor } from "../DAO/models/consumidor.model.js";
 import { Evento } from "../DAO/models/evento.model.js";
-import Consumidor from "../DAO/models/consumidor.model.js";
 
 class EventoService {
   //hacer que los metodos llamen a los service, no a los models

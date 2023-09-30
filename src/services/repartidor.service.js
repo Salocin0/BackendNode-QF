@@ -1,5 +1,5 @@
 import { Repartidor } from '../DAO/models/repartidor.model.js';
-
+import { Usuario } from '../DAO/models/users.model.js';
 class RepartidorService {
   //ACTUALIZAR METODOS CON LOS NUEVOS ATRIBUTOS DE REPARTIDOR
   async getAll() {
@@ -13,14 +13,18 @@ class RepartidorService {
   }
 
   // Atributos del repartidor
-  async updateOne(idRepartidor) {
+  async updateOne(idRepartidor , idUser) {
 
 
     const repartidor = await Repartidor.findByPk(idRepartidor);
+    const usuario = await Usuario.findByPk(idUser);
+
     console.log(repartidor);
     if (repartidor) {
       repartidor.habilitado = true;
       await repartidor.save();
+      usuario.tipoUsuario = 'repartirdor';
+      await usuario.save();
 
       return repartidor;
     } else {
@@ -32,19 +36,24 @@ class RepartidorService {
     const repartidorCreado = await Repartidor.create(nuevorepartidor);
     return repartidorCreado;
   }
-  async deleteOne(id) {
+  async deleteOne(idRepartidor, idUser) {
     try {
-      const repartidor = await Repartidor.findByPk(id);
+      const repartidor = await Repartidor.findByPk(idRepartidor);
+      const usuario = await Usuario.findByPk(idUser);
+
+      console.log(usuario);
+      console.log(idUser);
 
       if (!repartidor) {
-        return null; // El encargado no existe
+        return null;
       }
 
       repartidor.habilitado = 0;
-
+      usuario.tipoUsuario = 'consumidor';
+      await usuario.save();
       await repartidor.save();
 
-      console.log(`Encargado deshabilitado con ID: ${id}`);
+      console.log(`Repartidor deshabilitado con ID: ${idRepartidor}`);
 
       return repartidor;
     } catch (error) {

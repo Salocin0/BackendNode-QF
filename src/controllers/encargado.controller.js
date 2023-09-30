@@ -38,6 +38,8 @@ class EncargadoController {
 
       console.log(id, razonSocialEPC, cuitEPC);
 
+
+
       const result = await encargadoService.updateOne(consumidor.encargadoId, { razonSocialEPC, cuitEPC });
 
       return res.status(200).json({
@@ -56,6 +58,38 @@ class EncargadoController {
     }
   }
 
+  async updateOneControllerHabilitacion(req, res) {
+    try {
+      const id = req.params.id;
+      const consumidor = await consumidorService.getOne(id);
+     const idEncargado =  consumidor.encargadoId;
+     const idUser = consumidor.usuarioId;
+      const result = await encargadoService.updateOneHabilitacion(idEncargado, idUser);
+      if (result) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Repartidor is updated',
+          code: 200,
+          data: result,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'error',
+          msg: 'Repartidor not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'Something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+
   async deleteOneController(req, res) {
     try {
       const id = req.params.id;
@@ -63,7 +97,7 @@ class EncargadoController {
 
       console.log("Este  es el ID: " + consumidor.encargadoId);
 
-      const result = await encargadoService.deleteOne(consumidor.encargadoId);
+      const result = await encargadoService.deleteOne(consumidor.encargadoId, consumidor.usuarioId);
 
       return res.status(200).json({
         status: 'success',

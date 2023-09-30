@@ -12,6 +12,7 @@ import { initPassport } from './config/passport.config.js';
 import { __dirname } from './dirname.js';
 import { RouterConsumidor } from './routes/consumidor.router.js';
 import { RouterEncargado } from './routes/encargado.router.js';
+import { RouterEvento } from './routes/evento.router.js';
 import { RouterLogin } from './routes/login.router.js';
 import { RouterProducto } from './routes/producto.router.js';
 import { RouterProductor } from './routes/productor.router.js';
@@ -19,7 +20,6 @@ import { RouterPuesto } from './routes/puesto.router.js';
 import { RouterRepartidor } from './routes/repartidor.router.js';
 import { RouterUser } from './routes/user.router.js';
 import { sequelize } from './util/connections.js';
-import { RouterEvento } from './routes/evento.router.js';
 //definicion de server de express
 const app = express();
 const port = 8000;
@@ -96,7 +96,7 @@ app.use('/evento', RouterEvento);
 
 // Sincronizar la base de datos y luego iniciar el servidor
 async function connectDB() {
-  await sequelize.sync({ force: true }); //FALSE NO CAMBIA
+  await sequelize.sync({ force: false }); //FALSE NO CAMBIA
   app.listen(port, () => {
     console.log('Servidor escuchando en el puerto ' + port);
   });

@@ -68,6 +68,7 @@ RouterEncargado.get('/:id', async (req, res) => {
     });*/
 
 RouterEncargado.put('/:id', encargadoController.updateOneController)
+RouterEncargado.put('/:id/habilitacion', encargadoController.updateOneControllerHabilitacion)
 
 
 RouterEncargado.post('/', async (req, res) => {

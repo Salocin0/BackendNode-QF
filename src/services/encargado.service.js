@@ -1,4 +1,5 @@
 import { Encargado } from '../DAO/models/encargado.model.js';
+import { Usuario } from '../DAO/models/users.model.js';
 
 class EncargadoService {
   async getAll() {
@@ -59,10 +60,31 @@ class EncargadoService {
     }
   }
 
+  async updateOneHabilitacion(idEncargado , idUser) {
 
-  async deleteOne(id) {
+
+    const encargado = await Encargado.findByPk(idEncargado);
+    const usuario = await Usuario.findByPk(idUser);
+
+    console.log(encargado);
+    if (encargado) {
+      encargado.habilitado = true;
+      await encargado.save();
+      usuario.tipoUsuario = 'encargado';
+      await usuario.save();
+
+      return encargado;
+    } else {
+      console.log('No lo encontre');
+      return null;
+    }
+  }
+
+
+  async deleteOne(idEncargado, idUser) {
     try {
-      const encargado = await Encargado.findByPk(id);
+      const encargado = await Encargado.findByPk(idEncargado);
+      const usuario = await Usuario.findByPk(idUser);
 
       if (!encargado) {
         return null; // El encargado no existe
@@ -72,7 +94,10 @@ class EncargadoService {
 
       await encargado.save();
 
-      console.log(`Encargado deshabilitado con ID: ${id}`);
+      usuario.tipoUsuario = "consumidor";
+      await usuario.save();
+
+      console.log(`Encargado deshabilitado con ID: ${idEncargado}`);
 
       return encargado;
     } catch (error) {
