@@ -1,4 +1,5 @@
 import { Productor } from '../DAO/models/productor.model.js';
+import { Usuario } from '../DAO/models/users.model.js';
 
 class ProductorService {
   async getAll() {
@@ -40,6 +41,27 @@ class ProductorService {
     }
   }
 
+  async updateOneHabilitacion(idProductor , idUser) {
+
+
+    const productor = await Productor.findByPk(idProductor);
+    const usuario = await Usuario.findByPk(idUser);
+
+    console.log(productor);
+    if (productor) {
+      productor.habilitado = true;
+      await productor.save();
+      usuario.tipoUsuario = 'productor';
+      await usuario.save();
+
+      return productor;
+    } else {
+      console.log('No lo encontre');
+      return null;
+    }
+  }
+
+
   async create(nuevoProductor) {
     const productorendb = await Productor.findOne({
       where: {
@@ -54,9 +76,11 @@ class ProductorService {
       return productorCreado;
     }
   }
-  async deleteOne(id) {
+
+  async deleteOne(idProductor, idUser) {
     try {
-      const productor = await Productor.findByPk(id);
+      const productor = await Productor.findByPk(idProductor);
+      const usuario = await Usuario.findByPk(idUser);
 
       if (!productor) {
         return null; // El encargado no existe
@@ -66,7 +90,10 @@ class ProductorService {
 
       await productor.save();
 
-      console.log(`Productor deshabilitado con ID: ${id}`);
+      usuario.tipoUsuario = "consumidor";
+      await usuario.save();
+
+      console.log(`Encargado deshabilitado con ID: ${idProductor}`);
 
       return productor;
     } catch (error) {
