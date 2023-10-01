@@ -15,6 +15,19 @@ class PuestoService {
     return puestos;
   }
 
+  async getAllDeshabilitados(consumidorId) {
+    const consumidor = await Consumidor.findByPk(consumidorId);
+    const puestos = await Puesto.findAll({
+      where: {
+        encargadoId: consumidor.encargadoId,
+        habilitado: false,
+      },
+    });
+    return puestos;
+  }
+
+
+
   async getOne(id) {
     const puesto = Puesto.findByPk(id);
     return puesto;
@@ -34,6 +47,11 @@ class PuestoService {
     return puestodb;
   }
 
+  async updateHabilitado(id) {
+    const puesto = await Puesto.findByPk(id);
+    puesto.habilitado = true;
+    await puesto.save();
+  }
     async create(nuevoPuesto) {
         const consumidor = await consumidorService.getOne(nuevoPuesto.consumidorId)
         const puestoendb = await Puesto.findOne({

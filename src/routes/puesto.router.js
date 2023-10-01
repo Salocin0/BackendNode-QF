@@ -1,12 +1,16 @@
 import express from 'express';
-export const RouterPuesto = express.Router();
 import { puestoController } from '../controllers/puesto.controller.js';
+export const RouterPuesto = express.Router();
 
 RouterPuesto.get('/', puestoController.getAllController);
+
+RouterPuesto.get('/deshabilitados', puestoController.getAllControllerDeshabilitados);
 
 RouterPuesto.get('/:id', puestoController.getOneController);
 
 RouterPuesto.put('/:id', puestoController.updateOneController);
+
+RouterPuesto.put('/:id/habilitacion', puestoController.updateOneControllerHabilitacion);
 
 RouterPuesto.post('/', puestoController.createOneController);
 

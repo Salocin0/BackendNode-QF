@@ -28,6 +28,33 @@ class PuestoController {
     }
   }
 
+  async getAllControllerDeshabilitados(req, res) {
+    try {
+      const consumidorId = req.headers["consumidorid"];
+      console.log(consumidorId)
+      const puestos = await puestoService.getAllDeshabilitados(consumidorId);
+      if (puestos.length > 0) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found all puestos',
+          data: puestos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'puestos not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
   async getOneController(req, res) {
     try {
       const puestoId = req.params.id;
@@ -60,7 +87,7 @@ class PuestoController {
       const id = req.params.id;
       const { puesto } = req.body;
       console.log(puesto)
-      const result = await puestoService.update(id, puesto);    
+      const result = await puestoService.update(id, puesto);
       return res.status(200).json({
         status: 'success',
         msg: 'puesto is updated',
@@ -72,6 +99,27 @@ class PuestoController {
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+  async updateOneControllerHabilitacion(req, res) {
+    try {
+      const id = req.params.id;
+      const puesto = await puestoService.updateHabilitado(id);
+      return res.status(200).json({
+        status: 'success',
+        msg: 'puesto enabled',
+        code: 200,
+        data: puesto,
+      });
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        code: 500,
         data: {},
       });
     }
