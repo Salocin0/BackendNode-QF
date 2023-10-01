@@ -84,6 +84,26 @@ export const Evento = sequelize.define('evento', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  habilitado: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+  },
+  localidad: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  provincia: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  img: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  croquis: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
 
 Evento.hasMany(DiaEvento, {

@@ -19,6 +19,8 @@ class EventoController {
         });
       }
     } catch (e) {
+      console.log(e);
+      
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',
