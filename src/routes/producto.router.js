@@ -4,7 +4,7 @@ export const RouterProducto = express.Router();
 
 RouterProducto.get('/', productoController.getAllController);
 
-RouterProducto.get(':id/deshabilitados', productoController.getAllControllerDeshabilitados);
+RouterProducto.get('/:id/deshabilitados', productoController.getAllControllerDeshabilitados);
 
 RouterProducto.get('/:id', productoController.getOneController);
 
