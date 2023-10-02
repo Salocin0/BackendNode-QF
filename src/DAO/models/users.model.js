@@ -30,7 +30,7 @@ export const Usuario = sequelize.define('usuarios', {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  habilidato: {
+  habilitado: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
