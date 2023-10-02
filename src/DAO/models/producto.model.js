@@ -37,12 +37,15 @@ export const Producto = sequelize.define('producto', {
       allowNull: false,
     },
 
+
     /*Ver relación con la clase ESTADO [HABILITADO,DESHABILITADO] 
     */
     estado: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
+
+
     /*Ver si se crea una relación con la clase tipoProducto o si se arma un array [HeladoChocolate,HeladoVainilla,etc] 
     */
    /*

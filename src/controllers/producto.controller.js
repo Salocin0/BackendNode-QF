@@ -28,6 +28,35 @@ class ProductoController {
     }
   }
 
+   async getAllControllerDeshabilitados(req, res) {
+    try {
+      const puestoId = req.headers["puestoid"];
+      console.log(puestoId);
+      const productos = await productoService.getAllDeshabilitados(puestoId);
+      console.log("ENTRE ACA");
+      if (productos) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found all productos',
+          data: productos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'Productos not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
   async getOneController(req, res) {
     try {
       const productoId = req.params.id;
@@ -60,6 +89,39 @@ class ProductoController {
       const id = req.params.id;
       const { producto } = req.body;
       const result = await productoService.update(id, producto);
+
+      if (result) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'producto is updated',
+          code: 200,
+          data: result,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'Producto not found',
+          code: 404,
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+
+
+  async updateOneControllerNuevamente(req, res) {
+    try {
+      const id = req.params.id;
+      const { producto } = req.body;
+      const result = await productoService.updateNuevamente(id, producto);
 
       if (result) {
         return res.status(200).json({

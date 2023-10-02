@@ -16,6 +16,23 @@ class ProductoService {
     }
   }
 
+
+
+  async getAllDeshabilitados(puestoId) {
+    const puesto = await puestoService.getOne(puestoId);
+    console.log("Entre aca" + puestoId );
+    if (puesto) {
+      const productos = await Producto.findAll({
+        where: {
+          puestoId: puestoId,
+          estado: false,
+        },
+      });
+      return productos;
+    }
+  }
+
+
   async getOne(id) {
     const producto = Producto.findByPk(id);
     return producto;
@@ -38,6 +55,27 @@ class ProductoService {
     await productodb.save();
     return productodb;
   }
+
+
+  async updateNuevamente(id) {
+    try {
+      console.log(id);
+      const producto = await Producto.findByPk(id);
+      console.log(producto);
+
+      if (!producto) {
+        return null;
+      }
+
+      producto.estado = true;
+      await producto.save();
+      return producto;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
 
   async create(nuevoProducto) {
 
@@ -77,7 +115,7 @@ class ProductoService {
     }
   }
 
-  
+
 }
 
 export const productoService = new ProductoService();
