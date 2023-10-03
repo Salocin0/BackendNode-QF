@@ -5,6 +5,8 @@ import { consumidorService } from './consumidor.service.js';
 import { encargadoService } from './encargado.service.js';
 import { productorService } from './productor.service.js';
 import { repartidorService } from './repartidor.service.js';
+import { sendEmail } from '../util/emailSender.js';
+import { createHash } from 'crypto';
 
 class UserService {
   async getAll() {
@@ -130,6 +132,33 @@ class UserService {
       return undefined
     }
   }
+
+  async enviarEmailValidarEmail(id,email) {
+    const usuario = await Usuario.findByPk(id);
+    const hash = createHash('sha256').update(Date.now().toString()).digest('hex');
+    usuario.codigoValidacion = hash;
+    await usuario.save();
+    const url = `localhost:3000/habilitar-Usuario-email/${id}/${hash}`
+    const respuestaEmail = await sendEmail(email,"Habilitar Usuario",`para validar el email, ingrese al siguiente link: ${url}`)
+    return respuestaEmail
+  }
+
+  async habilitarUsuario(id,email) {
+    const usuario = await Usuario.findByPk(id);
+    if(usuario.email===email){
+      const hash = createHash('sha256').update(Date.now().toString()).digest('hex');
+      usuario.codigoHabilitacion = hash;
+      await usuario.save();
+      const url = `localhost:3000/habilitar-Usuario/${id}/${hash}`
+      const respuestaEmail = await sendEmail(email,"Habilitar Usuario",`para habilitar el usuario nuevamente, ingrese al siguiente link: ${url}`)
+      return respuestaEmail
+    }
+
+    await usuario.save();
+  }
+
 }
+
+
 
 export const userService = new UserService();

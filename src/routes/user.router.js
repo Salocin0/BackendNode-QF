@@ -5,9 +5,75 @@ import { Usuario } from '../DAO/models/users.model.js';
 import { userController } from '../controllers/users.controller.js';
 import { createHashPW } from '../util/bcrypt.js';
 import { sendEmail } from '../util/emailSender.js';
+import { userService } from '../services/users.service.js';
 export const RouterUser = express.Router();
 
 RouterUser.get('/', userController.getAllcontroller);
+
+RouterUser.get("/validarEmailUsuario/:id/:codigo",async (req, res) => {
+  try {
+    const id = req.params.id;
+    const codigo = req.params.codigo;
+    const usuario = await Usuario.findByPk(id);
+    if (usuario?.codigoValidacion === codigo) {
+      usuario.emailValidado=true;
+      usuario.codigoValidacion=null;
+      await usuario.save();
+      return res.status(200).json({
+        status: 'sucess',
+        msg: 'user validado',
+        code:200,
+        data: usuario,
+      });
+    } else {
+      return res.status(404).json({
+        status: 'Error',
+        msg: 'incorrect code',
+        code:200,
+        data: {},
+      });
+    }
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      status: 'error',
+      msg: 'something went wrong :(',
+      data: {},
+    });
+  }})
+
+  RouterUser.get("/habilitarUsuario/:id/:codigo",async (req, res) => {
+    try {
+      const id = req.params.id;
+      const codigo = req.params.codigo;
+      console.log(id,codigo)
+      const usuario = await Usuario.findByPk(id);
+      if (usuario?.codigoHabilitacion === codigo) {
+        usuario.habilitado=true;
+        usuario.codigoHabilitacion=null;
+        await usuario.save();
+        return res.status(200).json({
+          status: 'sucess',
+          msg: 'user habilitado',
+          code:200,
+          data: usuario,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'incorrect code',
+          code:200,
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }})
 
 RouterUser.get('/fail/register', async (req, res) => {
   const errorMessage = req.flash();
@@ -59,13 +125,24 @@ RouterUser.post('/', (req, res, next) => {
         code: 401,
       });
     }
-
-    return res.status(200).json({
-      status: 'success',
-      msg: 'Usuario creado con éxito',
-      code: 200,
-      data: user,
-    });
+    //enviar email
+    const emailEnviado = await userController.enviarEmailValidarEmail(user.id,user.email)
+    if(emailEnviado){
+      return res.status(200).json({
+        status: 'success',
+        msg: 'Usuario creado con éxito',
+        code: 200,
+        data: user,
+      });
+    }else{
+      return res.status(500).json({
+        status: 'error',
+        msg: 'Error interno del servidor',
+        code: 500,
+        error: err.message,
+      });
+    }
+   
   })(req, res, next);
 });
 
@@ -151,6 +228,10 @@ RouterUser.put('/recuperarcontrasenia/:codigo', async (req, res) => {
 });
 
   RouterUser.post('/update/:id/to/:rol',userController.updateRolController);
+
+  RouterUser.post('/habilitar',userController.habilitar);
+
+  RouterUser.put("/habilitar",userController.habilitarUsuario)
 
 /* TO DO
   RouterUser.delete("/:cid", async (req, res) => {

@@ -1,15 +1,32 @@
 class LoginController {
   async login(req, res) {
     try {
-      const sessionId = req.sessionID;
-      req.session.user = {
-        email: req.user.email,
-        usuario: req.user.usuario,
-        consumidorId: req.user.consumidoreId,
-        tipoUsuario: req.user.tipoUsuario,
-        id: req.user.id,
-        sessionId: sessionId,
-      };
+      if(req.user.emailValidado===true){
+        const sessionId = req.sessionID;
+        req.session.user = {
+          email: req.user.email,
+          usuario: req.user.usuario,
+          consumidorId: req.user.consumidoreId,
+          tipoUsuario: req.user.tipoUsuario,
+          id: req.user.id,
+          sessionId: sessionId,
+        };
+      }else{
+        return res.status(200).json({
+          status: 'success',
+          msg: 'user login but email not valided',
+          code: 300,
+          data: req.session.user
+        });
+      }
+      if(req.user.habilitado===false){
+        return res.status(200).json({
+          status: 'success',
+          msg: 'user login but is not habilited',
+          code: 301,
+          data: req.session.user
+        });
+      }
       if (req.session.user) {
         return res.status(200).json({
           status: 'success',

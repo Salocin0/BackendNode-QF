@@ -18,6 +18,10 @@ export const Usuario = sequelize.define('usuarios', {
     allowNull: false,
     unique: true,
   },
+  emailValidado: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
   contraseña: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -27,6 +31,14 @@ export const Usuario = sequelize.define('usuarios', {
     allowNull: false,
   },
   codigoRecuperacion: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  codigoValidacion: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  codigoHabilitacion: {
     type: DataTypes.STRING,
     allowNull: true,
   },

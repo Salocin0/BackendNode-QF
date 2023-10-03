@@ -69,6 +69,54 @@ class UserController {
       });
     }
   }
+  //esto esta mal separado
+  async enviarEmailValidarEmail(id,email) {
+    const respuestaEmail = await userService.enviarEmailValidarEmail(id,email);
+    return respuestaEmail
+  }
+
+  async habilitar(req,res) {
+    const id = req.body.id;
+    const user = await userService.getOne(id);
+    console.log(id)
+    if(user){
+      return res.status(200).json({
+        status: 'sucess',
+        msg: 'email valido',
+        code:200,
+        data: user.email.substring(0,3),
+      });
+    }else{
+      return res.status(404).json({
+        status: 'Error',
+        msg: 'user not found',
+        data: {},
+      });
+    }
+  }
+
+  async habilitarUsuario(req,res) {
+    const id = req.body.id;
+    const email = req.body.email;
+    const user = await userService.habilitarUsuario(id,email);
+    console.log(id)
+    if(user){
+      return res.status(200).json({
+        status: 'sucess',
+        msg: 'email valido',
+        code:200,
+        data: user,
+      });
+    }else{
+      return res.status(404).json({
+        status: 'Error',
+        msg: 'user not found',
+        data: {},
+      });
+    }
+  }
 }
+
+
 
 export const userController = new UserController();

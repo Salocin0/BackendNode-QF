@@ -20,7 +20,9 @@ export async function sendEmail(destino, asuntoemail, mensajeemail) {
       text: mensaje,
     });
     console.log('Correo electrónico enviado:', info.messageId);
+    return true;
   } catch (error) {
     console.error('Error al enviar el correo electrónico:', error);
+    return false;
   }
 }
