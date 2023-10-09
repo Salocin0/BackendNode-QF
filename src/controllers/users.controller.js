@@ -33,7 +33,7 @@ class UserController {
       const productor = req.body;
       const encargado = req.body;
       const repartidor = req.body;
-      const usuariocreado = await userService.Register(usuario,consumidor,productor,encargado,repartidor)
+      const usuariocreado = await userService.register(usuario,consumidor,productor,encargado,repartidor)
       if (usuariocreado) {
         return res.status(200).json({
           status: 'sucess',
@@ -115,6 +115,26 @@ class UserController {
       });
     }
   }
+
+  async deshabilitarUsuario(req,res) {
+    const id = req.params.id;
+    const user = await userService.deshabilitarUsuario(id);
+    if(user){
+      return res.status(200).json({
+        status: 'sucess',
+        msg: 'Cuenta deshabilitada',
+        code: 200,
+        data: user,
+      });
+    }else{
+      return res.status(404).json({
+        status: 'Error',
+        msg: 'user not found',
+        data: {},
+      });
+    }
+  }
+  
 }
 
 

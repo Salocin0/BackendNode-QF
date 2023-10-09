@@ -233,45 +233,4 @@ RouterUser.put('/recuperarcontrasenia/:codigo', async (req, res) => {
 
   RouterUser.put("/habilitar",userController.habilitarUsuario)
 
-/* TO DO
-  RouterUser.delete("/:cid", async (req, res) => {
-    try {
-      const cid = req.params.cid;
-      let products = new Array();
-      const cart = await cartService.updateCart(cid,products);
-      return res.status(200).json({
-        status: 'success',
-        msg: 'products deleted in cart',
-        data: cart,
-      });
-    } catch (e) {
-      console.log(e);
-      return res.status(500).json({
-        status: 'error',
-        msg: 'something went wrong :(',
-        data: {},
-      });
-    }
-  });*/
-
-/* TO DO
-  RouterUser.put("/:cid", async (req, res) => {
-    try {
-      const { cid } = req.params;
-      const { products } = req.body;
-      const cart = await cartService.updateCart(cid,products);
-      return res.status(200).json({
-        status: 'success',
-        msg: 'product in cart updated',
-        data: cart,
-      });
-    } catch (e) {
-      console.log(e);
-      return res.status(500).json({
-        status: 'error',
-        msg: 'something went wrong :(',
-        data: {},
-      });
-    }
-  });
-  */
+  RouterUser.delete("/:id",userController.deshabilitarUsuario)

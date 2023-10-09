@@ -1,5 +1,6 @@
 import { Consumidor } from "../DAO/models/consumidor.model.js";
 import { Evento } from "../DAO/models/evento.model.js";
+import { consumidorService } from "./consumidor.service.js";
 
 class EventoService {
   //hacer que los metodos llamen a los service, no a los models
@@ -51,12 +52,11 @@ class EventoService {
             productorId: consumidor.productorId
           },
         });
-
-        nuevoEvento.productorId = consumidor.productorId;
-        if (puestoendb) {
+        nuevoEvento.ProductorId = consumidor.productorId;
+        if (eventoendb) {
           return false;
         } else {
-          const eventoCreado = await Evento.create(eventoCreado);
+          const eventoCreado = await Evento.create(nuevoEvento);
           return eventoCreado;
         }
       }

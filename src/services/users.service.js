@@ -73,8 +73,8 @@ class UserService {
     const usuariocreado = await Usuario.create(user);
     return usuariocreado;
   }
+  
   //TODO ESTE METODO TENDRIA QUE CREAR AL USUARIO Y LLAMAR AL SERVICE DE CONSUMIDOR PARA QUE CREE LA OTRA PARTE Y QUE DESPUES ESTE TOME EL COSUMIDOR Y LO ACTUALICE ACA
-
   async register(usuario, consumidor, productor, encargado, repartidor) {
     const user = await this.create(usuario);
     const consu = await consumidorService.create(consumidor, user.id);
@@ -156,6 +156,17 @@ class UserService {
 
     await usuario.save();
   }
+
+  async deshabilitarUsuario(id) {
+    const usuario = await Usuario.findByPk(id);
+    if(usuario){
+      usuario.habilitado=false;
+      await usuario.save();
+      return usuario;
+    }
+  }
+
+  
 
 }
 

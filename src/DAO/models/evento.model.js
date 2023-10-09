@@ -42,7 +42,7 @@ export const Evento = sequelize.define('evento', {
   },
   cantidadRepartidores: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
   capacidadMaxima: {
     type: DataTypes.INTEGER,
@@ -66,19 +66,19 @@ export const Evento = sequelize.define('evento', {
   },
   fechaInicioPreventa: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: true,
   },
   fechaFinPreventa: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: true,
   },
   plazoCancelacionPreventa: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
   linkVentaEntradas: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   ubicacion: {
     type: DataTypes.STRING,
@@ -97,11 +97,11 @@ export const Evento = sequelize.define('evento', {
     allowNull: false,
   },
   img: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT('long'),
     allowNull: false,
   },
   croquis: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT('long'),
     allowNull: false,
   },
 });
