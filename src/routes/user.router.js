@@ -126,7 +126,7 @@ RouterUser.post('/', (req, res, next) => {
       });
     }
     //enviar email
-    const emailEnviado = await userController.enviarEmailValidarEmail(user.id,user.email)
+    const emailEnviado = userController.enviarEmailValidarEmail(user.id,user.email)
     if(emailEnviado){
       return res.status(200).json({
         status: 'success',
