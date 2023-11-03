@@ -15,6 +15,11 @@ class EventoService {
     return eventos;
   }
 
+  async getAllInState(eventoId) {
+    const eventos = await Evento.findAll();
+    return eventos;
+  }
+
   async getOne(id) {
     const evento = Evento.findByPk(id);
     return evento;
@@ -66,6 +71,18 @@ class EventoService {
     evento.habilitado = false;
     await evento.save();
   }
+
+  async istime() {
+    console.log(new Date())
+    //traer todos los eventos que estado confirmado y la fecha paso cabiar estado
+    /*eventos
+    if evento.estado.getestado===enumestadoevento.confirmado{
+      
+      evento.estado.iniciarEvento()
+    }*/
+    
+  }
+  
 }
 
 export const eventoService = new EventoService();

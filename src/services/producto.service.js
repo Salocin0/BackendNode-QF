@@ -32,7 +32,6 @@ class ProductoService {
     }
   }
 
-
   async getOne(id) {
     const producto = Producto.findByPk(id);
     return producto;
@@ -55,7 +54,6 @@ class ProductoService {
     await productodb.save();
     return productodb;
   }
-
 
   async updateNuevamente(id) {
     try {
@@ -95,12 +93,9 @@ class ProductoService {
     }
   }
 
-
   async delete(id) {
     try {
-      console.log(id);
       const producto = await Producto.findByPk(id);
-      console.log(producto);
 
       if (!producto) {
         return null;
@@ -115,7 +110,22 @@ class ProductoService {
     }
   }
 
+  async deletePermanently(id) {
+    try {
+      const producto = await Producto.findByPk(id);
 
+      if (!producto) {
+        return null;
+      }
+
+      await producto.destroy();
+      return producto;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+  
 }
 
 export const productoService = new ProductoService();

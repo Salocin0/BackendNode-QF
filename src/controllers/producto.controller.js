@@ -115,8 +115,6 @@ class ProductoController {
     }
   }
 
-
-
   async updateOneControllerNuevamente(req, res) {
     try {
       const id = req.params.id;
@@ -196,6 +194,36 @@ class ProductoController {
         return res.status(200).json({
           status: 'success',
           msg: 'Producto deleted',
+          code: 200,
+          data: producto,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'Producto not found',
+          code: 404,
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'Something went wrong :(',
+        code: 500,
+        data: {},
+      });
+    }
+  }
+
+  async deletePermanentlyOneController(req, res) {
+    try {
+      const id = req.params.id;
+      const producto = await productoService.deletePermanently(id);
+      if (producto) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Producto deleted permanently',
           code: 200,
           data: producto,
         });

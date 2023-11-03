@@ -12,6 +12,8 @@ RouterProducto.put('/:id', productoController.updateOneController);
 
 RouterProducto.put('/:id/habilitar', productoController.updateOneControllerNuevamente);
 
+RouterProducto.delete('/:id/permanently', productoController.deletePermanentlyOneController)
+
 RouterProducto.post('/', productoController.createOneController);
 
 RouterProducto.delete('/:id', productoController.deleteOneController);

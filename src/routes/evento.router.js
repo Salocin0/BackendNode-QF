@@ -4,6 +4,8 @@ import { eventoController } from '../controllers/evento.controller.js';
 
 RouterEvento.get('/', eventoController.getAllController);
 
+RouterEvento.get('/enEstado/:state', eventoController.getAllInStateController);
+
 RouterEvento.get('/:id', eventoController.getOneController);
 
 RouterEvento.put('/:id', eventoController.updateOneController);

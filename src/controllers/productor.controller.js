@@ -113,7 +113,6 @@ class ProductorController {
     }
   }
 
-
   async createOneController(req, res) {
     try {
       const { productor } = req.body;
@@ -147,7 +146,6 @@ class ProductorController {
       });
     }
   }
-
 
   async deleteOneController(req, res) {
     try {
