@@ -131,7 +131,7 @@ class EventoController {
       capacidadMaxima,
       tipoPago,
       linkVentaEntradas,
-
+      restricciones,
       tieneButacas,
       estado,
       } = req.body;
@@ -148,10 +148,10 @@ class EventoController {
         horaInicio: horaInicioEvento,
         fechaFin: fechaFinEvento,
         conPreventa: tienePreventa,
-        fechaInicioPreventa: fechaInicioPreventa,
-        fechaFinPreventa: fechaFinPreventa,
-        plazoCancelacionPreventa: plazoCancelacionPreventa,
-        tipoPreventa: tipoPreventa,
+        fechaInicioPreventa: fechaInicioPreventa || Date.now(),
+        fechaFinPreventa: fechaFinPreventa || Date.now(),
+        plazoCancelacionPreventa: plazoCancelacionPreventa || 0,
+        tipoPreventa: tipoPreventa || 0,
         cantidadPuestos: cantidadPuestos,
         conRepartidor: tieneRepartidores,
         cantidadRepartidores: cantidadRepartidores,
@@ -161,6 +161,7 @@ class EventoController {
         conButaca: tieneButacas,
         habilitado: true,
         estado: estado,
+        restricciones:restricciones,
         consumidorId:consumidorId,
       };
       console.log(nuevoEvento);

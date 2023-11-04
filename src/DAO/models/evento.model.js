@@ -104,6 +104,11 @@ export const Evento = sequelize.define('evento', {
     type: DataTypes.TEXT('long'),
     allowNull: false,
   },
+  estado:{
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'enPreparacion'
+  }
 });
 
 Evento.hasMany(DiaEvento, {
