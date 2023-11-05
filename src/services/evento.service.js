@@ -100,9 +100,10 @@ class EventoService {
   async istime() {
     console.log(Date.now())
     await this.getAllInState(EstadosEvento.Confirmado).then((eventos) => {
+      console.log(eventos)
       eventos.forEach(async(evento)=>{
         console.log(evento)
-        if(evento.fechaInicio.getTime() > Date.now()){
+        if(true){
           evento.estado=EstadosEvento.EnCurso
           await evento.save()
         }else{
