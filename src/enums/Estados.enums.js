@@ -8,3 +8,9 @@ export const EstadosEvento = {
     Activo:"activo",
     Inactivo:"inactivo",
   };
+
+  export const EstadosAsociaciones = {
+    Pendiente: "pendiente",
+    Aceptada: "aceptada",
+    Rechazada: "rechazada",
+  };

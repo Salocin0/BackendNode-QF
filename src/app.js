@@ -22,6 +22,7 @@ import { RouterUser } from './routes/user.router.js';
 import { sequelize } from './util/connections.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
 import { RouterRestriccion } from './routes/restriccion.router.js';
+import { RouterAsociacion } from './routes/asociacion.router.js';
 //definicion de server de express
 const app = express();
 const port = 8000;
@@ -95,6 +96,7 @@ app.use('/puesto', RouterPuesto);
 app.use('/producto', RouterProducto);
 app.use('/evento', RouterEvento);
 app.use('/restriccion', RouterRestriccion);
+app.use('/asocioacion', RouterAsociacion);
 
 
 // Sincronizar la base de datos y luego iniciar el servidor
