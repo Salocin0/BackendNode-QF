@@ -1,3 +1,4 @@
+import { estadosEvento } from '../estados/estadosEvento.js';
 import { eventoService } from '../services/evento.service.js';
 
 class EventoController {
@@ -211,6 +212,26 @@ class EventoController {
       });
     }
   }
+
+  async updateStateController(req, res) {
+    const eventoId = req.params.id;
+    const accion = req.params.accion;
+
+    try {
+        const evento = await eventoService.getOne(eventoId);
+        const estadoActual = evento.estado;
+        console.log(estadoActual);
+
+        if (estadosEvento[estadoActual] && estadosEvento[estadoActual][accion]) {
+            await estadosEvento[estadoActual][accion](evento);
+        } else {
+            res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
+    }
+}
+
 }
 
 export const eventoController = new EventoController();
