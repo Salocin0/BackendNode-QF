@@ -5,7 +5,7 @@ import { Puesto } from './puesto.model.js';
 import { Repartidor } from './repartidor.model.js';
 import { RTARestriccion } from './RTARestriccion.model.js';
 
-export const Asocioacion = sequelize.define('Asocioacion', {
+export const Asociacion = sequelize.define('Asociacion', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -17,42 +17,42 @@ export const Asocioacion = sequelize.define('Asocioacion', {
     defaultValue: 'pendiente',
   },
 });
-Asocioacion.belongsTo(Evento, {
+Asociacion.belongsTo(Evento, {
   foreinkey: 'eventoId',
   sourceKey: 'id',
 });
 
-Evento.hasOne(Asocioacion, {
+Evento.hasOne(Asociacion, {
   foreinkey: 'eventoId',
   targetId: 'id',
 });
 
-Asocioacion.belongsTo(Puesto, {
+Asociacion.belongsTo(Puesto, {
   foreinkey: 'puestoId',
   sourceKey: 'id',
 });
 
-Puesto.hasOne(Asocioacion, {
+Puesto.hasOne(Asociacion, {
   foreinkey: 'puestoId',
   targetId: 'id',
 });
 
-Asocioacion.belongsTo(Repartidor, {
+Asociacion.belongsTo(Repartidor, {
   foreinkey: 'repartidorId',
   sourceKey: 'id',
 });
 
-Repartidor.hasOne(Asocioacion, {
+Repartidor.hasOne(Asociacion, {
   foreinkey: 'repartidorId',
   targetId: 'id',
 });
 
-Asocioacion.belongsTo(RTARestriccion, {
+Asociacion.hasMany(RTARestriccion, {
   foreinkey: 'asociacionId',
   sourceKey: 'id',
 });
 
-RTARestriccion.hasMany(Asocioacion, {
+RTARestriccion.belongsTo(Asociacion, {
   foreinkey: 'asociacionId',
   targetId: 'id',
 });

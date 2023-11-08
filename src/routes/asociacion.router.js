@@ -8,7 +8,9 @@ RouterAsociacion.get('/evento/:id', asociacionController.getAllInEventController
 
 RouterAsociacion.get('/:id', asociacionController.getOneController);
 
-RouterAsociacion.post('/', asociacionController.createOneController);
+RouterAsociacion.post('/evento/:eventoId/asociar/:puestoId/:consumidorId', asociacionController.createOneController);
+
+RouterAsociacion.post('/evento/:eventoId/asociarSimple/:puestoId/:consumidorId', asociacionController.createSimpleOneController);
 
 RouterAsociacion.get('/rechazar', asociacionController.rechazarController);
 

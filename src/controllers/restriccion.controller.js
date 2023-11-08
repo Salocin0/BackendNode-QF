@@ -32,17 +32,19 @@ class RestriccionController {
     try {
       const id = req.params.id;
       const restricciones = await restriccionService.getAllInEvent(id);
-      if (restricciones) {
+      if (restricciones.length > 0) {
         return res.status(200).json({
           status: 'success',
           msg: 'Found all restricciones',
           data: restricciones,
+          code: 200,
         });
       } else {
         return res.status(404).json({
           status: 'Error',
           msg: 'restricciones not found',
-          data: {},
+          data: [],
+          code: 404,
         });
       }
     } catch (e) {

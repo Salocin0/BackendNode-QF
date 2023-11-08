@@ -37,12 +37,14 @@ class AsociacionController {
           status: 'success',
           msg: 'Found all asociaciones',
           data: asociacionService,
+          code: 200,
         });
       } else {
         return res.status(404).json({
           status: 'Error',
           msg: 'asociaciones not found',
           data: {},
+          code: 404,
         });
       }
     } catch (e) {
@@ -51,6 +53,7 @@ class AsociacionController {
         status: 'error',
         msg: 'something went wrong :(',
         data: {},
+        code: 500,
       });
     }
   }
@@ -138,15 +141,47 @@ class AsociacionController {
 
   async createOneController(req, res) {
     try {
-      const { estado, eventoId, puestoId, repartidorId, respuestas} = req.body;
+      const eventoid = req.params.eventoId;
+      const puestoId = req.params.puestoId;
+      const consumidorId = req.params.consumidorId;
+      const { restricciones } = req.body;
       const nuevaAsociacion = {
-        estado: estado,
-        puestoId: puestoId,
-        repartidorId: repartidorId,
-        eventoId: eventoId,
+        puestoId: Number(puestoId),
+        repartidorId: consumidorId,
+        eventoId: Number(eventoid),
       };
 
-      const asociacionCreado = await asociacionService.create(nuevaAsociacion,respuestas);
+      const asociacionCreado = await asociacionService.create(nuevaAsociacion,restricciones,consumidorId);
+
+      return res.status(200).json({
+        status: 'success',
+        msg: 'Restriccion created',
+        code: 200,
+        data: asociacionCreado,
+      });
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        code: 500,
+        data: {},
+      });
+    }
+  }
+
+  async createSimpleOneController(req, res) {
+    try {
+      const eventoid = req.params.eventoId;
+      const puestoId = req.params.puestoId;
+      const consumidorId = req.params.consumidorId;
+      const nuevaAsociacion = {
+        puestoId: Number(puestoId),
+        repartidoreId: consumidorId,
+        eventoId: Number(eventoid),
+      };
+
+      const asociacionCreado = await asociacionService.create(nuevaAsociacion,null,consumidorId);
 
       return res.status(200).json({
         status: 'success',

@@ -2,22 +2,22 @@ import { Restriccion } from '../DAO/models/Restriccion.model.js';
 
 class RestriccionService {
   async getAll(consumidorId) {
-      const restricciones = await Restriccion.findAll({
-        where: {
-            consumidoreId: consumidorId,
-        },
-      });
-      return restricciones;
-    }
+    const restricciones = await Restriccion.findAll({
+      where: {
+        consumidoreId: consumidorId,
+      },
+    });
+    return restricciones;
+  }
 
-    async getAllInEvent(id) {
-        const restricciones = await Restriccion.findAll({
-          where: {
-              eventoId: id,
-          },
-        });
-        return restricciones;
-      }
+  async getAllInEvent(id) {
+    const restricciones = await Restriccion.findAll({
+      where: {
+        eventoId: id,
+      },
+    });
+    return restricciones;
+  }
 
   async getOne(id) {
     const restriccion = await Restriccion.findByPk(id);
@@ -30,15 +30,14 @@ class RestriccionService {
   }
 
   async delete(id) {
-      const restriccion = await Restriccion.findByPk(id);
-      if (!restriccion) {
-        return null;
-      }
-      restriccion.eventoId = null;
-      await restriccion.save();
-      return restriccion;
+    const restriccion = await Restriccion.findByPk(id);
+    if (!restriccion) {
+      return null;
+    }
+    restriccion.eventoId = null;
+    await restriccion.save();
+    return restriccion;
   }
-  
 }
 
 export const restriccionService = new RestriccionService();
