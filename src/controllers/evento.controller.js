@@ -1,4 +1,4 @@
-import { estadosEvento } from '../estados/estadosEvento.js';
+import { estadosEvento } from '../estados/estados/estadosEvento.js';
 import { eventoService } from '../services/evento.service.js';
 
 class EventoController {

@@ -1,7 +1,7 @@
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Evento } from '../DAO/models/evento.model.js';
 import { EstadosEvento } from '../enums/Estados.enums.js';
-import { estadosEvento } from '../estados/estadosEvento.js';
+import { estadosEvento } from '../estados/estados/estadosEvento.js';
 import { consumidorService } from './consumidor.service.js';
 import { restriccionService } from './restriccion.service.js';
 class EventoService {
