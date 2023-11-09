@@ -1,17 +1,30 @@
 export const finalizado = {
-    crearEvento: async (evento) => {
-      evento.estado = 'enPreparacion';
-      await evento.save();
-      return evento;
-    },
+  crearEvento: async (evento) => {
+    throw new Error('El evento ya ha finalizado');
 
-    confirmar: async (evento) => {
-      evento.estado = 'confirmar';
-      await evento.save();
-      return evento;
-    }
+},
+
+confirmarEvento: async (evento) => {
+  throw new Error('El evento ya ha finalizado');
+
+},
+
+cancelarEvento: async (evento) => {
+  throw new Error('El evento ya ha finalizado');
+
+},
+
+iniciarEvento: async (evento) => {
+  throw new Error('El evento ya ha finalizado');
+},
+
+finalizarEvento: async (evento) => {
+  throw new Error('El evento ya ha finalizado');
+},
+
+reprogramarEvento: async (evento) => {
+  throw new Error('El evento ya ha finalizado');
+},
 
 
-
-
-  };
+};

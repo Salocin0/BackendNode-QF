@@ -25,8 +25,16 @@ export const estadosEvento = {
         },
         reprogramarEvento: (evento) => {
             return enPreparacion.reprogramarEvento(evento);
+        },
+        activarEvento: (evento) => {
+            return enPreparacion.activarEvento(evento);
+        },
+        desactivarEvento: (evento) => {
+            return enPreparacion.desactivarEvento(evento);
+        },
+        continuarEvento: (evento) => {
+            return enPreparacion.continuarEvento(evento);
         }
-
     },
 
     enCurso: {
@@ -47,6 +55,15 @@ export const estadosEvento = {
         },
         reprogramarEvento: (evento) => {
             return enCurso.reprogramarEvento(evento);
+        },
+        activarEvento: (evento) => {
+            return enCurso.activarEvento(evento);
+        },
+        desactivarEvento: (evento) => {
+            return enCurso.desactivarEvento(evento);
+        },
+        continuarEvento: (evento) => {
+            return enCurso.continuarEvento(evento);
         }
     },
 
@@ -68,6 +85,15 @@ export const estadosEvento = {
         },
         reprogramarEvento: (evento) => {
             return confirmado.reprogramarEvento(evento);
+        },
+        activarEvento: (evento) => {
+            return confirmado.activarEvento(evento);
+        },
+        desactivarEvento: (evento) => {
+            return confirmado.desactivarEvento(evento);
+        },
+        continuarEvento: (evento) => {
+            return confirmado.continuarEvento(evento);
         }
     },
 
@@ -89,6 +115,15 @@ export const estadosEvento = {
         },
         reprogramarEvento: (evento) => {
             return pausado.reprogramarEvento(evento);
+        },
+                activarEvento: (evento) => {
+            return pausado.activarEvento(evento);
+        },
+        desactivarEvento: (evento) => {
+            return pausado.desactivarEvento(evento);
+        },
+        continuarEvento: (evento) => {
+            return pausado.continuarEvento(evento);
         }
     },
 
@@ -110,6 +145,15 @@ export const estadosEvento = {
         },
         reprogramarEvento: (evento) => {
             return cancelado.reprogramarEvento(evento);
+        },
+        activarEvento: (evento) => {
+            return cancelado.activarEvento(evento);
+        },
+        desactivarEvento: (evento) => {
+            return cancelado.desactivarEvento(evento);
+        },
+        continuarEvento: (evento) => {
+            return cancelado.continuarEvento(evento);
         }
     },
 
@@ -131,9 +175,16 @@ export const estadosEvento = {
         },
         reprogramarEvento: (evento) => {
             return finalizado.reprogramarEvento(evento);
+        },
+        activarEvento: (evento) => {
+            return finalizado.activarEvento(evento);
+        },
+        desactivarEvento: (evento) => {
+            return finalizado.desactivarEvento(evento);
+        },
+        continuarEvento: (evento) => {
+            return finalizado.continuarEvento(evento);
         }
     },
-
-
 
 };
