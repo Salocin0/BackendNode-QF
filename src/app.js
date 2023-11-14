@@ -96,7 +96,7 @@ app.use('/puesto', RouterPuesto);
 app.use('/producto', RouterProducto);
 app.use('/evento', RouterEvento);
 app.use('/restriccion', RouterRestriccion);
-app.use('/asocioacion', RouterAsociacion);
+app.use('/asociacion', RouterAsociacion);
 
 
 // Sincronizar la base de datos y luego iniciar el servidor

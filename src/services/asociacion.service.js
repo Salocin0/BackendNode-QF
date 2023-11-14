@@ -5,9 +5,10 @@ import { consumidorService } from "./consumidor.service.js";
 
 class AsociacionService {
   async getAll(consumidorId) {
+    const consumidor = await consumidorService.getOne(consumidorId);
     const asociaciones = await Asociacion.findAll({
         where: {
-            consumidoreId: consumidorId,
+            repartidoreId: consumidor.repartidorId,
         },
       });
     return asociaciones;
@@ -23,7 +24,7 @@ class AsociacionService {
   }
 
   async getOne(id) {
-    const asociacion = await Asociacion.findByPk(id);
+    const asociacion = await Asociacion.findOne({ where: { id } });
     return asociacion;
   }
 
@@ -38,7 +39,7 @@ class AsociacionService {
     if(nuevaAsociacion.puestoId===0){
       nuevaAsociacion.puestoId=null
     }
-    
+    console.log(nuevaAsociacion)
     nuevaAsociacion.estado=EstadosAsociaciones.Pendiente
     const asociacionCreada = await Asociacion.create(nuevaAsociacion);
     console.log(respuestas)
@@ -54,16 +55,23 @@ class AsociacionService {
   }
 
   async rechazar(id) {
-    const asociacion = this.getOne(id)
+    const asociacion = await this.getOne(id)
     asociacion.estado = EstadosAsociaciones.Rechazada;
-    asociacion.save()
+    await asociacion.save()
+    return asociacion
+  }
+
+  async cancelar(id) {
+    const asociacion = await this.getOne(id)
+    asociacion.estado = EstadosAsociaciones.Cancelada;
+    await asociacion.save();
     return asociacion
   }
 
   async aceptar(id) {
-    const asociacion = this.getOne(id)
+    const asociacion = await this.getOne(id)
     asociacion.estado = EstadosAsociaciones.Aceptada;
-    asociacion.save()
+    await asociacion.save();
     return asociacion
   }
 }

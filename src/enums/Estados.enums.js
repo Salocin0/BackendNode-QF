@@ -13,4 +13,5 @@ export const EstadosEvento = {
     Pendiente: "pendiente",
     Aceptada: "aceptada",
     Rechazada: "rechazada",
+    Cancelada: "cancelada",
   };

@@ -12,7 +12,9 @@ RouterAsociacion.post('/evento/:eventoId/asociar/:puestoId/:consumidorId', asoci
 
 RouterAsociacion.post('/evento/:eventoId/asociarSimple/:puestoId/:consumidorId', asociacionController.createSimpleOneController);
 
-RouterAsociacion.get('/rechazar', asociacionController.rechazarController);
+RouterAsociacion.get('/rechazar/:id', asociacionController.rechazarController);
 
-RouterAsociacion.get('/aceptar', asociacionController.aceptarController);
+RouterAsociacion.get('/aceptar/:id', asociacionController.aceptarController);
+
+RouterAsociacion.get('/cancelar/:id', asociacionController.cancelarController);
 

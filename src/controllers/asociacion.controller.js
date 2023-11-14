@@ -40,7 +40,7 @@ class AsociacionController {
           code: 200,
         });
       } else {
-        return res.status(404).json({
+        return res.status(200).json({
           status: 'Error',
           msg: 'asociaciones not found',
           data: {},
@@ -139,6 +139,33 @@ class AsociacionController {
     }
   }
 
+  async cancelarController(req, res) {
+    try {
+      const Id = req.params.id;
+      const asociacion = await asociacionService.cancelar(Id);
+      if (asociacion !== null) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'asociacion found',
+          data: asociacion,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'asociacion with id ' + req.params.id + ' not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
   async createOneController(req, res) {
     try {
       const eventoid = req.params.eventoId;
@@ -150,7 +177,7 @@ class AsociacionController {
         repartidorId: consumidorId,
         eventoId: Number(eventoid),
       };
-
+      console.log(nuevaAsociacion)
       const asociacionCreado = await asociacionService.create(nuevaAsociacion,restricciones,consumidorId);
 
       return res.status(200).json({
@@ -180,7 +207,7 @@ class AsociacionController {
         repartidoreId: consumidorId,
         eventoId: Number(eventoid),
       };
-
+      console.log(nuevaAsociacion)
       const asociacionCreado = await asociacionService.create(nuevaAsociacion,null,consumidorId);
 
       return res.status(200).json({

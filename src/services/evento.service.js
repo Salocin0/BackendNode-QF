@@ -19,7 +19,7 @@ class EventoService {
   async getAllInState(estado) {
     const eventos = await Evento.findAll({
       where: {
-        estado: estado
+        estado: estado,
       },
     });
     return eventos;
@@ -54,8 +54,8 @@ class EventoService {
     eventodb.estado = evento.estado;
     await eventodb.save();
     evento.restricciones.forEach(async (restriccion) => {
-      console.log(restriccion.id)
-      if(restriccion.id===undefined){
+      console.log(restriccion.id);
+      if (restriccion.id === undefined) {
         restriccion.eventoId = id;
         restriccion.consumidoreId = evento.consumidorId;
         await restriccionService.create(restriccion);
@@ -72,44 +72,41 @@ class EventoService {
       },
     });
     nuevoEvento.ProductorId = consumidor.productorId;
-    if (eventoendb) {
-      return false;
-    } else {
-      nuevoEvento.estado=EstadosEvento.EnPreparacion;
-      const eventoCreado = await Evento.create(nuevoEvento);
-      nuevoEvento.restricciones.forEach(async (restriccion) => {
-        restriccion.eventoId = eventoCreado.id;
-        const restriccionCreada = await restriccionService.create(restriccion);
-        console.log(restriccionCreada);
-      });
-      return eventoCreado;
-    }
+
+    nuevoEvento.estado = EstadosEvento.EnPreparacion;
+    const eventoCreado = await Evento.create(nuevoEvento);
+    nuevoEvento.restricciones.forEach(async (restriccion) => {
+      restriccion.eventoId = eventoCreado.id;
+      const restriccionCreada = await restriccionService.create(restriccion);
+      console.log(restriccionCreada);
+    });
+    return eventoCreado;
   }
 
   async delete(id) {
     const evento = await Evento.findByPk(id);
     evento.habilitado = false;
-    evento.estado=EstadosEvento.Cancelado;
+    evento.estado = EstadosEvento.Cancelado;
     await evento.save();
     const restricciones = await restriccionService.getAllInEvent(id);
     restricciones.forEach(async (restriccion) => {
-      restriccionService.delete(restriccion.id)
-    })
+      restriccionService.delete(restriccion.id);
+    });
   }
 
   async istime() {
-    console.log(Date.now())
+    console.log(Date.now());
     await this.getAllInState(EstadosEvento.Confirmado).then((eventos) => {
-      console.log(eventos)
-      eventos.forEach(async(evento)=>{
-        console.log(evento)
-        if(true){
-          evento.estado=EstadosEvento.EnCurso
-          await evento.save()
-        }else{
-          console.log("se verifico pero no");
+      console.log(eventos);
+      eventos.forEach(async (evento) => {
+        console.log(evento);
+        if (true) {
+          evento.estado = EstadosEvento.EnCurso;
+          await evento.save();
+        } else {
+          console.log('se verifico pero no');
         }
-      })  
+      });
     });
   }
 }
