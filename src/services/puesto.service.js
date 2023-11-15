@@ -1,6 +1,7 @@
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Puesto } from '../DAO/models/puesto.model.js';
 import { consumidorService } from './consumidor.service.js';
+import { asociacionService } from './asociacion.service.js';
 
 class PuestoService {
   //hacer que los metodos llamen a los service, no a los models
@@ -15,6 +16,22 @@ class PuestoService {
     return puestos;
   }
 
+  async getAllInEvent(eventoId) {
+    const asociaciones = await asociacionService.getAllInEvent(eventoId);
+    const puestosPromises = asociaciones
+      .filter(asociacion => asociacion.puestoId !== null)
+      .map(async asociacion => {
+        const puesto = await Puesto.findByPk(asociacion.puestoId);
+        return puesto && puesto.habilitado == 1 ? puesto : null;
+      });
+  
+    const puestos = await Promise.all(puestosPromises);
+    const filteredPuestos = puestos.filter(puesto => puesto !== null);
+  
+    return filteredPuestos;
+  }
+  
+  
   async getAllDeshabilitados(consumidorId) {
     const consumidor = await Consumidor.findByPk(consumidorId);
     const puestos = await Puesto.findAll({

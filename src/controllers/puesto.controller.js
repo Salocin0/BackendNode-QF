@@ -28,6 +28,33 @@ class PuestoController {
     }
   }
 
+  async getAllInEventController(req, res) {
+    try {
+      const eventoId = req.params.eventoId;
+      const puestos = await puestoService.getAllInEvent(eventoId);
+      console.log(puestos)
+      if (puestos.length > 0) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found all puestos',
+          data: puestos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'puestos not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
   async getAllControllerDeshabilitados(req, res) {
     try {
       const consumidorId = req.headers["consumidorid"];

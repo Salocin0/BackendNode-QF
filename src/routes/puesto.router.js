@@ -4,6 +4,8 @@ export const RouterPuesto = express.Router();
 
 RouterPuesto.get('/', puestoController.getAllController);
 
+RouterPuesto.get('/evento/:eventoId', puestoController.getAllInEventController);
+
 RouterPuesto.get('/deshabilitados', puestoController.getAllControllerDeshabilitados);
 
 RouterPuesto.get('/:id', puestoController.getOneController);

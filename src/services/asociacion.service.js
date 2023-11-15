@@ -31,7 +31,7 @@ class AsociacionService {
   async create(nuevaAsociacion,respuestas,consumidorId) {
     if(consumidorId!==0){
       const consumidor = await consumidorService.getOne(consumidorId)
-      nuevaAsociacion.repartidoreId=consumidor.repartidorId
+      nuevaAsociacion.repartidoreId=consumidor?.repartidorId
     }else{
       nuevaAsociacion.repartidoreId=null
     }
