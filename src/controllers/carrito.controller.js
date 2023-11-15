@@ -20,6 +20,25 @@ class CarritoController {
     }
   }
 
+  async getEstructuraController(req, res) {
+    try {
+      const consumidorId = req.headers['consumidorid'];
+      const carrito = await carritoService.getEstructura(consumidorId);
+      return res.status(200).json({
+        status: 'sucess',
+        msg: 'Productor found',
+        data: carrito,
+      });
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
   async deleteOneController(req, res) {
     try {
       const consumidorId = req.headers['consumidorid'];

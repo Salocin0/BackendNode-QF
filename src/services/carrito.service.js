@@ -1,5 +1,6 @@
-import { Carrito } from '../DAO/models/carrito.model.js';
+import { Carrito, ItemCarrito } from '../DAO/models/carrito.model.js';
 import { productoService } from './producto.service.js';
+import { Producto } from '../DAO/models/producto.model.js';
 
 class CarritoService {
   async getOne(consumidorId) {
@@ -13,6 +14,43 @@ class CarritoService {
     }else{
         carrito = Carrito.create({consumidorId: consumidorId})
         return carrito
+    }
+  }
+
+  async getEstructura(consumidorId) {
+    try {
+      const carrito = await Carrito.findOne({
+        where: {
+          consumidorId: consumidorId,
+        },
+      });
+  
+      if (carrito) {
+        const items = await ItemCarrito.findAll({
+          where: {
+            CarritoId: carrito.id,
+          },
+          include: [{ model: Producto }],
+        });
+        const carrito = {
+            id: carrito.id,
+            consumidorId: carrito.consumidorId,
+            productos: items.map((item) => ({
+              cantidad: item.cantidad,
+              nombre: item.producto.nombre,
+              precio: item.producto.precio,
+              id: item.producto.id,
+              puestoId: item.producto.puestoId,
+            })),
+        };
+  
+        return carrito;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error('Error al obtener la estructura del carrito:', error);
+      throw error;
     }
   }
 

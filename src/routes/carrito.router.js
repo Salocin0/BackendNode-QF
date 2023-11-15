@@ -4,6 +4,8 @@ export const RouterCarrito = express.Router();
 
 RouterCarrito.get('/', carritoController.getController);
 
+RouterCarrito.get('/estructura',carritoController.getEstructuraController)
+
 RouterCarrito.delete('/', carritoController.deleteOneController);
 
 RouterCarrito.put('/addToCart/:productoId',carritoController.addToCartController);
