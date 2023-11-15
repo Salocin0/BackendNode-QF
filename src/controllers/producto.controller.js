@@ -245,7 +245,6 @@ class ProductoController {
       });
     }
   }
-
 }
 
 export const productoController = new ProductoController();
