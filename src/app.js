@@ -11,6 +11,8 @@ import morgan from 'morgan';
 import passport from 'passport';
 import { initPassport } from './config/passport.config.js';
 import { __dirname } from './dirname.js';
+import { RouterAsociacion } from './routes/asociacion.router.js';
+import { RouterCarrito } from './routes/carrito.router.js';
 import { RouterConsumidor } from './routes/consumidor.router.js';
 import { RouterEncargado } from './routes/encargado.router.js';
 import { RouterEvento } from './routes/evento.router.js';
@@ -23,9 +25,6 @@ import { RouterRestriccion } from './routes/restriccion.router.js';
 import { RouterUser } from './routes/user.router.js';
 import { sequelize } from './util/connections.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
-import { RouterRestriccion } from './routes/restriccion.router.js';
-import { RouterAsociacion } from './routes/asociacion.router.js';
-import { RouterCarrito } from './routes/carrito.router.js';
 //definicion de server de express
 const app = express();
 const port = 8000;

@@ -1,10 +1,7 @@
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Evento } from '../DAO/models/evento.model.js';
 import { EstadosEvento } from '../enums/Estados.enums.js';
-<<<<<<< HEAD
-=======
 import { estadosEvento } from '../estados/estados/estadosEvento.js';
->>>>>>> da3d894c772e7c0842f411fddf45a30c221d90d1
 import { consumidorService } from './consumidor.service.js';
 import { restriccionService } from './restriccion.service.js';
 class EventoService {

@@ -246,10 +246,10 @@ class EventoController {
   async updateStateController(req, res) {
     const eventoId = req.params.id;
     const accion = req.params.accion;
-
     try {
         const evento = await eventoService.getOne(eventoId);
         const estadoActual = evento.estado;
+
         console.log(estadoActual);
 
         if (estadosEvento[estadoActual] && estadosEvento[estadoActual][accion]) {

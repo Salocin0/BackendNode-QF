@@ -1,6 +1,6 @@
-export const enPreparacion = {
+export const EnPreparacion = {
   crearEvento: async (evento) => {
-      evento.estado = 'En Preparación';
+      evento.estado = 'EnPreparacion';
       await evento.save();
       return evento;
   },
@@ -18,14 +18,14 @@ export const enPreparacion = {
   },
 
   iniciarEvento: async (evento) => {
-      throw new Error('No se puede iniciar un evento directamente desde "En Preparación"');
+      throw new Error('No se puede iniciar un evento directamente desde "En Preparacion"');
   },
 
   finalizarEvento: async (evento) => {
-      throw new Error('No se puede finalizar un evento directamente desde "En Preparación"');
+      throw new Error('No se puede finalizar un evento directamente desde "En Preparacion"');
   },
 
   reprogramarEvento: async (evento) => {
-      throw new Error('No se puede reprogramar un evento directamente desde "En Preparación"');
+      throw new Error('No se puede reprogramar un evento directamente desde "En Preparacion"');
   },
 };

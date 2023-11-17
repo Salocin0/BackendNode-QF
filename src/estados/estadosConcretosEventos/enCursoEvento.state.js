@@ -1,4 +1,4 @@
-export const enCurso = {
+export const EnCurso = {
   crearEvento: async (evento) => {
     throw new Error('Error el evento ya ha sido creado');
   },
