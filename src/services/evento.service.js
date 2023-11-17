@@ -1,16 +1,17 @@
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Evento } from '../DAO/models/evento.model.js';
+import { EstadosEvento } from '../enums/Estados.enums.js';
 import { consumidorService } from './consumidor.service.js';
 import { restriccionService } from './restriccion.service.js';
-import { EstadosEvento } from '../enums/Estados.enums.js';
 class EventoService {
   //hacer que los metodos llamen a los service, no a los models
   async getAll(consumidorId) {
     const consumidor = await Consumidor.findByPk(consumidorId);
+    console.log("aca")
+    console.log(consumidor);
     const eventos = await Evento.findAll({
       where: {
         productorId: consumidor.productorId,
-        habilitado: true,
       },
     });
     return eventos;

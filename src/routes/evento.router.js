@@ -1,10 +1,12 @@
 import express from 'express';
-export const RouterEvento = express.Router();
 import { eventoController } from '../controllers/evento.controller.js';
+export const RouterEvento = express.Router();
 
 RouterEvento.get('/', eventoController.getAllController);
 
 RouterEvento.get('/enEstado/:state', eventoController.getAllInStateController);
+
+RouterEvento.get('/all', eventoController.getAllWithoutStateController);
 
 RouterEvento.get('/:id', eventoController.getOneController);
 

@@ -57,6 +57,36 @@ class EventoController {
     }
   }
 
+
+  async getAllWithoutStateController(req, res) {
+    try {
+      const consumidorId = req.header('ConsumidorId');
+      console.log(consumidorId);
+      const eventos = await eventoService.getAll(consumidorId);
+      if (eventos.length > 0) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found all eventos',
+          data: eventos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'eventos not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
   async getOneController(req, res) {
     try {
       const eventoId = req.params.id;
