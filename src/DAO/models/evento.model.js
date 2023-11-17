@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import DataTypes from 'sequelize';
 import { sequelize } from './../../util/connections.js';
 import { DiaEvento } from './diaEvento.model.js';
 
@@ -98,16 +98,15 @@ export const Evento = sequelize.define('evento', {
   },
   img: {
     type: DataTypes.TEXT('long'),
-    allowNull: false,
+    allowNull: true,
   },
   croquis: {
     type: DataTypes.TEXT('long'),
-    allowNull: false,
+    allowNull: true,
   },
   estado:{
     type: DataTypes.STRING,
-    allowNull: false,
-    defaultValue: 'enPreparacion'
+    allowNull: true,
   }
 });
 
