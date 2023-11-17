@@ -22,6 +22,8 @@ export const EnCurso = {
     await evento.save();
     return evento;    },
 
+
+
   reprogramarEvento: async (evento) => {
       throw new Error('No se puede reprogramar un evento directamente desde "En Curso"');
   },

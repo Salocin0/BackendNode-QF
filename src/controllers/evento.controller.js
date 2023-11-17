@@ -195,21 +195,21 @@ class EventoController {
         restricciones:restricciones,
         consumidorId:consumidorId,
       };
-      console.log(nuevoEvento);
+      console.log(nuevoEvento.estado);
       const eventoCreado = await eventoService.create(nuevoEvento);
-      if (eventoCreado === false) {
-        return res.status(400).json({
-          status: 'error',
-          msg: 'evento used',
-          code: 400,
-          data: {},
-        });
-      } else {
+      if (eventoCreado) {
         return res.status(200).json({
           status: 'success',
           msg: 'evento created',
           code: 200,
           data: eventoCreado,
+        });
+      } else {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'evento error',
+          code: 400,
+          data: {},
         });
       }
     } catch (e) {
