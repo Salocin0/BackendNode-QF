@@ -23,7 +23,6 @@ import { RouterRestriccion } from './routes/restriccion.router.js';
 import { RouterUser } from './routes/user.router.js';
 import { sequelize } from './util/connections.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
-import { RouterRestriccion } from './routes/restriccion.router.js';
 import { RouterAsociacion } from './routes/asociacion.router.js';
 import { RouterCarrito } from './routes/carrito.router.js';
 //definicion de server de express
