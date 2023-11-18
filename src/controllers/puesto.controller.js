@@ -1,3 +1,4 @@
+import { estadosPuestoDeComida } from '../estados/estados/estadosPuestosDeComida.js';
 import { puestoService } from '../services/puesto.service.js';
 
 class PuestoController {
@@ -54,6 +55,34 @@ class PuestoController {
       });
     }
   }
+
+  async getAllControllerByEncargado(req, res) {
+    try {
+      const consumidorId = req.headers["consumidorid"];
+      console.log(consumidorId)
+      const puestos = await puestoService.getAllByEncargado(consumidorId);
+      if (puestos.length > 0) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found all puestos',
+          data: puestos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'puestos not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
 
   async getAllControllerDeshabilitados(req, res) {
     try {
@@ -154,7 +183,7 @@ class PuestoController {
 
   async createOneController(req, res) {
     try {
-      const { nombreCarro, numeroCarro, tipoNegocio,  telefonoCarro ,consumidorId , banner , logo  } = req.body;
+      const { nombreCarro, numeroCarro, tipoNegocio,  telefonoCarro ,consumidorId , banner , logo, estado  } = req.body;
       const nuevoPuesto = {
         nombreCarro: nombreCarro,
         numeroCarro: numeroCarro,
@@ -165,7 +194,8 @@ class PuestoController {
         telefonoCarro: telefonoCarro,
         consumidorId:consumidorId,
         img: logo,
-        banner: banner
+        banner: banner,
+        estado: estado
       };
       console.log(nuevoPuesto);
       const puestoCreado = await puestoService.create(nuevoPuesto);
@@ -215,6 +245,25 @@ class PuestoController {
       });
     }
   }
+
+  async updateStateController(req, res) {
+    const puestoId = req.params.id;
+    const accion = req.params.accion;
+    try {
+        const puesto = await puestoService.getOne(puestoId);
+        const estadoActual = puesto.estado;
+
+        console.log(estadoActual);
+
+        if (estadosPuestoDeComida[estadoActual] && estadosPuestoDeComida[estadoActual][accion]) {
+            await estadosPuestoDeComida[estadoActual][accion](puesto);
+        } else {
+            res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
+    }
+}
 
 }
 

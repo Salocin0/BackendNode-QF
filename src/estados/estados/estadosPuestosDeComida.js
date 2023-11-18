@@ -1,115 +1,116 @@
-import { activo } from "../estadosPuestoDeComida/activoPuesto.state.js";
-import { creado } from "../estadosPuestoDeComida/creadoPuesto.state.js";
-import { deshabilitado } from "../estadosPuestoDeComida/deshabilitadoPuesto.state.js";
-import { habilitado } from "../estadosPuestoDeComida/habilitadoPuesto.state.js";
-import { inactivo } from "../estadosPuestoDeComida/inactivoPuesto.state.js";
+import { Activo } from "../estadosConcretosPuesto/activoPuesto.state.js";
+import { Creado } from "../estadosConcretosPuesto/creadoPuesto.state.js";
+import { Deshabilitado } from "../estadosConcretosPuesto/deshabilitadoPuesto.state.js";
+import { Habilitado } from "../estadosConcretosPuesto/habilitadoPuesto.state.js";
+import { Inactivo } from "../estadosConcretosPuesto/inactivoPuesto.state.js";
+
 
 export const estadosPuestoDeComida = {
-    creado: {
+    Creado: {
         crearPuesto: async (puesto) => {
-            return creado.crearPuesto(puesto);
+            return Creado.crearPuesto(puesto);
         },
         validar: async (puesto) => {
-            return creado.validar(puesto);
+            return Creado.validar(puesto);
         },
         iniciarServicio: async (puesto) => {
-            return creado.iniciarServicio(puesto);
+            return Creado.iniciarServicio(puesto);
         },
         finalizarServicio: async (puesto) => {
-            return creado.finalizarServicio(puesto);
+            return Creado.finalizarServicio(puesto);
         },
         deshabilitar: async (puesto) =>{
-            return creado.deshabilitar(puesto);
+            return Creado.deshabilitar(puesto);
         },
         habilitar: async (puesto) => {
-            return creado.habilitar(puesto);
+            return Creado.habilitar(puesto);
         }
     },
 
-    habilitado: {
+    Habilitado: {
         crearPuesto: async (puesto) => {
-            return habilitado.crearPuesto(puesto);
+            return Habilitado.crearPuesto(puesto);
         },
         validar: async (puesto) => {
-            return habilitado.validar(puesto);
+            return Habilitado.validar(puesto);
         },
         iniciarServicio: async (puesto) => {
-            return habilitado.iniciarServicio(puesto);
+            return Habilitado.iniciarServicio(puesto);
         },
         finalizarServicio: async (puesto) => {
-            return habilitado.finalizarServicio(puesto);
+            return Habilitado.finalizarServicio(puesto);
         },
         deshabilitar: async (puesto) =>{
-            return habilitado.deshabilitar(puesto);
+            return Habilitado.deshabilitar(puesto);
         },
         habilitar: async (puesto) => {
-            return habilitado.habilitar(puesto);
+            return Habilitado.habilitar(puesto);
         }
     },
 
-    activo: {
+    Activo: {
         crearPuesto: async (puesto) => {
-            return activo.crearPuesto(puesto);
+            return Activo.crearPuesto(puesto);
         },
         validar: async (puesto) => {
-            return activo.validar(puesto);
+            return Activo.validar(puesto);
         },
         iniciarServicio: async (puesto) => {
-            return activo.iniciarServicio(puesto);
+            return Activo.iniciarServicio(puesto);
         },
         finalizarServicio: async (puesto) => {
-            return activo.finalizarServicio(puesto);
+            return Activo.finalizarServicio(puesto);
         },
         deshabilitar: async (puesto) =>{
-            return activo.deshabilitar(puesto);
+            return Activo.deshabilitar(puesto);
         },
         habilitar: async (puesto) => {
-            return activo.habilitar(puesto);
+            return Activo.habilitar(puesto);
         }
 
     },
 
-    deshabilitado: {
+    Deshabilitado: {
         crearPuesto: async (puesto) => {
-            return deshabilitado.crearPuesto(puesto);
+            return Deshabilitado.crearPuesto(puesto);
         },
         validar: async (puesto) => {
-            return deshabilitado.validar(puesto);
+            return Deshabilitado.validar(puesto);
         },
         iniciarServicio: async (puesto) => {
-            return deshabilitado.iniciarServicio(puesto);
+            return Deshabilitado.iniciarServicio(puesto);
         },
         finalizarServicio: async (puesto) => {
-            return deshabilitado.finalizarServicio(puesto);
+            return Deshabilitado.finalizarServicio(puesto);
         },
         deshabilitar: async (puesto) =>{
-            return deshabilitado.deshabilitar(puesto);
+            return Deshabilitado.deshabilitar(puesto);
         },
         habilitar: async (puesto) => {
-            return deshabilitado.habilitar(puesto);
+            return Deshabilitado.habilitar(puesto);
         }
 
 
     },
 
-    inactivo: {
+    Inactivo: {
         crearPuesto: async (puesto) => {
-            return inactivo.crearPuesto(puesto);
+            return Inactivo.crearPuesto(puesto);
         },
         validar: async (puesto) => {
-            return inactivo.validar(puesto);
+            return Inactivo.validar(puesto);
         },
         iniciarServicio: async (puesto) => {
-            return inactivo.iniciarServicio(puesto);
+            return Inactivo.iniciarServicio(puesto);
         },
         finalizarServicio: async (puesto) => {
-            return inactivo.finalizarServicio(puesto);
+            return Inactivo.finalizarServicio(puesto);
         },
         deshabilitar: async (puesto) =>{
-            return inactivo.deshabilitar(puesto);
+            return Inactivo.deshabilitar(puesto);
         },
         habilitar: async (puesto) => {
-            return inactivo.habilitar(puesto);
+            return Inactivo.habilitar(puesto);
         }
     },
 };

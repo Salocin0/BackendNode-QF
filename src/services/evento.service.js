@@ -21,7 +21,7 @@ class EventoService {
   async getAllInState(estado) {
     const eventos = await Evento.findAll({
       where: {
-        estado: 'Confirmado'
+        estado: estado
       },
     });
     return eventos;
