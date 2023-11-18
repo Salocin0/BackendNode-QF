@@ -126,6 +126,28 @@ class CarritoController {
   }
   
   
+  async deleteProductsToCartController(req, res) {
+    try {
+      const consumidorId = req.headers['consumidorid'];
+      const puestoId = req.params.puestoId;
+      const carrito = await carritoService.deletoProductsToCart(consumidorId,puestoId);
+
+      return res.status(200).json({
+        status: 'success',
+        msg: 'todas las unidades del producto eliminadas del carrito',
+        code: 200,
+        data: carrito,
+      });
+    } catch (e) {
+      console.error(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'Ocurrió un error al eliminar el encargado :(',
+        data: {},
+      });
+    }
+  }
+  
 }
 
 export const carritoController = new CarritoController();

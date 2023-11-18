@@ -61,6 +61,11 @@ Carrito.prototype.agregarProducto = async function (productoId, cantidad = 1) {
 
 Carrito.prototype.actualizarCantidad = async function (productoId, nuevaCantidad) {
   const producto = await Producto.findByPk(productoId);
+  if (nuevaCantidad > 0) {
+    await this.addProducto(producto, { through: { cantidad: nuevaCantidad } });
+  } else {
+    await this.removeProducto(producto);
+  }
   if (producto) {
     const item = await ItemCarrito.findOne({
       where: { CarritoId: this.id, ProductoId: productoId },
