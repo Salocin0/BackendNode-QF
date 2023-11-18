@@ -1,8 +1,9 @@
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Evento } from '../DAO/models/evento.model.js';
+import { EstadosEvento } from '../enums/Estados.enums.js';
+import { estadosEvento } from '../estados/estados/estadosEvento.js';
 import { consumidorService } from './consumidor.service.js';
 import { restriccionService } from './restriccion.service.js';
-import { EstadosEvento } from '../enums/Estados.enums.js';
 class EventoService {
   //hacer que los metodos llamen a los service, no a los models
   async getAll(consumidorId) {
@@ -19,7 +20,7 @@ class EventoService {
   async getAllInState(estado) {
     const eventos = await Evento.findAll({
       where: {
-        estado: estado,
+        estado: 'Confirmado'
       },
     });
     return eventos;
@@ -72,15 +73,18 @@ class EventoService {
       },
     });
     nuevoEvento.ProductorId = consumidor.productorId;
-
-    nuevoEvento.estado = EstadosEvento.EnPreparacion;
-    const eventoCreado = await Evento.create(nuevoEvento);
-    nuevoEvento.restricciones.forEach(async (restriccion) => {
-      restriccion.eventoId = eventoCreado.id;
-      const restriccionCreada = await restriccionService.create(restriccion);
-      console.log(restriccionCreada);
-    });
-    return eventoCreado;
+    if (eventoendb) {
+      return false;
+    } else {
+      const eventoCreado = await Evento.create(nuevoEvento);
+      this.crearEvento(eventoCreado);
+      nuevoEvento.restricciones.forEach(async (restriccion) => {
+        restriccion.eventoId = eventoCreado.id;
+        const restriccionCreada = await restriccionService.create(restriccion);
+        console.log(restriccionCreada);
+      });
+      return eventoCreado;
+    }
   }
 
   async delete(id) {
@@ -106,9 +110,18 @@ class EventoService {
         } else {
           console.log('se verifico pero no');
         }
-      });
+      })
     });
   }
+
+  async crearEvento(evento) {
+    estadosEvento.enPreparacion.crearEvento(evento);
+  }
+
+
+
+
+
 }
 
 export const eventoService = new EventoService();
