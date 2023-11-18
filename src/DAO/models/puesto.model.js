@@ -55,9 +55,9 @@ export const Puesto = sequelize.define('puesto', {
       defaultValue: 'CREADO',
     },
     */
-    habilitado: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
+    estado: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     
   });

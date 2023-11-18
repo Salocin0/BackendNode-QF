@@ -1,4 +1,4 @@
-export const activo = {
+export const Activo = {
     crearPuesto: async (puesto) => {
         throw new Error('El puesto ya ha sido creado');
     },

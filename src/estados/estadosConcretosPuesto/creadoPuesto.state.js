@@ -1,4 +1,4 @@
-export const creado = {
+export const Creado = {
     crearPuesto: async (puesto) => {
         puesto.estado = 'Creado';
         await puesto.save();

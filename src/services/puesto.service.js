@@ -1,8 +1,9 @@
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Puesto } from '../DAO/models/puesto.model.js';
-import { consumidorService } from './consumidor.service.js';
-import { asociacionService } from './asociacion.service.js';
 import { EstadosAsociaciones } from '../enums/Estados.enums.js';
+import { estadosPuestoDeComida } from '../estados/estados/estadosPuestosDeComida.js';
+import { asociacionService } from './asociacion.service.js';
+import { consumidorService } from './consumidor.service.js';
 
 class PuestoService {
   //hacer que los metodos llamen a los service, no a los models
@@ -45,6 +46,16 @@ class PuestoService {
     return puestos;
   }
 
+  async getAllByEncargado(consumidorId) {
+    const consumidor = await Consumidor.findByPk(consumidorId);
+    const puestos = await Puesto.findAll({
+      where: {
+        encargadoId: consumidor.encargadoId,
+      },
+    });
+    return puestos;
+  }
+
 
 
   async getOne(id) {
@@ -71,21 +82,23 @@ class PuestoService {
     puesto.habilitado = true;
     await puesto.save();
   }
-    async create(nuevoPuesto) {
-        const consumidor = await consumidorService.getOne(nuevoPuesto.consumidorId)
+    async create(puesto) {
+        const consumidor = await consumidorService.getOne(puesto.consumidorId)
         const puestoendb = await Puesto.findOne({
           where: {
-            numeroCarro: nuevoPuesto.numeroCarro,
+            numeroCarro: puesto.numeroCarro,
             /*nombreCarro: nuevoPuesto.nombreCarro,*/
             encargadoId: consumidor.encargadoId
           },
         });
 
-        nuevoPuesto.encargadoId = consumidor.encargadoId;
+        puesto.encargadoId = consumidor.encargadoId;
         if (puestoendb) {
           return false;
         } else {
-          const puestoCreado = await Puesto.create(nuevoPuesto);
+          const puestoCreado = await Puesto.create(puesto);
+          this.crearPuesto(puestoCreado);
+
           return puestoCreado;
         }
       }
@@ -95,6 +108,13 @@ class PuestoService {
     puesto.habilitado = false;
     await puesto.save();
   }
+
+
+async crearPuesto(puestoCreado) {
+  estadosPuestoDeComida.Creado.crearPuesto(puestoCreado);
+
+}
+
 }
 
 export const puestoService = new PuestoService();

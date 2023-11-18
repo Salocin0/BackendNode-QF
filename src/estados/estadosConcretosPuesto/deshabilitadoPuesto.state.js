@@ -1,4 +1,4 @@
-export const deshabilitado = {
+export const Deshabilitado = {
     crearPuesto: async (puesto) => {
         throw new Error('El puesto ya ha sido creado');
     },
@@ -23,7 +23,7 @@ export const deshabilitado = {
     },
   
     habilitar: async (puesto) => {
-        puesto.estado = 'Habilitado';
+        puesto.estado = 'Creado';
         puesto.save();
         return puesto;    },
   };
