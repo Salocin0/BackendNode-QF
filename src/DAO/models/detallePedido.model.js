@@ -29,9 +29,10 @@ DetallePedido.belongsTo(Producto, {
   targetKey: 'id',
 });
 
-Pedido.hasOne(DetallePedido, {
+Pedido.hasMany(DetallePedido, {
   foreignKey: 'PedidoId',
   sourceKey: 'id',
+  as: 'detalles',
 });
 
 DetallePedido.belongsTo(Pedido, {
