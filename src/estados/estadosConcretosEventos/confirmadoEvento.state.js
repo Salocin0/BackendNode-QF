@@ -1,4 +1,4 @@
-export const confirmado = {
+export const Confirmado = {
   crearEvento: async (evento) => {
     throw new Error('Error el evento ya ha sido creado');
   },
@@ -14,13 +14,20 @@ export const confirmado = {
   },
 
   iniciarEvento: async (evento) => {
-    evento.estado = 'En Curso';
+    evento.estado = 'EnCurso';
     await evento.save();
     return evento;
   },
 
   finalizarEvento: async (evento) => {
       throw new Error('No se puede finalizar un evento que no está "En Curso"');
+  },
+
+
+  pausarEvento: async (evento) => {
+    evento.estado = 'Pausado';
+    await evento.save();
+    return evento;
   },
 
   reprogramarEvento: async (evento) => {

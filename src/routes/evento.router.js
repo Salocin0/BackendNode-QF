@@ -6,6 +6,8 @@ RouterEvento.get('/', eventoController.getAllController);
 
 RouterEvento.get('/enEstado/:state', eventoController.getAllInStateController);
 
+RouterEvento.get('/all', eventoController.getAllWithoutStateController);
+
 RouterEvento.get('/:id', eventoController.getOneController);
 
 RouterEvento.put('/:id', eventoController.updateOneController);

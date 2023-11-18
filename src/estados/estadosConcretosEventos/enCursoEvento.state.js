@@ -1,4 +1,4 @@
-export const enCurso = {
+export const EnCurso = {
   crearEvento: async (evento) => {
     throw new Error('Error el evento ya ha sido creado');
   },
@@ -21,6 +21,8 @@ export const enCurso = {
     evento.estado = 'Finalizado';
     await evento.save();
     return evento;    },
+
+
 
   reprogramarEvento: async (evento) => {
       throw new Error('No se puede reprogramar un evento directamente desde "En Curso"');

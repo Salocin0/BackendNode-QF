@@ -1,8 +1,8 @@
 export const EstadosEvento = {
-    EnPreparacion: "enPreparacion",
+    EnPreparacion: "En Preparacion",
     Confirmado: "confirmado",
     Pausado: "pausado",
-    EnCurso: "enCurso",
+    EnCurso: "En Curso",
     Cancelado: "cancelado",
     Finalizado: "finalizado",
     Activo:"activo",

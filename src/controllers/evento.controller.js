@@ -58,6 +58,36 @@ class EventoController {
     }
   }
 
+
+  async getAllWithoutStateController(req, res) {
+    try {
+      const consumidorId = req.header('ConsumidorId');
+      console.log(consumidorId);
+      const eventos = await eventoService.getAll(consumidorId);
+      if (eventos.length > 0) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found all eventos',
+          data: eventos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'eventos not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
   async getOneController(req, res) {
     try {
       const eventoId = req.params.id;
@@ -165,21 +195,21 @@ class EventoController {
         restricciones:restricciones,
         consumidorId:consumidorId,
       };
-      console.log(nuevoEvento);
+      console.log(nuevoEvento.estado);
       const eventoCreado = await eventoService.create(nuevoEvento);
-      if (eventoCreado === false) {
-        return res.status(400).json({
-          status: 'error',
-          msg: 'evento used',
-          code: 400,
-          data: {},
-        });
-      } else {
+      if (eventoCreado) {
         return res.status(200).json({
           status: 'success',
           msg: 'evento created',
           code: 200,
           data: eventoCreado,
+        });
+      } else {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'evento error',
+          code: 400,
+          data: {},
         });
       }
     } catch (e) {
@@ -216,10 +246,10 @@ class EventoController {
   async updateStateController(req, res) {
     const eventoId = req.params.id;
     const accion = req.params.accion;
-
     try {
         const evento = await eventoService.getOne(eventoId);
         const estadoActual = evento.estado;
+
         console.log(estadoActual);
 
         if (estadosEvento[estadoActual] && estadosEvento[estadoActual][accion]) {

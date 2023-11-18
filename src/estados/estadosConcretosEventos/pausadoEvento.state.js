@@ -1,4 +1,4 @@
-export const pausado = {
+export const Pausado = {
   crearEvento: async (evento) => {
     throw new Error('Error el evento ya ha sido creado');
   },
@@ -22,7 +22,7 @@ export const pausado = {
   },
 
   reprogramarEvento: async (evento) => {
-    evento.estado = 'En Preparacion';
+    evento.estado = 'EnPreparacion';
     await evento.save();
     return evento;  },
 };

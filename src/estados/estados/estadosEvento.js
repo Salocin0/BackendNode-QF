@@ -1,129 +1,129 @@
 import { cancelado } from "../estadosConcretosEventos/canceladoEvento.state.js";
-import { confirmado } from "../estadosConcretosEventos/confirmadoEvento.state.js";
-import { enCurso } from "../estadosConcretosEventos/enCursoEvento.state.js";
-import { enPreparacion } from "../estadosConcretosEventos/enPreparacionEvento.state.js";
+import { Confirmado } from "../estadosConcretosEventos/confirmadoEvento.state.js";
+import { EnCurso } from "../estadosConcretosEventos/enCursoEvento.state.js";
+import { EnPreparacion } from "../estadosConcretosEventos/enPreparacionEvento.state.js";
 import { finalizado } from "../estadosConcretosEventos/finalizadoEvento.state.js";
-import { pausado } from "../estadosConcretosEventos/pausadoEvento.state.js";
-
+import { Pausado } from "../estadosConcretosEventos/pausadoEvento.state.js";
 
 export const estadosEvento = {
-    enPreparacion: {
+    EnPreparacion: {
         crearEvento: async (evento) => {
-            return enPreparacion.crearEvento(evento);
+            return EnPreparacion.crearEvento(evento);
         },
         confirmarEvento: (evento) => {
-            return enPreparacion.confirmar(evento);
+            return EnPreparacion.confirmarEvento(evento);
         },
         cancelarEvento: (evento) => {
-            return enPreparacion.cancelar(evento);
+            return EnPreparacion.cancelarEvento(evento);
         },
         iniciarEvento: (evento) => {
-            return enPreparacion.iniciarEvento(evento);
+            return EnPreparacion.iniciarEvento(evento);
         },
         finalizarEvento: (evento) => {
-            return enPreparacion.finalizarEvento(evento);
+            return EnPreparacion.finalizarEvento(evento);
         },
         reprogramarEvento: (evento) => {
-            return enPreparacion.reprogramarEvento(evento);
+            return EnPreparacion.reprogramarEvento(evento);
         },
         activarEvento: (evento) => {
-            return enPreparacion.activarEvento(evento);
+            return EnPreparacion.activarEvento(evento);
         },
         desactivarEvento: (evento) => {
-            return enPreparacion.desactivarEvento(evento);
+            return EnPreparacion.desactivarEvento(evento);
         },
         continuarEvento: (evento) => {
-            return enPreparacion.continuarEvento(evento);
+            return EnPreparacion.continuarEvento(evento);
         }
     },
 
-    enCurso: {
+    EnCurso: {
         crearEvento: async (evento) => {
-            return enCurso.crearEvento(evento);
+            return EnCurso.crearEvento(evento);
         },
         confirmarEvento: (evento) => {
-            return enCurso.confirmar(evento);
+            return EnCurso.confirmar(evento);
         },
         cancelarEvento: (evento) => {
-            return enCurso.cancelar(evento);
+            return EnCurso.cancelar(evento);
         },
         iniciarEvento: (evento) => {
-            return enCurso.iniciarEvento(evento);
+            return EnCurso.iniciarEvento(evento);
         },
         finalizarEvento: (evento) => {
-            return enCurso.finalizarEvento(evento);
+            return EnCurso.finalizarEvento(evento);
         },
         reprogramarEvento: (evento) => {
-            return enCurso.reprogramarEvento(evento);
+            return EnCurso.reprogramarEvento(evento);
         },
         activarEvento: (evento) => {
-            return enCurso.activarEvento(evento);
+            return EnCurso.activarEvento(evento);
         },
-        desactivarEvento: (evento) => {
-            return enCurso.desactivarEvento(evento);
-        },
+
         continuarEvento: (evento) => {
-            return enCurso.continuarEvento(evento);
+            return EnCurso.continuarEvento(evento);
         }
     },
 
-    confirmado: {
+    Confirmado: {
         crearEvento: async (evento) => {
-            return confirmado.crearEvento(evento);
+            return Confirmado.crearEvento(evento);
         },
         confirmarEvento: (evento) => {
-            return confirmado.confirmar(evento);
+            return Confirmado.confirmar(evento);
         },
         cancelarEvento: (evento) => {
-            return confirmado.cancelar(evento);
+            return Confirmado.cancelar(evento);
         },
         iniciarEvento: (evento) => {
-            return confirmado.iniciarEvento(evento);
+            return Confirmado.iniciarEvento(evento);
         },
         finalizarEvento: (evento) => {
-            return confirmado.finalizarEvento(evento);
+            return Confirmado.finalizarEvento(evento);
         },
         reprogramarEvento: (evento) => {
-            return confirmado.reprogramarEvento(evento);
+            return Confirmado.reprogramarEvento(evento);
         },
         activarEvento: (evento) => {
-            return confirmado.activarEvento(evento);
+            return Confirmado.activarEvento(evento);
         },
         desactivarEvento: (evento) => {
-            return confirmado.desactivarEvento(evento);
+            return Confirmado.desactivarEvento(evento);
+        },
+        pausarEvento: (evento) => {
+            return Confirmado.pausarEvento(evento);
         },
         continuarEvento: (evento) => {
-            return confirmado.continuarEvento(evento);
+            return Confirmado.continuarEvento(evento);
         }
     },
 
-    pausado: {
+    Pausado: {
         crearEvento: async (evento) => {
-            return pausado.crearEvento(evento);
+            return Pausado.crearEvento(evento);
         },
         confirmarEvento: (evento) => {
-            return pausado.confirmar(evento);
+            return Pausado.confirmar(evento);
         },
         cancelarEvento: (evento) => {
-            return pausado.cancelar(evento);
+            return Pausado.cancelarEvento(evento);
         },
         iniciarEvento: (evento) => {
-            return pausado.iniciarEvento(evento);
+            return Pausado.iniciarEvento(evento);
         },
         finalizarEvento: (evento) => {
-            return pausado.finalizarEvento(evento);
+            return Pausado.finalizarEvento(evento);
         },
         reprogramarEvento: (evento) => {
-            return pausado.reprogramarEvento(evento);
+            return Pausado.reprogramarEvento(evento);
         },
                 activarEvento: (evento) => {
-            return pausado.activarEvento(evento);
+            return Pausado.activarEvento(evento);
         },
         desactivarEvento: (evento) => {
-            return pausado.desactivarEvento(evento);
+            return Pausado.desactivarEvento(evento);
         },
         continuarEvento: (evento) => {
-            return pausado.continuarEvento(evento);
+            return Pausado.continuarEvento(evento);
         }
     },
 

@@ -8,10 +8,11 @@ class EventoService {
   //hacer que los metodos llamen a los service, no a los models
   async getAll(consumidorId) {
     const consumidor = await Consumidor.findByPk(consumidorId);
+    console.log("aca")
+    console.log(consumidor);
     const eventos = await Evento.findAll({
       where: {
         productorId: consumidor.productorId,
-        habilitado: true,
       },
     });
     return eventos;
@@ -67,16 +68,15 @@ class EventoService {
 
   async create(nuevoEvento) {
     const consumidor = await consumidorService.getOne(nuevoEvento.consumidorId);
-    const eventoendb = await Evento.findOne({
-      where: {
-        productorId: consumidor.productorId,
-      },
-    });
+    //const eventoendb = await Evento.findOne({
+      //where: {
+        //id: nuevoEvento.id,
+     // },
+    //});
     nuevoEvento.ProductorId = consumidor.productorId;
-    if (eventoendb) {
-      return false;
-    } else {
       const eventoCreado = await Evento.create(nuevoEvento);
+      console.log("Aca es:")
+      console.log(eventoCreado);
       this.crearEvento(eventoCreado);
       nuevoEvento.restricciones.forEach(async (restriccion) => {
         restriccion.eventoId = eventoCreado.id;
@@ -84,7 +84,7 @@ class EventoService {
         console.log(restriccionCreada);
       });
       return eventoCreado;
-    }
+
   }
 
   async delete(id) {
@@ -115,7 +115,7 @@ class EventoService {
   }
 
   async crearEvento(evento) {
-    estadosEvento.enPreparacion.crearEvento(evento);
+    estadosEvento.EnPreparacion.crearEvento(evento);
   }
 
 

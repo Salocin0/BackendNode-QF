@@ -11,6 +11,8 @@ import morgan from 'morgan';
 import passport from 'passport';
 import { initPassport } from './config/passport.config.js';
 import { __dirname } from './dirname.js';
+import { RouterAsociacion } from './routes/asociacion.router.js';
+import { RouterCarrito } from './routes/carrito.router.js';
 import { RouterConsumidor } from './routes/consumidor.router.js';
 import { RouterEncargado } from './routes/encargado.router.js';
 import { RouterEvento } from './routes/evento.router.js';
