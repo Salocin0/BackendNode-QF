@@ -25,6 +25,7 @@ import { RouterRestriccion } from './routes/restriccion.router.js';
 import { RouterUser } from './routes/user.router.js';
 import { sequelize } from './util/connections.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
+import { RouterPedido } from './routes/pedido.router.js';
 //definicion de server de express
 const app = express();
 const port = 8000;
@@ -100,6 +101,7 @@ app.use('/evento', RouterEvento);
 app.use('/restriccion', RouterRestriccion);
 app.use('/asociacion', RouterAsociacion);
 app.use('/carrito', RouterCarrito)
+app.use('/pedido', RouterPedido)
 
 
 // Sincronizar la base de datos y luego iniciar el servidor

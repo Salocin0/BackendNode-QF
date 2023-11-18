@@ -25,7 +25,7 @@ class PuestoService {
       .filter(asociacion => asociacion.estado == EstadosAsociaciones.Aceptada)
       .map(async asociacion => {
         const puesto = await Puesto.findByPk(asociacion.puestoId);
-        return puesto && puesto.habilitado == 1 ? puesto : null;
+        return puesto ? puesto : null;
       });
   
     const puestos = await Promise.all(puestosPromises);
