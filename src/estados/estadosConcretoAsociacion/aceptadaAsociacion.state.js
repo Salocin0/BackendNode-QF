@@ -1,4 +1,4 @@
-export const aceptada = {
+export const Aceptada = {
 
     newAsociacion: async (asociacion) => {
         throw new Error('Error en el estado de la asociacion');

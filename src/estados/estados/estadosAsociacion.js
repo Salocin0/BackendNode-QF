@@ -1,66 +1,66 @@
-import { aceptada } from "../estadosConcretoAsociacion/aceptadaAsociacion.state.js";
-import { cancelada } from "../estadosConcretoAsociacion/canceladaAsociacion.state.js";
-import { pendienteDeAceptacion } from "../estadosConcretoAsociacion/pendienteDeAceptacionAsociacion.state.js";
-import { rechazada } from "../estadosConcretoAsociacion/rechazadaAsociacion.state.js";
+import { Aceptada } from "../estadosConcretoAsociacion/aceptadaAsociacion.state.js";
+import { Cancelada } from "../estadosConcretoAsociacion/canceladaAsociacion.state.js";
+import { PendienteDeAceptacion } from "../estadosConcretoAsociacion/pendienteDeAceptacionAsociacion.state.js";
+import { Rechazada } from "../estadosConcretoAsociacion/rechazadaAsociacion.state.js";
 
 export const estadosAsociacion = {
-    pendienteDeAceptacion: {
+    PendienteDeAceptacion: {
         newAsociacion: async (asociacion) => {
-            return pendienteDeAceptacion.newAsociacion(asociacion);
+            return PendienteDeAceptacion.newAsociacion(asociacion);
         },
         aceptar: async (asociacion) => {
-            return pendienteDeAceptacion.aceptar(asociacion);
+            return PendienteDeAceptacion.aceptar(asociacion);
         },
         rechazada: async (asociacion) => {
-            return pendienteDeAceptacion.rechazada(asociacion);
+            return PendienteDeAceptacion.rechazada(asociacion);
         },
-        cancelada: async (asociacion) => {
-            return pendienteDeAceptacion.cancelada(asociacion);
+        cancelar: async (asociacion) => {
+            return PendienteDeAceptacion.cancelar(asociacion);
         },
     },
 
-    aceptada: {
+    Aceptada: {
         newAsociacion: async (asociacion) => {
-            return aceptada.newAsociacion(asociacion);
+            return Aceptada.newAsociacion(asociacion);
         },
         aceptar: async (asociacion) => {
-            return aceptada.aceptar(asociacion);
+            return Aceptada.aceptar(asociacion);
         },
         rechazada: async (asociacion) => {
-            return aceptada.rechazada(asociacion);
+            return Aceptada.rechazada(asociacion);
         },
-        cancelada: async (asociacion) => {
-            return aceptada.cancelada(asociacion);
+        cancelar: async (asociacion) => {
+            return Aceptada.cancelar(asociacion);
         },
     },
 
-    rechazada: {
+    Rechazada: {
         newAsociacion: async (asociacion) => {
-            return rechazada.newAsociacion(asociacion);
+            return Rechazada.newAsociacion(asociacion);
         },
         aceptar: async (asociacion) => {
-            return rechazada.aceptar(asociacion);
+            return Rechazada.aceptar(asociacion);
         },
         rechazada: async (asociacion) => {
-            return rechazada.rechazada(asociacion);
+            return Rechazada.rechazada(asociacion);
         },
-        cancelada: async (asociacion) => {
-            return rechazada.cancelada(asociacion);
+        cancelar: async (asociacion) => {
+            return Rechazada.cancelar(asociacion);
         },
     },
 
-    cancelada: {
+    Cancelada: {
         newAsociacion: async (asociacion) => {
-            return cancelada.newAsociacion(asociacion);
+            return Cancelada.newAsociacion(asociacion);
         },
         aceptar: async (asociacion) => {
-            return cancelada.aceptar(asociacion);
+            return Cancelada.aceptar(asociacion);
         },
         rechazada: async (asociacion) => {
-            return cancelada.rechazada(asociacion);
+            return Cancelada.rechazada(asociacion);
         },
-        cancelada: async (asociacion) => {
-            return cancelada.cancelada(asociacion);
+        cancelar: async (asociacion) => {
+            return Cancelada.cancelar(asociacion);
         },
     },
 

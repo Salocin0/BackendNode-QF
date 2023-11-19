@@ -1,4 +1,4 @@
-export const cancelada = {
+export const Cancelada = {
 
     newAsociacion: async (asociacion) => {
         throw new Error('Error en el estado de la asociacion');
@@ -11,7 +11,7 @@ export const cancelada = {
     rechazada: async (asociacion) => {
         throw new Error('Error en el estado de la asociacion');
     },
-    cancelada: async (asociacion) => { 
+    cancelar: async (asociacion) => {
         throw new Error('Error en el estado de la asociacion');
 
     },

@@ -10,7 +10,7 @@ export const EstadosEvento = {
   };
 
   export const EstadosAsociaciones = {
-    Pendiente: "pendiente",
+    Pendiente: "PendinenteDeAceptacion",
     Aceptada: "aceptada",
     Rechazada: "rechazada",
     Cancelada: "cancelada",

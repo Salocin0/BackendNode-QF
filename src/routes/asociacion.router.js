@@ -22,3 +22,4 @@ RouterAsociacion.get('/aceptar/:id', asociacionController.aceptarController);
 
 RouterAsociacion.get('/cancelar/:id', asociacionController.cancelarController);
 
+RouterAsociacion.post('/cambiarEstado/:asociacionId/:accion', asociacionController.updateStateController);

@@ -2,6 +2,7 @@ import { Asociacion } from "../DAO/models/asociacion.model.js";
 import { Consumidor } from "../DAO/models/consumidor.model.js";
 import { Evento } from "../DAO/models/evento.model.js";
 import { Puesto } from "../DAO/models/puesto.model.js";
+import { estadosAsociacion } from "../estados/estados/estadosAsociacion.js";
 import { asociacionService } from "../services/asociacion.service.js";
 
 class AsociacionController {
@@ -312,7 +313,10 @@ class AsociacionController {
         status: 'success',
         msg: 'Eventos found',
         code: 200,
-        data: eventos,
+        data: {
+          eventos: eventos,
+          asociaciones: asociaciones,
+        }
       });
     } catch (error) {
       console.error(error);
@@ -325,6 +329,27 @@ class AsociacionController {
     }
   }
 
+
+  async updateStateController(req, res) {
+    const asociacionId = req.params.asociacionId;
+    const accion = req.params.accion;
+    try {
+        const asociacion = await asociacionService.getOne(asociacionId);
+        const estadoActual = asociacion.estado;
+
+        console.log(estadoActual);
+
+        if (estadosAsociacion[estadoActual] && estadosAsociacion[estadoActual][accion]) {
+            await estadosAsociacion[estadoActual][accion](asociacion);
+            res.status(200).json({ message: 'Estado del evento actualizado.' });
+
+        } else {
+            res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
+    }
+}
 
 
 }
