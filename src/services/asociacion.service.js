@@ -28,21 +28,34 @@ class AsociacionService {
     return asociacion;
   }
 
-  async create(nuevaAsociacion,respuestas,consumidorId) {
-    if(consumidorId!==0){
-      const consumidor = await consumidorService.getOne(consumidorId)
-      nuevaAsociacion.repartidoreId=consumidor?.repartidorId
-    }else{
-      nuevaAsociacion.repartidoreId=null
+  async create(nuevaAsociacion, respuestas, consumidorId) {
+    if (consumidorId !== 0) {
+      const consumidor = await consumidorService.getOne(consumidorId);
+      nuevaAsociacion.repartidoreId = consumidor?.repartidorId;
+    } else {
+      nuevaAsociacion.repartidoreId = null;
     }
 
-    if(nuevaAsociacion.puestoId===0){
-      nuevaAsociacion.puestoId=null
+    if (nuevaAsociacion.puestoId === 0) {
+      nuevaAsociacion.puestoId = null;
     }
-    console.log(nuevaAsociacion)
-    nuevaAsociacion.estado=EstadosAsociaciones.Pendiente
+
+    nuevaAsociacion.estado = EstadosAsociaciones.Pendiente;
+
+    // Crear la asociación si no hay una existente para este evento y puesto
+    const existingAsociacion = await Asociacion.findOne({
+      where: {
+        eventoId: nuevaAsociacion.eventoId,
+        puestoId: nuevaAsociacion.puestoId,
+      },
+    });
+
+    if (existingAsociacion) {
+      throw new Error('La asociación para este evento y puesto ya existe');
+    }
+
     const asociacionCreada = await Asociacion.create(nuevaAsociacion);
-    console.log(respuestas)
+
     if (respuestas !== null) {
       const respuestasArray = Object.values(respuestas);
       await Promise.all(respuestasArray.map(async (respuesta) => {
@@ -51,8 +64,20 @@ class AsociacionService {
         await nuevaRespuesta.save();
       }));
     }
-    return asociacionCreada
+
+    return asociacionCreada;
   }
+
+  async getByEventoPuesto(eventoId, puestoId) {
+    const asociacion = await Asociacion.findOne({
+      where: {
+        eventoId: eventoId,
+        puestoId: puestoId,
+      },
+    });
+    return asociacion;
+  }
+
 
   async rechazar(id) {
     const asociacion = await this.getOne(id)
@@ -74,6 +99,9 @@ class AsociacionService {
     await asociacion.save();
     return asociacion
   }
+
+
+
 }
 
 export const asociacionService = new AsociacionService();

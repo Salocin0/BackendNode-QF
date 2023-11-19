@@ -1,3 +1,7 @@
+import { Asociacion } from "../DAO/models/asociacion.model.js";
+import { Consumidor } from "../DAO/models/consumidor.model.js";
+import { Evento } from "../DAO/models/evento.model.js";
+import { Puesto } from "../DAO/models/puesto.model.js";
 import { asociacionService } from "../services/asociacion.service.js";
 
 class AsociacionController {
@@ -202,30 +206,87 @@ class AsociacionController {
       const eventoid = req.params.eventoId;
       const puestoId = req.params.puestoId;
       const consumidorId = req.params.consumidorId;
-      const nuevaAsociacion = {
-        puestoId: Number(puestoId),
-        repartidoreId: consumidorId,
-        eventoId: Number(eventoid),
-      };
-      console.log(nuevaAsociacion)
-      const asociacionCreado = await asociacionService.create(nuevaAsociacion,null,consumidorId);
+
+      const existingAsociacion = await asociacionService.getByEventoPuesto(
+        Number(eventoid),
+        Number(puestoId)
+      );
+
+      if (existingAsociacion) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'La asociación para este evento y puesto ya existe',
+          code: 400,
+          data: {},
+        });
+      }
 
       return res.status(200).json({
         status: 'success',
-        msg: 'Restriccion created',
+        msg: 'Asociación creada exitosamente',
         code: 200,
-        data: asociacionCreado,
+        data: {},
       });
     } catch (e) {
       console.log(e);
       return res.status(500).json({
         status: 'error',
-        msg: 'something went wrong :(',
+        msg: 'Algo salió mal :(',
         code: 500,
         data: {},
       });
     }
   }
+
+  async getAllByConsumidorId(req, res) {
+    try {
+      const { consumidorId } = req.params;
+      console.log("aca es" + consumidorId);
+      const consumidor = await Consumidor.findByPk(consumidorId);
+
+      const encargadoId = consumidor.encargadoId;
+
+      const puestos = await Puesto.findAll({
+        where: {
+          encargadoId: encargadoId,
+        },
+        attributes: ['id'],
+      });
+
+      const puestosIds = puestos.map((puesto) => puesto.id);
+
+      const asociaciones = await Asociacion.findAll({
+        where: {
+          puestoId: puestosIds,
+        },
+      });
+
+      const eventoIds = asociaciones.map((asociacion) => asociacion.eventoId);
+
+      const eventos = await Evento.findAll({
+        where: {
+          id: eventoIds,
+        },
+      });
+
+      return res.status(200).json({
+        status: 'success',
+        msg: 'Eventos found',
+        code: 200,
+        data: eventos,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'Something went wrong :(',
+        code: 500,
+        data: {},
+      });
+    }
+  }
+
+
 
 }
 

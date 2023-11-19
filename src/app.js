@@ -17,6 +17,7 @@ import { RouterConsumidor } from './routes/consumidor.router.js';
 import { RouterEncargado } from './routes/encargado.router.js';
 import { RouterEvento } from './routes/evento.router.js';
 import { RouterLogin } from './routes/login.router.js';
+import { RouterPedido } from './routes/pedido.router.js';
 import { RouterProducto } from './routes/producto.router.js';
 import { RouterProductor } from './routes/productor.router.js';
 import { RouterPuesto } from './routes/puesto.router.js';
@@ -25,7 +26,6 @@ import { RouterRestriccion } from './routes/restriccion.router.js';
 import { RouterUser } from './routes/user.router.js';
 import { sequelize } from './util/connections.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
-import { RouterPedido } from './routes/pedido.router.js';
 //definicion de server de express
 const app = express();
 const port = 8000;

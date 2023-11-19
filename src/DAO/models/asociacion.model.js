@@ -1,9 +1,9 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../../util/connections.js';
+import { RTARestriccion } from './RTARestriccion.model.js';
 import { Evento } from './evento.model.js';
 import { Puesto } from './puesto.model.js';
 import { Repartidor } from './repartidor.model.js';
-import { RTARestriccion } from './RTARestriccion.model.js';
 
 export const Asociacion = sequelize.define('Asociacion', {
   id: {
@@ -13,8 +13,7 @@ export const Asociacion = sequelize.define('Asociacion', {
   },
   estado: {
     type: DataTypes.STRING,
-    allowNull: false,
-    defaultValue: 'pendiente',
+    allowNull: true,
   },
 });
 Asociacion.belongsTo(Evento, {

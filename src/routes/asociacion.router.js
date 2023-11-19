@@ -8,6 +8,10 @@ RouterAsociacion.get('/evento/:id', asociacionController.getAllInEventController
 
 RouterAsociacion.get('/:id', asociacionController.getOneController);
 
+RouterAsociacion.get('/evento/:eventoId/asociarSimple/:puestoId/:consumidorId', asociacionController.createSimpleOneController);
+
+RouterAsociacion.get('/buscar/:consumidorId', asociacionController.getAllByConsumidorId);
+
 RouterAsociacion.post('/evento/:eventoId/asociar/:puestoId/:consumidorId', asociacionController.createOneController);
 
 RouterAsociacion.post('/evento/:eventoId/asociarSimple/:puestoId/:consumidorId', asociacionController.createSimpleOneController);

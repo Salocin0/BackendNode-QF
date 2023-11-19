@@ -10,11 +10,7 @@ class EventoService {
     const consumidor = await Consumidor.findByPk(consumidorId);
     console.log("aca")
     console.log(consumidor);
-    const eventos = await Evento.findAll({
-      where: {
-        productorId: consumidor.productorId,
-      },
-    });
+    const eventos = await Evento.findAll();
     return eventos;
   }
 
