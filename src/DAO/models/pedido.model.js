@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from './../../util/connections.js';
 import { Consumidor } from './consumidor.model.js';
+import { Puesto } from './puesto.model.js';
 
 export const Pedido = sequelize.define('Pedido', {
   id: {
@@ -19,7 +20,7 @@ export const Pedido = sequelize.define('Pedido', {
   estado: {
     type: DataTypes.STRING,
     allowNull: false,
-  }
+  },
 });
 
 Consumidor.hasOne(Pedido, {
@@ -29,5 +30,15 @@ Consumidor.hasOne(Pedido, {
 
 Pedido.belongsTo(Consumidor, {
   foreignKey: 'consumidorId',
+  targetKey: 'id',
+});
+
+Puesto.hasOne(Pedido, {
+  foreignKey: 'puestoId',
+  sourceKey: 'id',
+});
+
+Pedido.belongsTo(Puesto, {
+  foreignKey: 'puestoId',
   targetKey: 'id',
 });

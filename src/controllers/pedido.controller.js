@@ -57,12 +57,13 @@ class PedidoController {
 
   async createOneController(req, res) {
     try {
-      const { detalles, consumidorId,total } = req.body;
+      const { detalles, consumidorId,total,puestoId } = req.body;
       const nuevoPedido = {
         fecha: Date.now(),
         consumidorId: consumidorId,
         total:total,
-        estado: "pendiente"
+        estado: "pendiente",
+        puestoId:puestoId
       };
 
       const pedidoCreado = await pedidoService.create(nuevoPedido, detalles);
