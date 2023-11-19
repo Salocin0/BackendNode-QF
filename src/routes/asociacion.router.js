@@ -14,7 +14,7 @@ RouterAsociacion.get('/buscar/:consumidorId', asociacionController.getAllByConsu
 
 RouterAsociacion.post('/evento/:eventoId/asociar/:puestoId/:consumidorId', asociacionController.createOneController);
 
-RouterAsociacion.post('/evento/:eventoId/asociarSimple/:puestoId/:consumidorId', asociacionController.createSimpleOneController);
+RouterAsociacion.post('/evento/:eventoId/asociarSimple/:puestoId/:consumidorId', asociacionController.createAsociacion);
 
 RouterAsociacion.get('/rechazar/:id', asociacionController.rechazarController);
 

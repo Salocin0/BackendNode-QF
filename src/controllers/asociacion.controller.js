@@ -219,14 +219,52 @@ class AsociacionController {
           code: 400,
           data: {},
         });
+      } else {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Asociación creada exitosamente',
+          code: 200,
+          data: {},
+        });
       }
-
-      return res.status(200).json({
-        status: 'success',
-        msg: 'Asociación creada exitosamente',
-        code: 200,
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'Something went wrong :(',
+        code: 500,
         data: {},
       });
+    }
+  }
+  async createAsociacion(req, res) {
+    try {
+      const eventoid = req.params.eventoId;
+      const puestoId = req.params.puestoId;
+      const consumidorId = req.params.consumidorId;
+      const nuevaAsociacion = {
+        puestoId: Number(puestoId),
+        repartidoreId: consumidorId,
+        eventoId: Number(eventoid),
+      };
+
+      const asociacionCreada = await asociacionService.create(nuevaAsociacion, null, consumidorId);
+
+      if (asociacionCreada) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Asociación creada exitosamente',
+          code: 200,
+          data: asociacionCreada,
+        });
+      } else {
+        return res.status(500).json({
+          status: 'error',
+          msg: 'No se pudo crear la asociación',
+          code: 500,
+          data: {},
+        });
+      }
     } catch (e) {
       console.log(e);
       return res.status(500).json({
@@ -237,6 +275,7 @@ class AsociacionController {
       });
     }
   }
+
 
   async getAllByConsumidorId(req, res) {
     try {
