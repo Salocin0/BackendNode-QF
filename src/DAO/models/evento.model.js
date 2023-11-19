@@ -42,7 +42,7 @@ export const Evento = sequelize.define('evento', {
   },
   cantidadRepartidores: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: false,
   },
   capacidadMaxima: {
     type: DataTypes.INTEGER,

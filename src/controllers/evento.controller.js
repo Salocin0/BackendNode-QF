@@ -185,7 +185,7 @@ class EventoController {
         tipoPreventa: tipoPreventa || 0,
         cantidadPuestos: cantidadPuestos,
         conRepartidor: tieneRepartidores,
-        cantidadRepartidores: cantidadRepartidores,
+        cantidadRepartidores: cantidadRepartidores || 0,
         capacidadMaxima: capacidadMaxima,
         tipoPago: tipoPago,
         linkVentaEntradas: linkVentaEntradas,

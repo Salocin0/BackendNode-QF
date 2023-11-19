@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../../util/connections.js';
-import { Evento } from './evento.model.js';
 import { Consumidor } from './consumidor.model.js';
+import { Evento } from './evento.model.js';
 
 export const Restriccion = sequelize.define('Restriccion', {
   id: {
@@ -10,6 +10,10 @@ export const Restriccion = sequelize.define('Restriccion', {
     autoIncrement: true,
   },
   titulo: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  descripcion:{
     type: DataTypes.STRING,
     allowNull: false,
   },

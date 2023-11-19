@@ -86,7 +86,7 @@ class RestriccionController {
 
   async createOneController(req, res) {
     try {
-      const { titulo, tipo, opciones, usuario, consumidorId, eventoId } = req.body;
+      const { titulo, tipo, opciones, usuario, consumidorId, eventoId, descripcion } = req.body;
       const nuevaRestriccion = {
         titulo: titulo,
         tipo: tipo,
@@ -94,6 +94,7 @@ class RestriccionController {
         usuario: usuario,
         consumidorId: consumidorId,
         eventoId: eventoId,
+        descripcion: descripcion,
       };
 
       const restricionCreado = await restriccionService.create(nuevaRestriccion);
