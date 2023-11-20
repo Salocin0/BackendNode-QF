@@ -36,6 +36,7 @@ class AsociacionController {
   async getAllInEventController(req, res) {
     try {
       const id = req.params.id;
+      console.log("aca es 1? " + id);
       const asociaciones = await asociacionService.getAllInEvent(id);
       if (asociaciones) {
         return res.status(200).json({
