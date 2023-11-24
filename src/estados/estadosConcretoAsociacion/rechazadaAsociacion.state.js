@@ -12,8 +12,9 @@ export const Rechazada = {
         throw new Error('Error en el estado de la asociacion');
     },
     cancelar: async (asociacion) => {
-        throw new Error('Error en el estado de la asociacion');
-
+        asociacion.estado = 'PendienteDeAceptacion';
+        await asociacion.save();
+        return asociacion;
     },
 };
   

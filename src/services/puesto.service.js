@@ -115,6 +115,18 @@ async crearPuesto(puestoCreado) {
 
 }
 
+async getPuestoDetails(puestoId) {
+  try {
+    const puestoDetails = await Puesto.findByPk(puestoId);
+
+
+    return puestoDetails;
+  } catch (error) {
+    console.error("Error al obtener detalles del puesto:", error);
+    throw new Error("No se pudieron obtener los detalles del puesto");
+  }
+}
+
 }
 
 export const puestoService = new PuestoService();

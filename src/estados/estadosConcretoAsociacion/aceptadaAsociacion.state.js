@@ -11,8 +11,8 @@ export const Aceptada = {
     rechazada: async (asociacion) => {
         throw new Error('Error en el estado de la asociacion');
     },
-    cancelada: async (asociacion) => { //Cambiar o quitar
-        asociacion.estado = 'Cancelada';
+    cancelar: async (asociacion) => { //Cambiar o quitar
+        asociacion.estado = 'PendienteDeAceptacion';
         await asociacion.save();
         return asociacion;    
     },

@@ -1,7 +1,7 @@
 export const PendienteDeAceptacion = {
 
     newAsociacion: async (asociacion) => {
-        asociacion.estado = 'Pendiente de Aceptacion';
+        asociacion.estado = 'PendienteDeAceptacion';
         await asociacion.save();
         return asociacion;    
     },
@@ -12,17 +12,17 @@ export const PendienteDeAceptacion = {
         return asociacion;    
     },
 
-    rechazar: async (asociacion) => {
+    rechazada:  async (asociacion) => {
         asociacion.estado = 'Rechazada';
+
         await asociacion.save();
         return asociacion;    
     },
 
     cancelar: async (asociacion) => {
         asociacion.estado = 'Cancelada';
-        console.log("ENTRE LOCO");
         await asociacion.save();
-        return asociacion;    
+        return asociacion;
     },
 };
   

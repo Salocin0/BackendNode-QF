@@ -4,7 +4,7 @@ import { Evento } from "../DAO/models/evento.model.js";
 import { Puesto } from "../DAO/models/puesto.model.js";
 import { estadosAsociacion } from "../estados/estados/estadosAsociacion.js";
 import { asociacionService } from "../services/asociacion.service.js";
-
+import { puestoService } from "../services/puesto.service.js";
 class AsociacionController {
   async getAllController(req, res) {
     try {
@@ -33,31 +33,43 @@ class AsociacionController {
     }
   }
 
-  async getAllInEventController(req, res) {
+  async  getAllInEventController(req, res) {
     try {
       const id = req.params.id;
-      console.log("aca es 1? " + id);
+      console.log("Evento ID: " + id);
+
       const asociaciones = await asociacionService.getAllInEvent(id);
-      if (asociaciones) {
-        return res.status(200).json({
-          status: 'success',
-          msg: 'Found all asociaciones',
-          data: asociacionService,
-          code: 200,
-        });
-      } else {
-        return res.status(200).json({
-          status: 'Error',
-          msg: 'asociaciones not found',
+
+      if (!asociaciones || asociaciones.length === 0) {
+        return res.status(404).json({
+          status: 'error',
+          msg: 'Asociaciones not found for the event',
           data: {},
           code: 404,
         });
       }
-    } catch (e) {
-      console.log(e);
+
+      const asociacionesConPuestos = await Promise.all(
+        asociaciones.map(async (asociacion) => {
+          const detallesPuesto = await puestoService.getPuestoDetails(asociacion.puestoId);
+          return {
+            ...asociacion.toJSON(),
+            puesto: detallesPuesto
+          };
+        })
+      );
+
+      return res.status(200).json({
+        status: 'success',
+        msg: 'Found all associations with puestos',
+        data: asociacionesConPuestos,
+        code: 200,
+      });
+    } catch (error) {
+      console.error(error);
       return res.status(500).json({
         status: 'error',
-        msg: 'something went wrong :(',
+        msg: 'Something went wrong :(',
         data: {},
         code: 500,
       });
@@ -339,6 +351,7 @@ class AsociacionController {
         const estadoActual = asociacion.estado;
 
         console.log(estadoActual);
+        console.log(accion);
 
         if (estadosAsociacion[estadoActual] && estadosAsociacion[estadoActual][accion]) {
             await estadosAsociacion[estadoActual][accion](asociacion);
