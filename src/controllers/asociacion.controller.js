@@ -5,6 +5,7 @@ import { Puesto } from "../DAO/models/puesto.model.js";
 import { estadosAsociacion } from "../estados/estados/estadosAsociacion.js";
 import { asociacionService } from "../services/asociacion.service.js";
 import { puestoService } from "../services/puesto.service.js";
+import { repartidorService } from "../services/repartidor.service.js";
 class AsociacionController {
   async getAllController(req, res) {
     try {
@@ -32,13 +33,12 @@ class AsociacionController {
       });
     }
   }
-
-  async  getAllInEventController(req, res) {
+  async getAllInEventController(req, res) {
     try {
-      const id = req.params.id;
-      console.log("Evento ID: " + id);
+      const eventId = req.params.id;
+      console.log("Evento ID: " + eventId);
 
-      const asociaciones = await asociacionService.getAllInEvent(id);
+      const asociaciones = await asociacionService.getAllInEvent(eventId);
 
       if (!asociaciones || asociaciones.length === 0) {
         return res.status(404).json({
@@ -49,20 +49,28 @@ class AsociacionController {
         });
       }
 
-      const asociacionesConPuestos = await Promise.all(
+      const asociacionesConDetalles = await Promise.all(
         asociaciones.map(async (asociacion) => {
           const detallesPuesto = await puestoService.getPuestoDetails(asociacion.puestoId);
+          let detallesRepartidor = null;
+
+          // Verifica si hay una asociación de repartidor
+          if (asociacion.repartidoreId) {
+            detallesRepartidor = await repartidorService.getRepartidorDetails(asociacion.repartidoreId);
+          }
+
           return {
             ...asociacion.toJSON(),
-            puesto: detallesPuesto
+            puesto: detallesPuesto,
+            repartidor: detallesRepartidor,
           };
         })
       );
 
       return res.status(200).json({
         status: 'success',
-        msg: 'Found all associations with puestos',
-        data: asociacionesConPuestos,
+        msg: 'Found all associations with puestos and/or repartidores',
+        data: asociacionesConDetalles,
         code: 200,
       });
     } catch (error) {
@@ -251,6 +259,46 @@ class AsociacionController {
       });
     }
   }
+
+  async verifyRepartidorController(req, res) {
+    try {
+      const eventoid = req.params.eventoId;
+      const consumidorId = req.params.consumidorId;
+      const repartidorId =  await repartidorService;
+
+      const existingAsociacion = await asociacionService.getEventoByRepartidor(
+        Number(eventoid),
+        Number(consumidorId)
+      );
+
+      if (existingAsociacion) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'La asociación para este evento y puesto ya existe',
+          code: 400,
+          data: {},
+        });
+      } else {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Asociación creada exitosamente',
+          code: 200,
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'Something went wrong :(',
+        code: 500,
+        data: {},
+      });
+    }
+  }
+
+
+
   async createAsociacion(req, res) {
     try {
       const eventoid = req.params.eventoId;

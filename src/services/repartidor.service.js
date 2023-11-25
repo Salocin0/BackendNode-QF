@@ -1,3 +1,4 @@
+import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Repartidor } from '../DAO/models/repartidor.model.js';
 import { Usuario } from '../DAO/models/users.model.js';
 class RepartidorService {
@@ -58,6 +59,23 @@ class RepartidorService {
       return repartidor;
     } catch (error) {
       throw error;
+    }
+  }
+
+  async getRepartidorDetails(repartidorId) {
+    try {
+      const repartidorDetails = await Repartidor.findByPk(repartidorId);
+      console.log(repartidorDetails.id);
+
+      const repartidorDetails2 = await Consumidor.findOne({
+        where: {
+          repartidorId: repartidorDetails.id,
+        },
+      });
+      return repartidorDetails2;
+    } catch (error) {
+      console.error("Error al obtener detalles del puesto:", error);
+      throw new Error("No se pudieron obtener los detalles del puesto");
     }
   }
 }

@@ -64,6 +64,20 @@ async create(nuevaAsociacion,respuestas,consumidorId) {
     return asociacion;
   }
 
+    async getEventoByRepartidor(eventoId, consumidorId) {
+      console.log(consumidorId)
+      const consumidorCompleto = await consumidorService.getOne(consumidorId);
+
+
+    const asociacion = await Asociacion.findOne({
+      where: {
+        eventoId: eventoId,
+        repartidoreId: consumidorCompleto.repartidorId,
+      },
+    });
+    return asociacion;
+  }
+
 
   async rechazar(id) {
     const asociacion = await this.getOne(id)

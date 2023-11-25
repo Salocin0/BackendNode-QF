@@ -254,6 +254,7 @@ class EventoController {
 
         if (estadosEvento[estadoActual] && estadosEvento[estadoActual][accion]) {
             await estadosEvento[estadoActual][accion](evento);
+            res.status(200).json({ message: 'Estado del evento actualizado.' });
         } else {
             res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
         }

@@ -127,6 +127,9 @@ async getPuestoDetails(puestoId) {
   }
 }
 
+
+
+
 }
 
 export const puestoService = new PuestoService();
