@@ -6,6 +6,8 @@ RouterPedido.get('/', pedidoController.getAllController);
 
 RouterPedido.get('/puesto', pedidoController.getAllPuestoController);
 
+RouterPedido.get('/repartidor', pedidoController.getAllRepartidorController);
+
 RouterPedido.get('/:id', pedidoController.getOneController);
 
 RouterPedido.post('/', pedidoController.createOneController);

@@ -55,6 +55,33 @@ class PedidoController {
       });
     }
   }
+
+  async getAllRepartidorController(req, res) {
+    try {
+      const consumidorId = req.headers['consumidorid'];
+      const pedidos = await pedidoService.getAllRepartidor(consumidorId);
+      if (pedidos) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found all pedidos',
+          data: pedidos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'pedidos not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
   
   async getOneController(req, res) {
     try {

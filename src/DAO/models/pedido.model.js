@@ -2,6 +2,7 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from './../../util/connections.js';
 import { Consumidor } from './consumidor.model.js';
 import { Puesto } from './puesto.model.js';
+import { Repartidor } from './repartidor.model.js';
 
 export const Pedido = sequelize.define('Pedido', {
   id: {
@@ -42,3 +43,14 @@ Pedido.belongsTo(Puesto, {
   foreignKey: 'puestoId',
   targetKey: 'id',
 });
+
+Repartidor.hasOne(Pedido, {
+  foreignKey: 'repartidorId',
+  sourceKey: 'id',
+});
+
+Pedido.belongsTo(Repartidor, {
+  foreignKey: 'repartidorId',
+  targetKey: 'id',
+});
+
