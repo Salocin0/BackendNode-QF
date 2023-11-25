@@ -1,3 +1,4 @@
+import { estadosPedido } from '../estados/estados/estadosPedido.js';
 import { pedidoService } from '../services/pedido.service.js';
 
 class PedidoController {
@@ -28,6 +29,33 @@ class PedidoController {
     }
   }
 
+  async getAllPuestoController(req, res) {
+    try {
+      const consumidorId = req.headers['consumidorid'];
+      const pedidos = await pedidoService.getAllPuesto(consumidorId);
+      if (pedidos) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found all pedidos',
+          data: pedidos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'pedidos not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+  
   async getOneController(req, res) {
     try {
       const pedidoId = req.params.id;
@@ -62,7 +90,7 @@ class PedidoController {
         fecha: Date.now(),
         consumidorId: consumidorId,
         total:total,
-        estado: "pendiente",
+        estado: "Pendiente",
         puestoId:puestoId
       };
 
@@ -92,6 +120,26 @@ class PedidoController {
       });
     }
   }
+
+  async updateStateController(req, res) {
+    const pedidoId = req.params.id;
+    const accion = req.params.accion;
+    try {
+        const pedido = await pedidoService.getOne(pedidoId);
+        const estadoActual = pedido.estado;
+
+        console.log(estadoActual);
+
+        if (estadosPedido[estadoActual] && estadosPedido[estadoActual][accion]) {
+            await estadosPedido[estadoActual][accion](pedido);
+            res.status(200).json({ message: 'Estado del evento actualizado.' });
+        } else {
+            res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
+    }
+}
 }
 
 export const pedidoController = new PedidoController();

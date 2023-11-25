@@ -15,3 +15,13 @@ export const EstadosEvento = {
     Rechazada: "rechazada",
     Cancelada: "cancelada",
   };
+
+  export const EstadosPedido = {
+    Pendiente: "Pendiente",
+    Aceptado: "Aceptado",
+    Cancelado: "Cancelado",
+    EnPreparacion: "En Preparacion",
+    Listo: "Listo",
+    EnCamino: "En Camino",
+    Entregado: "Entregado",
+  };

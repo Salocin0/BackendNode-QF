@@ -5,7 +5,7 @@ export const cancelado = {
     tomarPedido: async (pedido) => {
         throw new Error('Error el pedido ya se ha cancelado');
     },
-    preperar: async (pedido) => {
+    preparar: async (pedido) => {
         throw new Error('Error el pedido ya se ha cancelado');
     },
 
@@ -19,6 +19,10 @@ export const cancelado = {
 
     cancelar: async (pedido) => {
         throw new Error('Error el pedido ya se ha cancelado');
+    },
+    
+    asignar: async (pedido) => {
+        throw new Error('Error el pedido no se puede asignar');  
     }
 };
   
