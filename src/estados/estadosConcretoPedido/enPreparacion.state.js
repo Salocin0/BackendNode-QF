@@ -7,12 +7,12 @@ export const enPreparacion = {
         throw new Error('Error el pedido ya se ha tomado');
     },
 
-    preperar: async (pedido) => {
+    preparar: async (pedido) => {
         throw new Error('Error el pedido ya se ha preparado');
     },
 
     pedidoPreparado: async (pedido) => {
-        pedido.estado = 'En Camino';
+        pedido.estado = 'Listo';
         await pedido.save();
         return pedido; 
     },
@@ -23,6 +23,10 @@ export const enPreparacion = {
 
     cancelar: async (pedido) => {
         throw new Error('Error el pedido no se puede cancelar');
+    },
+
+    asignar: async (pedido) => {
+        throw new Error('Error el pedido no se puede asignar');  
     }
 };
   

@@ -5,8 +5,8 @@ export const aceptado = {
     tomarPedido: async (pedido) => {
         throw new Error('Error el pedido ya se ha tomado');
     },
-    preperar: async (pedido) => {
-        pedido.estado = 'En Preparacion';
+    preparar: async (pedido) => {
+        pedido.estado = 'EnPreparacion';
         await pedido.save();
         return pedido;
     },
@@ -23,6 +23,10 @@ export const aceptado = {
         pedido.estado = 'Cancelado';
         await pedido.save();
         return pedido;    
+    },
+
+    asignar: async (pedido) => {
+        throw new Error('Error el pedido no se puede asignar');  
     }
 };
   

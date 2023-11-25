@@ -7,7 +7,7 @@ export const entregado = {
         throw new Error('Error el pedido ya se ha tomado');
     },
 
-    preperar: async (pedido) => {
+    preparar: async (pedido) => {
         throw new Error('Error el pedido ya se ha preparado');
     },
 
@@ -21,6 +21,10 @@ export const entregado = {
 
     cancelar: async (pedido) => {
         throw new Error('Error el pedido no se puede cancelar');
+    },
+
+    asignar: async (pedido) => {
+        throw new Error('Error el pedido no se puede asignar');  
     }
 };
   

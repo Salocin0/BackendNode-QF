@@ -7,7 +7,7 @@ export const enCamino = {
         throw new Error('Error el pedido ya se ha tomado');
     },
 
-    preperar: async (pedido) => {
+    preparar: async (pedido) => {
         throw new Error('Error el pedido ya se ha preparado');
     },
 
@@ -18,10 +18,15 @@ export const enCamino = {
     pedidoEntregado: async (pedido) => {
         pedido.estado = 'Entregado';
         await pedido.save();
-        return pedido;        },
+        return pedido;        
+    },
 
     cancelar: async (pedido) => {
         throw new Error('Error el pedido no se puede cancelar');
+    },
+
+    asignar: async (pedido) => {
+        throw new Error('Error el pedido no se puede asignar');  
     }
 };
   

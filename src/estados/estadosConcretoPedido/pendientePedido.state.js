@@ -11,7 +11,7 @@ export const pendiente = {
         return pedido;        
     },
 
-    preperar: async (pedido) => {
+    preparar: async (pedido) => {
         throw new Error('Error el pedido no se puede preperar');
     },
 
@@ -27,6 +27,10 @@ export const pendiente = {
         pedido.estado = 'Cancelado';
         await pedido.save();
         return pedido;       
+    },
+    
+    asignar: async (pedido) => {
+        throw new Error('Error el pedido no se puede asignar');  
     }
 };
   
