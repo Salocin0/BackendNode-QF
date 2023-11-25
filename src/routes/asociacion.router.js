@@ -14,6 +14,9 @@ RouterAsociacion.get('/evento/:eventoId/asociarRepartidor/:consumidorId', asocia
 
 RouterAsociacion.get('/buscar/:consumidorId', asociacionController.getAllByConsumidorId);
 
+RouterAsociacion.get('/buscarR/:consumidorId', asociacionController.getAllByConsumidorR);
+
+
 RouterAsociacion.post('/evento/:eventoId/asociar/:puestoId/:consumidorId', asociacionController.createOneController);
 
 RouterAsociacion.post('/evento/:eventoId/asociarSimple/:puestoId/:consumidorId', asociacionController.createAsociacion);
