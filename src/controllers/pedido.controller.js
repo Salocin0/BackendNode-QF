@@ -90,7 +90,7 @@ class PedidoController {
         fecha: Date.now(),
         consumidorId: consumidorId,
         total:total,
-        estado: "pendiente",
+        estado: "Pendiente",
         puestoId:puestoId
       };
 
