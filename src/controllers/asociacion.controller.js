@@ -2,6 +2,7 @@ import { Asociacion } from "../DAO/models/asociacion.model.js";
 import { Consumidor } from "../DAO/models/consumidor.model.js";
 import { Evento } from "../DAO/models/evento.model.js";
 import { Puesto } from "../DAO/models/puesto.model.js";
+import { Repartidor } from "../DAO/models/repartidor.model.js";
 import { estadosAsociacion } from "../estados/estados/estadosAsociacion.js";
 import { asociacionService } from "../services/asociacion.service.js";
 import { puestoService } from "../services/puesto.service.js";
@@ -389,6 +390,68 @@ class AsociacionController {
       });
     }
   }
+
+  async getAllByConsumidorR(req, res) {
+    try {
+      const { consumidorId } = req.params;
+      console.log("Consumidor ID: " + consumidorId);
+
+      const consumidor = await Consumidor.findByPk(consumidorId);
+
+      if (!consumidor) {
+        return res.status(404).json({
+          status: 'error',
+          msg: 'Consumidor not found',
+          code: 404,
+          data: {},
+        });
+      }
+
+      const repartidorId = consumidor.repartidorId;
+
+      const repartidor = await Repartidor.findByPk(repartidorId);
+
+      let asociaciones = [];
+      if (repartidor) {
+        asociaciones = await Asociacion.findAll({
+          include: [
+            {
+              model: Repartidor,
+              where: { id: repartidor.id },
+            },
+          ],
+        });
+      }
+
+
+      const eventoIds = asociaciones.map((asociacion) => asociacion.eventoId);
+
+      const eventos = await Evento.findAll({
+        where: {
+          id: eventoIds,
+        },
+      });
+
+      return res.status(200).json({
+        status: 'success',
+        msg: 'Eventos found',
+        code: 200,
+        data: {
+          eventos: eventos,
+          asociaciones: asociaciones,
+        }
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'Something went wrong :(',
+        code: 500,
+        data: {},
+      });
+    }
+  }
+
 
 
   async updateStateController(req, res) {
