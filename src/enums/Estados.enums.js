@@ -11,7 +11,7 @@ export const EstadosEvento = {
 
   export const EstadosAsociaciones = {
     Pendiente: "PendienteDeAceptacion",
-    Aceptada: "aceptada",
+    Aceptada: "Aceptada",
     Rechazada: "rechazada",
     Cancelada: "cancelada",
   };
