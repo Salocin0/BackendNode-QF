@@ -3,6 +3,7 @@ import { DetallePedido } from '../DAO/models/detallePedido.model.js';
 import { Puesto } from '../DAO/models/puesto.model.js';
 import { Encargado } from '../DAO/models/encargado.model.js';
 import { Consumidor } from '../DAO/models/consumidor.model.js';
+import { Producto } from '../DAO/models/producto.model.js';
 
 class PedidoService {
   async getAll(consumidorId) {
@@ -10,16 +11,14 @@ class PedidoService {
       where: {
         consumidorId: consumidorId,
       },
-      include: [{ model: Puesto },{ model: DetallePedido,as: 'detalles', }],
-      
+      include: [{ model: Puesto }, { model: DetallePedido, as: 'detalles' }],
     });
-      return pedidos;
-
+    return pedidos;
   }
 
   async getAllPuesto(consumidorId) {
-     // Paso 1: Obtener el ID del encargado a través del consumidor
-     const consumidor = await Consumidor.findOne({
+    // Paso 1: Obtener el ID del encargado a través del consumidor
+    const consumidor = await Consumidor.findOne({
       where: {
         id: consumidorId,
       },
@@ -43,15 +42,27 @@ class PedidoService {
       where: {
         puestoid: idPuestos,
       },
-      include: [{ model: DetallePedido, as: 'detalles' },{model:Puesto}],
+      include: [
+        {
+          model: DetallePedido,
+          as: 'detalles',
+          include: [
+            {
+              model: Producto,
+              as: 'producto',
+            },
+          ],
+        },
+        { model: Puesto },
+      ],
     });
 
     console.log('Pedidos obtenidos:', pedidos);
     return pedidos;
-  } catch (error) {
+  }
+  catch(error) {
     console.error('Error al obtener pedidos por consumidor:', error);
     throw error;
-
   }
 
   async getOne(id) {
@@ -59,7 +70,7 @@ class PedidoService {
       where: {
         id: id,
       },
-      include: [{ model: Puesto },{ model: DetallePedido,as: 'detalles' }],
+      include: [{ model: Puesto }, { model: DetallePedido, as: 'detalles' }],
     });
 
     return pedido;
