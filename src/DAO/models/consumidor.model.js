@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from './../../util/connections.js';
 import { Encargado } from './encargado.model.js';
-import { Productor } from './productor.model.js';
+//import { Productor } from './productor.model.js';
 import { Repartidor } from './repartidor.model.js';
 
 export const Consumidor = sequelize.define('consumidores', {
