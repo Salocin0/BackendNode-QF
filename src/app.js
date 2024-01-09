@@ -24,8 +24,12 @@ import { RouterPuesto } from './routes/puesto.router.js';
 import { RouterRepartidor } from './routes/repartidor.router.js';
 import { RouterRestriccion } from './routes/restriccion.router.js';
 import { RouterUser } from './routes/user.router.js';
-import { sequelize } from './util/connections.js';
+
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
+import * as dotenv from 'dotenv'
+
+dotenv.config();
+import { sequelize } from './util/connections.js';
 //definicion de server de express
 const app = express();
 const port = 8000;
@@ -116,3 +120,5 @@ connectDB();
 
 //ejecutar procesos automaticos
 procesosAutomaticos();
+
+console.log(process.env.DB_NAME);
