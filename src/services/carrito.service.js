@@ -105,12 +105,13 @@ class CarritoService {
       const items = await ItemCarrito.findAll({
         where: {
           CarritoId: carrito.id,
-          productoId: puestoId,
         },
       });
-      items.forEach(async (item) => {
-        await item.destroy()
-      })
+
+      await Promise.all(items.map(async (item) => {
+        await item.destroy();
+      }));
+  
       return carrito;
     } catch (error) {
       console.error(error);
