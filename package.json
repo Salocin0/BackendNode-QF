@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start-dev": "env-cmd -f .env.dev node ./src/app.js",
-    "start-prod": "env-cmd -f .env.prod node ./src/app.js",
+    "start-prod": "env-cmd -f .env node ./src/app.js",
     "dev": "nodemon ./src/app.js",
     "test": "mocha ./src/test/"
   },
