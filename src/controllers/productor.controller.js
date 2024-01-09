@@ -1,5 +1,5 @@
 import { consumidorService } from '../services/consumidor.service.js';
-import { productorService } from '../services/productor.service.js';
+import { productorService } from './../services/productor.service.js';
 class ProductorController {
   async getAllController(req, res) {
     try {

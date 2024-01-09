@@ -9,7 +9,6 @@ import compression from 'express-compression';
 import session from 'express-session';
 import morgan from 'morgan';
 import passport from 'passport';
-
 import { initPassport } from './config/passport.config.js';
 import { __dirname } from './dirname.js';
 import { RouterAsociacion } from './routes/asociacion.router.js';
