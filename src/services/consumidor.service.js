@@ -1,6 +1,6 @@
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Encargado } from '../DAO/models/encargado.model.js';
-import { Productor } from '../DAO/models/productor.model.js';
+//import { Productor } from '../DAO/models/productor.model.js';
 import { Repartidor } from '../DAO/models/repartidor.model.js';
 
 class ConsumidorService {
