@@ -19,7 +19,7 @@ import { RouterEvento } from './routes/evento.router.js';
 import { RouterLogin } from './routes/login.router.js';
 import { RouterPedido } from './routes/pedido.router.js';
 import { RouterProducto } from './routes/producto.router.js';
-import { RouterProductor } from './routes/productor.router.js';
+import { RouterProductor } from './routes/Productor.router.js';
 import { RouterPuesto } from './routes/puesto.router.js';
 import { RouterRepartidor } from './routes/repartidor.router.js';
 import { RouterRestriccion } from './routes/restriccion.router.js';
