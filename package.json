@@ -8,7 +8,7 @@
     "node": "18.17.1"
   },
   "scripts": {
-    "start": "NODE_OPTIONS='--experimental-specifier-resolution=node' node ./src/app.js",
+    "start": "node ./src/app.js",
     "dev": "nodemon ./src/app.js",
     "test": "mocha ./src/test/"
   },
