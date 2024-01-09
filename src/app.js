@@ -9,6 +9,7 @@ import compression from 'express-compression';
 import session from 'express-session';
 import morgan from 'morgan';
 import passport from 'passport';
+import { RouterProductor } from './routes/Productor.router.js';
 import { initPassport } from './config/passport.config.js';
 import { __dirname } from './dirname.js';
 import { RouterAsociacion } from './routes/asociacion.router.js';
@@ -19,13 +20,11 @@ import { RouterEvento } from './routes/evento.router.js';
 import { RouterLogin } from './routes/login.router.js';
 import { RouterPedido } from './routes/pedido.router.js';
 import { RouterProducto } from './routes/producto.router.js';
-
 import { RouterPuesto } from './routes/puesto.router.js';
 import { RouterRepartidor } from './routes/repartidor.router.js';
 import { RouterRestriccion } from './routes/restriccion.router.js';
 import { RouterUser } from './routes/user.router.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
-import { RouterProductor } from './routes/Productor.router.js';
 import * as dotenv from 'dotenv'
 dotenv.config();
 import { sequelize } from './util/connections.js';
