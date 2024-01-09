@@ -1,4 +1,4 @@
-import { Productor } from '../DAO/models/productor.model.js';
+import { Productor  } from '../DAO/models/productor.model.js';
 import { Usuario } from '../DAO/models/users.model.js';
 
 class ProductorService {
