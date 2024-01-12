@@ -117,4 +117,4 @@ async function connectDB() {
 connectDB();
 
 //ejecutar procesos automaticos
-procesosAutomaticos();
+//procesosAutomaticos();
