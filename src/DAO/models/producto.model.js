@@ -2,10 +2,6 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from './../../util/connections.js';
 import { Puesto } from './puesto.model.js';
 
-/* Librerias de las clase relacionada con Puesto 
-import { Puesto } from './puesto.model.js';
-*/
-
 export const Producto = sequelize.define('producto', {
   id: {
     type: DataTypes.INTEGER,
