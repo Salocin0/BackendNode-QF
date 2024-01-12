@@ -36,7 +36,7 @@ export const Consumidor = sequelize.define('consumidores', {
     type: DataTypes.BIGINT,
     allowNull: false,
   },
-  habilidato: {
+  habilitado: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },

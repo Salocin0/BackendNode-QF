@@ -6,7 +6,7 @@ import { Repartidor } from '../DAO/models/repartidor.model.js';
 class ConsumidorService {
   //TODO revisar getall y getone por el include distinto
   async getAll() {
-    const consumidores = await Consumidor.findAll({ include: [EncargadosPuestos, Productores, Repartidores] });
+    const consumidores = await Consumidor.findAll({ include: [Encargado, Productor, Repartidor] });
     return consumidores;
   }
 
@@ -32,7 +32,7 @@ class ConsumidorService {
       consumidorbase.dni = consumidor.dni;
       consumidorbase.localidad = consumidor.localidad;
       consumidorbase.telefono = consumidor.telefono;
-      consumidorbase.habilidato = consumidor.habilidato;
+      consumidorbase.habilitado = consumidor.habilitado;
       consumidorbase.encargadoId = consumidor.encargadoId;
       consumidorbase.productorId = consumidor.productorId;
       consumidorbase.repartidorId = consumidor.repartidorId;
@@ -42,7 +42,7 @@ class ConsumidorService {
       encargado.cuit = consumidor.encargado.cuit;
       encargado.razonSocial = consumidor.encargado.razonSocial;
       encargado.estaValido = consumidor.encargado.estaValido;
-      encargado.habilidato = consumidor.encargado.habilidato;
+      encargado.habilitado = consumidor.encargado.habilitado;
       await encargado.save();
       //usuario.tipoUsuario = 'Responsable';
       //console.log('Nuevo tipo de usuario:', usuario.tipoUsuario);
@@ -52,7 +52,7 @@ class ConsumidorService {
       productor.cuit = consumidor.Productor.cuit;
       productor.razonSocial = consumidor.Productor.razonSocial;
       productor.estaValido = consumidor.Productor.estaValido;
-      productor.habilidato = consumidor.Productor.habilidato;
+      productor.habilitado = consumidor.Productor.habilitado;
       await productor.save();
       //usuario.tipoUsuario = 'Productor';
       //console.log('Nuevo tipo de usuario:', usuario.tipoUsuario);

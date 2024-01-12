@@ -32,11 +32,11 @@ export const Productor = sequelize.define('Productor', {
   },
 });
 Productor.hasOne(Evento, {
-  foreignkey: 'eventoId',
+  foreignKey: 'eventoId',
   sourceKey: 'id',
 });
 
 Evento.belongsTo(Productor, {
-  foreignkey: 'eventoId',
+  foreignKey: 'eventoId',
   targetKey: 'id',
 });
