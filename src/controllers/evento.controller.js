@@ -21,7 +21,7 @@ class EventoController {
       }
     } catch (e) {
       console.log(e);
-      
+
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',
@@ -49,7 +49,7 @@ class EventoController {
       }
     } catch (e) {
       console.log(e);
-      
+
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',
@@ -57,7 +57,6 @@ class EventoController {
       });
     }
   }
-
 
   async getAllWithoutStateController(req, res) {
     try {
@@ -138,33 +137,33 @@ class EventoController {
 
   async createOneController(req, res) {
     try {
-      const consumidorId = req.headers["consumidorid"];
+      const consumidorId = req.headers['consumidorid'];
       const {
         nombre,
-      descripcion,
-      imagenEvento,
-      croquis,
-      ubicacion,
-      localidad,
-      provincia,
-      tipoEvento,
-      fechaInicioEvento,
-      horaInicioEvento,
-      fechaFinEvento,
-      tienePreventa,
-      fechaInicioPreventa,
-      fechaFinPreventa,
-      plazoCancelacionPreventa,
-      tipoPreventa,
-      cantidadPuestos,
-      tieneRepartidores,
-      cantidadRepartidores,
-      capacidadMaxima,
-      tipoPago,
-      linkVentaEntradas,
-      restricciones,
-      tieneButacas,
-      estado,
+        descripcion,
+        imagenEvento,
+        croquis,
+        ubicacion,
+        localidad,
+        provincia,
+        tipoEvento,
+        fechaInicioEvento,
+        horaInicioEvento,
+        fechaFinEvento,
+        tienePreventa,
+        fechaInicioPreventa,
+        fechaFinPreventa,
+        plazoCancelacionPreventa,
+        tipoPreventa,
+        cantidadPuestos,
+        tieneRepartidores,
+        cantidadRepartidores,
+        capacidadMaxima,
+        tipoPago,
+        linkVentaEntradas,
+        restricciones,
+        tieneButacas,
+        estado,
       } = req.body;
       const nuevoEvento = {
         nombre: nombre,
@@ -192,8 +191,8 @@ class EventoController {
         conButaca: tieneButacas,
         habilitado: true,
         estado: estado,
-        restricciones:restricciones,
-        consumidorId:consumidorId,
+        restricciones: restricciones,
+        consumidorId: consumidorId,
       };
       console.log(nuevoEvento.estado);
       const eventoCreado = await eventoService.create(nuevoEvento);
@@ -247,22 +246,21 @@ class EventoController {
     const eventoId = req.params.id;
     const accion = req.params.accion;
     try {
-        const evento = await eventoService.getOne(eventoId);
-        const estadoActual = evento.estado;
+      const evento = await eventoService.getOne(eventoId);
+      const estadoActual = evento.estado;
 
-        console.log(estadoActual);
+      console.log(estadoActual);
 
-        if (estadosEvento[estadoActual] && estadosEvento[estadoActual][accion]) {
-            await estadosEvento[estadoActual][accion](evento);
-            res.status(200).json({ message: 'Estado del evento actualizado.' });
-        } else {
-            res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
-        }
+      if (estadosEvento[estadoActual] && estadosEvento[estadoActual][accion]) {
+        await estadosEvento[estadoActual][accion](evento);
+        res.status(200).json({ message: 'Estado del evento actualizado.' });
+      } else {
+        res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
+      }
     } catch (error) {
-        res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
+      res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
     }
-}
-
+  }
 }
 
 export const eventoController = new EventoController();

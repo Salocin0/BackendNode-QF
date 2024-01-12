@@ -8,31 +8,28 @@ import { butaca } from './butaca.model.js';
 */
 
 export const Repartidor = sequelize.define('repartidores', {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    estaValido: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true,
-      },
-    habilitado: {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  estaValido: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  },
+  habilitado: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
-    },
-    /*Ver relación con la clase ESTADO 
+  },
+  /*Ver relación con la clase ESTADO 
     estado: {
       type: DataTypes.ARRAY,
       allowNull: false,
       defaultValue: 'CREADO',
     },
     */
-      
-    
-  });
-  
+});
 
 /*  
 //Ver relación con la clase butaca, con estado y con Consumidor

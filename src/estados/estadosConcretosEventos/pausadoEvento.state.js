@@ -8,9 +8,9 @@ export const Pausado = {
   },
 
   cancelarEvento: async (evento) => {
-      evento.estado = 'Cancelado';
-      await evento.save();
-      return evento;
+    evento.estado = 'Cancelado';
+    await evento.save();
+    return evento;
   },
 
   iniciarEvento: async (evento) => {
@@ -18,11 +18,12 @@ export const Pausado = {
   },
 
   finalizarEvento: async (evento) => {
-      throw new Error('No se puede finalizar un evento que no está "En Curso"');
+    throw new Error('No se puede finalizar un evento que no está "En Curso"');
   },
 
   reprogramarEvento: async (evento) => {
     evento.estado = 'EnPreparacion';
     await evento.save();
-    return evento;  },
+    return evento;
+  },
 };

@@ -33,7 +33,7 @@ class UserController {
       const productor = req.body;
       const encargado = req.body;
       const repartidor = req.body;
-      const usuariocreado = await userService.register(usuario,consumidor,productor,encargado,repartidor)
+      const usuariocreado = await userService.register(usuario, consumidor, productor, encargado, repartidor);
       if (usuariocreado) {
         return res.status(200).json({
           status: 'sucess',
@@ -50,18 +50,18 @@ class UserController {
     }
   }
 
-  async updateRolController(req,res) {
-    const { id,rol } = req.params;
+  async updateRolController(req, res) {
+    const { id, rol } = req.params;
     const datosRol = req.body;
-    console.log(id,rol,datosRol);
-    const user = await userService.updateRol(id,rol,datosRol);
-    if(user!==undefined){
+    console.log(id, rol, datosRol);
+    const user = await userService.updateRol(id, rol, datosRol);
+    if (user !== undefined) {
       return res.status(200).json({
         status: 'sucess',
         msg: 'user updated',
         data: user,
       });
-    }else{
+    } else {
       return res.status(404).json({
         status: 'Error',
         msg: 'user or rol not found',
@@ -70,23 +70,23 @@ class UserController {
     }
   }
   //esto esta mal separado
-  async enviarEmailValidarEmail(id,email) {
-    const respuestaEmail = await userService.enviarEmailValidarEmail(id,email);
-    return respuestaEmail
+  async enviarEmailValidarEmail(id, email) {
+    const respuestaEmail = await userService.enviarEmailValidarEmail(id, email);
+    return respuestaEmail;
   }
 
-  async habilitar(req,res) {
+  async habilitar(req, res) {
     const id = req.body.id;
     const user = await userService.getOne(id);
-    console.log(id)
-    if(user){
+    console.log(id);
+    if (user) {
       return res.status(200).json({
         status: 'sucess',
         msg: 'email valido',
-        code:200,
-        data: user.email.substring(0,3),
+        code: 200,
+        data: user.email.substring(0, 3),
       });
-    }else{
+    } else {
       return res.status(404).json({
         status: 'Error',
         msg: 'user not found',
@@ -95,19 +95,19 @@ class UserController {
     }
   }
 
-  async habilitarUsuario(req,res) {
+  async habilitarUsuario(req, res) {
     const id = req.body.id;
     const email = req.body.email;
-    const user = await userService.habilitarUsuario(id,email);
-    console.log(id)
-    if(user){
+    const user = await userService.habilitarUsuario(id, email);
+    console.log(id);
+    if (user) {
       return res.status(200).json({
         status: 'sucess',
         msg: 'email valido',
-        code:200,
+        code: 200,
         data: user,
       });
-    }else{
+    } else {
       return res.status(404).json({
         status: 'Error',
         msg: 'user not found',
@@ -116,17 +116,17 @@ class UserController {
     }
   }
 
-  async deshabilitarUsuario(req,res) {
+  async deshabilitarUsuario(req, res) {
     const id = req.params.id;
     const user = await userService.deshabilitarUsuario(id);
-    if(user){
+    if (user) {
       return res.status(200).json({
         status: 'sucess',
         msg: 'Cuenta deshabilitada',
         code: 200,
         data: user,
       });
-    }else{
+    } else {
       return res.status(404).json({
         status: 'Error',
         msg: 'user not found',
@@ -134,9 +134,6 @@ class UserController {
       });
     }
   }
-  
 }
-
-
 
 export const userController = new UserController();

@@ -53,4 +53,3 @@ Pedido.belongsTo(Repartidor, {
   foreignKey: 'repartidorId',
   targetKey: 'id',
 });
-

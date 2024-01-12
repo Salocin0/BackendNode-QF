@@ -29,7 +29,7 @@ export const Encargado = sequelize.define('encargado', {
   condicionIva: {
     type: DataTypes.STRING,
     allowNull: false,
-  }
+  },
 });
 
 Encargado.hasOne(Puesto, {

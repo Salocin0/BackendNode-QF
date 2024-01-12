@@ -1,7 +1,7 @@
 class LoginController {
   async login(req, res) {
     try {
-      if(req.user.emailValidado===true){
+      if (req.user.emailValidado === true) {
         const sessionId = req.sessionID;
         req.session.user = {
           email: req.user.email,
@@ -11,20 +11,20 @@ class LoginController {
           id: req.user.id,
           sessionId: sessionId,
         };
-      }else{
+      } else {
         return res.status(200).json({
           status: 'success',
           msg: 'user login but email not valided',
           code: 300,
-          data: req.session.user
+          data: req.session.user,
         });
       }
-      if(req.user.habilitado===false){
+      if (req.user.habilitado === false) {
         return res.status(200).json({
           status: 'success',
           msg: 'user login but is not habilited',
           code: 301,
-          data: req.session.user
+          data: req.session.user,
         });
       }
       if (req.session.user) {
@@ -32,7 +32,7 @@ class LoginController {
           status: 'success',
           msg: 'user login',
           code: 200,
-          data: req.session.user
+          data: req.session.user,
         });
       } else {
         return res.status(401).json({
@@ -90,7 +90,6 @@ class LoginController {
 }
 
 export const loginController = new LoginController();*/
-
 
 /*import { loginService } from '../services/login.service.js';
 

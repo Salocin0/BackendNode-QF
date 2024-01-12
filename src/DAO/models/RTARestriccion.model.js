@@ -14,7 +14,6 @@ export const RTARestriccion = sequelize.define('RTARestriccion', {
   },
 });
 
-
 RTARestriccion.belongsTo(Restriccion, {
   foreinkey: 'puestoId',
   sourceKey: 'id',

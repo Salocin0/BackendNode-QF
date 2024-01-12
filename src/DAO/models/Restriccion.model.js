@@ -13,7 +13,7 @@ export const Restriccion = sequelize.define('Restriccion', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  descripcion:{
+  descripcion: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -29,8 +29,6 @@ export const Restriccion = sequelize.define('Restriccion', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-
-
 });
 Restriccion.belongsTo(Evento, {
   foreinkey: 'eventoId',
@@ -50,4 +48,4 @@ Restriccion.belongsTo(Consumidor, {
 Consumidor.hasOne(Restriccion, {
   foreinkey: 'consumidorId',
   targetId: 'id',
-}); 
+});

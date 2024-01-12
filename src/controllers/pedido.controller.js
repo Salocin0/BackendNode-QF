@@ -82,7 +82,7 @@ class PedidoController {
       });
     }
   }
-  
+
   async getOneController(req, res) {
     try {
       const pedidoId = req.params.id;
@@ -112,13 +112,13 @@ class PedidoController {
 
   async createOneController(req, res) {
     try {
-      const { detalles, consumidorId,total,puestoId } = req.body;
+      const { detalles, consumidorId, total, puestoId } = req.body;
       const nuevoPedido = {
         fecha: Date.now(),
         consumidorId: consumidorId,
-        total:total,
-        estado: "Pendiente",
-        puestoId:puestoId
+        total: total,
+        estado: 'Pendiente',
+        puestoId: puestoId,
       };
 
       const pedidoCreado = await pedidoService.create(nuevoPedido, detalles);
@@ -152,21 +152,21 @@ class PedidoController {
     const pedidoId = req.params.id;
     const accion = req.params.accion;
     try {
-        const pedido = await pedidoService.getOne(pedidoId);
-        const estadoActual = pedido.estado;
+      const pedido = await pedidoService.getOne(pedidoId);
+      const estadoActual = pedido.estado;
 
-        console.log(estadoActual);
+      console.log(estadoActual);
 
-        if (estadosPedido[estadoActual] && estadosPedido[estadoActual][accion]) {
-            await estadosPedido[estadoActual][accion](pedido);
-            res.status(200).json({ message: 'Estado del evento actualizado.' });
-        } else {
-            res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
-        }
+      if (estadosPedido[estadoActual] && estadosPedido[estadoActual][accion]) {
+        await estadosPedido[estadoActual][accion](pedido);
+        res.status(200).json({ message: 'Estado del evento actualizado.' });
+      } else {
+        res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
+      }
     } catch (error) {
-        res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
+      res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
     }
-}
+  }
 }
 
 export const pedidoController = new PedidoController();

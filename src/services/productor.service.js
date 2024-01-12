@@ -83,7 +83,7 @@ class ProductorService {
       const usuario = await Usuario.findByPk(idUser);
 
       if (!productor) {
-        return null; // El encargado no existe
+        return null;
       }
 
       productor.habilitado = 0;

@@ -29,7 +29,7 @@ export const Productor = sequelize.define('Productor', {
   condicionIva: {
     type: DataTypes.STRING,
     allowNull: false,
-  }
+  },
 });
 Productor.hasOne(Evento, {
   foreignkey: 'eventoId',

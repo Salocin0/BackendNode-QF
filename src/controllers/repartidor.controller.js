@@ -57,8 +57,8 @@ class RepartidorController {
     try {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
-     const idRepartidor =  consumidor.repartidorId;
-     const idUser = consumidor.usuarioId;
+      const idRepartidor = consumidor.repartidorId;
+      const idUser = consumidor.usuarioId;
       const result = await repartidorService.updateOne(idRepartidor, idUser);
       if (result) {
         return res.status(200).json({
@@ -83,15 +83,14 @@ class RepartidorController {
       });
     }
   }
-  
 
-  //// atributos para crear el repartidoooor
+  // atributos para crear el repartidoooor
   async createOneController(req, res) {
     try {
       const { repartidor } = req.body;
       console.log(repartidor);
       const nuevorepartidor = {
-        cuit: repartidor.cuit
+        cuit: repartidor.cuit,
       };
       const repartidorCreado = await repartidorService.create(nuevorepartidor);
       if (repartidorCreado === false) {
@@ -125,7 +124,7 @@ class RepartidorController {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
 
-      console.log("Este  es el ID: " +  consumidor.usuarioId);
+      console.log('Este  es el ID: ' + consumidor.usuarioId);
 
       const result = await repartidorService.deleteOne(consumidor.repartidorId, consumidor.usuarioId);
 

@@ -25,39 +25,39 @@ ItemCarrito.belongsTo(Carrito);
 ItemCarrito.belongsTo(Producto);
 
 Carrito.prototype.agregarProducto = async function (productoId, cantidad = 1) {
-    const producto = await Producto.findByPk(productoId);
-    if (producto) {
-      const itemCarrito = await this.getProductos({
-        where: { id: productoId },
-      });
-  
-      if (itemCarrito && itemCarrito.length > 0) {
-        const nuevaCantidad = itemCarrito[0].ItemCarrito.cantidad + cantidad;
+  const producto = await Producto.findByPk(productoId);
+  if (producto) {
+    const itemCarrito = await this.getProductos({
+      where: { id: productoId },
+    });
+
+    if (itemCarrito && itemCarrito.length > 0) {
+      const nuevaCantidad = itemCarrito[0].ItemCarrito.cantidad + cantidad;
+      await this.addProducto(producto, { through: { cantidad: nuevaCantidad } });
+    } else {
+      await this.addProducto(producto, { through: { cantidad } });
+    }
+  }
+};
+
+Carrito.prototype.quitarProducto = async function (productoId, cantidad = 1) {
+  const producto = await Producto.findByPk(productoId);
+  if (producto) {
+    const itemCarrito = await this.getProductos({
+      where: { id: productoId },
+    });
+
+    if (itemCarrito && itemCarrito.length > 0) {
+      const nuevaCantidad = itemCarrito[0].ItemCarrito.cantidad - cantidad;
+
+      if (nuevaCantidad > 0) {
         await this.addProducto(producto, { through: { cantidad: nuevaCantidad } });
       } else {
-        await this.addProducto(producto, { through: { cantidad } });
+        await this.removeProducto(producto);
       }
     }
-  };
-  
-  Carrito.prototype.quitarProducto = async function (productoId, cantidad = 1) {
-    const producto = await Producto.findByPk(productoId);
-    if (producto) {
-      const itemCarrito = await this.getProductos({
-        where: { id: productoId },
-      });
-  
-      if (itemCarrito && itemCarrito.length > 0) {
-        const nuevaCantidad = itemCarrito[0].ItemCarrito.cantidad - cantidad;
-  
-        if (nuevaCantidad > 0) {
-          await this.addProducto(producto, { through: { cantidad: nuevaCantidad } });
-        } else {
-          await this.removeProducto(producto);
-        }
-      }
-    }
-  };
+  }
+};
 
 Carrito.prototype.actualizarCantidad = async function (productoId, nuevaCantidad) {
   const producto = await Producto.findByPk(productoId);

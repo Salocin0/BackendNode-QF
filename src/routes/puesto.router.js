@@ -10,14 +10,13 @@ RouterPuesto.get('/evento/:eventoId', puestoController.getAllInEventController);
 
 RouterPuesto.get('/deshabilitados', puestoController.getAllControllerDeshabilitados);
 
-RouterPuesto.get('/creados', puestoController.getAllControllerByEncargado   );
+RouterPuesto.get('/creados', puestoController.getAllControllerByEncargado);
 
 RouterPuesto.put('/:id', puestoController.updateOneController);
 
 RouterPuesto.put('/:id/habilitacion', puestoController.updateOneControllerHabilitacion);
 
 RouterPuesto.post('/cambiarEstado/:id/:accion', puestoController.updateStateController);
-
 
 RouterPuesto.post('/', puestoController.createOneController);
 

@@ -1,5 +1,4 @@
 import { Carrito, ItemCarrito } from '../DAO/models/carrito.model.js';
-import { productoService } from './producto.service.js';
 import { Producto } from '../DAO/models/producto.model.js';
 
 class CarritoService {

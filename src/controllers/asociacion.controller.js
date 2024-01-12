@@ -1,12 +1,12 @@
-import { Asociacion } from "../DAO/models/asociacion.model.js";
-import { Consumidor } from "../DAO/models/consumidor.model.js";
-import { Evento } from "../DAO/models/evento.model.js";
-import { Puesto } from "../DAO/models/puesto.model.js";
-import { Repartidor } from "../DAO/models/repartidor.model.js";
-import { estadosAsociacion } from "../estados/estados/estadosAsociacion.js";
-import { asociacionService } from "../services/asociacion.service.js";
-import { puestoService } from "../services/puesto.service.js";
-import { repartidorService } from "../services/repartidor.service.js";
+import { Asociacion } from '../DAO/models/asociacion.model.js';
+import { Consumidor } from '../DAO/models/consumidor.model.js';
+import { Evento } from '../DAO/models/evento.model.js';
+import { Puesto } from '../DAO/models/puesto.model.js';
+import { Repartidor } from '../DAO/models/repartidor.model.js';
+import { estadosAsociacion } from '../estados/estados/estadosAsociacion.js';
+import { asociacionService } from '../services/asociacion.service.js';
+import { puestoService } from '../services/puesto.service.js';
+import { repartidorService } from '../services/repartidor.service.js';
 class AsociacionController {
   async getAllController(req, res) {
     try {
@@ -37,7 +37,7 @@ class AsociacionController {
   async getAllInEventController(req, res) {
     try {
       const eventId = req.params.id;
-      console.log("Evento ID: " + eventId);
+      console.log('Evento ID: ' + eventId);
 
       const asociaciones = await asociacionService.getAllInEvent(eventId);
 
@@ -55,7 +55,6 @@ class AsociacionController {
           const detallesPuesto = await puestoService.getPuestoDetails(asociacion.puestoId);
           let detallesRepartidor = null;
 
-          // Verifica si hay una asociación de repartidor
           if (asociacion.repartidoreId) {
             detallesRepartidor = await repartidorService.getRepartidorDetails(asociacion.repartidoreId);
           }
@@ -204,8 +203,8 @@ class AsociacionController {
         repartidorId: consumidorId,
         eventoId: Number(eventoid),
       };
-      console.log(nuevaAsociacion)
-      const asociacionCreado = await asociacionService.create(nuevaAsociacion,restricciones,consumidorId);
+      console.log(nuevaAsociacion);
+      const asociacionCreado = await asociacionService.create(nuevaAsociacion, restricciones, consumidorId);
 
       return res.status(200).json({
         status: 'success',
@@ -230,10 +229,7 @@ class AsociacionController {
       const puestoId = req.params.puestoId;
       const consumidorId = req.params.consumidorId;
 
-      const existingAsociacion = await asociacionService.getByEventoPuesto(
-        Number(eventoid),
-        Number(puestoId)
-      );
+      const existingAsociacion = await asociacionService.getByEventoPuesto(Number(eventoid), Number(puestoId));
 
       if (existingAsociacion) {
         return res.status(400).json({
@@ -265,12 +261,9 @@ class AsociacionController {
     try {
       const eventoid = req.params.eventoId;
       const consumidorId = req.params.consumidorId;
-      const repartidorId =  await repartidorService;
+      const repartidorId = await repartidorService;
 
-      const existingAsociacion = await asociacionService.getEventoByRepartidor(
-        Number(eventoid),
-        Number(consumidorId)
-      );
+      const existingAsociacion = await asociacionService.getEventoByRepartidor(Number(eventoid), Number(consumidorId));
 
       if (existingAsociacion) {
         return res.status(400).json({
@@ -297,8 +290,6 @@ class AsociacionController {
       });
     }
   }
-
-
 
   async createAsociacion(req, res) {
     try {
@@ -339,11 +330,10 @@ class AsociacionController {
     }
   }
 
-
   async getAllByConsumidorId(req, res) {
     try {
       const { consumidorId } = req.params;
-      console.log("aca es" + consumidorId);
+      console.log('aca es' + consumidorId);
       const consumidor = await Consumidor.findByPk(consumidorId);
 
       const encargadoId = consumidor.encargadoId;
@@ -378,7 +368,7 @@ class AsociacionController {
         data: {
           eventos: eventos,
           asociaciones: asociaciones,
-        }
+        },
       });
     } catch (error) {
       console.error(error);
@@ -394,7 +384,7 @@ class AsociacionController {
   async getAllByConsumidorR(req, res) {
     try {
       const { consumidorId } = req.params;
-      console.log("Consumidor ID: " + consumidorId);
+      console.log('Consumidor ID: ' + consumidorId);
 
       const consumidor = await Consumidor.findByPk(consumidorId);
 
@@ -423,7 +413,6 @@ class AsociacionController {
         });
       }
 
-
       const eventoIds = asociaciones.map((asociacion) => asociacion.eventoId);
 
       const eventos = await Evento.findAll({
@@ -439,7 +428,7 @@ class AsociacionController {
         data: {
           eventos: eventos,
           asociaciones: asociaciones,
-        }
+        },
       });
     } catch (error) {
       console.error(error);
@@ -452,31 +441,26 @@ class AsociacionController {
     }
   }
 
-
-
   async updateStateController(req, res) {
     const asociacionId = req.params.asociacionId;
     const accion = req.params.accion;
     try {
-        const asociacion = await asociacionService.getOne(asociacionId);
-        const estadoActual = asociacion.estado;
+      const asociacion = await asociacionService.getOne(asociacionId);
+      const estadoActual = asociacion.estado;
 
-        console.log(estadoActual);
-        console.log(accion);
+      console.log(estadoActual);
+      console.log(accion);
 
-        if (estadosAsociacion[estadoActual] && estadosAsociacion[estadoActual][accion]) {
-            await estadosAsociacion[estadoActual][accion](asociacion);
-            res.status(200).json({ message: 'Estado del evento actualizado.' });
-
-        } else {
-            res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
-        }
+      if (estadosAsociacion[estadoActual] && estadosAsociacion[estadoActual][accion]) {
+        await estadosAsociacion[estadoActual][accion](asociacion);
+        res.status(200).json({ message: 'Estado del evento actualizado.' });
+      } else {
+        res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
+      }
     } catch (error) {
-        res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
+      res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
     }
-}
-
-
+  }
 }
 
 export const asociacionController = new AsociacionController();

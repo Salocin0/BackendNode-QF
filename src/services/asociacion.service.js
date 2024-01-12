@@ -1,15 +1,15 @@
-import { Asociacion } from "../DAO/models/asociacion.model.js";
-import { EstadosAsociaciones } from "../enums/Estados.enums.js";
-import { consumidorService } from "./consumidor.service.js";
+import { Asociacion } from '../DAO/models/asociacion.model.js';
+import { EstadosAsociaciones } from '../enums/Estados.enums.js';
+import { consumidorService } from './consumidor.service.js';
 
 class AsociacionService {
   async getAll(consumidorId) {
     const consumidor = await consumidorService.getOne(consumidorId);
     const asociaciones = await Asociacion.findAll({
-        where: {
-            repartidoreId: consumidor.repartidorId,
-        },
-      });
+      where: {
+        repartidoreId: consumidor.repartidorId,
+      },
+    });
     return asociaciones;
   }
 
@@ -27,32 +27,30 @@ class AsociacionService {
     return asociacion;
   }
 
-
-
-
-async create(nuevaAsociacion,respuestas,consumidorId) {
-    if(consumidorId!==0){
-      const consumidor = await consumidorService.getOne(consumidorId)
-      nuevaAsociacion.repartidoreId=consumidor?.repartidorId
-    }else{
-      nuevaAsociacion.repartidoreId=null
+  async create(nuevaAsociacion, respuestas, consumidorId) {
+    if (consumidorId !== 0) {
+      const consumidor = await consumidorService.getOne(consumidorId);
+      nuevaAsociacion.repartidoreId = consumidor?.repartidorId;
+    } else {
+      nuevaAsociacion.repartidoreId = null;
     }
-    if(nuevaAsociacion.puestoId===0){
-      nuevaAsociacion.puestoId=null
+    if (nuevaAsociacion.puestoId === 0) {
+      nuevaAsociacion.puestoId = null;
     }
-    console.log(nuevaAsociacion)
-    nuevaAsociacion.estado=EstadosAsociaciones.Pendiente
+    console.log(nuevaAsociacion);
+    nuevaAsociacion.estado = EstadosAsociaciones.Pendiente;
     const asociacionCreada = await Asociacion.create(nuevaAsociacion);
-    console.log(respuestas)
+    console.log(respuestas);
     if (respuestas !== null) {
       const respuestasArray = Object.values(respuestas);
-      await Promise.all(respuestasArray.map(async (respuesta) => {
-        await nuevaRespuesta.save();
-      }));
+      await Promise.all(
+        respuestasArray.map(async (respuesta) => {
+          await nuevaRespuesta.save();
+        })
+      );
     }
-    return asociacionCreada
+    return asociacionCreada;
   }
-
 
   async getByEventoPuesto(eventoId, puestoId) {
     const asociacion = await Asociacion.findOne({
@@ -64,10 +62,9 @@ async create(nuevaAsociacion,respuestas,consumidorId) {
     return asociacion;
   }
 
-    async getEventoByRepartidor(eventoId, consumidorId) {
-      console.log(consumidorId)
-      const consumidorCompleto = await consumidorService.getOne(consumidorId);
-
+  async getEventoByRepartidor(eventoId, consumidorId) {
+    console.log(consumidorId);
+    const consumidorCompleto = await consumidorService.getOne(consumidorId);
 
     const asociacion = await Asociacion.findOne({
       where: {
@@ -78,30 +75,26 @@ async create(nuevaAsociacion,respuestas,consumidorId) {
     return asociacion;
   }
 
-
   async rechazar(id) {
-    const asociacion = await this.getOne(id)
+    const asociacion = await this.getOne(id);
     asociacion.estado = EstadosAsociaciones.Rechazada;
-    await asociacion.save()
-    return asociacion
+    await asociacion.save();
+    return asociacion;
   }
 
   async cancelar(id) {
-    const asociacion = await this.getOne(id)
+    const asociacion = await this.getOne(id);
     asociacion.estado = EstadosAsociaciones.Cancelada;
     await asociacion.save();
-    return asociacion
+    return asociacion;
   }
 
   async aceptar(id) {
-    const asociacion = await this.getOne(id)
+    const asociacion = await this.getOne(id);
     asociacion.estado = EstadosAsociaciones.Aceptada;
     await asociacion.save();
-    return asociacion
+    return asociacion;
   }
-
-
-
 }
 
 export const asociacionService = new AsociacionService();

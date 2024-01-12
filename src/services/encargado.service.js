@@ -87,7 +87,7 @@ class EncargadoService {
       const usuario = await Usuario.findByPk(idUser);
 
       if (!encargado) {
-        return null; // El encargado no existe
+        return null;
       }
 
       encargado.habilitado = 0;

@@ -32,13 +32,11 @@ class EncargadoController {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
 
-      console.log("Este  es el ID: " + consumidor.encargadoId);
+      console.log('Este  es el ID: ' + consumidor.encargadoId);
 
       const { razonSocialEPC, cuitEPC } = req.body;
 
       console.log(id, razonSocialEPC, cuitEPC);
-
-
 
       const result = await encargadoService.updateOne(consumidor.encargadoId, { razonSocialEPC, cuitEPC });
 
@@ -62,8 +60,8 @@ class EncargadoController {
     try {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
-     const idEncargado =  consumidor.encargadoId;
-     const idUser = consumidor.usuarioId;
+      const idEncargado = consumidor.encargadoId;
+      const idUser = consumidor.usuarioId;
       const result = await encargadoService.updateOneHabilitacion(idEncargado, idUser);
       if (result) {
         return res.status(200).json({
@@ -89,13 +87,12 @@ class EncargadoController {
     }
   }
 
-
   async deleteOneController(req, res) {
     try {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
 
-      console.log("Este  es el ID: " + consumidor.encargadoId);
+      console.log('Este  es el ID: ' + consumidor.encargadoId);
 
       const result = await encargadoService.deleteOne(consumidor.encargadoId, consumidor.usuarioId);
 
@@ -114,9 +111,6 @@ class EncargadoController {
       });
     }
   }
-
-
-
 }
 
 export const encargadoController = new EncargadoController();

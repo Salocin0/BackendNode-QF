@@ -4,8 +4,8 @@ import { puestoService } from '../services/puesto.service.js';
 class PuestoController {
   async getAllController(req, res) {
     try {
-      const consumidorId = req.headers["consumidorid"];
-      console.log(consumidorId)
+      const consumidorId = req.headers['consumidorid'];
+      console.log(consumidorId);
       const puestos = await puestoService.getAll(consumidorId);
       if (puestos.length > 0) {
         return res.status(200).json({
@@ -33,7 +33,7 @@ class PuestoController {
     try {
       const eventoId = req.params.eventoId;
       const puestos = await puestoService.getAllInEvent(eventoId);
-      console.log(puestos)
+      console.log(puestos);
       if (puestos.length > 0) {
         return res.status(200).json({
           status: 'success',
@@ -58,8 +58,8 @@ class PuestoController {
 
   async getAllControllerByEncargado(req, res) {
     try {
-      const consumidorId = req.headers["consumidorid"];
-      console.log(consumidorId)
+      const consumidorId = req.headers['consumidorid'];
+      console.log(consumidorId);
       const puestos = await puestoService.getAllByEncargado(consumidorId);
       if (puestos.length > 0) {
         return res.status(200).json({
@@ -83,11 +83,10 @@ class PuestoController {
     }
   }
 
-
   async getAllControllerDeshabilitados(req, res) {
     try {
-      const consumidorId = req.headers["consumidorid"];
-      console.log(consumidorId)
+      const consumidorId = req.headers['consumidorid'];
+      console.log(consumidorId);
       const puestos = await puestoService.getAllDeshabilitados(consumidorId);
       if (puestos.length > 0) {
         return res.status(200).json({
@@ -142,7 +141,7 @@ class PuestoController {
     try {
       const id = req.params.id;
       const { puesto } = req.body;
-      console.log(puesto)
+      console.log(puesto);
       const result = await puestoService.update(id, puesto);
       return res.status(200).json({
         status: 'success',
@@ -183,19 +182,19 @@ class PuestoController {
 
   async createOneController(req, res) {
     try {
-      const { nombreCarro, numeroCarro, tipoNegocio,  telefonoCarro ,consumidorId , banner , logo, estado  } = req.body;
+      const { nombreCarro, numeroCarro, tipoNegocio, telefonoCarro, consumidorId, banner, logo, estado } = req.body;
       const nuevoPuesto = {
         nombreCarro: nombreCarro,
         numeroCarro: numeroCarro,
         tipoNegocio: tipoNegocio,
-          /* telefonoContacto: telefonoContacto,
+        /* telefonoContacto: telefonoContacto,
      razonSocial: razonSocial,
         cuit: cuit,*/
         telefonoCarro: telefonoCarro,
-        consumidorId:consumidorId,
+        consumidorId: consumidorId,
         img: logo,
         banner: banner,
-        estado: estado
+        estado: estado,
       };
       console.log(nuevoPuesto);
       const puestoCreado = await puestoService.create(nuevoPuesto);
@@ -250,21 +249,20 @@ class PuestoController {
     const puestoId = req.params.id;
     const accion = req.params.accion;
     try {
-        const puesto = await puestoService.getOne(puestoId);
-        const estadoActual = puesto.estado;
+      const puesto = await puestoService.getOne(puestoId);
+      const estadoActual = puesto.estado;
 
-        console.log(estadoActual);
+      console.log(estadoActual);
 
-        if (estadosPuestoDeComida[estadoActual] && estadosPuestoDeComida[estadoActual][accion]) {
-            await estadosPuestoDeComida[estadoActual][accion](puesto);
-        } else {
-            res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
-        }
+      if (estadosPuestoDeComida[estadoActual] && estadosPuestoDeComida[estadoActual][accion]) {
+        await estadosPuestoDeComida[estadoActual][accion](puesto);
+      } else {
+        res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
+      }
     } catch (error) {
-        res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
+      res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
     }
-}
-
+  }
 }
 
 export const puestoController = new PuestoController();

@@ -1,11 +1,8 @@
 import { Pedido } from '../DAO/models/pedido.model.js';
 import { DetallePedido } from '../DAO/models/detallePedido.model.js';
 import { Puesto } from '../DAO/models/puesto.model.js';
-import { Encargado } from '../DAO/models/encargado.model.js';
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Producto } from '../DAO/models/producto.model.js';
-import { Repartidor } from '../DAO/models/repartidor.model.js';
-import { estadosPedido } from '../estados/estados/estadosPedido.js';
 import { Op } from 'sequelize';
 
 class PedidoService {

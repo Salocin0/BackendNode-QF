@@ -9,12 +9,10 @@ export const cancelado = {
 
   cancelarEvento: async (evento) => {
     throw new Error('Error el evento está en estado "Cancelado');
-
   },
 
   iniciarEvento: async (evento) => {
     throw new Error('Error el evento no puede ser iniciado');
-
   },
 
   finalizarEvento: async (evento) => {
@@ -22,10 +20,6 @@ export const cancelado = {
   },
 
   reprogramarEvento: async (evento) => {
-      throw new Error('No se puede reprogramar un evento directamente desde "Cancelado"');
+    throw new Error('No se puede reprogramar un evento directamente desde "Cancelado"');
   },
-
-
-
-
-  };
+};

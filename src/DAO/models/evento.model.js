@@ -104,10 +104,10 @@ export const Evento = sequelize.define('evento', {
     type: DataTypes.TEXT('long'),
     allowNull: true,
   },
-  estado:{
+  estado: {
     type: DataTypes.STRING,
     allowNull: true,
-  }
+  },
 });
 
 Evento.hasMany(DiaEvento, {
@@ -119,4 +119,3 @@ DiaEvento.belongsTo(Evento, {
   foreignKey: 'eventoId',
   targetKey: 'id',
 });
-

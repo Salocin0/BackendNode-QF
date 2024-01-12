@@ -1,32 +1,33 @@
 export const aceptado = {
-    crearPedido: async (pedido) => {
-        throw new Error('Error el pedido ya se ha creado');
-    },
-    tomarPedido: async (pedido) => {
-        throw new Error('Error el pedido ya se ha tomado');
-    },
-    preparar: async (pedido) => {
-        pedido.estado = 'EnPreparacion';
-        await pedido.save();
-        return pedido;
-    },
+  crearPedido: async (pedido) => {
+    throw new Error('Error el pedido ya se ha creado');
+  },
 
-    pedidoPreparado: async (pedido) => {
-        throw new Error('Error el pedido no se puede enviar');
-    },
+  tomarPedido: async (pedido) => {
+    throw new Error('Error el pedido ya se ha tomado');
+  },
 
-    pedidoEntregado: async (pedido) => {
-        throw new Error('Error el pedido no se puede entregar');
-    },
+  preparar: async (pedido) => {
+    pedido.estado = 'EnPreparacion';
+    await pedido.save();
+    return pedido;
+  },
 
-    cancelar: async (pedido) => {
-        pedido.estado = 'Cancelado';
-        await pedido.save();
-        return pedido;    
-    },
+  pedidoPreparado: async (pedido) => {
+    throw new Error('Error el pedido no se puede enviar');
+  },
 
-    asignar: async (pedido) => {
-        throw new Error('Error el pedido no se puede asignar');  
-    }
+  pedidoEntregado: async (pedido) => {
+    throw new Error('Error el pedido no se puede entregar');
+  },
+
+  cancelar: async (pedido) => {
+    pedido.estado = 'Cancelado';
+    await pedido.save();
+    return pedido;
+  },
+
+  asignar: async (pedido) => {
+    throw new Error('Error el pedido no se puede asignar');
+  },
 };
-  

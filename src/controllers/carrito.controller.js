@@ -63,7 +63,7 @@ class CarritoController {
     try {
       const consumidorId = req.headers['consumidorid'];
       const productoId = req.params.productoId;
-      const carrito = await carritoService.addToCart(consumidorId,productoId);
+      const carrito = await carritoService.addToCart(consumidorId, productoId);
 
       return res.status(200).json({
         status: 'success',
@@ -85,7 +85,7 @@ class CarritoController {
     try {
       const consumidorId = req.headers['consumidorid'];
       const productoId = req.params.productoId;
-      const carrito = await carritoService.removeToCart(consumidorId,productoId);
+      const carrito = await carritoService.removeToCart(consumidorId, productoId);
 
       return res.status(200).json({
         status: 'success',
@@ -102,12 +102,12 @@ class CarritoController {
       });
     }
   }
-  
+
   async deletoToCartController(req, res) {
     try {
       const consumidorId = req.headers['consumidorid'];
       const productoId = req.params.productoId;
-      const carrito = await carritoService.deletoToCart(consumidorId,productoId);
+      const carrito = await carritoService.deletoToCart(consumidorId, productoId);
 
       return res.status(200).json({
         status: 'success',
@@ -124,13 +124,12 @@ class CarritoController {
       });
     }
   }
-  
-  
+
   async deleteProductsToCartController(req, res) {
     try {
       const consumidorId = req.headers['consumidorid'];
       const puestoId = req.params.puestoId;
-      const carrito = await carritoService.deletoProductsToCart(consumidorId,puestoId);
+      const carrito = await carritoService.deletoProductsToCart(consumidorId, puestoId);
 
       return res.status(200).json({
         status: 'success',
@@ -147,7 +146,6 @@ class CarritoController {
       });
     }
   }
-  
 }
 
 export const carritoController = new CarritoController();

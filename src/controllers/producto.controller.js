@@ -3,7 +3,7 @@ import { productoService } from '../services/producto.service.js';
 class ProductoController {
   async getAllController(req, res) {
     try {
-      const puestoId = req.headers["puestoid"];
+      const puestoId = req.headers['puestoid'];
       const productos = await productoService.getAll(puestoId);
       if (productos) {
         return res.status(200).json({
@@ -28,12 +28,12 @@ class ProductoController {
     }
   }
 
-   async getAllControllerDeshabilitados(req, res) {
+  async getAllControllerDeshabilitados(req, res) {
     try {
-      const puestoId = req.headers["puestoid"];
+      const puestoId = req.headers['puestoid'];
       console.log(puestoId);
       const productos = await productoService.getAllDeshabilitados(puestoId);
-      console.log("ENTRE ACA");
+      console.log('ENTRE ACA');
       if (productos) {
         return res.status(200).json({
           status: 'success',
@@ -156,7 +156,7 @@ class ProductoController {
         precio: precio,
         estado: estado,
         aderezos: aderezos,
-        puestoId: puestoId
+        puestoId: puestoId,
       };
 
       const productoCreado = await productoService.create(nuevoProducto);

@@ -5,8 +5,6 @@ import { Usuario } from '../DAO/models/users.model.js';
 import { userService } from '../services/users.service.js';
 import { isValidPassword } from '../util/bcrypt.js';
 import { encargadoService } from '../services/encargado.service.js';
-import { productoService } from '../services/producto.service.js';
-import { error } from 'console';
 import { productorService } from '../services/productor.service.js';
 const LocalStrategy = local.Strategy;
 

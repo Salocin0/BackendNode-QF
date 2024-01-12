@@ -118,5 +118,3 @@ connectDB();
 
 //ejecutar procesos automaticos
 procesosAutomaticos();
-
-console.log(process.env.DB_NAME);
