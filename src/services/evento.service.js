@@ -1,15 +1,21 @@
-import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Evento } from '../DAO/models/evento.model.js';
 import { EstadosEvento } from '../enums/Estados.enums.js';
 import { estadosEvento } from '../estados/estados/estadosEvento.js';
 import { consumidorService } from './consumidor.service.js';
 import { restriccionService } from './restriccion.service.js';
+
 class EventoService {
-  //hacer que los metodos llamen a los service, no a los models
   async getAll(consumidorId) {
-    const consumidor = await Consumidor.findByPk(consumidorId);
-    console.log("aca")
-    console.log(consumidor);
+    const consumidor = await consumidorService.getOne(consumidorId);
+    const eventos = await Evento.findAll({
+      where: {
+        productorId: consumidor.productorId,
+      },
+    });
+    return eventos;
+  }
+
+  async getAll() {
     const eventos = await Evento.findAll();
     return eventos;
   }
@@ -17,7 +23,7 @@ class EventoService {
   async getAllInState(estado) {
     const eventos = await Evento.findAll({
       where: {
-        estado: estado
+        estado: estado,
       },
     });
     return eventos;
@@ -64,23 +70,15 @@ class EventoService {
 
   async create(nuevoEvento) {
     const consumidor = await consumidorService.getOne(nuevoEvento.consumidorId);
-    //const eventoendb = await Evento.findOne({
-      //where: {
-        //id: nuevoEvento.id,
-     // },
-    //});
-    nuevoEvento.ProductorId = consumidor.productorId;
-      const eventoCreado = await Evento.create(nuevoEvento);
-      console.log("Aca es:")
-      console.log(eventoCreado);
-      this.crearEvento(eventoCreado);
-      nuevoEvento.restricciones.forEach(async (restriccion) => {
-        restriccion.eventoId = eventoCreado.id;
-        const restriccionCreada = await restriccionService.create(restriccion);
-        console.log(restriccionCreada);
-      });
-      return eventoCreado;
-
+    nuevoEvento.productorId = consumidor.productorId;
+    const eventoCreado = await Evento.create(nuevoEvento);
+    this.crearEvento(eventoCreado);
+    nuevoEvento.restricciones.forEach(async (restriccion) => {
+      restriccion.eventoId = eventoCreado.id;
+      const restriccionCreada = await restriccionService.create(restriccion);
+      console.log(restriccionCreada);
+    });
+    return eventoCreado;
   }
 
   async delete(id) {
@@ -103,21 +101,14 @@ class EventoService {
         if (true) {
           evento.estado = EstadosEvento.EnCurso;
           await evento.save();
-        } else {
-          console.log('se verifico pero no');
         }
-      })
+      });
     });
   }
 
   async crearEvento(evento) {
     estadosEvento.EnPreparacion.crearEvento(evento);
   }
-
-
-
-
-
 }
 
 export const eventoService = new EventoService();

@@ -7,13 +7,22 @@ class EncargadoService {
     return encargados;
   }
 
-  async getOne(id){
+  async getOne(id) {
     const encargado = await Encargado.findOne({
       where: {
-        id : id,
-      }
-    })
-    return encargado
+        id: id,
+      },
+    });
+    return encargado;
+  }
+
+  async getOneByRazonSocial(razonSocial) {
+    const encargado = await Encargado.findOne({
+      where: {
+        razonSocial: razonSocial,
+      },
+    });
+    return encargado;
   }
 
   async create(nuevoEncargado) {
@@ -32,27 +41,24 @@ class EncargadoService {
   }
 
   async updateOne(id, newData) {
-
-    console.log("New data" + newData.razonSocialEPC);
-    console.log("New data" + newData.cuitEPC)
+    console.log('New data' + newData.razonSocialEPC);
+    console.log('New data' + newData.cuitEPC);
 
     try {
       const encargado = await Encargado.findByPk(id);
       console.log(encargado.cuit);
       console.log(encargado.razonSocial);
 
-
       if (!encargado) {
         return null;
       } else {
         encargado.razonSocial = newData.razonSocialEPC;
         encargado.cuit = newData.cuitEPC;
-
       }
 
       await encargado.save();
 
-      console.log("Actualizado" + encargado.cuit + " " + encargado.razonSocial);
+      console.log('Actualizado' + encargado.cuit + ' ' + encargado.razonSocial);
 
       return encargado;
     } catch (error) {
@@ -60,9 +66,7 @@ class EncargadoService {
     }
   }
 
-  async updateOneHabilitacion(idEncargado , idUser) {
-
-
+  async updateOneHabilitacion(idEncargado, idUser) {
     const encargado = await Encargado.findByPk(idEncargado);
     const usuario = await Usuario.findByPk(idUser);
 
@@ -80,7 +84,6 @@ class EncargadoService {
     }
   }
 
-
   async deleteOne(idEncargado, idUser) {
     try {
       const encargado = await Encargado.findByPk(idEncargado);
@@ -94,7 +97,7 @@ class EncargadoService {
 
       await encargado.save();
 
-      usuario.tipoUsuario = "consumidor";
+      usuario.tipoUsuario = 'consumidor';
       await usuario.save();
 
       console.log(`Encargado deshabilitado con ID: ${idEncargado}`);
@@ -111,9 +114,9 @@ class EncargadoService {
         razonSocial: razonSocial,
       },
     });
-    if(encargado){
+    if (encargado) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }

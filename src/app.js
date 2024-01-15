@@ -25,7 +25,7 @@ import { RouterRestriccion } from './routes/restriccion.router.js';
 import { RouterUser } from './routes/user.router.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
 import { RouterProductor } from './routes/Productor.router.js';
-import * as dotenv from 'dotenv'
+import * as dotenv from 'dotenv';
 dotenv.config();
 import { sequelize } from './util/connections.js';
 //definicion de server de express
@@ -65,32 +65,6 @@ app.use(bodyParser.json());
 app.use(flash());
 // URLs
 app.use(express.static(__dirname + '/public'));
-//TODO MOVER A USER Y SEPARAR EN CAPAS
-app.post('/user/session', async (req, res) => {
-  sessionStore.get(req.body.sessionID, async (error, sessionData) => {
-    if (error) {
-      console.error('Error al obtener la sesión:', error);
-      return res.status(500).json({
-        status: 'error',
-        msg: 'Error al obtener la sesión',
-        data: null,
-      });
-    }
-    if (sessionData && sessionData.user) {
-      return res.status(200).json({
-        status: 'success',
-        msg: 'Sesión de usuario encontrada',
-        data: sessionData.user,
-      });
-    } else {
-      return res.status(400).json({
-        status: 'error',
-        msg: 'Sesión de usuario no encontrada',
-        data: null,
-      });
-    }
-  });
-});
 app.use('/user', RouterUser);
 app.use('/consumidor', RouterConsumidor);
 app.use('/login', RouterLogin);
@@ -102,10 +76,8 @@ app.use('/producto', RouterProducto);
 app.use('/evento', RouterEvento);
 app.use('/restriccion', RouterRestriccion);
 app.use('/asociacion', RouterAsociacion);
-app.use('/carrito', RouterCarrito)
-app.use('/pedido', RouterPedido)
-
-
+app.use('/carrito', RouterCarrito);
+app.use('/pedido', RouterPedido);
 // Sincronizar la base de datos y luego iniciar el servidor
 async function connectDB() {
   await sequelize.sync({ force: false }); //FALSE NO CAMBIA
@@ -115,6 +87,5 @@ async function connectDB() {
 }
 //conectar a la base de datos
 connectDB();
-
 //ejecutar procesos automaticos
-//procesosAutomaticos();
+procesosAutomaticos();

@@ -15,8 +15,26 @@ class UserService {
   }
 
   async getOne(id) {
-    const usuarios = await Usuario.findOne({ where: { id: id } });
-    return usuarios;
+    const usuario = await Usuario.findOne({ where: { id: id } });
+    return usuario;
+  }
+
+  async getOneByCodigoDeRecuperacion(codigo) {
+    const usuario = await Usuario.findOne({
+      where: {
+        codigoRecuperacion: codigo,
+      },
+    });
+    return usuario;
+  }
+
+  async getOneByEmail(email) {
+    const usuario = await Usuario.findOne({
+      where: {
+        email: correoElectronico,
+      },
+    });
+    return usuario;
   }
 
   async existeUsuario(correo, usuario) {
@@ -49,7 +67,7 @@ class UserService {
       } else {
         return {
           exists: false,
-          code: 200, 
+          code: 200,
         };
       }
     } catch (error) {
@@ -73,7 +91,7 @@ class UserService {
     const usuariocreado = await Usuario.create(user);
     return usuariocreado;
   }
-  
+
   //TODO ESTE METODO TENDRIA QUE CREAR AL USUARIO Y LLAMAR AL SERVICE DE CONSUMIDOR PARA QUE CREE LA OTRA PARTE Y QUE DESPUES ESTE TOME EL COSUMIDOR Y LO ACTUALICE ACA
   async register(usuario, consumidor, productor, encargado, repartidor) {
     const user = await this.create(usuario);
@@ -102,56 +120,56 @@ class UserService {
   async updateRol(id, rol, datosRol) {
     const user = await Usuario.findOne({ where: { id: id } });
     if (user) {
-      console.log(datosRol)
+      console.log(datosRol);
       if (rol == 'productor') {
         const productor = await productorService.create(datosRol);
-        const consumidor = await consumidorService.getOne(user.consumidoreId )
+        const consumidor = await consumidorService.getOne(user.consumidoreId);
         consumidor.productorId = productor.id;
         consumidor.save();
         user.tipoUsuario = 'productor';
       } else if (rol == 'encargado') {
         const encargado = await encargadoService.create(datosRol);
-        const consumidor = await consumidorService.getOne(user.consumidoreId)
+        const consumidor = await consumidorService.getOne(user.consumidoreId);
         consumidor.encargadoId = encargado.id;
         consumidor.save();
         user.tipoUsuario = 'encargado';
       } else if (rol == 'repartidor') {
         const repartidor = await repartidorService.create();
-        const consumidor = await consumidorService.getOne(user.consumidoreId)
+        const consumidor = await consumidorService.getOne(user.consumidoreId);
         consumidor.repartidorId = repartidor.id;
         consumidor.save();
         user.tipoUsuario = 'repartidor';
       } else if (rol == 'consumidor') {
         user.tipoUsuario = 'consumidor';
-      }else{
-        return undefined
+      } else {
+        return undefined;
       }
       user.save();
       return user;
     } else {
-      return undefined
+      return undefined;
     }
   }
 
-  async enviarEmailValidarEmail(id,email) {
+  async enviarEmailValidarEmail(id, email) {
     const usuario = await Usuario.findByPk(id);
     const hash = createHash('sha256').update(Date.now().toString()).digest('hex');
     usuario.codigoValidacion = hash;
     await usuario.save();
-    const url = `localhost:3000/habilitar-Usuario-email/${id}/${hash}`
-    const respuestaEmail = await sendEmail(email,"Habilitar Usuario",`para validar el email, ingrese al siguiente link: ${url}`)
-    return respuestaEmail
+    const url = `localhost:3000/habilitar-Usuario-email/${id}/${hash}`;
+    const respuestaEmail = await sendEmail(email, 'Habilitar Usuario', `para validar el email, ingrese al siguiente link: ${url}`);
+    return respuestaEmail;
   }
 
-  async habilitarUsuario(id,email) {
+  async habilitarUsuario(id, email) {
     const usuario = await Usuario.findByPk(id);
-    if(usuario.email===email){
+    if (usuario.email === email) {
       const hash = createHash('sha256').update(Date.now().toString()).digest('hex');
       usuario.codigoHabilitacion = hash;
       await usuario.save();
-      const url = `localhost:3000/habilitar-Usuario/${id}/${hash}`
-      const respuestaEmail = await sendEmail(email,"Habilitar Usuario",`para habilitar el usuario nuevamente, ingrese al siguiente link: ${url}`)
-      return respuestaEmail
+      const url = `localhost:3000/habilitar-Usuario/${id}/${hash}`;
+      const respuestaEmail = await sendEmail(email, 'Habilitar Usuario', `para habilitar el usuario nuevamente, ingrese al siguiente link: ${url}`);
+      return respuestaEmail;
     }
 
     await usuario.save();
@@ -159,17 +177,12 @@ class UserService {
 
   async deshabilitarUsuario(id) {
     const usuario = await Usuario.findByPk(id);
-    if(usuario){
-      usuario.habilitado=false;
+    if (usuario) {
+      usuario.habilitado = false;
       await usuario.save();
       return usuario;
     }
   }
-
-  
-
 }
-
-
 
 export const userService = new UserService();

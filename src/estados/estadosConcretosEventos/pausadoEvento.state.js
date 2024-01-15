@@ -14,11 +14,11 @@ export const Pausado = {
   },
 
   iniciarEvento: async (evento) => {
-    throw new Error('No se puede iniciar un evento que no está "Confirmado"');
+    throw new Error('No se puede iniciar un evento que no está "Pausado"');
   },
 
   finalizarEvento: async (evento) => {
-    throw new Error('No se puede finalizar un evento que no está "En Curso"');
+    throw new Error('No se puede finalizar un evento que no está "Pausado"');
   },
 
   reprogramarEvento: async (evento) => {
@@ -26,4 +26,8 @@ export const Pausado = {
     await evento.save();
     return evento;
   },
+
+  continuarEvento: async (evento) => {
+    throw new Error('No se puede continuar un evento directamente desde "Pausado"');
+  }
 };

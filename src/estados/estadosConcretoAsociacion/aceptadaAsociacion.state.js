@@ -12,8 +12,7 @@ export const Aceptada = {
   },
 
   cancelar: async (asociacion) => {
-    //Cambiar o quitar
-    asociacion.estado = 'PendienteDeAceptacion';
+    asociacion.estado = 'Cancelada';
     await asociacion.save();
     return asociacion;
   },

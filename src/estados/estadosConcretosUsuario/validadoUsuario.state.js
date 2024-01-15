@@ -1,45 +1,45 @@
 export const validado = {
-    crearUsuario: async (usuario) => {
-        throw new Error('El usuario ya está creado');
-    },
-  
-    solicitarRol: async (usuario) => {
-        throw new Error('No se puede solicitar un rol');
-    },
+  crearUsuario: async (usuario) => {
+    throw new Error('El usuario ya está creado');
+  },
 
-    rechazar: async (usuario) => {
-        throw new Error('No se puede rechazar la solicitud');
-    },
+  solicitarRol: async (usuario) => {
+    throw new Error('No se puede solicitar un rol');
+  },
 
-    validar: async (usuario,nuevoRol) => {
-        throw new Error('No se puede validar la solicitud');
-    },
+  rechazar: async (usuario) => {
+    throw new Error('No se puede rechazar la solicitud');
+  },
 
-    modificarRol: async (usuario,rolActual,nuevoRol) => { //ver
-        usuario.estado = 'PendienteDeValidacion';
-        usuario.rol = rolActual;
-        await usuario.save();
-        return usuario;       
-    },
+  validar: async (usuario, nuevoRol) => {
+    throw new Error('No se puede validar la solicitud');
+  },
 
-    cancelarRol: async (usuario,rolActual) => { //ver
-        usuario.estado = 'Creado';
-        usuario.rol = 'Consumidor';
-        await usuario.save();
-        return usuario;        
-    },
-    
-    deshabilitar: async (usuario) => {
-        usuario.estado = 'Deshabilitado';
-        await usuario.save();
-        return usuario;       },
+  modificarRol: async (usuario, rolActual, nuevoRol) => {
+    usuario.estado = 'PendienteDeValidacion';
+    usuario.rol = rolActual;
+    await usuario.save();
+    return usuario;
+  },
 
-    habilitarCreado: async (usuario,estado) => {
-        throw new Error('No se puede habilitar el usuario.');
-    },
-    habilitarValidado: async (usuario,estado) => {
-        throw new Error('No se puede habilitar el usuario.');
-    },
+  cancelarRol: async (usuario, rolActual) => {
+    usuario.estado = 'Creado';
+    usuario.rol = 'Consumidor';
+    await usuario.save();
+    return usuario;
+  },
 
+  deshabilitar: async (usuario) => {
+    usuario.estado = 'Deshabilitado';
+    await usuario.save();
+    return usuario;
+  },
+
+  habilitarCreado: async (usuario, estado) => {
+    throw new Error('No se puede habilitar el usuario.');
+  },
+
+  habilitarValidado: async (usuario, estado) => {
+    throw new Error('No se puede habilitar el usuario.');
+  },
 };
-  

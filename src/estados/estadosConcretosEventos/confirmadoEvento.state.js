@@ -20,7 +20,7 @@ export const Confirmado = {
   },
 
   finalizarEvento: async (evento) => {
-    throw new Error('No se puede finalizar un evento que no está "En Curso"');
+    throw new Error('No se puede finalizar un evento que no está "Confirmado"');
   },
 
   pausarEvento: async (evento) => {
@@ -30,6 +30,10 @@ export const Confirmado = {
   },
 
   reprogramarEvento: async (evento) => {
-    throw new Error('No se puede reprogramar un evento directamente desde "En Curso"');
+    throw new Error('No se puede reprogramar un evento directamente desde "Confirmado"');
   },
+
+  continuarEvento: async (evento) => {
+    throw new Error('No se puede continuar un evento directamente desde "Confirmado"');
+  }
 };

@@ -24,4 +24,8 @@ export const EnCurso = {
   reprogramarEvento: async (evento) => {
     throw new Error('No se puede reprogramar un evento directamente desde "En Curso"');
   },
+
+  continuarEvento: async (evento) => {
+    throw new Error('No se puede reprogramar un evento directamente desde "En Curso"');
+  },
 };

@@ -2,9 +2,11 @@ import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Encargado } from '../DAO/models/encargado.model.js';
 import { Productor } from '../DAO/models/Productor.model.js';
 import { Repartidor } from '../DAO/models/repartidor.model.js';
+import { encargadoService } from './encargado.service.js';
+import { productorService } from './productor.service.js';
+import { repartidorService } from './repartidor.service.js';
 
 class ConsumidorService {
-  //TODO revisar getall y getone por el include distinto
   async getAll() {
     const consumidores = await Consumidor.findAll({ include: [Encargado, Productor, Repartidor] });
     return consumidores;
@@ -17,18 +19,16 @@ class ConsumidorService {
     });
     return consumidor;
   }
-  //TODO refactorizar esto para que actualice consumidor, despues llame a los service correspondiente si tiene el rango, y los actualice
+
   async updateOne(id, consumidor) {
     const consumidorbase = await Consumidor.findByPk(id);
-    const encargado = await Encargado.findByPk(consumidor.encargadoId);
-    const productor = await Productor.findByPk(consumidor.productorId);
-    const repartidor = await Repartidor.findByPk(consumidor.repartidorId);
-    //const usuario = await Usuario.findByPk(consumidor.usuarioId);
-    //console.log(usuario.dataValues.tipoUsuario);
+    const encargado = await encargadoService.getOne(consumidor.encargadoId);
+    const productor = await productorService.getOne(consumidor.productorId);
+    const repartidor = await repartidorService.getOne(consumidor.repartidorId);
     if (consumidorbase) {
       consumidorbase.nombre = consumidor.nombre;
       consumidorbase.apellido = consumidor.apellido;
-      consumidorbase.fechaNacimiento = datetime.datetime.strptime(consumidor.fechaNacimiento, '%Y-%m-%d %H:%M:%S') ;
+      consumidorbase.fechaNacimiento = datetime.datetime.strptime(consumidor.fechaNacimiento, '%Y-%m-%d %H:%M:%S');
       consumidorbase.dni = consumidor.dni;
       consumidorbase.localidad = consumidor.localidad;
       consumidorbase.telefono = consumidor.telefono;
@@ -44,9 +44,6 @@ class ConsumidorService {
       encargado.estaValido = consumidor.encargado.estaValido;
       encargado.habilitado = consumidor.encargado.habilitado;
       await encargado.save();
-      //usuario.tipoUsuario = 'Responsable';
-      //console.log('Nuevo tipo de usuario:', usuario.tipoUsuario);
-      //await usuario.save();
     }
     if (productor && consumidor.Productor) {
       productor.cuit = consumidor.Productor.cuit;
@@ -54,29 +51,15 @@ class ConsumidorService {
       productor.estaValido = consumidor.Productor.estaValido;
       productor.habilitado = consumidor.Productor.habilitado;
       await productor.save();
-      //usuario.tipoUsuario = 'Productor';
-      //console.log('Nuevo tipo de usuario:', usuario.tipoUsuario);
-      //await usuario.save();
     }
     if (repartidor && consumidor.repartidore) {
       repartidor.cuit = consumidor.repartidore.cuit;
       await repartidor.save();
-      //usuario.tipoUsuario = 'Repartidor';
-      //console.log('Nuevo tipo de usuario:', usuario.tipoUsuario);
-      //await usuario.save();
     }
-
-    //console.log(usuario);
-    return { consumidorbase, encargado, productor, repartidor /*, usuario*/ };
+    return { consumidorbase, encargado, productor, repartidor };
   }
 
   async updateOneNew(id, newData) {
-    console.log('New data' + newData.nombreC);
-    console.log('New data' + newData.apellidoC);
-    console.log('New data' + newData.fechaNacimiento);
-    console.log('New data' + newData.provinciaC);
-    console.log('New data' + newData.localidad);
-    console.log('New data' + newData.telefono);
     try {
       const consumidor = await Consumidor.findByPk(id);
       if (!consumidor) {
@@ -87,23 +70,15 @@ class ConsumidorService {
         consumidor.provincia = newData.provinciaC;
         consumidor.localidad = newData.localidad;
         consumidor.telefono = newData.telefono;
-        //consumidor.fechaNacimiento = newData.fechaNacimiento;
-      
       }
-
       await consumidor.save();
-
-      console.log(
-        'Actualizado' + consumidor.nombre + ' ' + consumidor.apellido + ' ' + consumidor.fechaNacimiento + ' ' + consumidor.provincia + ' ' + consumidor.localidad + ' ' + consumidor.telefono
-      );
-
       return consumidor;
     } catch (error) {
       throw error;
     }
   }
 
-  async create(consumidor,id) {
+  async create(consumidor, id) {
     const consum = {
       nombre: consumidor.nombre,
       apellido: consumidor.apellido,
@@ -115,7 +90,7 @@ class ConsumidorService {
       usuarioId: id,
     };
     const consumidorCreado = await Consumidor.create(consum);
-    return consumidorCreado
+    return consumidorCreado;
   }
 }
 

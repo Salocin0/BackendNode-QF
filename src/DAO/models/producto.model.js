@@ -19,11 +19,7 @@ export const Producto = sequelize.define('producto', {
   aderezos: {
     type: DataTypes.STRING,
     allowNull: false,
-  } /*
-    stock: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },*/,
+  },
   img: {
     type: DataTypes.TEXT('long'),
     allowNull: false,
@@ -32,21 +28,10 @@ export const Producto = sequelize.define('producto', {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
-
-  /*Ver relación con la clase ESTADO [HABILITADO,DESHABILITADO]
-   */
   estado: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
-
-  /*Ver si se crea una relación con la clase tipoProducto o si se arma un array [HeladoChocolate,HeladoVainilla,etc]
-   */
-  /*
-    tipoProducto: {
-        type: DataTypes.ARRAY,
-        allowNull: false,
-    },*/
 });
 
 Puesto.hasMany(Producto, {
