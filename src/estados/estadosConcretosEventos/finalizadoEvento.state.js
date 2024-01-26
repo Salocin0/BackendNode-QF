@@ -22,4 +22,8 @@ export const finalizado = {
   reprogramarEvento: async (evento) => {
     throw new Error('El evento ya ha finalizado');
   },
+
+  continuarEvento: async (evento) => {
+    throw new Error('El evento ya ha finalizado');
+  }
 };

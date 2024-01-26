@@ -28,4 +28,8 @@ export const EnPreparacion = {
   reprogramarEvento: async (evento) => {
     throw new Error('No se puede reprogramar un evento directamente desde "En Preparacion"');
   },
+
+  continuarEvento: async (evento) => {
+    throw new Error('No se puede continuar un evento directamente desde "En Preparacion"');
+  }
 };

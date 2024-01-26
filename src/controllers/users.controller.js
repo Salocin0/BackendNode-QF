@@ -1,4 +1,8 @@
 import { userService } from '../services/users.service.js';
+import createHash from 'crypto';
+import passport from 'passport';
+import { createHashPW } from '../util/bcrypt.js';
+import { sendEmail } from '../util/emailSender.js';
 
 class UserController {
   async getAllcontroller(req, res) {
@@ -69,7 +73,7 @@ class UserController {
       });
     }
   }
-  //esto esta mal separado
+
   async enviarEmailValidarEmail(id, email) {
     const respuestaEmail = await userService.enviarEmailValidarEmail(id, email);
     return respuestaEmail;
@@ -130,6 +134,231 @@ class UserController {
       return res.status(404).json({
         status: 'Error',
         msg: 'user not found',
+        data: {},
+      });
+    }
+  }
+
+  async userSession(req, res) {
+    sessionStore.get(req.body.sessionID, async (error, sessionData) => {
+      if (error) {
+        return res.status(500).json({
+          status: 'error',
+          msg: 'Error al obtener la sesión',
+          data: null,
+        });
+      }
+      if (sessionData && sessionData.user) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Sesión de usuario encontrada',
+          data: sessionData.user,
+        });
+      } else {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'Sesión de usuario no encontrada',
+          data: null,
+        });
+      }
+    });
+  }
+
+  async habilitarUsuario(req, res) {
+    try {
+      const id = req.params.id;
+      const codigo = req.params.codigo;
+      const usuario = await userService.getOne(id);
+      if (usuario?.codigoHabilitacion === codigo) {
+        usuario.habilitado = true;
+        usuario.codigoHabilitacion = null;
+        await usuario.save();
+        return res.status(200).json({
+          status: 'sucess',
+          msg: 'user habilitado',
+          code: 200,
+          data: usuario,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'incorrect code',
+          code: 200,
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+  async getOne(req, res) {
+    try {
+      const userId = req.params.id;
+      const usuario = await userService.getOne(userId);
+      if (usuario !== null) {
+        return res.status(200).json({
+          status: 'sucess',
+          msg: 'user found',
+          data: usuario,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'user with id ' + req.params.id + ' not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+  async recuperarContraseñaCodigo(req, res) {
+    try {
+      const { codigo } = req.params;
+      const { contraseña } = req.body;
+      const usuario = await userService.getOneByCodigoDeRecuperacion(codigo);
+      if (usuario !== null) {
+        usuario.contraseña = createHashPW(contraseña);
+        usuario.codigoRecuperacion = null;
+        await usuario.save();
+        return res.status(200).json({
+          status: 'sucess',
+          msg: 'contraseña actualizada',
+          code: 200,
+          data: usuario,
+        });
+      } else {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'codigo de recuperacion incorrecto',
+          code: 400,
+          data: null,
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+  async recuperarContraseña(req, res) {
+    try {
+      const { correoElectronico } = req.body;
+      const usuario = await userService.getOneByEmail(correoElectronico);
+      if (usuario !== null) {
+        const hash = createHash('sha256').update(Date.now().toString()).digest('hex');
+        usuario.codigoRecuperacion = hash;
+        await usuario.save();
+        sendEmail(
+          correoElectronico,
+          'Recuperar contraseña',
+          'Se solicitó un cambio de contraseña. Para cambiar tu contraseña, haz clic en el siguiente enlace: http://localhost:3000/cambiar-contrasenia/' + hash
+        );
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Email enviado',
+          code: 200,
+          data: usuario.codigoRecuperacion,
+        });
+      } else {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'usuario no existe',
+          code: 400,
+          data: null,
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+  async login(req, res, next) {
+    passport.authenticate('local-signup', async (err, user, info) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'error',
+          msg: 'Error interno del servidor',
+          code: 500,
+          error: err.message,
+        });
+      }
+
+      if (!user) {
+        return res.status(401).json({
+          status: 'error',
+          msg: 'Error interno del servidor',
+          code: 401,
+        });
+      }
+      const emailEnviado = userController.enviarEmailValidarEmail(user.id, user.email);
+      if (emailEnviado) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Usuario creado con éxito',
+          code: 200,
+          data: user,
+        });
+      } else {
+        return res.status(500).json({
+          status: 'error',
+          msg: 'Error interno del servidor',
+          code: 500,
+          error: err.message,
+        });
+      }
+    });
+  }
+
+  async validarEmail(req, res) {
+    try {
+      const id = req.params.id;
+      const codigo = req.params.codigo;
+      const usuario = await userService.getOne(id);
+      if (usuario?.codigoValidacion === codigo) {
+        usuario.emailValidado = true;
+        usuario.codigoValidacion = null;
+        await usuario.save();
+        return res.status(200).json({
+          status: 'sucess',
+          msg: 'user validado',
+          code: 200,
+          data: usuario,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'incorrect code',
+          code: 200,
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
         data: {},
       });
     }

@@ -27,19 +27,39 @@ class EncargadoController {
     }
   }
 
+  async getOnecontroller(req, res) {
+    try {
+      const encargadoId = req.params.id;
+      const encargado = await encargadoService.getOne(encargadoId);
+      if (encargado !== null) {
+        return res.status(200).json({
+          status: 'sucess',
+          msg: 'user found',
+          data: encargado,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'user with id ' + req.params.id + ' not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
   async updateOneController(req, res) {
     try {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
-
-      console.log('Este  es el ID: ' + consumidor.encargadoId);
-
       const { razonSocialEPC, cuitEPC } = req.body;
-
-      console.log(id, razonSocialEPC, cuitEPC);
-
       const result = await encargadoService.updateOne(consumidor.encargadoId, { razonSocialEPC, cuitEPC });
-
       return res.status(200).json({
         status: 'success',
         msg: 'Encargado actualizado correctamente',
@@ -91,11 +111,7 @@ class EncargadoController {
     try {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
-
-      console.log('Este  es el ID: ' + consumidor.encargadoId);
-
       const result = await encargadoService.deleteOne(consumidor.encargadoId, consumidor.usuarioId);
-
       return res.status(200).json({
         status: 'success',
         msg: 'Encargado eliminado correctamente',
@@ -107,6 +123,41 @@ class EncargadoController {
       return res.status(500).json({
         status: 'error',
         msg: 'Ocurrió un error al eliminar el encargado :(',
+        data: {},
+      });
+    }
+  }
+
+  async createOneController(req, res) {
+    try {
+      const { encargado } = req.body;
+      const nuevoEncargado = {
+        cuit: encargado.cuit,
+        razonSocial: encargado.razonSocial,
+      };
+      const encargadoendb = await encargadoService.getOneByRazonSocial(nuevoEncargado.razonSocial);
+      if (encargadoendb) {
+        return res.status(200).json({
+          status: 'error',
+          msg: 'encargado used',
+          code: 400,
+          data: {},
+        });
+      } else {
+        const encargadoCreado = await encargadoService.create(nuevoEncargado);
+        return res.status(201).json({
+          status: 'success',
+          msg: 'encargado created',
+          code: 200,
+          data: encargadoCreado,
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        code: 500,
         data: {},
       });
     }

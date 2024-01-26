@@ -44,7 +44,6 @@ class RepartidorController {
         });
       }
     } catch (e) {
-      console.log(e);
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',
@@ -75,7 +74,6 @@ class RepartidorController {
         });
       }
     } catch (e) {
-      console.error(e);
       return res.status(500).json({
         status: 'error',
         msg: 'Something went wrong :(',
@@ -84,11 +82,9 @@ class RepartidorController {
     }
   }
 
-  // atributos para crear el repartidoooor
   async createOneController(req, res) {
     try {
       const { repartidor } = req.body;
-      console.log(repartidor);
       const nuevorepartidor = {
         cuit: repartidor.cuit,
       };
@@ -109,7 +105,6 @@ class RepartidorController {
         });
       }
     } catch (e) {
-      console.log(e);
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',
@@ -123,11 +118,7 @@ class RepartidorController {
     try {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
-
-      console.log('Este  es el ID: ' + consumidor.usuarioId);
-
       const result = await repartidorService.deleteOne(consumidor.repartidorId, consumidor.usuarioId);
-
       return res.status(200).json({
         status: 'success',
         msg: 'Repartidor eliminado correctamente',
@@ -135,7 +126,6 @@ class RepartidorController {
         data: result,
       });
     } catch (e) {
-      console.error(e);
       return res.status(500).json({
         status: 'error',
         msg: 'Ocurrió un error al eliminar el repartidor :(',

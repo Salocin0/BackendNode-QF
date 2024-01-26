@@ -12,7 +12,7 @@ export const Rechazada = {
   },
 
   cancelar: async (asociacion) => {
-    asociacion.estado = 'PendienteDeAceptacion';
+    asociacion.estado = 'Cancelada';
     await asociacion.save();
     return asociacion;
   },
