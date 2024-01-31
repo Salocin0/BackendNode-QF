@@ -93,7 +93,6 @@ class UserService {
     return usuariocreado;
   }
 
-  //TODO ESTE METODO TENDRIA QUE CREAR AL USUARIO Y LLAMAR AL SERVICE DE CONSUMIDOR PARA QUE CREE LA OTRA PARTE Y QUE DESPUES ESTE TOME EL COSUMIDOR Y LO ACTUALICE ACA
   async register(usuario, consumidor, productor, encargado, repartidor) {
     const user = await this.create(usuario);
     const consu = await consumidorService.create(consumidor, user.id);
@@ -115,6 +114,7 @@ class UserService {
       consu.repartidorId = repa.id;
       consu.save();
     }
+    this.enviarEmailValidarEmail(user.id, user.email);
     return { user, consu, prod, enca, repa };
   }
 
@@ -151,7 +151,7 @@ class UserService {
       return undefined;
     }
   }
-
+  // TO DO AGREGAR URL DEL FRONT DESPLEGADO .ENV
   async enviarEmailValidarEmail(id, email) {
     const usuario = await Usuario.findByPk(id);
     const hash = createHash('sha256').update(Date.now().toString()).digest('hex');
@@ -161,7 +161,7 @@ class UserService {
     const respuestaEmail = await sendEmail(email, 'Habilitar Usuario', `para validar el email, ingrese al siguiente link: ${url}`);
     return respuestaEmail;
   }
-
+  // TO DO AGREGAR URL DEL FRONT DESPLEGADO .ENV
   async habilitarUsuario(id, email) {
     const usuario = await Usuario.findByPk(id);
     if (usuario.email === email) {
