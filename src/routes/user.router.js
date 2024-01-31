@@ -17,7 +17,7 @@ RouterUser.get('/fail/register', async (req, res) => {
 
 RouterUser.get('/:id', userController.getOne);
 
-RouterUser.post('/', userController.login);
+RouterUser.post('/', userController.RegisterControler);
 
 RouterUser.put('/recuperarcontrasenia', userController.recuperarContraseña);
 

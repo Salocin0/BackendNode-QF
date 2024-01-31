@@ -32,11 +32,11 @@ class UserController {
 
   async RegisterControler(req, res) {
     try {
-      const usuario = req.body;
-      const consumidor = req.body;
-      const productor = req.body;
-      const encargado = req.body;
-      const repartidor = req.body;
+      const usuario = req.body.usuario;
+      const consumidor = req.body.consumidor;
+      const productor = req.body.productor;
+      const encargado = req.body.encargado;
+      const repartidor = req.body.repartidor;
       const usuariocreado = await userService.register(usuario, consumidor, productor, encargado, repartidor);
       if (usuariocreado) {
         return res.status(200).json({
@@ -46,6 +46,7 @@ class UserController {
         });
       }
     } catch (e) {
+      console.log(e)
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',
