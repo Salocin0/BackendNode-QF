@@ -3,6 +3,7 @@ import createHash from 'crypto';
 import passport from 'passport';
 import { createHashPW } from '../util/bcrypt.js';
 import { sendEmail } from '../util/emailSender.js';
+import { sessionStore } from '../app.js';
 
 class UserController {
   async getAllcontroller(req, res) {
@@ -286,7 +287,6 @@ class UserController {
         });
       }
     } catch (e) {
-      console.log(e);
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',

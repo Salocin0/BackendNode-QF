@@ -33,7 +33,7 @@ const app = express();
 const port = 8000;
 //inicializacion de la base de datos
 const SequelizeStore = SequelizeStoreInit(session.Store);
-const sessionStore = new SequelizeStore({
+export const sessionStore = new SequelizeStore({
   db: sequelize,
 });
 //Limit
