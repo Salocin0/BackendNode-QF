@@ -4,7 +4,7 @@ export const RouterUser = express.Router();
 
 RouterUser.get('/', userController.getAllcontroller);
 
-RouterUser.post('/user/session', userController.userSession);
+RouterUser.post('/session', userController.userSession);
 
 RouterUser.get('/validarEmailUsuario/:id/:codigo', userController.validarEmail);
 
