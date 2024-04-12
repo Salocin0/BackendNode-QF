@@ -57,6 +57,7 @@ class PuestoController {
 
   async getAllControllerByEncargado(req, res) {
     try {
+      console.log(req.headers)
       const consumidorId = req.headers['consumidorid'];
       const puestos = await puestoService.getAllByEncargado(consumidorId);
       if (puestos.length > 0) {
@@ -186,6 +187,7 @@ class PuestoController {
         banner: banner,
         estado: estado,
       };
+      console.log(nuevoPuesto);
       const puestoCreado = await puestoService.create(nuevoPuesto);
       if (puestoCreado === false) {
         return res.status(400).json({

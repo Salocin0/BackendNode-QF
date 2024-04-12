@@ -33,6 +33,7 @@ class EventoController {
   async getAllInStateController(req, res) {
     try {
       const estado = req.params.state;
+      console.log("ESTADO" + estado)
       const eventos = await eventoService.getAllInState(estado);
       if (eventos.length > 0) {
         return res.status(200).json({

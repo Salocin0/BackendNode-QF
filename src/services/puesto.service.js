@@ -74,6 +74,8 @@ class PuestoService {
   
   async create(puesto) {
     const consumidor = await consumidorService.getOne(puesto.consumidorId);
+    console.log("Muestro")
+    console.log(consumidor)
     const puestoendb = await Puesto.findOne({
       where: {
         numeroCarro: puesto.numeroCarro,
