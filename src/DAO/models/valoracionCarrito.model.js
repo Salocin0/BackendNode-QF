@@ -1,20 +1,20 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../../util/connections.js';
-import { Carritos } from './carritos.model.js';
+import { Puesto } from './puesto.model.js';
 
-export const ValoracionCarrito = sequelize.define('valoracionCarrito', {
+export const ValoracionPuesto = sequelize.define('valoracionPuesto', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  valorValoracionCarrito: {
+  valorValoracionPuesto: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
 });
 
-Carritos.belongsTo(Carritos, {
-  foreignKey: 'carritoId',
+Puesto.belongsTo(Puesto, {
+  foreignKey: 'puestoId',
   targetKey: 'id',
 });
