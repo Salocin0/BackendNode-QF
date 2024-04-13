@@ -1,6 +1,8 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from './../../util/connections.js';
 import { Consumidor } from './consumidor.model.js';
+import { ValoracionPuesto } from './valoracionCarrito.model.js';
+import { ValoracionRepartidor } from './valoracionRepartidor.model.js';
 
 export const Usuario = sequelize.define('usuarios', {
   id: {
