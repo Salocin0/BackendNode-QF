@@ -25,6 +25,7 @@ import { RouterPuesto } from './routes/puesto.router.js';
 import { RouterRepartidor } from './routes/repartidor.router.js';
 import { RouterRestriccion } from './routes/restriccion.router.js';
 import { RouterUser } from './routes/user.router.js';
+import { RouterValoracion } from './routes/valoracion.router.js';
 import { sequelize } from './util/connections.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
 dotenv.config();
@@ -78,6 +79,7 @@ app.use('/restriccion', RouterRestriccion);
 app.use('/asociacion', RouterAsociacion);
 app.use('/carrito', RouterCarrito);
 app.use('/pedido', RouterPedido);
+app.use('/valoracion', RouterValoracion);
 // Sincronizar la base de datos y luego iniciar el servidor
 async function connectDB() {
   await sequelize.sync({ force: false }); //FALSE NO CAMBIA

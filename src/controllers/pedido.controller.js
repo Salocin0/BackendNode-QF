@@ -110,6 +110,7 @@ class PedidoController {
     }
   }
 
+
   async createOneController(req, res) {
     try {
       const { detalles, consumidorId, total, puestoId } = req.body;

@@ -71,7 +71,7 @@ class PuestoService {
     puesto.habilitado = true;
     await puesto.save();
   }
-  
+
   async create(puesto) {
     const consumidor = await consumidorService.getOne(puesto.consumidorId);
     console.log("Muestro")

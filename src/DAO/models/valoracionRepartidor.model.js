@@ -12,11 +12,13 @@ export const ValoracionRepartidor = sequelize.define('valoracionRepartidor', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-
+  repartidorId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 });
 
-
-Repartidor.belongsTo(Repartidor, {
-    foreignKey: 'repartidorId',
-    targetKey: 'id',
-  });
+ValoracionRepartidor.belongsTo(Repartidor, {
+  foreignKey: 'repartidorId',
+  targetKey: 'id',
+});

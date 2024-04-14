@@ -1,9 +1,9 @@
-import { Pedido } from '../DAO/models/pedido.model.js';
-import { DetallePedido } from '../DAO/models/detallePedido.model.js';
-import { Puesto } from '../DAO/models/puesto.model.js';
-import { Consumidor } from '../DAO/models/consumidor.model.js';
-import { Producto } from '../DAO/models/producto.model.js';
 import { Op } from 'sequelize';
+import { Consumidor } from '../DAO/models/consumidor.model.js';
+import { DetallePedido } from '../DAO/models/detallePedido.model.js';
+import { Pedido } from '../DAO/models/pedido.model.js';
+import { Producto } from '../DAO/models/producto.model.js';
+import { Puesto } from '../DAO/models/puesto.model.js';
 
 class PedidoService {
   async getAll(consumidorId) {
@@ -109,6 +109,31 @@ class PedidoService {
     });
 
     return pedido;
+  }
+
+  async getOnePuesto(idPedido) {
+    const pedido = await Pedido.findByPk(idPedido);
+    if (!pedido) {
+      return null;
+    }
+    return pedido.puestoId;
+  }
+
+  async getOneRepartidor(idPedido) {
+    const pedido = await Pedido.findByPk(idPedido);
+    if (!pedido) {
+      return null;
+    }
+    return pedido.repartidorId;
+  }
+
+  async getOneRepartidor(idPedido) {
+    const repartidor = await Reár.findOne({
+      where: {
+        pedidoId: idPedido,
+      },
+    });
+    return puesto;
   }
 
   async create(pedido, detallesPedido) {

@@ -12,9 +12,13 @@ export const ValoracionPuesto = sequelize.define('valoracionPuesto', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  puestoId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 });
 
-Puesto.belongsTo(Puesto, {
+ValoracionPuesto.belongsTo(Puesto, {
   foreignKey: 'puestoId',
   targetKey: 'id',
 });
