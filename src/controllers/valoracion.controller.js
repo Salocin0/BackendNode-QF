@@ -1,4 +1,6 @@
+import { pedidoService } from "../services/pedido.service.js";
 import { valoracionService } from "../services/valoracion.service.js";
+
 class ValoracionController {
     async getAllByUser(req, res) {
         try {
@@ -8,7 +10,7 @@ class ValoracionController {
                 return res.status(200).json({
                     status: 'success',
                     msg: 'Found all valoraciones',
-                    data: valoraciones,
+                    data: valoracionesUser,
                 });
             } else {
                 return res.status(404).json({
@@ -55,12 +57,12 @@ class ValoracionController {
     async getAllByPuesto(req, res) {
         try {
             const idPuesto = req.params.idPuesto;
-            const valoracionesPuesto = await valoracionService.getAllByUser(idPuesto);
+            const valoracionesPuesto = await valoracionService.getAllByPuesto(idPuesto);
             if (valoracionesPuesto) {
                 return res.status(200).json({
                     status: 'success',
                     msg: 'Found all valoraciones',
-                    data: valoraciones,
+                    data: valoracionesPuesto,
                 });
             } else {
                 return res.status(404).json({

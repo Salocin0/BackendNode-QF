@@ -9,7 +9,7 @@ export const ValoracionRepartidor = sequelize.define('valoracionRepartidor', {
     autoIncrement: true,
   },
   valorValoracion: {
-    type: DataTypes.STRING,
+    type: DataTypes.DOUBLE,
     allowNull: false,
   },
   repartidorId: {

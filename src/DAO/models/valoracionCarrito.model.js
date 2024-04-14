@@ -9,7 +9,7 @@ export const ValoracionPuesto = sequelize.define('valoracionPuesto', {
     autoIncrement: true,
   },
   valorValoracionPuesto: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.DOUBLE,
     allowNull: false,
   },
   puestoId: {
