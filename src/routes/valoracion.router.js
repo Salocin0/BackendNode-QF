@@ -9,5 +9,5 @@ RouterValoracion.get('/:idPuesto', valoracionController.getAllByPuesto);
 
 RouterValoracion.get('/:idPedido', valoracionController.getAllByPedido);
 
-RouterValoracion.post('/:idPedido/:idUser', valoracionController.createOneController);
+RouterValoracion.post('/:idPedido', valoracionController.createOneController);
 
