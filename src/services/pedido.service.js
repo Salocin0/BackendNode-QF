@@ -127,14 +127,6 @@ class PedidoService {
     return pedido.repartidorId;
   }
 
-  async getOneRepartidor(idPedido) {
-    const repartidor = await Reár.findOne({
-      where: {
-        pedidoId: idPedido,
-      },
-    });
-    return puesto;
-  }
 
   async create(pedido, detallesPedido) {
     const pedidoCreado = await Pedido.create(pedido);
