@@ -9,18 +9,18 @@ describe('Crear Usuario Consumidor', () => {
   it('Debería crear un usuario consumidor si se ingresan datos correctos', async () => {
     const response = await requester.post('/user')
       .send({
-        correoElectronico: "consumidor@consumidor.com",
+        correoElectronico: "consumidor2@consumidor.com",
         contraseña: "consumidor",
         usuario: {
           contraseña: "consumidor",
           fechaAlta: Date.now(),
-          nombreDeUsuario: "consumidor",
-          correoElectronico: "consumidor@consumidor.com",
+          nombreDeUsuario: "consumidor22",
+          correoElectronico: "consumidor2@consumidor.com",
           tipoUsuario: "consumidor",
         },
         consumidor: {
-          nombre: "nombreEjemplo",
-          apellido: "apellidoEjemplo",
+          nombre: "nombreEjemplo2",
+          apellido: "apellidoEjemplo2",
           fechaDeNacimiento: Date.now(),
           dni: 11111111,
           localidad: "localidad",
@@ -28,7 +28,7 @@ describe('Crear Usuario Consumidor', () => {
           telefono: 1111111111,
         }
       });
-
+      console.log(response.body);
     expect(response.status).to.equal(200);
     expect(response.body.data).to.have.property('email');
     expect(response.body.data.email).to.equal('consumidor@consumidor.com');

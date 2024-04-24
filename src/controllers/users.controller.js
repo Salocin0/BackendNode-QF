@@ -33,12 +33,14 @@ class UserController {
 
   async RegisterControler(req, res) {
     try {
+      //validacion 
       const usuario = req.body.usuario;
       const consumidor = req.body.consumidor;
       const productor = req.body.productor;
       const encargado = req.body.encargado;
       const repartidor = req.body.repartidor;
       const usuariocreado = await userService.register(usuario, consumidor, productor, encargado, repartidor);
+      //verificar
       if (usuariocreado) {
         return res.status(200).json({
           status: 'sucess',
@@ -142,7 +144,9 @@ class UserController {
   }
 
   async userSession(req, res) {
+    console.log(req.body.sessionID)
     sessionStore.get(req.body.sessionID, async (error, sessionData) => {
+      console.log(sessionData)
       if (error) {
         return res.status(500).json({
           status: 'error',

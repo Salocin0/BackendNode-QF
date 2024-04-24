@@ -121,7 +121,8 @@ class PedidoController {
         estado: 'Pendiente',
         puestoId: puestoId,
       };
-
+      console.log(nuevoPedido);
+      
       const pedidoCreado = await pedidoService.create(nuevoPedido, detalles);
       if (pedidoCreado === false) {
         return res.status(400).json({

@@ -30,6 +30,7 @@ class PuestoController {
 
   async getAllInEventController(req, res) {
     try {
+      console.log("llega")
       const eventoId = req.params.eventoId;
       const puestos = await puestoService.getAllInEvent(eventoId);
       console.log(puestos);

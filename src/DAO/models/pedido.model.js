@@ -15,7 +15,7 @@ export const Pedido = sequelize.define('Pedido', {
     allowNull: false,
   },
   total: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.DOUBLE,
     allowNull: false,
   },
   estado: {

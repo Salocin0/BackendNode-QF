@@ -130,7 +130,7 @@ class PedidoService {
 
   async create(pedido, detallesPedido) {
     const pedidoCreado = await Pedido.create(pedido);
-
+    
     for (const detallePedido of detallesPedido) {
       detallePedido.PedidoId = pedidoCreado.id;
       await DetallePedido.create(detallePedido);

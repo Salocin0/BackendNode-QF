@@ -9,6 +9,7 @@ export const sequelize = new Sequelize({
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
   host: process.env.DB_HOST,
+  schema: process.env.DB_SCHEMA,
   dialect: process.env.DB_DIALECT || 'postgres',
   dialectOptions: {
     ssl:process.env.DB_SSL === 'true',

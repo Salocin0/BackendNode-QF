@@ -14,7 +14,7 @@ export const DetallePedido = sequelize.define('DetallePedido', {
     allowNull: false,
   },
   precio: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.DOUBLE,
     allowNull: false,
   },
 });
