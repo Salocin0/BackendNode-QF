@@ -8,8 +8,12 @@ export const ValoracionPuesto = sequelize.define('valoracionPuesto', {
     primaryKey: true,
     autoIncrement: true,
   },
-  valorValoracionPuesto: {
-    type: DataTypes.DOUBLE,
+  calidad: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  tiempo: {
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
   puestoId: {

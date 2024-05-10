@@ -3,8 +3,6 @@ import { ValoracionPuesto } from "../DAO/models/valoracionCarrito.model.js";
 import { ValoracionRepartidor } from "../DAO/models/valoracionRepartidor.model.js";
 
 class ValoracionService {
-
-
     async getAllByPuesto(idPuesto) {
         const valoraciones = await ValoracionPuesto.findAll({
             where: {
@@ -25,18 +23,23 @@ class ValoracionService {
         return valoraciones;
     }
 
-
-
-
-    async create(idPuestoAsociado, idRepartidor, valorValoracionPuesto, valorValoracionRepartidor) {
+    async create(idPuestoAsociado, idRepartidor, valoracion) {
+        const puntualidad = valoracion.puntualidad
+        const eficiencia = valoracion.eficiencia
+        const calidad = valoracion.calidad
+        const tiempo = valoracion.tiempo
+        
         try {
+
             const nuevaValoracionPuesto = await ValoracionPuesto.create({
-                valorValoracionPuesto: valorValoracionPuesto,
+                calidad: calidad,
+                tiempo:tiempo,
                 puestoId: idPuestoAsociado
             });
 
             const nuevaValoracionRepartidor = await ValoracionRepartidor.create({
-                valorValoracion: valorValoracionRepartidor,
+                puntualidad:puntualidad,
+                eficiencia:eficiencia,
                 repartidorId: idRepartidor
             });
 
