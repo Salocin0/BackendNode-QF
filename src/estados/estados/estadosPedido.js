@@ -5,6 +5,7 @@ import { enPreparacion } from '../estadosConcretoPedido/enPreparacion.state.js';
 import { entregado } from '../estadosConcretoPedido/entregadoPedido.state.js';
 import { pendiente } from '../estadosConcretoPedido/pendientePedido.state.js';
 import { listo } from '../estadosConcretoPedido/listoPedido.state.js';
+import { valorado } from '../estadosConcretoPedido/valoradoPedido.state.js';
 
 export const estadosPedido = {
   Pendiente: {
@@ -34,6 +35,10 @@ export const estadosPedido = {
 
     asignar: async (pedido) => {
       return pendiente.asignar(pedido);
+    },
+    
+    valorado: async (pedido) => {
+      return pendiente.valorado(pedido);
     },
   },
 
@@ -65,6 +70,10 @@ export const estadosPedido = {
     asignar: async (pedido) => {
       return aceptado.asignar(pedido);
     },
+
+    valorado: async (pedido) => {
+      return aceptado.valorado(pedido);
+    },
   },
 
   EnPreparacion: {
@@ -94,6 +103,10 @@ export const estadosPedido = {
 
     asignar: async (pedido) => {
       return enPreparacion.asignar(pedido);
+    },
+
+    valorado: async (pedido) => {
+      return enPreparacion.valorado(pedido);
     },
   },
 
@@ -125,6 +138,10 @@ export const estadosPedido = {
     asignar: async (pedido) => {
       return enCamino.asignar(pedido);
     },
+
+    valorado: async (pedido) => {
+      return enCamino.valorado(pedido);
+    },
   },
 
   Cancelado: {
@@ -154,6 +171,10 @@ export const estadosPedido = {
 
     asignar: async (pedido) => {
       return cancelado.asignar(pedido);
+    },
+
+    valorado: async (pedido) => {
+      return cancelado.valorado(pedido);
     },
   },
 
@@ -185,6 +206,10 @@ export const estadosPedido = {
     asignar: async (pedido) => {
       return entregado.asignar(pedido);
     },
+    
+    valorado: async (pedido) => {
+      return entregado.valorado(pedido);
+    },
   },
 
   Listo: {
@@ -214,6 +239,44 @@ export const estadosPedido = {
     
     asignar: async (pedido) => {
       return listo.asignar(pedido);
+    },
+        
+    valorado: async (pedido) => {
+      return listo.valorado(pedido);
+    },
+  },
+
+  Valorado: {
+    crearPedido: async (pedido) => {
+      return valorado.crearPedido(pedido);
+    },
+
+    tomarPedido: async (pedido) => {
+      return valorado.tomarPedido(pedido);
+    },
+
+    preparar: async (pedido) => {
+      return valorado.preparar(pedido);
+    },
+
+    pedidoPreparado: async (pedido) => {
+      return valorado.pedidoPreparado(pedido);
+    },
+
+    pedidoEntregado: async (pedido) => {
+      return valorado.pedidoEntregado(pedido);
+    },
+
+    cancelar: async (pedido) => {
+      return valorado.cancelar(pedido);
+    },
+    
+    asignar: async (pedido) => {
+      return valorado.asignar(pedido);
+    },
+        
+    valorado: async (pedido) => {
+      return valorado.valorado(pedido);
     },
   },
 };

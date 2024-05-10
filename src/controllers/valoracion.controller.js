@@ -87,7 +87,7 @@ class ValoracionController {
             const valoracion = req.body;
             const idPuestoAsociado = await pedidoService.getOnePuesto(idPedido);
             const idRepartidor = await pedidoService.getOneRepartidor(idPedido);
-            const valoracionCreada = await valoracionService.create(idPuestoAsociado, idRepartidor, valoracion);
+            const valoracionCreada = await valoracionService.create(idPuestoAsociado, idRepartidor, valoracion,idPedido);
 
             if (valoracionCreada) {
                 return res.status(201).json({

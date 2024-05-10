@@ -24,4 +24,5 @@ export const EstadosPedido = {
   Listo: 'Listo',
   EnCamino: 'En Camino',
   Entregado: 'Entregado',
+  valorado: 'Valorado',
 };

@@ -4,6 +4,7 @@ import { DetallePedido } from '../DAO/models/detallePedido.model.js';
 import { Pedido } from '../DAO/models/pedido.model.js';
 import { Producto } from '../DAO/models/producto.model.js';
 import { Puesto } from '../DAO/models/puesto.model.js';
+import { estadosPedido } from '../estados/estados/estadosPedido.js';
 
 class PedidoService {
   async getAll(consumidorId) {
@@ -136,6 +137,28 @@ class PedidoService {
       await DetallePedido.create(detallePedido);
     }
   }
-}
+
+    async updateState(pedidoId, accion) {
+      try {
+        const pedido = await this.getOne(pedidoId); 
+        const estadoActual = pedido.estado;
+  
+        console.log(estadoActual);
+        console.log(accion)
+  
+        if (estadosPedido[estadoActual] && estadosPedido[estadoActual][accion]) {
+          await estadosPedido[estadoActual][accion](pedido);
+          return { success: true, message: 'Estado del pedido actualizado.' };
+        } else {
+          return { success: false, message: 'No se encontró la acción para el estado actual.' };
+        }
+      } catch (error) {
+        console.error(error);
+        throw new Error('Error al cambiar el estado del pedido.');
+      }
+    }
+  
+  }
+
 
 export const pedidoService = new PedidoService();

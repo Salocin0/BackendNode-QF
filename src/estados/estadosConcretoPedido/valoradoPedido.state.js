@@ -1,4 +1,4 @@
-export const enCamino = {
+export const valorado = {
   crearPedido: async (pedido) => {
     throw new Error('Error el pedido ya se ha creado');
   },
@@ -16,9 +16,7 @@ export const enCamino = {
   },
 
   pedidoEntregado: async (pedido) => {
-    pedido.estado = 'Entregado';
-    await pedido.save();
-    return pedido;
+    throw new Error('Error el pedido ya se ha entregado');
   },
 
   cancelar: async (pedido) => {
@@ -32,4 +30,5 @@ export const enCamino = {
   valorado: async (pedido) => {
     throw new Error('Error el pedido no se puede valorar');
   },
+
 };

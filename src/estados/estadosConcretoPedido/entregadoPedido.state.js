@@ -26,4 +26,10 @@ export const entregado = {
   asignar: async (pedido) => {
     throw new Error('Error el pedido no se puede asignar');
   },
+
+  valorado: async (pedido) => {
+    pedido.estado = 'Valorado';
+    await pedido.save();
+    return pedido;
+  },
 };
