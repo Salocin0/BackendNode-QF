@@ -29,7 +29,7 @@ export const listo = {
     return pedido;
   },
 
-  valorado: async (pedido) => {
+  valorar: async (pedido) => {
     throw new Error('Error el pedido no se puede valorar');
   },
 };

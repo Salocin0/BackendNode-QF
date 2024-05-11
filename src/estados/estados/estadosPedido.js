@@ -3,9 +3,9 @@ import { cancelado } from '../estadosConcretoPedido/canceladoPedido.state.js';
 import { enCamino } from '../estadosConcretoPedido/enCaminoPedido.state.js';
 import { enPreparacion } from '../estadosConcretoPedido/enPreparacion.state.js';
 import { entregado } from '../estadosConcretoPedido/entregadoPedido.state.js';
-import { pendiente } from '../estadosConcretoPedido/pendientePedido.state.js';
 import { listo } from '../estadosConcretoPedido/listoPedido.state.js';
-import { valorado } from '../estadosConcretoPedido/valoradoPedido.state.js';
+import { pendiente } from '../estadosConcretoPedido/pendientePedido.state.js';
+import { valorar } from '../estadosConcretoPedido/valorarPedido.state.js';
 
 export const estadosPedido = {
   Pendiente: {
@@ -37,8 +37,8 @@ export const estadosPedido = {
       return pendiente.asignar(pedido);
     },
     
-    valorado: async (pedido) => {
-      return pendiente.valorado(pedido);
+    valorar: async (pedido) => {
+      return pendiente.valorar(pedido);
     },
   },
 
@@ -71,8 +71,8 @@ export const estadosPedido = {
       return aceptado.asignar(pedido);
     },
 
-    valorado: async (pedido) => {
-      return aceptado.valorado(pedido);
+    valorar: async (pedido) => {
+      return aceptado.valorar(pedido);
     },
   },
 
@@ -105,8 +105,42 @@ export const estadosPedido = {
       return enPreparacion.asignar(pedido);
     },
 
-    valorado: async (pedido) => {
-      return enPreparacion.valorado(pedido);
+    valorar: async (pedido) => {
+      return enPreparacion.valorar(pedido);
+    },
+  },
+
+  Asignado: {
+    crearPedido: async (pedido) => {
+      return enPreparacion.crearPedido(pedido);
+    },
+
+    tomarPedido: async (pedido) => {
+      return enPreparacion.tomarPedido(pedido);
+    },
+
+    preparar: async (pedido) => {
+      return enPreparacion.preparar(pedido);
+    },
+
+    pedidoPreparado: async (pedido) => {
+      return enPreparacion.pedidoPreparado(pedido);
+    },
+
+    pedidoEntregado: async (pedido) => {
+      return enPreparacion.pedidoEntregado(pedido);
+    },
+
+    cancelar: async (pedido) => {
+      return enPreparacion.cancelar(pedido);
+    },
+
+    asignar: async (pedido) => {
+      return enPreparacion.asignar(pedido);
+    },
+
+    valorar: async (pedido) => {
+      return enPreparacion.valorar(pedido);
     },
   },
 
@@ -139,8 +173,8 @@ export const estadosPedido = {
       return enCamino.asignar(pedido);
     },
 
-    valorado: async (pedido) => {
-      return enCamino.valorado(pedido);
+    valorar: async (pedido) => {
+      return enCamino.valorar(pedido);
     },
   },
 
@@ -173,8 +207,8 @@ export const estadosPedido = {
       return cancelado.asignar(pedido);
     },
 
-    valorado: async (pedido) => {
-      return cancelado.valorado(pedido);
+    valorar: async (pedido) => {
+      return cancelado.valorar(pedido);
     },
   },
 
@@ -207,8 +241,8 @@ export const estadosPedido = {
       return entregado.asignar(pedido);
     },
     
-    valorado: async (pedido) => {
-      return entregado.valorado(pedido);
+    valorar: async (pedido) => {
+      return entregado.valorar(pedido);
     },
   },
 
@@ -241,42 +275,42 @@ export const estadosPedido = {
       return listo.asignar(pedido);
     },
         
-    valorado: async (pedido) => {
-      return listo.valorado(pedido);
+    valorar: async (pedido) => {
+      return listo.valorar(pedido);
     },
   },
 
-  Valorado: {
+  valorar: {
     crearPedido: async (pedido) => {
-      return valorado.crearPedido(pedido);
+      return valorar.crearPedido(pedido);
     },
 
     tomarPedido: async (pedido) => {
-      return valorado.tomarPedido(pedido);
+      return valorar.tomarPedido(pedido);
     },
 
     preparar: async (pedido) => {
-      return valorado.preparar(pedido);
+      return valorar.preparar(pedido);
     },
 
     pedidoPreparado: async (pedido) => {
-      return valorado.pedidoPreparado(pedido);
+      return valorar.pedidoPreparado(pedido);
     },
 
     pedidoEntregado: async (pedido) => {
-      return valorado.pedidoEntregado(pedido);
+      return valorar.pedidoEntregado(pedido);
     },
 
     cancelar: async (pedido) => {
-      return valorado.cancelar(pedido);
+      return valorar.cancelar(pedido);
     },
     
     asignar: async (pedido) => {
-      return valorado.asignar(pedido);
+      return valorar.asignar(pedido);
     },
         
-    valorado: async (pedido) => {
-      return valorado.valorado(pedido);
+    valorar: async (pedido) => {
+      return valorar.valorar(pedido);
     },
   },
 };

@@ -10,15 +10,15 @@ export const ValoracionRepartidor = sequelize.define('valoracionRepartidor', {
   },
   puntualidad: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
   eficiencia: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
   repartidorId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
 });
 

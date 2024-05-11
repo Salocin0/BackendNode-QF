@@ -1,4 +1,4 @@
-export const valorado = {
+export const asignado = {
   crearPedido: async (pedido) => {
     throw new Error('Error el pedido ya se ha creado');
   },
@@ -8,27 +8,33 @@ export const valorado = {
   },
 
   preparar: async (pedido) => {
-    throw new Error('Error el pedido ya se ha preparado');
+    throw new Error('Error el pedido ya se ha prepardo');
   },
 
   pedidoPreparado: async (pedido) => {
-    throw new Error('Error el pedido ya se ha preparado');
+    throw new Error('Error el pedido no se puede enviar');
+  },
+
+  pedidoEnCamino: async (pedido) => {
+    pedido.estado = 'EnCamino';
+    await pedido.save();
+    return pedido;  
   },
 
   pedidoEntregado: async (pedido) => {
-    throw new Error('Error el pedido ya se ha entregado');
+    throw new Error('Error el pedido no se puede entregar');
   },
 
   cancelar: async (pedido) => {
     throw new Error('Error el pedido no se puede cancelar');
+
   },
 
   asignar: async (pedido) => {
     throw new Error('Error el pedido no se puede asignar');
   },
 
-  valorado: async (pedido) => {
+  valorar: async (pedido) => {
     throw new Error('Error el pedido no se puede valorar');
   },
-
 };

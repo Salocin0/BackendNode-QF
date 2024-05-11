@@ -1,8 +1,8 @@
 import { Consumidor } from "../DAO/models/consumidor.model.js";
 import { ValoracionPuesto } from "../DAO/models/valoracionCarrito.model.js";
 import { ValoracionRepartidor } from "../DAO/models/valoracionRepartidor.model.js";
-import { pedidoService } from "./pedido.service.js";
 import { EstadosPedido } from "../enums/Estados.enums.js";
+import { pedidoService } from "./pedido.service.js";
 
 class ValoracionService {
     async getAllByPuesto(idPuesto) {
@@ -53,6 +53,11 @@ class ValoracionService {
             throw new Error('Ocurrió un error al crear la valoración');
         }
     }
+
+
+
+
+
 }
 
 export const valoracionService = new ValoracionService();

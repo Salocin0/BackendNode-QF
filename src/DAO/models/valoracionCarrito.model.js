@@ -10,15 +10,15 @@ export const ValoracionPuesto = sequelize.define('valoracionPuesto', {
   },
   calidad: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
   tiempo: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
   puestoId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
 });
 

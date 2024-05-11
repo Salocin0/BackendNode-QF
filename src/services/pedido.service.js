@@ -75,7 +75,7 @@ class PedidoService {
       where: {
         repartidorId: repartidorId,
         estado: {
-          [Op.or]: ["EnCamino", "Entregado"],
+          [Op.or]: ["Asignado"],
         },
       },
       include: [
