@@ -28,7 +28,7 @@ class ProductorService {
       } else {
         productor.razonSocial = newData.razonSocialPE;
         productor.cuit = newData.cuitPE;
-
+        productor.condicionIva = newData.condicionIva;
       }
 
       await productor.save();

@@ -54,6 +54,7 @@ class EncargadoService {
       } else {
         encargado.razonSocial = newData.razonSocialEPC;
         encargado.cuit = newData.cuitEPC;
+        encargado.condicionIva = newData.condicionIva;
       }
 
       await encargado.save();

@@ -60,11 +60,11 @@ class ProductorController {
 
       console.log('Este  es el ID: ' + consumidor.productorId);
 
-      const { razonSocialPE, cuitPE } = req.body;
+      const { razonSocialPE, cuitPE, condicionIva } = req.body;
 
       console.log(id, razonSocialPE, cuitPE);
 
-      const result = await productorService.updateOne(consumidor.productorId, { razonSocialPE, cuitPE });
+      const result = await productorService.updateOne(consumidor.productorId, { razonSocialPE, cuitPE, condicionIva });
 
       return res.status(200).json({
         status: 'success',

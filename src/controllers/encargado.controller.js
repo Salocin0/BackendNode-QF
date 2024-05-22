@@ -58,8 +58,8 @@ class EncargadoController {
     try {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
-      const { razonSocialEPC, cuitEPC } = req.body;
-      const result = await encargadoService.updateOne(consumidor.encargadoId, { razonSocialEPC, cuitEPC });
+      const { razonSocialEPC, cuitEPC, condicionIva} = req.body;
+      const result = await encargadoService.updateOne(consumidor.encargadoId, { razonSocialEPC, cuitEPC,condicionIva });
       return res.status(200).json({
         status: 'success',
         msg: 'Encargado actualizado correctamente',

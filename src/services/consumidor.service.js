@@ -70,6 +70,7 @@ class ConsumidorService {
         consumidor.provincia = newData.provinciaC;
         consumidor.localidad = newData.localidad;
         consumidor.telefono = newData.telefono;
+        consumidor.dni = newData.dniC;
       }
       await consumidor.save();
       return consumidor;
