@@ -2,6 +2,7 @@ import DataTypes from 'sequelize';
 import { sequelize } from './../../util/connections.js';
 import { DiaEvento } from './diaEvento.model.js';
 import { Productor } from './Productor.model.js';
+import { PuntoEncuentro } from './puntoEncuentro.model.js';
 
 export const Evento = sequelize.define('evento', {
   id: {
@@ -111,12 +112,12 @@ export const Evento = sequelize.define('evento', {
   },
 });
 
-Evento.belongsTo(DiaEvento, {
+DiaEvento.belongsTo(Evento, {
   foreignKey: 'eventoId',
   sourceKey: 'id',
 });
 
-DiaEvento.hasMany(Evento, {
+Evento.hasMany(DiaEvento, {
   foreignKey: 'eventoId',
   targetKey: 'id',
 });
@@ -131,4 +132,12 @@ Productor.hasOne(Evento, {
   sourceKey: 'id',
 });
 
+PuntoEncuentro.belongsTo(Evento, {
+  foreignKey: 'eventoId',
+  sourceKey: 'id',
+});
 
+Evento.hasMany(PuntoEncuentro, {
+  foreignKey: 'eventoId',
+  targetKey: 'id',
+});

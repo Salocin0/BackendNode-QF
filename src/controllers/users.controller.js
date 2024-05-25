@@ -1,5 +1,5 @@
 import { userService } from '../services/users.service.js';
-import createHash from 'crypto';
+import crypto from 'crypto';
 import passport from 'passport';
 import { createHashPW } from '../util/bcrypt.js';
 import { sendEmail } from '../util/emailSender.js';
@@ -268,13 +268,14 @@ class UserController {
       const { correoElectronico } = req.body;
       const usuario = await userService.getOneByEmail(correoElectronico);
       if (usuario !== null) {
-        const hash = createHash('sha256').update(Date.now().toString()).digest('hex');
+        const hash = crypto.createHash('sha256').update(Date.now().toString()).digest('hex'); // Usa crypto.createHash
         usuario.codigoRecuperacion = hash;
         await usuario.save();
         sendEmail(
           correoElectronico,
           'Recuperar contraseña',
-          'Se solicitó un cambio de contraseña. Para cambiar tu contraseña, haz clic en el siguiente enlace: http://localhost:3000/cambiar-contrasenia/' + hash
+          'Se solicitó un cambio de contraseña. Para cambiar tu contraseña, haz clic en el siguiente enlace: http://localhost:3000/cambiar-contrasenia/' + hash  +
+          ' o si queres recuperar a traves de nuestra app ingresa este codigo: ' + hash
         );
         return res.status(200).json({
           status: 'success',
