@@ -29,6 +29,7 @@ import { RouterValoracion } from './routes/valoracion.router.js';
 import { sequelize } from './util/connections.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
 import { RouterPuntoEncuentro } from './routes/puntoEncuentro.router.js';
+import { sendNotificaciones } from './util/Notificaciones.js';
 dotenv.config();
 //definicion de server de express
 const app = express();
@@ -82,6 +83,23 @@ app.use('/carrito', RouterCarrito);
 app.use('/pedido', RouterPedido);
 app.use('/valoracion', RouterValoracion);
 app.use('/puntosEncuentro',RouterPuntoEncuentro);
+app.post('/token/:token', (req, res) => {
+  const { token } = req.params;
+
+  if (!token) {
+    return res.status(400).send('Token, title, and body are required');
+  }
+
+  sendNotificaciones(token, title, body)
+    .then(response => {
+      res.status(200).send('Notification sent successfully');
+    })
+    .catch(error => {
+      console.error('Error sending notification:', error);
+      res.status(500).send('Failed to send notification');
+    });
+});
+
 // Sincronizar la base de datos y luego iniciar el servidor
 async function connectDB() {
   await sequelize.sync({ force: false }); //FALSE NO CAMBIA
