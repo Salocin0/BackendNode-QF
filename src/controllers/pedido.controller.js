@@ -1,5 +1,6 @@
 import { estadosPedido } from '../estados/estados/estadosPedido.js';
 import { pedidoService } from '../services/pedido.service.js';
+import { sendNotificaciones } from '../util/Notificaciones.js';
 
 class PedidoController {
   async getAllController(req, res) {
@@ -162,6 +163,8 @@ class PedidoController {
       if (estadosPedido[estadoActual] && estadosPedido[estadoActual][accion]) {
         await estadosPedido[estadoActual][accion](pedido);
         res.status(200).json({ message: 'Estado del evento actualizado.' });
+
+        sendNotificaciones(userid,"se cambio el estado", "")
       } else {
         res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
       }

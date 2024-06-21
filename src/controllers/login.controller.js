@@ -1,3 +1,4 @@
+import { userService } from "../services/users.service.js";
 class LoginController {
   async login(req, res) {
     try {
@@ -11,6 +12,9 @@ class LoginController {
           id: req.user.id,
           sessionId: sessionId,
         };
+        if(req.user.tokenWeb!=null || req.user.tokenMobile !=null){
+          userService.setTokens(req.user.id,req.user.tokenWeb,req.user.tokenMobile)
+        }
       } else {
         return res.status(200).json({
           status: 'success',

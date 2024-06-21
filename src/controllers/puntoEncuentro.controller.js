@@ -85,9 +85,9 @@ class PuntoEncuentroController {
   async updateOneController(req, res) {
     try {
       const id = req.params.id;
-      const { puntoEncuentro } = req.body;
-      const result = await puntoEncuentroService.update(id, puntoEncuentro);
-
+      const {nombre,latitud,longitud} =req.body;
+      const result = await puntoEncuentroService.update(id, nombre,latitud,longitud);
+      
       if (result) {
         return res.status(200).json({
           status: 'success',

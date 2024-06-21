@@ -184,6 +184,22 @@ class UserService {
       return usuario;
     }
   }
+
+  async setTokens(userid,tokenWeb,tokenMobile) {
+    const usuario = await Usuario.findByPk(userid);
+    if (usuario) {
+      if(tokenWeb!=null){
+        usuario.tokenWeb = tokenWeb;
+      }
+      if(tokenMobile){
+        usuario.tokenMobile=tokenMobile
+      }
+      await usuario.save();
+      return usuario;
+    }
+  }
+
+  
 }
 
 export const userService = new UserService();

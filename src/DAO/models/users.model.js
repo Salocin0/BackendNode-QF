@@ -48,6 +48,14 @@ export const Usuario = sequelize.define('usuarios', {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
+  tokenMobile:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  tokenWeb:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   tipoUsuario: {
     type: DataTypes.STRING,
     allowNull: true,
