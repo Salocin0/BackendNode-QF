@@ -17,3 +17,5 @@ RouterEvento.post('/', eventoController.createOneController);
 RouterEvento.post('/cambiarEstado/:id/:accion', eventoController.updateStateController);
 
 RouterEvento.delete('/:id', eventoController.deleteOneController);
+
+RouterEvento.get('/enEstado/:state/sinAsociacionValida/:idConsumidor', eventoController.getAllInStateAndWithoutAsociacionValidaController);

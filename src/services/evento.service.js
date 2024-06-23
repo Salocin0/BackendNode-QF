@@ -3,6 +3,7 @@ import { EstadosEvento } from '../enums/Estados.enums.js';
 import { estadosEvento } from '../estados/estados/estadosEvento.js';
 import { consumidorService } from './consumidor.service.js';
 import { restriccionService } from './restriccion.service.js';
+import { asociacionService } from './asociacion.service.js';
 
 class EventoService {
   async getAll(consumidorId) {
@@ -108,6 +109,28 @@ class EventoService {
 
   async crearEvento(evento) {
     estadosEvento.EnPreparacion.crearEvento(evento);
+  }
+
+  async getAllInStateAndWithoutAsociacionValida(estado, idConsumidor) {
+    try {
+      const asociaciones = await asociacionService.getAll(idConsumidor);
+      const eventosAsociados = [];
+
+      for (const asociacion of asociaciones) {
+        if (asociacion.estado !== 'Cancelada') {
+          eventosAsociados.push(asociacion.eventoId);
+        }
+      }
+
+      const eventosEnPreparacion = await this.getAllInState(estado);
+
+      const eventosFiltrados = eventosEnPreparacion.filter((evento) => !eventosAsociados.includes(evento.id));
+
+      return eventosFiltrados;
+    } catch (error) {
+      console.error('Error al obtener eventos:', error);
+      throw error;
+    }
   }
 }
 

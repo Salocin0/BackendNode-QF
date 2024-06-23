@@ -33,7 +33,7 @@ class EventoController {
   async getAllInStateController(req, res) {
     try {
       const estado = req.params.state;
-      console.log("ESTADO" + estado)
+      console.log('ESTADO' + estado);
       const eventos = await eventoService.getAllInState(estado);
       if (eventos.length > 0) {
         return res.status(200).json({
@@ -260,6 +260,36 @@ class EventoController {
       }
     } catch (error) {
       res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
+    }
+  }
+
+  async getAllInStateAndWithoutAsociacionValidaController(req, res) {
+    try {
+      const estado = req.params.state;
+      const idConsumidor = req.params.idConsumidor;
+      
+      const eventos = await eventoService.getAllInStateAndWithoutAsociacionValida(estado,idConsumidor);
+      if (eventos.length > 0) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found all eventos',
+          data: eventos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'eventos not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
     }
   }
 }
