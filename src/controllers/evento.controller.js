@@ -276,8 +276,8 @@ class EventoController {
           data: eventos,
         });
       } else {
-        return res.status(404).json({
-          status: 'Error',
+        return res.status(200).json({
+          status: 'success',
           msg: 'eventos not found',
           data: {},
         });
