@@ -292,6 +292,37 @@ class EventoController {
       });
     }
   }
+
+  async getAllInStateAndWithoutAsociacionValidaPuestoController(req, res) {
+    try {
+      const estado = req.params.state;
+      const idConsumidor = req.params.idConsumidor;
+      const idPuesto = req.params.idPuesto;
+      
+      const eventos = await eventoService.getAllInStateAndWithoutAsociacionPuestoValida(estado,idConsumidor,idPuesto);
+      if (eventos.length > 0) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found all eventos',
+          data: eventos,
+        });
+      } else {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'eventos not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
 }
 
 export const eventoController = new EventoController();

@@ -295,11 +295,26 @@ class AsociacionController {
       const eventoid = req.params.eventoId;
       const puestoId = req.params.puestoId;
       const consumidorId = req.params.consumidorId;
-      const nuevaAsociacion = {
-        puestoId: Number(puestoId),
-        repartidoreId: consumidorId,
-        eventoId: Number(eventoid),
-      };
+      var nuevaAsociacion = null;
+      if(puestoId==0 || puestoId==="0"){
+        nuevaAsociacion = {
+          puestoId: 0,
+          repartidoreId: Number(consumidorId),
+          eventoId: Number(eventoid),
+        };
+      }else if(consumidorId==0 || consumidorId==="0"){
+        nuevaAsociacion = {
+          puestoId: Number(puestoId),
+          repartidoreId: 0,
+          eventoId: Number(eventoid),
+        };
+      }else{
+        nuevaAsociacion = {
+          puestoId: Number(puestoId),
+          repartidoreId: Number(consumidorId),
+          eventoId: Number(eventoid),
+        };
+      }
 
       const asociacionCreada = await asociacionService.create(nuevaAsociacion, null, consumidorId);
 

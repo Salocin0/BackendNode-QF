@@ -132,6 +132,30 @@ class EventoService {
       throw error;
     }
   }
+
+  async getAllInStateAndWithoutAsociacionPuestoValida(estado,idConsumidor,idPuesto) {
+    try {
+      const asociaciones = await asociacionService.getAll(idConsumidor);
+      const asociacionesFiltradas = asociaciones.filter((asociacion)=> asociacion.puestoId == idPuesto)
+      const eventosAsociados = [];
+
+      for (const asociacion of asociacionesFiltradas) {
+        if (asociacion.estado !== 'Cancelada') {
+          eventosAsociados.push(asociacion.eventoId);
+        }
+      }
+
+      const eventosEnPreparacion = await this.getAllInState(estado);
+
+      const eventosFiltrados = eventosEnPreparacion.filter((evento) => !eventosAsociados.includes(evento.id));
+
+      return eventosFiltrados;
+    } catch (error) {
+      console.error('Error al obtener eventos:', error);
+      throw error;
+    }
+  }
+
 }
 
 export const eventoService = new EventoService();

@@ -3,6 +3,7 @@ import { EstadosAsociaciones } from '../enums/Estados.enums.js';
 import { estadosPuestoDeComida } from '../estados/estados/estadosPuestosDeComida.js';
 import { asociacionService } from './asociacion.service.js';
 import { consumidorService } from './consumidor.service.js';
+import { eventoService } from './evento.service.js';
 
 class PuestoService {
   async getAll(consumidorId) {
@@ -74,8 +75,8 @@ class PuestoService {
 
   async create(puesto) {
     const consumidor = await consumidorService.getOne(puesto.consumidorId);
-    console.log("Muestro")
-    console.log(consumidor)
+    console.log('Muestro');
+    console.log(consumidor);
     const puestoendb = await Puesto.findOne({
       where: {
         numeroCarro: puesto.numeroCarro,
@@ -110,6 +111,24 @@ class PuestoService {
       throw new Error('No se pudieron obtener los detalles del puesto');
     }
   }
+
+  async getPuestosSinAsociacionValidaEnEventosEnEstado(estado, idConsumidor) {
+    try {
+      const asociacionesValidas = await asociacionService.getAllByPuesto(estado, idConsumidor);
+      if(asociacionesValidas==null){
+        return []
+      }
+      const puestosInvalidos = asociacionesValidas.map(asociacionValida => asociacionValida.puestoId);
+      const puestos = await puestoService.getAllByEncargado(idConsumidor);
+      const puestosValidos = puestos.filter(puesto => !puestosInvalidos.includes(puesto.id));
+      
+      return puestosValidos;
+    } catch (error) {
+      console.error('Error al obtener puestos sin asociación válida:', error);
+      throw error;
+    }
+  }
+  
 }
 
 export const puestoService = new PuestoService();

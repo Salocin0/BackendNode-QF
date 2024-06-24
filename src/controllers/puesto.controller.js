@@ -252,6 +252,39 @@ class PuestoController {
       res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
     }
   }
+
+  async getPuestosSinAsociacionValidaEnEventosEnEstadoController(req, res) {
+    try {
+      const estado = req.params.state;
+      const idConsumidor = req.params.idConsumidor;
+      
+      const puestos = await puestoService.getPuestosSinAsociacionValidaEnEventosEnEstado(estado,idConsumidor);
+      if (puestos.length > 0) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found all puestos',
+          data: puestos,
+        });
+      } else {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'puestos not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+
+ 
 }
 
 export const puestoController = new PuestoController();

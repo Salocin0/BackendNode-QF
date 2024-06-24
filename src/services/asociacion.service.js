@@ -1,6 +1,9 @@
 import { Asociacion } from '../DAO/models/asociacion.model.js';
 import { EstadosAsociaciones } from '../enums/Estados.enums.js';
 import { consumidorService } from './consumidor.service.js';
+import { eventoService } from './evento.service.js';
+import { puestoService } from './puesto.service.js';
+import { Op } from 'sequelize';
 
 class AsociacionService {
   async getAll(consumidorId) {
@@ -12,6 +15,49 @@ class AsociacionService {
     });
     return asociaciones;
   }
+
+  async getAllByPuesto(estado, consumidorId) {
+    try {
+      const eventos = await eventoService.getAllInState(estado)
+      const puestos = await puestoService.getAllByEncargado(consumidorId);
+      if(eventos.length==0|| puestos.length==0){
+        return null;
+      }
+      const eventoIds = eventos.map(evento => evento.id);
+      const puestoIds = puestos.map(puesto => puesto.id);
+      const asociaciones = await Asociacion.findAll({
+        where: {
+          puestoId: puestoIds,
+          eventoId: eventoIds,
+          estado: {
+            [Op.not]: 'Cancelada'
+          }
+        },
+      });
+  
+      return asociaciones;
+    } catch (error) {
+      console.error('Error al obtener asociaciones por puesto:', error);
+      throw error;
+    }
+  }
+  
+
+  async getAllByEncargado(consumidorId) {
+    const puestos = await puestoService.getAllByEncargado(consumidorId);
+    const puestoIds = puestos.map(puesto => puesto.id);
+    const asociaciones = await Asociacion.findAll({
+      where: {
+        puestoId: puestoIds,
+        estado: {
+          [Op.not]: 'Cancelada'
+        }
+      },
+    });
+    
+    return asociaciones;
+  }
+  
 
   async getAllInEvent(id) {
     const asociaciones = await Asociacion.findAll({
@@ -37,7 +83,7 @@ class AsociacionService {
     if (nuevaAsociacion.puestoId === 0) {
       nuevaAsociacion.puestoId = null;
     }
-    console.log(nuevaAsociacion);
+
     nuevaAsociacion.estado = EstadosAsociaciones.Pendiente;
     const asociacionCreada = await Asociacion.create(nuevaAsociacion);
     console.log(respuestas);
