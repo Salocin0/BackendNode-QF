@@ -19,17 +19,17 @@ import { RouterConsumidor } from './routes/consumidor.router.js';
 import { RouterEncargado } from './routes/encargado.router.js';
 import { RouterEvento } from './routes/evento.router.js';
 import { RouterLogin } from './routes/login.router.js';
+import { RouterNotificacion } from './routes/notificacion.router.js';
 import { RouterPedido } from './routes/pedido.router.js';
 import { RouterProducto } from './routes/producto.router.js';
 import { RouterPuesto } from './routes/puesto.router.js';
+import { RouterPuntoEncuentro } from './routes/puntoEncuentro.router.js';
 import { RouterRepartidor } from './routes/repartidor.router.js';
 import { RouterRestriccion } from './routes/restriccion.router.js';
 import { RouterUser } from './routes/user.router.js';
 import { RouterValoracion } from './routes/valoracion.router.js';
 import { sequelize } from './util/connections.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
-import { RouterPuntoEncuentro } from './routes/puntoEncuentro.router.js';
-import { sendNotificaciones } from './util/Notificaciones.js';
 dotenv.config();
 //definicion de server de express
 const app = express();
@@ -83,22 +83,8 @@ app.use('/carrito', RouterCarrito);
 app.use('/pedido', RouterPedido);
 app.use('/valoracion', RouterValoracion);
 app.use('/puntosEncuentro',RouterPuntoEncuentro);
-app.post('/token/:token', (req, res) => {
-  const { token } = req.params;
+app.use('/notificaciones4', RouterNotificacion);
 
-  if (!token) {
-    return res.status(400).send('Token, title, and body are required');
-  }
-
-  sendNotificaciones(token, title, body)
-    .then(response => {
-      res.status(200).send('Notification sent successfully');
-    })
-    .catch(error => {
-      console.error('Error sending notification:', error);
-      res.status(500).send('Failed to send notification');
-    });
-});
 
 // Sincronizar la base de datos y luego iniciar el servidor
 async function connectDB() {

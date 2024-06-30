@@ -1,9 +1,9 @@
-import { userService } from '../services/users.service.js';
 import crypto from 'crypto';
 import passport from 'passport';
+import { sessionStore } from '../app.js';
+import { userService } from '../services/users.service.js';
 import { createHashPW } from '../util/bcrypt.js';
 import { sendEmail } from '../util/emailSender.js';
-import { sessionStore } from '../app.js';
 
 class UserController {
   async getAllcontroller(req, res) {
@@ -35,6 +35,7 @@ class UserController {
     try {
       //validacion 
       const usuario = req.body.usuario;
+      console.log(usuario);
       const consumidor = req.body.consumidor;
       const productor = req.body.productor;
       const encargado = req.body.encargado;

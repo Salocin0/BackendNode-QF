@@ -1,6 +1,5 @@
 import { estadosPedido } from '../estados/estados/estadosPedido.js';
 import { pedidoService } from '../services/pedido.service.js';
-import { sendNotificaciones } from '../util/Notificaciones.js';
 
 class PedidoController {
   async getAllController(req, res) {

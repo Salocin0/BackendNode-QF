@@ -1,51 +1,42 @@
-import Expo from 'expo-server-sdk';
-import { userService } from '../services/users.service.js';
+import admin from 'firebase-admin'; // Ajusta la importación según tu configuración de Firebase Admin
+import serviceAccount from '../../serviceAccountKey.json' assert { type: "json" }; // Ajusta la ruta según la ubicación real de serviceAccountKey.json
+
+// Inicializar Firebase Admin SDK con tu configuración
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 export async function sendNotificaciones(token, titulo, descripcion) {
   try {
-    //buscar el usuario
-    //const user = userService.getOne(UsuarioID)
-    //const token = user.tokenMobile
-    const resultadoNotifi = sendExpo(token,titulo,descripcion,null) 
-    console.log(resultadoNotifi)
-    //sacar el token de web
-    //mandar notificacion web
-    //sacar el token mobile
-    //mandar notificacion mobile
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
-
-async function sendExpo(Token, titulo, descripcion, data) {
-  try {
-    let expo = new Expo();
-
-    const messages = {
-      to: Token,
+    // Objeto de mensaje común para ambas plataformas
+    const message = {
       sound: 'default',
       title: titulo,
       body: descripcion,
-      data: data,
     };
 
-    let chunks = expo.chunkPushNotifications(messages);
+    // Verificar si es un token de Expo válido (si lo necesitas en el futuro, puedes incluir la lógica de Expo aquí)
+    // if (Expo.isExpoPushToken(token)) {
+    //   message.to = token;
+    //   let chunks = expo.chunkPushNotifications([message]);
+    //   let receipts = await expo.sendPushNotificationsAsync(chunks);
+    //   console.log('Notificaciones enviadas a Expo:', receipts);
+    // } else {
+    // Si no es un token de Expo, enviar la notificación a Firebase Messaging
+    const firebaseMessage = {
+      notification: {
+        title: titulo,
+        body: descripcion,
+      },
+      token: token,
+    };
+    const response = await admin.messaging().send(firebaseMessage);
+    console.log('Notificación enviada a Firebase Messaging:', response);
+    // }
 
-    let receipts = await expo.sendPushNotificationsAsync(chunks);
-    console.log(receipts);
     return true;
   } catch (error) {
-    console.error(error);
-    return false;
-  }
-}
-
-async function sendFirebase(Token, titulo, descripcion) {
-  try {
-    //intentar mandar la notificacion
-    return true;
-  } catch (error) {
+    console.error('Error al enviar notificaciones:', error);
     return false;
   }
 }

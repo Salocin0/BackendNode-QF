@@ -36,6 +36,7 @@
     "express-compression": "^1.0.2",
     "express-handlebars": "^7.0.7",
     "express-session": "^1.17.3",
+    "firebase-admin": "^12.2.0",
     "from": "^0.1.7",
     "import": "^0.0.6",
     "mongoose": "^7.2.1",

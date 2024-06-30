@@ -1,12 +1,12 @@
+import { createHash } from 'crypto';
 import { Op } from 'sequelize';
 import { Usuario } from '../DAO/models/users.model.js';
 import { createHashPW } from '../util/bcrypt.js';
+import { sendEmail } from '../util/emailSender.js';
 import { consumidorService } from './consumidor.service.js';
 import { encargadoService } from './encargado.service.js';
 import { productorService } from './productor.service.js';
 import { repartidorService } from './repartidor.service.js';
-import { sendEmail } from '../util/emailSender.js';
-import { createHash } from 'crypto';
 
 class UserService {
   async getAll() {
@@ -88,6 +88,7 @@ class UserService {
       email: usuario.correoElectronico,
       tipoUsuario: usuario.tipoUsuario,
       fechaAlta: Date.now(),
+      tokenWeb: usuario.tokenWeb,
     };
     const usuariocreado = await Usuario.create(user);
     return usuariocreado;
