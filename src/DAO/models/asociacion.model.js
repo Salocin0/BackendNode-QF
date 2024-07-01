@@ -15,6 +15,11 @@ export const Asociacion = sequelize.define('Asociacion', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  motivo:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  }
+  
 });
 Asociacion.belongsTo(Evento, {
   foreinkey: 'eventoId',

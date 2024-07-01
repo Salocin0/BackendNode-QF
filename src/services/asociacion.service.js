@@ -121,23 +121,26 @@ class AsociacionService {
     return asociacion;
   }
 
-  async rechazar(id) {
+  async rechazar(id,motivo) {
     const asociacion = await this.getOne(id);
     asociacion.estado = EstadosAsociaciones.Rechazada;
+    asociacion.motivo = motivo
     await asociacion.save();
     return asociacion;
   }
 
-  async cancelar(id) {
+  async cancelar(id,motivo) {
     const asociacion = await this.getOne(id);
     asociacion.estado = EstadosAsociaciones.Cancelada;
+    asociacion.motivo = motivo
     await asociacion.save();
     return asociacion;
   }
 
-  async aceptar(id) {
+  async aceptar(id,motivo) {
     const asociacion = await this.getOne(id);
     asociacion.estado = EstadosAsociaciones.Aceptada;
+    asociacion.motivo = motivo
     await asociacion.save();
     return asociacion;
   }

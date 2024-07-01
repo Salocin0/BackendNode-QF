@@ -1,4 +1,4 @@
-export const Rechazada = {
+export const Confirmada = {
   newAsociacion: async (asociacion) => {
     throw new Error('Error en el estado de la asociacion');
   },
@@ -12,8 +12,14 @@ export const Rechazada = {
   },
 
   cancelar: async (asociacion) => {
-    asociacion.estado = 'Cancelada';
-    await asociacion.save();
-    return asociacion;
+    throw new Error('Error en el estado de la asociacion');
+  },
+
+  confirmada: async (asociacion) => {
+    throw new Error('Error en el estado de la asociacion');
+  },
+
+  cerrada: async (asociacion) => {
+    throw new Error('Error en el estado de la asociacion');
   },
 };

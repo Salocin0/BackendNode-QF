@@ -41,3 +41,73 @@ UPDATE usuarios SET "consumidoreId" = (SELECT id FROM consumidores WHERE nombre 
 UPDATE usuarios SET "consumidoreId" = (SELECT id FROM consumidores WHERE nombre = 'Alejandro') WHERE id = 2;
 UPDATE usuarios SET "consumidoreId" = (SELECT id FROM consumidores WHERE nombre = 'Valentina') WHERE id = 3;
 UPDATE usuarios SET "consumidoreId" = (SELECT id FROM consumidores WHERE nombre = 'Daniel') WHERE id = 4;
+
+
+-- Crear 5 registros de ejemplo para la tabla 'eventos'
+INSERT INTO public.eventos 
+(
+    nombre, descripcion, "tipoEvento", "tipoPago", "fechaInicio", "horaInicio", "fechaFin", 
+    "cantidadPuestos", "cantidadRepartidores", "capacidadMaxima", "conButaca", "conRepartidor", 
+    "conPreventa", "tipoPreventa", "fechaInicioPreventa", "fechaFinPreventa", 
+    "plazoCancelacionPreventa", "linkVentaEntradas", ubicacion, habilitado, 
+    localidad, provincia, img, croquis, estado, "createdAt", "updatedAt", "productorId"
+)
+VALUES
+-- Evento 1
+(
+    'Evento Musical', 'Concierto de música en vivo', 'Concierto', 'Pago en Efectivo', 
+    '2023-12-01 19:00:00+00', '19:00:00', '2023-12-01 23:00:00+00', 
+    10, 2, 100, true, true, true, 'General', 
+    '2023-11-25 19:00:00+00', '2023-11-30 19:00:00+00', 3, 
+    'https://ventaentradas.com/evento1', 'Plaza Central', true, 
+    'Catamarca', 'Catamarca', 'img1.jpg', 'croquis1.pdf', 'EnCurso', 
+    '2023-11-20 21:00:07+00', '2023-11-20 21:00:07+00', 1
+),
+-- Evento 2
+(
+    'Feria Artesanal', 'Exposición y venta de artesanías locales', 'Feria', 'Pago con Tarjeta', 
+    '2023-12-05 09:00:00+00', '09:00:00', '2023-12-05 18:00:00+00', 
+    20, 3, 200, false, false, false, NULL, 
+    NULL, NULL, NULL, 
+    'https://ventaentradas.com/evento2', 'Parque Central', true, 
+    'Icaño', 'Catamarca', 'img2.jpg', 'croquis2.pdf', 'EnCurso', 
+    '2023-11-20 21:00:07+00', '2023-11-20 21:00:07+00', 1
+),
+-- Evento 3
+(
+    'Teatro al Aire Libre', 'Obra de teatro en espacio abierto', 'Teatro', 'Pago en Efectivo', 
+    '2023-12-10 20:00:00+00', '20:00:00', '2023-12-10 22:00:00+00', 
+    15, 1, 150, true, false, true, 'VIP', 
+    '2023-12-01 20:00:00+00', '2023-12-09 20:00:00+00', 1, 
+    'https://ventaentradas.com/evento3', 'Anfiteatro', true, 
+    'Catamarca', 'Catamarca', 'img3.jpg', 'croquis3.pdf', 'EnPreparacion', 
+    '2023-11-20 21:00:07+00', '2023-11-20 21:00:07+00', 1
+),
+-- Evento 4
+(
+    'Festival Gastronómico', 'Muestra y venta de comidas típicas', 'Festival', 'Pago con Tarjeta', 
+    '2023-12-15 11:00:00+00', '11:00:00', '2023-12-15 22:00:00+00', 
+    25, 4, 300, false, true, false, NULL, 
+    NULL, NULL, NULL, 
+    'https://ventaentradas.com/evento4', 'Centro Cultural', true, 
+    'Icaño', 'Catamarca', 'img4.jpg', 'croquis4.pdf', 'EnPreparacion', 
+    '2023-11-20 21:00:07+00', '2023-11-20 21:00:07+00', 1
+),
+-- Evento 5
+(
+    'Carrera de Maratón', 'Competencia de maratón en la ciudad', 'Deportivo', 'Pago en Efectivo', 
+    '2023-12-20 07:00:00+00', '07:00:00', '2023-12-20 12:00:00+00', 
+    5, 10, 500, false, true, true, 'Competencia', 
+    '2023-12-10 07:00:00+00', '2023-12-19 07:00:00+00', 5, 
+    'https://ventaentradas.com/evento5', 'Ciudad Completa', true, 
+    'Catamarca', 'Catamarca', 'img5.jpg', 'croquis5.pdf', 'EnPreparacion', 
+    '2023-11-20 21:00:07+00', '2023-11-20 21:00:07+00', 1
+);
+
+INSERT INTO public."puntoEncuentros" (nombre, longitud, latitud, habilitado, "createdAt", "updatedAt", "eventoId")
+VALUES 
+('Punto de Encuentro 1', '-58.381592', '-34.603722', true, NOW(), NOW(), 1),
+('Punto de Encuentro 2', '-58.381692', '-34.603822', true, NOW(), NOW(), 1),
+('Punto de Encuentro 3', '-58.381792', '-34.603922', true, NOW(), NOW(), 1),
+('Punto de Encuentro 4', '-58.381892', '-34.604022', true, NOW(), NOW(), 1),
+('Punto de Encuentro 5', '-58.381992', '-34.604122', true, NOW(), NOW(), 1);

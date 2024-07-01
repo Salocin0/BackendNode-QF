@@ -1,24 +1,34 @@
-import { Aceptada } from '../estadosConcretoAsociacion/aceptadaAsociacion.state.js';
-import { Cancelada } from '../estadosConcretoAsociacion/canceladaAsociacion.state.js';
-import { PendienteDeAceptacion } from '../estadosConcretoAsociacion/pendienteDeAceptacionAsociacion.state.js';
-import { Rechazada } from '../estadosConcretoAsociacion/rechazadaAsociacion.state.js';
+import { Aceptada } from "../estadosConcretoAsociacion/aceptadaAsociacion.state.js"
+import { Cancelada } from "../estadosConcretoAsociacion/canceladaAsociacion.state.js"
+import { Cerrada } from "../estadosConcretoAsociacion/cerradaAsociacion.state.js";
+import { Confirmada } from "../estadosConcretoAsociacion/confirmadaAsociacion.state.js";
+import { Pendiente } from "../estadosConcretoAsociacion/pendienteDeAceptacionAsociacion.state.js"
+import { Retornada } from "../estadosConcretoAsociacion/retornadaAsociacion.state.js";
 
 export const estadosAsociacion = {
-  PendienteDeAceptacion: {
+  Pendiente: {
     newAsociacion: async (asociacion) => {
-      return PendienteDeAceptacion.newAsociacion(asociacion);
+      return Pendiente.newAsociacion(asociacion);
     },
 
     aceptar: async (asociacion) => {
-      return PendienteDeAceptacion.aceptar(asociacion);
+      return Pendiente.aceptar(asociacion);
     },
 
-    rechazada: async (asociacion) => {
-      return PendienteDeAceptacion.rechazada(asociacion);
+    retornada: async (asociacion) => {
+      return Pendiente.retornada(asociacion);
     },
 
     cancelar: async (asociacion) => {
-      return PendienteDeAceptacion.cancelar(asociacion);
+      return Pendiente.cancelar(asociacion);
+    },
+
+    cerrada: async (asociacion) => {
+      return Pendiente.cerrada(asociacion);
+    },
+
+    confirmada: async (asociacion) => {
+      return Pendiente.confirmada(asociacion);
     },
   },
 
@@ -31,30 +41,98 @@ export const estadosAsociacion = {
       return Aceptada.aceptar(asociacion);
     },
 
-    rechazada: async (asociacion) => {
-      return Aceptada.rechazada(asociacion);
+    retornada: async (asociacion) => {
+      return Aceptada.retornada(asociacion);
     },
 
     cancelar: async (asociacion) => {
       return Aceptada.cancelar(asociacion);
     },
+
+    cerrada: async (asociacion) => {
+      return Aceptada.cerrada(asociacion);
+    },
+
+    confirmada: async (asociacion) => {
+      return Aceptada.confirmada(asociacion);
+    },
   },
 
-  Rechazada: {
+  Retornada: {
     newAsociacion: async (asociacion) => {
-      return Rechazada.newAsociacion(asociacion);
+      return Retornada.newAsociacion(asociacion);
     },
 
     aceptar: async (asociacion) => {
-      return Rechazada.aceptar(asociacion);
+      return Retornada.aceptar(asociacion);
     },
 
-    rechazada: async (asociacion) => {
-      return Rechazada.rechazada(asociacion);
+    retornada: async (asociacion) => {
+      return Retornada.retornada(asociacion);
     },
 
     cancelar: async (asociacion) => {
-      return Rechazada.cancelar(asociacion);
+      return Retornada.cancelar(asociacion);
+    },
+
+    cerrada: async (asociacion) => {
+      return Retornada.cerrada(asociacion);
+    },
+
+    confirmada: async (asociacion) => {
+      return Retornada.confirmada(asociacion);
+    },
+  },
+
+  Cerrada: {
+    newAsociacion: async (asociacion) => {
+      return Cerrada.newAsociacion(asociacion);
+    },
+
+    aceptar: async (asociacion) => {
+      return Cerrada.aceptar(asociacion);
+    },
+
+    retornada: async (asociacion) => {
+      return Cerrada.retornada(asociacion);
+    },
+
+    cancelar: async (asociacion) => {
+      return Cerrada.cancelar(asociacion);
+    },
+
+    cerrada: async (asociacion) => {
+      return Cerrada.cerrada(asociacion);
+    },
+
+    confirmada: async (asociacion) => {
+      return Cerrada.confirmada(asociacion);
+    },
+  },
+  
+  Confirmada: {
+    newAsociacion: async (asociacion) => {
+      return Confirmada.newAsociacion(asociacion);
+    },
+
+    aceptar: async (asociacion) => {
+      return Confirmada.aceptar(asociacion);
+    },
+
+    retornada: async (asociacion) => {
+      return Confirmada.retornada(asociacion);
+    },
+
+    cancelar: async (asociacion) => {
+      return Confirmada.cancelar(asociacion);
+    },
+
+    cerrada: async (asociacion) => {
+      return Confirmada.cerrada(asociacion);
+    },
+
+    confirmada: async (asociacion) => {
+      return Confirmada.confirmada(asociacion);
     },
   },
 
@@ -67,12 +145,20 @@ export const estadosAsociacion = {
       return Cancelada.aceptar(asociacion);
     },
 
-    rechazada: async (asociacion) => {
-      return Cancelada.rechazada(asociacion);
+    retornada: async (asociacion) => {
+      return Cancelada.retornada(asociacion);
     },
-    
+
     cancelar: async (asociacion) => {
       return Cancelada.cancelar(asociacion);
+    },
+
+    cerrada: async (asociacion) => {
+      return Cancelada.cerrada(asociacion);
+    },
+
+    confirmada: async (asociacion) => {
+      return Cancelada.confirmada(asociacion);
     },
   },
 };

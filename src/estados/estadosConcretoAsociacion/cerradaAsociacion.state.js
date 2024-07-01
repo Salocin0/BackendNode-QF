@@ -1,25 +1,18 @@
-export const Pendiente = {
+export const Cerrada = {
   newAsociacion: async (asociacion) => {
     throw new Error('Error en el estado de la asociacion');
   },
 
   aceptar: async (asociacion) => {
-    asociacion.estado = 'Aceptada';
-    await asociacion.save();
-    return asociacion;
+    throw new Error('Error en el estado de la asociacion');
   },
 
-  retornada: async (asociacion) => {
-    asociacion.estado = 'Retornada';
-
-    await asociacion.save();
-    return asociacion;
+  rechazada: async (asociacion) => {
+    throw new Error('Error en el estado de la asociacion');
   },
 
   cancelar: async (asociacion) => {
-    asociacion.estado = 'Cancelada';
-    await asociacion.save();
-    return asociacion;
+    throw new Error('Error en el estado de la asociacion');
   },
 
   confirmada: async (asociacion) => {

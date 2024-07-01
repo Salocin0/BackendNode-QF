@@ -14,4 +14,12 @@ export const Cancelada = {
   cancelar: async (asociacion) => {
     throw new Error('Error en el estado de la asociacion');
   },
+
+  confirmada: async (asociacion) => {
+    throw new Error('Error en el estado de la asociacion');
+  },
+
+  cerrada: async (asociacion) => {
+    throw new Error('Error en el estado de la asociacion');
+  },
 };

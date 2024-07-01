@@ -16,4 +16,15 @@ export const Aceptada = {
     await asociacion.save();
     return asociacion;
   },
+
+  confirmada: async (asociacion) => {
+    asociacion.estado = 'Confirmada';
+    await asociacion.save();
+    return asociacion;
+  },
+
+  cerrada: async (asociacion) => {
+    throw new Error('Error en el estado de la asociacion');
+  },
+
 };
