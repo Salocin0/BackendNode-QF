@@ -1,3 +1,4 @@
+// encargado.controller.js
 import { consumidorService } from '../services/consumidor.service.js';
 import { encargadoService } from '../services/encargado.service.js';
 
@@ -58,8 +59,8 @@ class EncargadoController {
     try {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
-      const { razonSocialEPC, cuitEPC, condicionIva} = req.body;
-      const result = await encargadoService.updateOne(consumidor.encargadoId, { razonSocialEPC, cuitEPC,condicionIva });
+      const { razonSocialEPC, cuitEPC, condicionIva } = req.body;
+      const result = await encargadoService.updateOne(consumidor.encargadoId, { razonSocialEPC, cuitEPC, condicionIva });
       return res.status(200).json({
         status: 'success',
         msg: 'Encargado actualizado correctamente',

@@ -1,5 +1,8 @@
 import { estadosPedido } from '../estados/estados/estadosPedido.js';
 import { pedidoService } from '../services/pedido.service.js';
+import { puestoService } from '../services/puesto.service.js';
+import { sendNotificaciones } from '../util/Notificaciones.js';
+import { userController } from './users.controller.js';
 
 class PedidoController {
   async getAllController(req, res) {
@@ -132,6 +135,22 @@ class PedidoController {
           data: {},
         });
       } else {
+        //llamar al service.enviarNotificaciones (SERVICE CON SERVICE)
+        const encargadoId = await puestoService.getEncargadoIdByPuestoId(puestoId);
+        console.log("ENCARGADO ID:" + encargadoId)
+
+        const token = await userController.getTokenByEncargadoId(encargadoId);
+
+        console.log(token);
+
+
+        if (token) {
+          const titulo = 'Nuevo Pedido';
+          const descripcion = 'Tienes un nuevo pedido pendiente.';
+          await sendNotificaciones(token, titulo, descripcion);
+        }
+
+
         return res.status(200).json({
           status: 'success',
           msg: 'Producto created',

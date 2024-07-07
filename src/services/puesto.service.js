@@ -3,7 +3,6 @@ import { EstadosAsociaciones } from '../enums/Estados.enums.js';
 import { estadosPuestoDeComida } from '../estados/estados/estadosPuestosDeComida.js';
 import { asociacionService } from './asociacion.service.js';
 import { consumidorService } from './consumidor.service.js';
-import { eventoService } from './evento.service.js';
 
 class PuestoService {
   async getAll(consumidorId) {
@@ -41,6 +40,19 @@ class PuestoService {
     });
     return puestos;
   }
+
+  // services/puestoService.js
+
+  async getEncargadoIdByPuestoId(puestoId) {
+    try {
+      const puesto = await Puesto.findByPk(puestoId);
+      return puesto ? puesto.encargadoId : null;
+    } catch (error) {
+      console.error(`Error al recuperar el encargadoId para puestoId ${puestoId}:`, error);
+      return null;
+    }
+  };
+
 
   async getAllByEncargado(consumidorId) {
     const consumidor = await consumidorService.getOne(consumidorId);
@@ -115,20 +127,21 @@ class PuestoService {
   async getPuestosSinAsociacionValidaEnEventosEnEstado(estado, idConsumidor) {
     try {
       const asociacionesValidas = await asociacionService.getAllByPuesto(estado, idConsumidor);
-      if(asociacionesValidas==null){
+      if (asociacionesValidas == null) {
         return []
       }
       const puestosInvalidos = asociacionesValidas.map(asociacionValida => asociacionValida.puestoId);
       const puestos = await puestoService.getAllByEncargado(idConsumidor);
       const puestosValidos = puestos.filter(puesto => !puestosInvalidos.includes(puesto.id));
-      
+
       return puestosValidos;
     } catch (error) {
       console.error('Error al obtener puestos sin asociación válida:', error);
       throw error;
     }
   }
-  
+
 }
 
 export const puestoService = new PuestoService();
+export const { getEncargadoIdByPuestoId } = puestoService;

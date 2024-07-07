@@ -1,9 +1,12 @@
 import crypto from 'crypto';
 import passport from 'passport';
+import { Consumidor } from '../DAO/models/consumidor.model.js';
+import { Usuario } from '../DAO/models/users.model.js';
 import { sessionStore } from '../app.js';
 import { userService } from '../services/users.service.js';
 import { createHashPW } from '../util/bcrypt.js';
 import { sendEmail } from '../util/emailSender.js';
+
 
 class UserController {
   async getAllcontroller(req, res) {
@@ -143,6 +146,42 @@ class UserController {
       });
     }
   }
+
+  async getTokenByEncargadoId(encargadoId) {
+    try {
+      // Buscar el consumidor por encargadoId y obtener el usuario asociado
+      const consumidor = await Consumidor.findOne({
+        where: { encargadoId: encargadoId },
+      });
+
+      if (!consumidor) {
+        throw new Error(`No se encontró el consumidor con encargadoId ${encargadoId}`);
+      }
+
+      const usuarioId = consumidor.usuarioId;
+
+
+
+      // El usuario asociado debería estar disponible a través de la relación definida en Consumidor
+
+      if (!usuarioId) {
+        throw new Error(`No se encontró el usuario asociado al usuarioId  ${usuarioId}`);
+      }
+
+      const usuario = await Usuario.findOne({
+        where: { id: usuarioId },
+      });
+
+      const tokenUsuario = usuario.tokenWeb;
+
+      // Devolver el tokenWeb del usuario encontrado
+      return tokenUsuario;
+    } catch (error) {
+      console.error(`Error al obtener el token del encargadoId ${encargadoId}:`, error);
+      throw error;
+    }
+  }
+
 
   async userSession(req, res) {
     console.log(req.body.sessionID)
