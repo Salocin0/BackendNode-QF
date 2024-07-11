@@ -147,9 +147,9 @@ class UserController {
     }
   }
 
+  //pasar al service
   async getTokenByEncargadoId(encargadoId) {
     try {
-      // Buscar el consumidor por encargadoId y obtener el usuario asociado
       const consumidor = await Consumidor.findOne({
         where: { encargadoId: encargadoId },
       });

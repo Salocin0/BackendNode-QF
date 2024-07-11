@@ -1,10 +1,12 @@
 import { Op } from 'sequelize';
+import { notificationTexts } from '../config/notificacionesConfig.js';
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { DetallePedido } from '../DAO/models/detallePedido.model.js';
 import { Pedido } from '../DAO/models/pedido.model.js';
 import { Producto } from '../DAO/models/producto.model.js';
 import { Puesto } from '../DAO/models/puesto.model.js';
 import { estadosPedido } from '../estados/estados/estadosPedido.js';
+import { notificacionesService } from './notificaciones.service.js';
 
 class PedidoService {
   async getAll(consumidorId) {
@@ -126,6 +128,17 @@ class PedidoService {
       return null;
     }
     return pedido.repartidorId;
+  }
+
+  async sendNotificaciones(puestoId){
+    const tituloNotificacion = notificationTexts.consumidor.titulo;
+    const descripcionNotificacion = notificationTexts.consumidor.descripcion;
+
+    console.log(tituloNotificacion,descripcionNotificacion,"dsfasfdasdfasdfdasf");
+
+    const resultadoNotificacion = await notificacionesService.enviarNotificaciones(puestoId, tituloNotificacion,descripcionNotificacion);
+
+    return resultadoNotificacion;
   }
 
 
