@@ -73,7 +73,7 @@ class AsociacionService {
     return asociacion;
   }
 
-  async create(nuevaAsociacion, respuestas, consumidorId) {
+  async create(nuevaAsociacion, respuestas, consumidorId, restricciones) {
     if (consumidorId !== 0) {
       const consumidor = await consumidorService.getOne(consumidorId);
       nuevaAsociacion.repartidoreId = consumidor?.repartidorId;

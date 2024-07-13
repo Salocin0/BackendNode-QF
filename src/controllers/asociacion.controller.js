@@ -227,8 +227,12 @@ class AsociacionController {
       const eventoid = req.params.eventoId;
       const puestoId = req.params.puestoId;
       const consumidorId = req.params.consumidorId;
-
-      const existingAsociacion = await asociacionService.getByEventoPuesto(Number(eventoid), Number(puestoId));
+      const existingAsociacion = null;
+      if(Number(puestoId)===0){
+        existingAsociacion = await asociacionService.getEventoByRepartidor(Number(eventoid),Number(consumidorId))
+      }else{
+        existingAsociacion = await asociacionService.getByEventoPuesto(Number(eventoid), Number(puestoId));
+      }
 
       if (existingAsociacion) {
         return res.status(400).json({
@@ -260,7 +264,6 @@ class AsociacionController {
     try {
       const eventoid = req.params.eventoId;
       const consumidorId = req.params.consumidorId;
-      const repartidorId = await repartidorService;
 
       const existingAsociacion = await asociacionService.getEventoByRepartidor(Number(eventoid), Number(consumidorId));
 
@@ -347,7 +350,6 @@ class AsociacionController {
   async getAllByConsumidorId(req, res) {
     try {
       const { consumidorId } = req.params;
-      console.log('aca es' + consumidorId);
       const consumidor = await Consumidor.findByPk(consumidorId);
 
       const encargadoId = consumidor.encargadoId;
