@@ -192,7 +192,7 @@ class UserService {
       if(tokenWeb!=null){
         usuario.tokenWeb = tokenWeb;
       }
-      if(tokenMobile){
+      if(tokenMobile!=null){
         usuario.tokenMobile=tokenMobile
       }
       await usuario.save();

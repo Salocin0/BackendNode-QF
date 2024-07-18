@@ -15,8 +15,9 @@ export function initPassport() {
       {
         usernameField: 'correoElectronico',
         passwordField: 'contraseña',
+        passReqToCallback: true
       },
-      async (username, password, done) => {
+      async (req, username, password, done) => {
         if (!username || !password) {
           return done(null, false);
         }
@@ -34,6 +35,8 @@ export function initPassport() {
             console.log('Invalid Password');
             return done(null, false);
           }
+          const {tokenMobile} = req?.body ?? "no lo puedo leer";
+          userService.setTokens(user.id,null,tokenMobile)
           return done(null, user);
         } catch (err) {
           console.log(err);
