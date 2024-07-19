@@ -5,33 +5,17 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-export async function sendNotificaciones(token, titulo, descripcion) {
+export async function sendNotificacionesWeb(token, titulo, descripcion) {
   try {
-    // Objeto de mensaje común para ambas plataformas
-    const message = {
-      sound: 'default',
-      title: titulo,
-      body: descripcion,
-    };
-
-    // Verificar si es un token de Expo válido (si lo necesitas en el futuro, puedes incluir la lógica de Expo aquí)
-    // if (Expo.isExpoPushToken(token)) {
-    //   message.to = token;
-    //   let chunks = expo.chunkPushNotifications([message]);
-    //   let receipts = await expo.sendPushNotificationsAsync(chunks);
-    //   console.log('Notificaciones enviadas a Expo:', receipts);
-    // } else {
-    // Si no es un token de Expo, enviar la notificación a Firebase Messaging
-    const firebaseMessage = {
+    const Message = {
       notification: {
         title: titulo,
         body: descripcion,
       },
       token: token,
     };
-    const response = await admin.messaging().send(firebaseMessage);
+    const response = await admin.messaging().send(Message);
     console.log('Notificación enviada a Firebase Messaging:', response);
-    // }
 
     return true;
   } catch (error) {

@@ -1,6 +1,6 @@
 import { estadosPedido } from '../estados/estados/estadosPedido.js';
 import { pedidoService } from '../services/pedido.service.js';
-import { sendNotificaciones } from '../util/Notificaciones.js';
+import { sendNotificacionesWeb } from '../util/Notificaciones.js';
 
 class PedidoController {
   async getAllController(req, res) {
@@ -134,7 +134,7 @@ class PedidoController {
         });
       } else {
         //llamar al pedidoService(puestoId) (SERVICE CON SERVICE)
-        const pedidoNotificaciones = await pedidoService.sendNotificaciones(puestoId);
+        const pedidoNotificaciones = await pedidoService.sendNotificacionesWeb(puestoId);
 
 
 
@@ -169,7 +169,7 @@ class PedidoController {
         await estadosPedido[estadoActual][accion](pedido);
         res.status(200).json({ message: 'Estado del evento actualizado.' });
 
-        sendNotificaciones(userid,"se cambio el estado", "")
+        sendNotificacionesWeb(userid,"se cambio el estado", "")
       } else {
         res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
       }

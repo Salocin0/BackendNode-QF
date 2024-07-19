@@ -172,10 +172,11 @@ class UserController {
         where: { id: usuarioId },
       });
 
-      const tokenUsuario = usuario.tokenWeb;
+      const tokenUsuarioWeb = usuario.tokenWeb;
+      const tokenUsuarioMobile = usuario.tokenMobile;
 
       // Devolver el tokenWeb del usuario encontrado
-      return tokenUsuario;
+      return {tokenUsuarioWeb,tokenUsuarioMobile};
     } catch (error) {
       console.error(`Error al obtener el token del encargadoId ${encargadoId}:`, error);
       throw error;

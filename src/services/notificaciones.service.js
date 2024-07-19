@@ -1,34 +1,26 @@
 
 import { userController } from "../controllers/users.controller.js";
-import { sendNotificaciones } from "../util/Notificaciones.js";
+import { sendNotificacionesWeb } from "../util/Notificaciones.js";
 import { puestoService } from "./puesto.service.js";
-
-
+import {sendNotificacionesMobile} from "../../dist/util/NotificacionesMobile.js"
 class NotificacionesService {
     async enviarNotificacionesAPuesto(puestoId, tituloNotificacion, descripcionNotificacion) {
-        console.log("LLLEGA O NO LLEGA" + puestoId);
-        const TokenEncargado = await this.buscarTokenPorPuesto(puestoId)
-
-        if (TokenEncargado) {
-            const titulo = tituloNotificacion;
-            const descripcion = descripcionNotificacion;
-            await sendNotificaciones(TokenEncargado, titulo, descripcion);
+        const {tokenUsuarioWeb,tokenUsuarioMobile} = await this.buscarTokenPorPuesto(puestoId)
+        const titulo = tituloNotificacion;
+        const descripcion = descripcionNotificacion;
+        if (tokenUsuarioWeb) {
+            await sendNotificacionesWeb(tokenUsuarioWeb, titulo, descripcion);
+        }
+        if(tokenUsuarioMobile){
+            await sendNotificacionesMobile(tokenUsuarioMobile,titulo,descripcion);
         }
 
     }
 
     async buscarTokenPorPuesto(puestoId) {
-
-        console.log("y aca llega?" + puestoId)
         const encargadoId = await puestoService.getEncargadoIdByPuestoId(puestoId);
-        console.log("ENCARGADO ID:" + encargadoId)
-
-        const token = await userController.getTokenByEncargadoId(encargadoId);
-
-        console.log(token);
-
-        return token;
-
+        const tokens = await userController.getTokenByEncargadoId(encargadoId);
+        return tokens;
     }
 
 }

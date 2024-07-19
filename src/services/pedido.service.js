@@ -130,7 +130,7 @@ class PedidoService {
     return pedido.repartidorId;
   }
 
-  async sendNotificaciones(puestoId){
+  async sendNotificacionesWeb(puestoId){
     const tituloNotificacion = notificationTexts.consumidor.titulo;
     const descripcionNotificacion = notificationTexts.consumidor.descripcion;
 
