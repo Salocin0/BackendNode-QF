@@ -8,11 +8,7 @@ export const ValoracionPuesto = sequelize.define('valoracionPuesto', {
     primaryKey: true,
     autoIncrement: true,
   },
-  calidad: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  tiempo: {
+  puntuacion: {
     type: DataTypes.INTEGER,
     allowNull: true,
   },

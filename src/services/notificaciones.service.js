@@ -14,7 +14,6 @@ class NotificacionesService {
         if(tokenUsuarioMobile){
             await sendNotificacionesMobile(tokenUsuarioMobile,titulo,descripcion);
         }
-
     }
 
     async buscarTokenPorPuesto(puestoId) {

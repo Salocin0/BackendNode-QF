@@ -8,11 +8,7 @@ export const ValoracionRepartidor = sequelize.define('valoracionRepartidor', {
     primaryKey: true,
     autoIncrement: true,
   },
-  puntualidad: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  eficiencia: {
+  puntuacion: {
     type: DataTypes.INTEGER,
     allowNull: true,
   },

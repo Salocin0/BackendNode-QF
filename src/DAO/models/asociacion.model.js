@@ -4,6 +4,7 @@ import { RTARestriccion } from './RTARestriccion.model.js';
 import { Evento } from './evento.model.js';
 import { Puesto } from './puesto.model.js';
 import { Repartidor } from './repartidor.model.js';
+import { Asignacion } from './asignacion.model.js';
 
 export const Asociacion = sequelize.define('Asociacion', {
   id: {
