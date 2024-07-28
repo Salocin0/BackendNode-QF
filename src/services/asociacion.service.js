@@ -147,9 +147,9 @@ class AsociacionService {
     return asociacion;
   }
 
-  async sendNotificacionesWeb(eventoid){
+  async sendNotificacionesWebRepartidorAsociacion(eventoid){
     const tituloNotificacion = notificationTexts.productor.tituloAsociacion;
-    const descripcionNotificacion = notificationTexts.productor.descripcionAsociacion;
+    const descripcionNotificacion = notificationTexts.productor.descripcionAsociacionPuesto;
 
 
     const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacion(eventoid, tituloNotificacion,descripcionNotificacion);
@@ -158,6 +158,14 @@ class AsociacionService {
   }
 
 
+  async sendNotificacionesWebEventoAsociacion(eventoid){
+    const tituloNotificacion = notificationTexts.productor.tituloAsociacion;
+    const descripcionNotificacion = notificationTexts.productor.descripcionAsociacionPuesto;
+
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacion(eventoid, tituloNotificacion,descripcionNotificacion);
+
+    return resultadoNotificacion;
+  }
 
 
 }
