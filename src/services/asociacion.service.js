@@ -1,9 +1,11 @@
+import { Op } from 'sequelize';
+import { notificationTexts } from '../config/notificacionesConfig.js';
 import { Asociacion } from '../DAO/models/asociacion.model.js';
 import { EstadosAsociaciones } from '../enums/Estados.enums.js';
 import { consumidorService } from './consumidor.service.js';
 import { eventoService } from './evento.service.js';
+import { notificacionesService } from './notificaciones.service.js';
 import { puestoService } from './puesto.service.js';
-import { Op } from 'sequelize';
 
 class AsociacionService {
   async getAll(consumidorId) {
@@ -144,6 +146,20 @@ class AsociacionService {
     await asociacion.save();
     return asociacion;
   }
+
+  async sendNotificacionesWeb(eventoid){
+    const tituloNotificacion = notificationTexts.productor.tituloAsociacion;
+    const descripcionNotificacion = notificationTexts.productor.descripcionAsociacion;
+
+
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacion(eventoid, tituloNotificacion,descripcionNotificacion);
+
+    return resultadoNotificacion;
+  }
+
+
+
+
 }
 
 export const asociacionService = new AsociacionService();

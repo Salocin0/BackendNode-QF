@@ -1,5 +1,7 @@
-import { Usuario } from '../DAO/models/users.model.js';
 import { Productor } from '../DAO/models/Productor.model.js';
+import { Evento } from '../DAO/models/evento.model.js';
+import { Usuario } from '../DAO/models/users.model.js';
+
 
 class ProductorService {
   async getAll() {
@@ -11,6 +13,22 @@ class ProductorService {
     const productor = Productor.findByPk(id);
     return productor;
   }
+
+  async getProductorByEvento(eventoId) {
+    try {
+      const evento = await Evento.findByPk(eventoId);
+      if (!evento) {
+        return null;
+      }
+
+      const productor = await Productor.findByPk(evento.productorId);
+      const productorId = productor.id;
+      return productorId;
+    } catch (error) {
+      throw error;
+    }
+  }
+
 
   async updateOne(id, newData) {
 

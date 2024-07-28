@@ -1,7 +1,6 @@
 import cron from 'node-cron';
-import { eventoService } from '../services/evento.service.js';
-import { sequelize } from './connections.js';
 import { asignacionService } from '../services/asignacion.service.js';
+import { sequelize } from './connections.js';
 
 export function procesosAutomaticos() {
   cron.schedule('* * * * *', () => {
@@ -16,20 +15,20 @@ export function procesosAutomaticos() {
 
       for (const pedido of pedidos) {
         const existeAsignacion = await verificarAsignacionPorPedido(pedido.id)
-        console.log(existeAsignacion)
+        //console.log(existeAsignacion)
         if(!existeAsignacion){
           const repartidor = await obtenerRepartidorParaAsignacion(pedido); // tener en cuenta las caducadas para no poner el mismo repartidor
 
           if (repartidor && repartidor.length > 0) {
             await asignacionService.create("Pendiente",pedido.id, repartidor[0].repartidoreId);
-            console.log(`Asignación creada para pedido ${pedido.id} con repartidor ${repartidor[0].repartidoreId}`);
+            //console.log(`Asignación creada para pedido ${pedido.id} con repartidor ${repartidor[0].repartidoreId}`);
           } else {
-            console.log(`No se encontró repartidor para el pedido ${pedido.id}`);
+            //console.log(`No se encontró repartidor para el pedido ${pedido.id}`);
           }
         }
       }
     } catch (error) {
-      console.error('Error al asignar repartidores:', error);
+      //console.error('Error al asignar repartidores:', error);
     }
   });
 }
@@ -52,13 +51,13 @@ export async function verificarAsignacionPorPedido(pedidoId) {
 
     return resultado[0].existe;
   } catch (error) {
-    console.error('Error al verificar asignación por pedido:', error);
+    //console.error('Error al verificar asignación por pedido:', error);
     return false;
   }
 }
 
 export async function obtenerPedidosParaAsignacion() {
-  const pedidos = await sequelize.query(
+  /*const pedidos = await sequelize.query(
     `
     SELECT id
     FROM "Pedidos" p
@@ -72,13 +71,13 @@ export async function obtenerPedidosParaAsignacion() {
       );
   `,
     { type: sequelize.QueryTypes.SELECT }
-  );
+  );*/
 
   return pedidos;
 }
 
 export async function obtenerRepartidorParaAsignacion() {
-  const repartidor = await sequelize.query(
+  /*const repartidor = await sequelize.query(
     `
     WITH 
 Valoraciones_Calculadas AS (
@@ -180,14 +179,14 @@ ORDER BY
     END DESC;
   `,
     { type: sequelize.QueryTypes.SELECT }
-  );
+  );*/
 
   return repartidor;
 }
 
 export async function borrarAsignacionesPendienteViejas() {
   try {
-    await sequelize.query(
+    /*await sequelize.query(
       `
       DELETE FROM "Asignacions"
       WHERE estado = 'Pendiente'
@@ -195,10 +194,10 @@ export async function borrarAsignacionesPendienteViejas() {
       RETURNING *;
       `,
       { type: sequelize.QueryTypes.DELETE }
-    );
+    );*/
 
-    console.log('Asignaciones viejas pendientes eliminadas.');
+    //console.log('Asignaciones viejas pendientes eliminadas.');
   } catch (error) {
-    console.error('Error al borrar asignaciones viejas pendientes:', error);
+    //console.error('Error al borrar asignaciones viejas pendientes:', error);
   }
 }
