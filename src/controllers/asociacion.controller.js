@@ -266,8 +266,9 @@ class AsociacionController {
       const consumidorId = req.params.consumidorId;
 
       const existingAsociacion = await asociacionService.getEventoByRepartidor(Number(eventoid), Number(consumidorId));
-
       if (existingAsociacion) {
+        const asociacionNotificaciones = await asociacionService.sendNotificacionesWebRepartidorAsociacion(eventoid)
+
         return res.status(400).json({
           status: 'error',
           msg: 'La asociación para este evento y puesto ya existe',
@@ -275,6 +276,8 @@ class AsociacionController {
           data: {},
         });
       } else {
+        console.log("Entre!")
+
         return res.status(200).json({
           status: 'success',
           msg: 'Asociación creada exitosamente',
@@ -322,6 +325,8 @@ class AsociacionController {
       const asociacionCreada = await asociacionService.create(nuevaAsociacion, null, consumidorId);
 
       if (asociacionCreada) {
+        const asociacionNotificaciones = await asociacionService.sendNotificacionesWebEventoAsociacion(eventoid)
+
         return res.status(200).json({
           status: 'success',
           msg: 'Asociación creada exitosamente',

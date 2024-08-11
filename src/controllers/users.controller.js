@@ -183,6 +183,41 @@ class UserController {
     }
   }
 
+  async getTokenByProductorId(productorId) {
+    try {
+      const consumidor = await Consumidor.findOne({
+        where: { productorId: productorId },
+      });
+
+      if (!consumidor) {
+        throw new Error(`No se encontró el consumidor con productorId ${productorId}`);
+      }
+
+      const usuarioId = consumidor.usuarioId;
+
+
+
+      // El usuario asociado debería estar disponible a través de la relación definida en Consumidor
+
+      if (!usuarioId) {
+        throw new Error(`No se encontró el usuario asociado al usuarioId  ${usuarioId}`);
+      }
+
+      const usuario = await Usuario.findOne({
+        where: { id: usuarioId },
+      });
+
+      const tokenUsuarioWeb = usuario.tokenWeb;
+      const tokenUsuarioMobile = usuario.tokenMobile;
+
+      // Devolver el tokenWeb del usuario encontrado
+      return {tokenUsuarioWeb,tokenUsuarioMobile};
+    } catch (error) {
+      console.error(`Error al obtener el token del encargadoId ${productorId}:`, error);
+      throw error;
+    }
+  }
+
 
   async userSession(req, res) {
     console.log(req.body.sessionID)

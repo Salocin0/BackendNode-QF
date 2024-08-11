@@ -1,7 +1,6 @@
 import cron from 'node-cron';
-import { eventoService } from '../services/evento.service.js';
-import { sequelize } from './connections.js';
 import { asignacionService } from '../services/asignacion.service.js';
+import { sequelize } from './connections.js';
 
 export function procesosAutomaticos() {
   cron.schedule('* * * * *', () => {

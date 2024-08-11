@@ -10,7 +10,11 @@ export const notificationTexts = {
     },
     productor: {
       titulo: 'Notificación para productores',
+      tituloAsociacion: 'Recibiste una asociación a tu evento',
       descripcion: 'Nuevo evento para los productores.',
+      descripcionAsociacionRepartidor: 'Tienes una nueva solicitud de repartidor a tu evento',
+      descripcionAsociacionPuesto: 'Tienes una nueva solicitud de puesto a tu evento',
+
     },
     repartidor: {
       titulo: 'Información para repartidores',

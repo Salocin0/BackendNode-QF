@@ -136,7 +136,7 @@ class PedidoService {
 
     console.log(tituloNotificacion,descripcionNotificacion,"dsfasfdasdfasdfdasf");
 
-    const resultadoNotificacion = await notificacionesService.enviarNotificaciones(puestoId, tituloNotificacion,descripcionNotificacion);
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAPuesto(puestoId, tituloNotificacion,descripcionNotificacion);
 
     return resultadoNotificacion;
   }
