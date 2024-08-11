@@ -30,6 +30,7 @@ import { RouterUser } from './routes/user.router.js';
 import { RouterValoracion } from './routes/valoracion.router.js';
 import { sequelize } from './util/connections.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
+import { RouterAsignaciones } from './routes/asignacion.router.js';
 dotenv.config();
 //definicion de server de express
 const app = express();
@@ -83,6 +84,7 @@ app.use('/carrito', RouterCarrito);
 app.use('/pedido', RouterPedido);
 app.use('/valoracion', RouterValoracion);
 app.use('/puntosEncuentro',RouterPuntoEncuentro);
+app.use('/asignaciones',RouterAsignaciones);
 app.use('/notificaciones4', RouterNotificacion);
 
 
