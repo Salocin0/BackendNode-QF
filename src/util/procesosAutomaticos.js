@@ -9,7 +9,7 @@ export function procesosAutomaticos() {
     //Asignar repartidores a pedidos
   });
   cron.schedule('*/5 * * * * *', async () => {
-      try {
+      /*try {
           //await borrarAsignacionesPendienteViejas();
           await caducarAsignaciones();
           const pedidos = await obtenerPedidosParaAsignacion();
@@ -31,7 +31,7 @@ export function procesosAutomaticos() {
           }
       } catch (error) {
           console.error('Error al asignar repartidores:', error);
-      }
+      }*/
   });
  
 }
