@@ -93,11 +93,11 @@ app.use('/notificaciones4', RouterNotificacion);
 async function connectDB() {
   try {
     await sequelize.sync({ force: true }); // false no modifica la base de datos
-    const sqlFilePath = path.resolve(__dirname, '../Datos_DB.sql');
-    console.log('Ruta al archivo SQL:', sqlFilePath);
-    const sql = readFileSync(sqlFilePath, 'utf-8');
-    await sequelize.query(sql);
-    console.log('Datos iniciales cargados exitosamente.');
+    const sqlFilePath = path.resolve(__dirname, '../Datos_DB.sql'); //COMENTAR SI FORCE SE COLOCA EN FALCE
+    console.log('Ruta al archivo SQL:', sqlFilePath); //COMENTAR SI FORCE SE COLOCA EN FALCE
+    const sql = readFileSync(sqlFilePath, 'utf-8'); //COMENTAR SI FORCE SE COLOCA EN FALCE
+    await sequelize.query(sql); //COMENTAR SI FORCE SE COLOCA EN FALCE
+    console.log('Datos iniciales cargados exitosamente.'); //COMENTAR SI FORCE SE COLOCA EN FALCE
     app.listen(port, () => {
       console.log('Servidor escuchando en el puerto ' + port);
     });
