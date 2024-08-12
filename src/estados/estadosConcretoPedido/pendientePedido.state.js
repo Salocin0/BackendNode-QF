@@ -5,7 +5,7 @@ export const pendiente = {
     return pedido;
   },
 
-  tomarPedido: async (pedido) => {
+  aceptar: async (pedido) => {
     pedido.estado = 'Aceptado';
     await pedido.save();
     return pedido;

@@ -142,6 +142,7 @@ class AsociacionController {
       const Id = req.params.id;
       const asociacion = await asociacionService.aceptar(Id);
       if (asociacion !== null) {
+
         return res.status(200).json({
           status: 'success',
           msg: 'asociacion found',
@@ -465,21 +466,26 @@ class AsociacionController {
   async updateStateController(req, res) {
     const asociacionId = req.params.asociacionId;
     const accion = req.params.accion;
+
     try {
       const asociacion = await asociacionService.getOne(asociacionId);
       const estadoActual = asociacion.estado;
 
-      console.log(estadoActual);
-      console.log(accion);
+      console.log("Estado actual: " + estadoActual);
+      console.log("Acción: " + accion);
 
       if (estadosAsociacion[estadoActual] && estadosAsociacion[estadoActual][accion]) {
-        await estadosAsociacion[estadoActual][accion](asociacion);
+        await estadosAsociacion[estadoActual][accion](asociacion,asociacionId);
+
+        // Supongamos que necesitas pasar asociacionId o alguna otra información
+
         res.status(200).json({ message: 'Estado del evento actualizado.' });
       } else {
         res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
       }
     } catch (error) {
-      res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
+      console.error('Error al cambiar el estado del evento:', error);
+      res.status(500).json({ message: 'Error al cambiar el estado del evento.', error: error.message });
     }
   }
 }

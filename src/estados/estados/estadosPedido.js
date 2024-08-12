@@ -13,8 +13,8 @@ export const estadosPedido = {
       return pendiente.crearPedido(pedido);
     },
 
-    tomarPedido: async (pedido) => {
-      return pendiente.tomarPedido(pedido);
+    aceptar: async (pedido) => {
+      return pendiente.aceptar(pedido);
     },
 
     preparar: async (pedido) => {
@@ -55,7 +55,7 @@ export const estadosPedido = {
       return aceptado.preparar(pedido);
     },
 
-    pedidoPreparado: async (pedido) => {
+    enCamino: async (pedido) => {
       return aceptado.pedidoPreparado(pedido);
     },
 
@@ -89,8 +89,8 @@ export const estadosPedido = {
       return enPreparacion.preparar(pedido);
     },
 
-    pedidoPreparado: async (pedido) => {
-      return enPreparacion.pedidoPreparado(pedido);
+    enCamino: async (pedido) => {
+      return enPreparacion.enCamino(pedido);
     },
 
     pedidoEntregado: async (pedido) => {

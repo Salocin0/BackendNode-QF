@@ -1,34 +1,34 @@
-import { Aceptada } from "../estadosConcretoAsociacion/aceptadaAsociacion.state.js"
-import { Cancelada } from "../estadosConcretoAsociacion/canceladaAsociacion.state.js"
+import { Aceptada } from "../estadosConcretoAsociacion/aceptadaAsociacion.state.js";
+import { Cancelada } from "../estadosConcretoAsociacion/canceladaAsociacion.state.js";
 import { Cerrada } from "../estadosConcretoAsociacion/cerradaAsociacion.state.js";
 import { Confirmada } from "../estadosConcretoAsociacion/confirmadaAsociacion.state.js";
-import { Pendiente } from "../estadosConcretoAsociacion/pendienteDeAceptacionAsociacion.state.js"
+import { PendienteDeAceptacion } from "../estadosConcretoAsociacion/pendienteDeAceptacionAsociacion.state.js";
 import { Retornada } from "../estadosConcretoAsociacion/retornadaAsociacion.state.js";
 
 export const estadosAsociacion = {
-  Pendiente: {
+  PendienteDeAceptacion: {
     newAsociacion: async (asociacion) => {
-      return Pendiente.newAsociacion(asociacion);
+      return PendienteDeAceptacion.newAsociacion(asociacion);
     },
 
-    aceptar: async (asociacion) => {
-      return Pendiente.aceptar(asociacion);
+    aceptar: async (asociacion,asociacionId) => {
+      return PendienteDeAceptacion.aceptar(asociacion,asociacionId);
     },
 
-    retornada: async (asociacion) => {
-      return Pendiente.retornada(asociacion);
+    rechazada: async (asociacion,asociacionId) => {
+      return PendienteDeAceptacion.rechazada(asociacion,asociacionId);
     },
 
     cancelar: async (asociacion) => {
-      return Pendiente.cancelar(asociacion);
+      return PendienteDeAceptacion.cancelar(asociacion);
     },
 
     cerrada: async (asociacion) => {
-      return Pendiente.cerrada(asociacion);
+      return PendienteDeAceptacion.cerrada(asociacion);
     },
 
     confirmada: async (asociacion) => {
-      return Pendiente.confirmada(asociacion);
+      return PendienteDeAceptacion.confirmada(asociacion);
     },
   },
 
@@ -109,7 +109,9 @@ export const estadosAsociacion = {
       return Cerrada.confirmada(asociacion);
     },
   },
+
   
+
   Confirmada: {
     newAsociacion: async (asociacion) => {
       return Confirmada.newAsociacion(asociacion);

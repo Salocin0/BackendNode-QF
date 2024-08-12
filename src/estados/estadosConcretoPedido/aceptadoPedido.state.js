@@ -23,6 +23,7 @@ export const aceptado = {
 
   cancelar: async (pedido) => {
     pedido.estado = 'Cancelado';
+    console.log("leggggggggggggggggg")
     await pedido.save();
     return pedido;
   },

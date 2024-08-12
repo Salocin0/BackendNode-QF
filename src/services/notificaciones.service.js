@@ -2,6 +2,7 @@
 import { sendNotificacionesMobile } from "../../dist/util/NotificacionesMobile.js";
 import { userController } from "../controllers/users.controller.js";
 import { sendNotificacionesWeb } from "../util/Notificaciones.js";
+import { asociacionService } from "./asociacion.service.js";
 import { productorService } from "./productor.service.js";
 import { puestoService } from "./puesto.service.js";
 class NotificacionesService {
@@ -30,6 +31,20 @@ class NotificacionesService {
     }
 
 
+    async enviarNotificacionesAsociacionAceptaradaRepartidor(Id, tituloNotificacion, descripcionNotificacion) {
+        const {tokenUsuarioWeb,tokenUsuarioMobile} = await this.buscarTokenPorEvento(Id)
+        const titulo = tituloNotificacion;
+        const descripcion = descripcionNotificacion;
+        if (tokenUsuarioWeb) {
+            await sendNotificacionesWeb(tokenUsuarioWeb, titulo, descripcion);
+        }
+        if(tokenUsuarioMobile){
+            await sendNotificacionesMobile(tokenUsuarioMobile,titulo,descripcion);
+        }
+    }
+
+
+
 
 
 
@@ -43,6 +58,13 @@ class NotificacionesService {
     async buscarTokenPorEvento(eventoId) {
         const productorId = await productorService.getProductorByEvento(eventoId);
         const tokens = await userController.getTokenByProductorId(productorId);
+        return tokens;
+    }
+
+    async buscarTokenPorAsociacion(Id) {
+        const asociacion = await asociacionService.getOne(Id);
+        repartidorId = await(asociacion.repartidoreId);
+        const tokens = await userController.getTokenByRepartidorrId(repartidorId);
         return tokens;
     }
 

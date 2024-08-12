@@ -19,6 +19,9 @@ export const notificationTexts = {
     repartidor: {
       titulo: 'Información para repartidores',
       descripcion: 'Hay una nueva tarea disponible para los repartidores.',
+      descripcionAceptada: 'Te aceptaron una solicitud',
+      descripcionRechazada: 'Te rechazaron una solicitud',
+
     },
   };
   

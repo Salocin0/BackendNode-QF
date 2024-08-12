@@ -39,7 +39,7 @@ class PedidoService {
 
     const pedidos = await Pedido.findAll({
       where: {
-        puestoid: idPuestos,
+        puestoId: idPuestos,
       },
       include: [
         {

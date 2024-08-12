@@ -11,8 +11,8 @@ export const enPreparacion = {
     throw new Error('Error el pedido ya se ha preparado');
   },
 
-  pedidoPreparado: async (pedido) => {
-    pedido.estado = 'Listo';
+  enCamino: async (pedido) => {
+    pedido.estado = 'EnCamino';
     await pedido.save();
     return pedido;
   },

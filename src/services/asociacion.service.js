@@ -167,6 +167,27 @@ class AsociacionService {
     return resultadoNotificacion;
   }
 
+  async sendNotificacionesWebAceptarAsociacionRepartido(Id){
+    const tituloNotificacion = notificationTexts.repartidor.titulo;
+    const descripcionNotificacion = notificationTexts.repartidor.descripcionAceptada;
+
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAceptaradaRepartidor(Id, tituloNotificacion,descripcionNotificacion);
+
+    return resultadoNotificacion;
+  }
+
+  async sendNotificacionesWebRechazarAsociacionRepartido(Id){
+    const tituloNotificacion = notificationTexts.repartidor.titulo;
+    const descripcionNotificacion = notificationTexts.repartidor.descripcionRechazada;
+    console.log("ENTRE AMIGO");
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAceptaradaRepartidor(Id, tituloNotificacion,descripcionNotificacion);
+
+    return resultadoNotificacion;
+  }
+
+
+
+
 
 }
 

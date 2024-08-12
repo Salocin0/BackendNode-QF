@@ -1,6 +1,5 @@
 import { estadosPedido } from '../estados/estados/estadosPedido.js';
 import { pedidoService } from '../services/pedido.service.js';
-import { sendNotificacionesWeb } from '../util/Notificaciones.js';
 
 class PedidoController {
   async getAllController(req, res) {
@@ -158,25 +157,44 @@ class PedidoController {
 
   async updateStateController(req, res) {
     const pedidoId = req.params.id;
-    const accion = req.params.accion;
+    let accion = req.params.accion; // Usar 'let' en lugar de 'const' porque se puede cambiar
+
     try {
+      // Obtener el pedido con el ID proporcionado
       const pedido = await pedidoService.getOne(pedidoId);
+
+      // Obtener el estado actual del pedido
       const estadoActual = pedido.estado;
 
-      console.log(estadoActual);
+      console.log("Estado actual:", estadoActual);
+      console.log("Acción recibida:", accion);
 
+      // Cambiar el valor de 'accion' si es necesario
+      if (accion === 'Aceptado') {
+        accion = 'aceptar';
+      } if (accion === 'En Preparación') {
+        accion = 'preparar';
+      } if (accion === 'En Camino'){
+        accion = 'enCamino';
+      } if (accion === 'Cancelado'){
+        accion = 'cancelar';
+      }
+
+      console.log("ACA:", accion); // Asegúrate de que 'accion' tiene el valor esperado
+
+      // Verificar si el estado y la acción existen en 'estadosPedido'
       if (estadosPedido[estadoActual] && estadosPedido[estadoActual][accion]) {
         await estadosPedido[estadoActual][accion](pedido);
         res.status(200).json({ message: 'Estado del evento actualizado.' });
 
-        sendNotificacionesWeb(userid,"se cambio el estado", "")
+        // Aquí debes asegurarte de que 'userid' esté definido y se pase correctamente
       } else {
         res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
       }
     } catch (error) {
+      console.error("Error al cambiar el estado del evento:", error);
       res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
     }
   }
 }
-
 export const pedidoController = new PedidoController();
