@@ -33,11 +33,11 @@ export const Encargado = sequelize.define('encargado', {
 });
 
 Encargado.hasOne(Puesto, {
-  foreinkey: 'PuestoId',
+  foreignKey: 'encargadoId', 
   sourceKey: 'id',
 });
 
 Puesto.belongsTo(Encargado, {
-  foreinkey: 'PuestoId',
-  targetId: 'id',
+  foreignKey: 'encargadoId',
+  targetKey: 'id',
 });

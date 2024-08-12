@@ -3,6 +3,7 @@ import { sequelize } from './../../util/connections.js';
 import { Consumidor } from './consumidor.model.js';
 import { Puesto } from './puesto.model.js';
 import { Repartidor } from './repartidor.model.js';
+import { Evento } from './evento.model.js';
 
 export const Pedido = sequelize.define('Pedido', {
   id: {
@@ -51,5 +52,15 @@ Repartidor.hasOne(Pedido, {
 
 Pedido.belongsTo(Repartidor, {
   foreignKey: 'repartidorId',
+  targetKey: 'id',
+});
+
+Evento.hasOne(Pedido, {
+  foreignKey: 'eventoId',
+  sourceKey: 'id',
+});
+
+Pedido.belongsTo(Evento, {
+  foreignKey: 'eventoId',
   targetKey: 'id',
 });

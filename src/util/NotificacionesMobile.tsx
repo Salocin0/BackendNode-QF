@@ -1,4 +1,5 @@
-import Expo from 'expo-server-sdk';
+import { Expo } from 'expo-server-sdk';
+
 const expo = new Expo();
 
 export async function sendNotificacionesMobile(token: string, titulo: string, descripcion: string): Promise<boolean> {

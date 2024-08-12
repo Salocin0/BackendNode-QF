@@ -30,6 +30,9 @@ import { RouterUser } from './routes/user.router.js';
 import { RouterValoracion } from './routes/valoracion.router.js';
 import { sequelize } from './util/connections.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
+import { RouterAsignaciones } from './routes/asignacion.router.js';
+import { readFileSync } from 'fs';
+import path from 'path';
 dotenv.config();
 //definicion de server de express
 const app = express();
@@ -83,15 +86,24 @@ app.use('/carrito', RouterCarrito);
 app.use('/pedido', RouterPedido);
 app.use('/valoracion', RouterValoracion);
 app.use('/puntosEncuentro',RouterPuntoEncuentro);
+app.use('/asignaciones',RouterAsignaciones);
 app.use('/notificaciones4', RouterNotificacion);
 
 
-// Sincronizar la base de datos y luego iniciar el servidor
 async function connectDB() {
-  await sequelize.sync({ force: false }); //FALSE NO CAMBIA
-  app.listen(port, () => {
-    console.log('Servidor escuchando en el puerto ' + port);
-  });
+  try {
+    await sequelize.sync({ force: true }); // false no modifica la base de datos
+    const sqlFilePath = path.resolve(__dirname, '../Datos_DB.sql'); //COMENTAR SI FORCE SE COLOCA EN FALCE
+    console.log('Ruta al archivo SQL:', sqlFilePath); //COMENTAR SI FORCE SE COLOCA EN FALCE
+    const sql = readFileSync(sqlFilePath, 'utf-8'); //COMENTAR SI FORCE SE COLOCA EN FALCE
+    await sequelize.query(sql); //COMENTAR SI FORCE SE COLOCA EN FALCE
+    console.log('Datos iniciales cargados exitosamente.'); //COMENTAR SI FORCE SE COLOCA EN FALCE
+    app.listen(port, () => {
+      console.log('Servidor escuchando en el puerto ' + port);
+    });
+  } catch (error) {
+    console.error('Error al conectar con la base de datos:', error);
+  }
 }
 //conectar a la base de datos
 connectDB();
