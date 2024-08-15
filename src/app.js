@@ -32,11 +32,14 @@ import { sequelize } from './util/connections.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
 import { RouterAsignaciones } from './routes/asignacion.router.js';
 import { readFileSync } from 'fs';
+import PaymentRouter from './routes/payment.router.js';
 import path from 'path';
+import Stripe from 'stripe';
 dotenv.config();
 //definicion de server de express
 const app = express();
 const port = 8000;
+const stripe = Stripe('sk_test_51PnpcMRoRlWr6LoNVHnAJMDXVOFLMlAAeTxMZUvUuWmPt4qMChWK3SYn8ZPcwE8cwg5dsEmkEIPWjlFBRzBOOpco00YLHUKBoL');
 //inicializacion de la base de datos
 const SequelizeStore = SequelizeStoreInit(session.Store);
 export const sessionStore = new SequelizeStore({
@@ -88,6 +91,7 @@ app.use('/valoracion', RouterValoracion);
 app.use('/puntosEncuentro',RouterPuntoEncuentro);
 app.use('/asignaciones',RouterAsignaciones);
 app.use('/notificaciones4', RouterNotificacion);
+app.use('/payment-sheet', PaymentRouter);
 
 
 async function connectDB() {
