@@ -14,10 +14,23 @@ class PedidoService {
       where: {
         consumidorId: consumidorId,
       },
-      include: [{ model: Puesto }, { model: DetallePedido, as: 'detalles' }],
+      include: [
+        { model: Puesto },
+        {
+          model: DetallePedido,
+          as: 'detalles',
+          include: [
+            {
+              model: Producto,  
+              as: 'producto' 
+            }
+          ]
+        }
+      ],
     });
     return pedidos;
   }
+  
 
   async getAllPuesto(consumidorId) {
     const consumidor = await Consumidor.findOne({

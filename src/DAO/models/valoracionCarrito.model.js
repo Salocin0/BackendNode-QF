@@ -16,6 +16,10 @@ export const ValoracionPuesto = sequelize.define('valoracionPuesto', {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
+  opinion:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  }
 });
 
 ValoracionPuesto.belongsTo(Puesto, {
