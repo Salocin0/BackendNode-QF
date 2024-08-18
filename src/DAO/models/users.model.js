@@ -48,11 +48,11 @@ export const Usuario = sequelize.define('usuarios', {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
-  tokenMobile:{
+  tokenMobile: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  tokenWeb:{
+  tokenWeb: {
     type: DataTypes.STRING,
     allowNull: true,
   },
@@ -66,24 +66,32 @@ export const Usuario = sequelize.define('usuarios', {
       this.setDataValue('tipoUsuario', value);
     },
   },
+  longitud: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+  },
+  latitud: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+  },
 });
 
 Usuario.hasOne(Consumidor, {
-  foreinkey: 'consumidorId',
+  foreignKey: 'consumidorId',
   sourceKey: 'id',
 });
 
 Consumidor.belongsTo(Usuario, {
-  foreinkey: 'consumidorId',
-  targetId: 'id',
+  foreignKey: 'consumidorId',
+  targetKey: 'id',
 });
 
 Consumidor.hasOne(Usuario, {
-  foreinkey: 'consumidorId',
+  foreignKey: 'consumidorId',
   sourceKey: 'id',
 });
 
 Usuario.belongsTo(Consumidor, {
-  foreinkey: 'consumidorId',
-  targetId: 'id',
+  foreignKey: 'consumidorId',
+  targetKey: 'id',
 });

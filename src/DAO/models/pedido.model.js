@@ -4,6 +4,7 @@ import { Consumidor } from './consumidor.model.js';
 import { Puesto } from './puesto.model.js';
 import { Repartidor } from './repartidor.model.js';
 import { Evento } from './evento.model.js';
+import { PuntoEncuentro } from './puntoEncuentro.model.js';
 
 export const Pedido = sequelize.define('Pedido', {
   id: {
@@ -23,6 +24,10 @@ export const Pedido = sequelize.define('Pedido', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  codigoEnterga:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  }
 });
 
 Consumidor.hasOne(Pedido, {
@@ -62,5 +67,15 @@ Evento.hasOne(Pedido, {
 
 Pedido.belongsTo(Evento, {
   foreignKey: 'eventoId',
+  targetKey: 'id',
+});
+
+PuntoEncuentro.hasOne(Pedido, {
+  foreignKey: 'puntoEncuentroId',
+  sourceKey: 'id',
+});
+
+Pedido.belongsTo(PuntoEncuentro, {
+  foreignKey: 'puntoEncuentroId',
   targetKey: 'id',
 });
