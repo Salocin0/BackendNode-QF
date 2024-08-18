@@ -7,7 +7,7 @@ class LoginController {
         req.session.user = {
           email: req.user.email,
           usuario: req.user.usuario,
-          consumidorId: req.user.consumidoreId,
+          consumidorId: req.user.consumidorId,
           tipoUsuario: req.user.tipoUsuario,
           id: req.user.id,
           sessionId: sessionId,
