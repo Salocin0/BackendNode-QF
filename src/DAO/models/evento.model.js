@@ -110,6 +110,14 @@ export const Evento = sequelize.define('evento', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  longitud: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  latitud: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  }
 });
 
 DiaEvento.belongsTo(Evento, {

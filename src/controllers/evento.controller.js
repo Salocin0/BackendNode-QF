@@ -170,7 +170,7 @@ class EventoController {
         horaInicioDia1,
         horaFinDia1,
         latitud,
-        longuitd,
+        longitud,
       } = req.body;
 
       const nuevoEvento = {
@@ -199,6 +199,8 @@ class EventoController {
         conButaca: tieneButacas,
         habilitado: true,
         estado: estado,
+        latitud: latitud,
+        longitud: longitud,
         restricciones: restricciones,
         consumidorId: 1,
       };
