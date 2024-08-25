@@ -138,7 +138,10 @@ class EventoController {
 
   async createOneController(req, res) {
     try {
-      const consumidorId = req.headers['consumidorid'];
+      // Imprime los datos recibidos para ver qué se está enviando al backend
+      console.log('Datos recibidos:', req.body.latitud);
+      console.log('Datos recibidos:', req.body.longitud);
+
       const {
         nombre,
         descripcion,
@@ -149,7 +152,6 @@ class EventoController {
         provincia,
         tipoEvento,
         fechaInicioEvento,
-        horaInicioEvento,
         fechaFinEvento,
         tienePreventa,
         fechaInicioPreventa,
@@ -165,7 +167,12 @@ class EventoController {
         restricciones,
         tieneButacas,
         estado,
+        horaInicioDia1,
+        horaFinDia1,
+        latitud,
+        longuitd,
       } = req.body;
+
       const nuevoEvento = {
         nombre: nombre,
         descripcion: descripcion,
@@ -176,7 +183,7 @@ class EventoController {
         provincia: provincia,
         tipoEvento: tipoEvento,
         fechaInicio: fechaInicioEvento,
-        horaInicio: horaInicioEvento,
+        horaInicio: horaInicioDia1,
         fechaFin: fechaFinEvento,
         conPreventa: tienePreventa,
         fechaInicioPreventa: fechaInicioPreventa || Date.now(),
@@ -193,9 +200,11 @@ class EventoController {
         habilitado: true,
         estado: estado,
         restricciones: restricciones,
-        consumidorId: consumidorId,
+        consumidorId: 1,
       };
-      console.log(nuevoEvento.estado);
+
+      console.log('Nuevo evento a crear:', nuevoEvento);
+
       const eventoCreado = await eventoService.create(nuevoEvento);
       if (eventoCreado) {
         return res.status(200).json({
@@ -222,6 +231,7 @@ class EventoController {
       });
     }
   }
+
 
   async deleteOneController(req, res) {
     try {

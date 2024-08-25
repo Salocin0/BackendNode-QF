@@ -12,55 +12,55 @@ export const Evento = sequelize.define('evento', {
   },
   nombre: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   descripcion: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   tipoEvento: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   tipoPago: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   fechaInicio: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: true,
   },
   horaInicio: {
     type: DataTypes.TIME,
-    allowNull: false,
+    allowNull: true,
   },
   fechaFin: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: true,
   },
   cantidadPuestos: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   cantidadRepartidores: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   capacidadMaxima: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   conButaca: {
     type: DataTypes.BOOLEAN,
-    allowNull: false,
+    allowNull: true,
   },
   conRepartidor: {
     type: DataTypes.BOOLEAN,
-    allowNull: false,
+    allowNull: true,
   },
   conPreventa: {
     type: DataTypes.BOOLEAN,
-    allowNull: false,
+    allowNull: true,
   },
   tipoPreventa: {
     type: DataTypes.STRING,
@@ -75,7 +75,7 @@ export const Evento = sequelize.define('evento', {
     allowNull: true,
   },
   plazoCancelacionPreventa: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: true,
   },
   linkVentaEntradas: {
@@ -84,19 +84,19 @@ export const Evento = sequelize.define('evento', {
   },
   ubicacion: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   habilitado: {
     type: DataTypes.BOOLEAN,
-    allowNull: false,
+    allowNull: true,
   },
   localidad: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   provincia: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   img: {
     type: DataTypes.TEXT('long'),

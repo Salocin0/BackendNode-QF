@@ -1,9 +1,9 @@
 import { Evento } from '../DAO/models/evento.model.js';
 import { EstadosEvento } from '../enums/Estados.enums.js';
 import { estadosEvento } from '../estados/estados/estadosEvento.js';
+import { asociacionService } from './asociacion.service.js';
 import { consumidorService } from './consumidor.service.js';
 import { restriccionService } from './restriccion.service.js';
-import { asociacionService } from './asociacion.service.js';
 
 class EventoService {
   async getAll(consumidorId) {
@@ -74,11 +74,11 @@ class EventoService {
     nuevoEvento.productorId = consumidor.productorId;
     const eventoCreado = await Evento.create(nuevoEvento);
     this.crearEvento(eventoCreado);
-    nuevoEvento.restricciones.forEach(async (restriccion) => {
-      restriccion.eventoId = eventoCreado.id;
-      const restriccionCreada = await restriccionService.create(restriccion);
-      console.log(restriccionCreada);
-    });
+    //nuevoEvento.restricciones.forEach(async (restriccion) => {
+      //restriccion.eventoId = eventoCreado.id;
+      //const restriccionCreada = await restriccionService.create(restriccion);
+      //console.log(restriccionCreada);
+    //});
     return eventoCreado;
   }
 
