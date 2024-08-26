@@ -1,3 +1,4 @@
+import { DiaEvento } from '../DAO/models/diaEvento.model.js';
 import { estadosEvento } from '../estados/estados/estadosEvento.js';
 import { eventoService } from '../services/evento.service.js';
 
@@ -138,101 +139,139 @@ class EventoController {
 
   async createOneController(req, res) {
     try {
-      // Imprime los datos recibidos para ver qué se está enviando al backend
-      console.log('Datos recibidos:', req.body.latitud);
-      console.log('Datos recibidos:', req.body.longitud);
+        const {
+            nombre,
+            descripcion,
+            imagenEvento,
+            croquis,
+            ubicacion,
+            localidad,
+            provincia,
+            tipoEvento,
+            fechaInicioEvento,
+            fechaFinEvento,
+            tienePreventa,
+            fechaInicioPreventa,
+            fechaFinPreventa,
+            plazoCancelacionPreventa,
+            tipoPreventa,
+            cantidadPuestos,
+            tieneRepartidores,
+            cantidadRepartidores,
+            capacidadMaxima,
+            tipoPago,
+            linkVentaEntradas,
+            restricciones,
+            tieneButacas,
+            estado,
+            latitud,
+            longitud,
+            diasEvento,
+            horaInicioPreventa,
+            horaFinPreventa // Nuevos datos de días
+        } = req.body;
 
-      const {
-        nombre,
-        descripcion,
-        imagenEvento,
-        croquis,
-        ubicacion,
-        localidad,
-        provincia,
-        tipoEvento,
-        fechaInicioEvento,
-        fechaFinEvento,
-        tienePreventa,
-        fechaInicioPreventa,
-        fechaFinPreventa,
-        plazoCancelacionPreventa,
-        tipoPreventa,
-        cantidadPuestos,
-        tieneRepartidores,
-        cantidadRepartidores,
-        capacidadMaxima,
-        tipoPago,
-        linkVentaEntradas,
-        restricciones,
-        tieneButacas,
-        estado,
-        horaInicioDia1,
-        horaFinDia1,
-        latitud,
-        longitud,
-      } = req.body;
+        if (!nombre || !fechaInicioEvento || !fechaFinEvento) {
+            return res.status(400).json({
+                status: 'error',
+                msg: 'Nombre, fecha de inicio y fecha de fin son requeridos',
+                code: 400,
+                data: {},
+            });
+        }
 
-      const nuevoEvento = {
-        nombre: nombre,
-        descripcion: descripcion,
-        img: imagenEvento,
-        croquis: croquis,
-        ubicacion: ubicacion,
-        localidad: localidad,
-        provincia: provincia,
-        tipoEvento: tipoEvento,
-        fechaInicio: fechaInicioEvento,
-        horaInicio: horaInicioDia1,
-        fechaFin: fechaFinEvento,
-        conPreventa: tienePreventa,
-        fechaInicioPreventa: fechaInicioPreventa || Date.now(),
-        fechaFinPreventa: fechaFinPreventa || Date.now(),
-        plazoCancelacionPreventa: plazoCancelacionPreventa || 0,
-        tipoPreventa: tipoPreventa || 0,
-        cantidadPuestos: cantidadPuestos,
-        conRepartidor: tieneRepartidores,
-        cantidadRepartidores: cantidadRepartidores || 0,
-        capacidadMaxima: capacidadMaxima,
-        tipoPago: tipoPago,
-        linkVentaEntradas: linkVentaEntradas,
-        conButaca: tieneButacas,
-        habilitado: true,
-        estado: estado,
-        latitud: latitud,
-        longitud: longitud,
-        restricciones: restricciones,
-        consumidorId: 1,
-      };
+        // Crear el objeto evento
+        const nuevoEvento = {
+            nombre,
+            descripcion,
+            img: imagenEvento,
+            croquis,
+            ubicacion,
+            localidad,
+            provincia,
+            tipoEvento,
+            fechaInicio: fechaInicioEvento,
+            fechaFin: fechaFinEvento,
+            conPreventa: tienePreventa || false,
+            fechaInicioPreventa: fechaInicioPreventa || Date.now(),
+            fechaFinPreventa: fechaFinPreventa || Date.now(),
+            plazoCancelacionPreventa: plazoCancelacionPreventa || 0,
+            tipoPreventa: tipoPreventa || 0,
+            cantidadPuestos: cantidadPuestos || 0,
+            conRepartidor: tieneRepartidores || false,
+            cantidadRepartidores: cantidadRepartidores || 0,
+            capacidadMaxima: capacidadMaxima || 0,
+            tipoPago,
+            linkVentaEntradas,
+            conButaca: tieneButacas || false,
+            habilitado: true,
+            estado,
+            latitud,
+            longitud,
+            restricciones,
+            consumidorId: 1,
+            horarioInicioPreVenta: horaInicioPreventa,
+            horarioFinPreVenta: horaFinPreventa,
+            diasEvento: Array.isArray(diasEvento) ? diasEvento : [], // Validar y asegurar formato de `diasEvento`
+        };
 
-      console.log('Nuevo evento a crear:', nuevoEvento);
+        // Crear el evento
+        const eventoCreado = await eventoService.create(nuevoEvento);
 
-      const eventoCreado = await eventoService.create(nuevoEvento);
-      if (eventoCreado) {
-        return res.status(200).json({
-          status: 'success',
-          msg: 'evento created',
-          code: 200,
-          data: eventoCreado,
-        });
-      } else {
-        return res.status(400).json({
-          status: 'error',
-          msg: 'evento error',
-          code: 400,
-          data: {},
-        });
-      }
+        // Agregar un console.log para verificar los datos antes de crear los días
+        console.log('Evento creado:', eventoCreado);
+        console.log('Días del evento:', diasEvento);
+
+        if (eventoCreado) {
+            for (const dia of diasEvento) {
+                console.log('Creando día:', {
+                    nombre: `Día ${dia.dia}`,
+                    descripcion: `Descripción para el día ${dia.dia}`,
+                    horarioInicioEvento: dia.horaInicio,
+                    horarioFinEvento: dia.horaFin,
+                    horarioInicioPreVenta: dia.horaInicioPreventa || horaInicioPreventa, // Utiliza el valor de `horaInicioPreventa` del evento si no está en el día
+                    horarioFinPreVenta: dia.horaFinPreventa || horaFinPreventa, // Utiliza el valor de `horaFinPreventa` del evento si no está en el día
+                    eventoId: eventoCreado.id,
+                });
+
+                await DiaEvento.create({
+                    nombre: `Día ${dia.dia}`,
+                    descripcion: `Descripción para el día ${dia.dia}`,
+                    horarioInicioEvento: dia.horaInicio,
+                    horarioFinEvento: dia.horaFin,
+                    horarioInicioPreVenta: dia.horaInicioPreventa || horaInicioPreventa, // Añadir el horario de preventa
+                    horarioFinPreVenta: dia.horaFinPreventa || horaFinPreventa, // Añadir el horario de preventa
+                    eventoId: eventoCreado.id,
+                });
+            }
+
+            return res.status(200).json({
+                status: 'success',
+                msg: 'Evento creado',
+                code: 200,
+                data: eventoCreado,
+            });
+        } else {
+            return res.status(400).json({
+                status: 'error',
+                msg: 'Error al crear el evento',
+                code: 400,
+                data: {},
+            });
+        }
     } catch (e) {
-      console.log(e);
-      return res.status(500).json({
-        status: 'error',
-        msg: 'something went wrong :(',
-        code: 500,
-        data: {},
-      });
+        console.log(e);
+        return res.status(500).json({
+            status: 'error',
+            msg: 'Error interno del servidor',
+            code: 500,
+            data: {},
+        });
     }
-  }
+}
+
+
+
 
 
   async deleteOneController(req, res) {
