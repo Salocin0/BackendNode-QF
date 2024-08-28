@@ -41,7 +41,7 @@ class PuestoController {
           data: puestos,
         });
       } else {
-        return res.status(404).json({
+        return res.status(200).json({
           status: 'Error',
           msg: 'puestos not found',
           data: {},

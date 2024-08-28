@@ -25,7 +25,7 @@ export const Puesto = sequelize.define('puesto', {
     },
     img:{
       type: DataTypes.TEXT('long'),
-      allowNull: false,
+      allowNull: true,
     },
     telefonoCarro: {
       type: DataTypes.STRING,

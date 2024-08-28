@@ -158,19 +158,17 @@ class UserController {
         throw new Error(`No se encontró el consumidor con encargadoId ${encargadoId}`);
       }
 
-      const usuarioId = consumidor.usuarioId;
+      const usuario = await Usuario.findOne({
+        where: { consumidorId: consumidor.id },
+      })
 
-
+      const usuarioId = usuario.id;
 
       // El usuario asociado debería estar disponible a través de la relación definida en Consumidor
 
       if (!usuarioId) {
         throw new Error(`No se encontró el usuario asociado al usuarioId  ${usuarioId}`);
       }
-
-      const usuario = await Usuario.findOne({
-        where: { id: usuarioId },
-      });
 
       const tokenUsuarioWeb = usuario.tokenWeb;
       const tokenUsuarioMobile = usuario.tokenMobile;

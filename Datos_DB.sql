@@ -57,7 +57,7 @@ UPDATE public.consumidores
 SET "productorId" = (SELECT id FROM productors WHERE "estaValido" = true AND "habilitado" = true)
 WHERE nombre = 'Daniel' AND apellido = 'Flores';
 
--- Crear 5 eventos
+-- Evento 1
 INSERT INTO public.eventos 
 (
     nombre, descripcion, "tipoEvento", "tipoPago", "fechaInicio", "horaInicio", "fechaFin", 
@@ -67,56 +67,56 @@ INSERT INTO public.eventos
     localidad, provincia, img, croquis, estado, "createdAt", "updatedAt", "productorId"
 )
 VALUES
--- Evento 1
 (
     'Evento Musical', 'Concierto de música en vivo', 'Concierto', 'Pago en Efectivo', 
-    '2023-12-01 19:00:00+00', '19:00:00', '2023-12-01 23:00:00+00', 
+    NOW() - INTERVAL '1 day', '19:00:00', NOW() + INTERVAL '1 day', 
     10, 2, 100, true, true, true, 'General', 
-    '2023-11-25 19:00:00+00', '2023-11-30 19:00:00+00', 3, 
+    NOW() - INTERVAL '6 day', NOW() - INTERVAL '1 day', 3, 
     'https://ventaentradas.com/evento1', 'Plaza Central', true, 
-    'Catamarca', 'Catamarca', 'img1.jpg', 'croquis1.pdf', 'EnCurso', 
-    '2023-11-20 21:00:07+00', '2023-11-20 21:00:07+00', 1
+    'Catamarca', 'Catamarca', NULL, 'croquis1.pdf', 'EnCurso', 
+    NOW(), NOW(), 1
 ),
 -- Evento 2
 (
     'Feria Artesanal', 'Exposición y venta de artesanías locales', 'Feria', 'Pago con Tarjeta', 
-    '2023-12-05 09:00:00+00', '09:00:00', '2023-12-05 18:00:00+00', 
-    20, 3, 200, false, false, false, NULL, 
+    NOW() + INTERVAL '10 day', '09:00:00', NOW() + INTERVAL '15 day', 
+    20, 3, 200, true, true, true, NULL, 
     NULL, NULL, NULL, 
     'https://ventaentradas.com/evento2', 'Parque Central', true, 
-    'Icaño', 'Catamarca', 'img2.jpg', 'croquis2.pdf', 'EnCurso', 
-    '2023-11-20 21:00:07+00', '2023-11-20 21:00:07+00', 1
+    'Icaño', 'Catamarca', NULL, 'croquis2.pdf', 'EnPreparacion', 
+    NOW(), NOW(), 1
 ),
 -- Evento 3
 (
     'Teatro al Aire Libre', 'Obra de teatro en espacio abierto', 'Teatro', 'Pago en Efectivo', 
-    '2023-12-10 20:00:00+00', '20:00:00', '2023-12-10 22:00:00+00', 
-    15, 1, 150, true, false, true, 'VIP', 
-    '2023-12-01 20:00:00+00', '2023-12-09 20:00:00+00', 1, 
+    NOW() + INTERVAL '10 day', '20:00:00', NOW() + INTERVAL '15 day', 
+    15, 1, 150, true, true, true, 'VIP', 
+    NOW() + INTERVAL '10 day', NOW() + INTERVAL '15 day', 1, 
     'https://ventaentradas.com/evento3', 'Anfiteatro', true, 
-    'Catamarca', 'Catamarca', 'img3.jpg', 'croquis3.pdf', 'EnPreparacion', 
-    '2023-11-20 21:00:07+00', '2023-11-20 21:00:07+00', 1
+    'Catamarca', 'Catamarca', NULL, 'croquis3.pdf', 'Confirmado', 
+    NOW(), NOW(), 1
 ),
 -- Evento 4
 (
     'Festival Gastronómico', 'Muestra y venta de comidas típicas', 'Festival', 'Pago con Tarjeta', 
-    '2023-12-15 11:00:00+00', '11:00:00', '2023-12-15 22:00:00+00', 
-    25, 4, 300, false, true, false, NULL, 
+    NOW() + INTERVAL '10 day', '11:00:00', NOW() + INTERVAL '15 day', 
+    25, 4, 300, true, true, true, NULL, 
     NULL, NULL, NULL, 
     'https://ventaentradas.com/evento4', 'Centro Cultural', true, 
-    'Icaño', 'Catamarca', 'img4.jpg', 'croquis4.pdf', 'EnPreparacion', 
-    '2023-11-20 21:00:07+00', '2023-11-20 21:00:07+00', 1
+    'Icaño', 'Catamarca', NULL, 'croquis4.pdf', 'Confirmado', 
+    NOW(), NOW(), 1
 ),
 -- Evento 5
 (
     'Carrera de Maratón', 'Competencia de maratón en la ciudad', 'Deportivo', 'Pago en Efectivo', 
-    '2023-12-20 07:00:00+00', '07:00:00', '2023-12-20 12:00:00+00', 
-    5, 10, 500, false, true, true, 'Competencia', 
-    '2023-12-10 07:00:00+00', '2023-12-19 07:00:00+00', 5, 
+    NOW() + INTERVAL '10 day', '07:00:00', NOW() + INTERVAL '15 day', 
+    5, 10, 500, true, true, true, 'Competencia', 
+    NOW() + INTERVAL '10 day', NOW() + INTERVAL '15 day', 5, 
     'https://ventaentradas.com/evento5', 'Ciudad Completa', true, 
-    'Catamarca', 'Catamarca', 'img5.jpg', 'croquis5.pdf', 'EnPreparacion', 
-    '2023-11-20 21:00:07+00', '2023-11-20 21:00:07+00', 1
+    'Catamarca', 'Catamarca', NULL, 'croquis5.pdf', 'EnPreparacion', 
+    NOW(), NOW(), 1
 );
+
 
 --set puntos de encuento a evento 1
 INSERT INTO public."puntoEncuentros" (nombre, longitud, latitud, habilitado, "createdAt", "updatedAt", "eventoId")
@@ -142,9 +142,9 @@ INSERT INTO public.puestos (
     "updatedAt", 
     "encargadoId"
 ) VALUES
-    ('Carro1', 101, 'Tipo1', 'banner1.png', 'img1.png', '1234567890', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Carro2', 102, 'Tipo2', 'banner2.png', 'img2.png', '0987654321', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Carro3', 103, 'Tipo3', 'banner3.png', 'img3.png', '1122334455', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
+    ('Gourmet Street Food', 201, 'Food Truck', 'gourmet_banner.png', 'gourmet_logo.png', '5551234567', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Eco Fresh Produce', 202, 'Farmers Market', 'eco_banner.png', 'eco_logo.png', '5559876543', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Taco Fiesta', 203, 'Mexican Food', 'taco_banner.png', 'taco_logo.png', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
 
 --set asociacion repartidor a evento 1
 INSERT INTO public."Asociacions" (
@@ -196,7 +196,9 @@ INSERT INTO public."Asociacions" (
 ) VALUES
     ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1, 1),
     ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, 1),
-    ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, 1);
+    ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 3, 1),
+    ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 1, 1),
+    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 2, 1);
 
 INSERT INTO public."Asociacions" (
     estado, 
