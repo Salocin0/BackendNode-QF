@@ -35,6 +35,8 @@ import { readFileSync } from 'fs';
 import PaymentRouter from './routes/payment.router.js';
 import path from 'path';
 import Stripe from 'stripe';
+import {pregunta} from './util/chatbot.js'
+
 dotenv.config();
 //definicion de server de express
 const app = express();
@@ -113,3 +115,4 @@ async function connectDB() {
 connectDB();
 //ejecutar procesos automaticos
 procesosAutomaticos();
+
