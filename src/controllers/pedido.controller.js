@@ -113,15 +113,18 @@ class PedidoController {
 
   async createOneController(req, res) {
     try {
-      const { detalles, consumidorId, total, puestoId } = req.body;
-      const nuevoPedido = {
+      const { detalles, consumidorId, total, puestoId,fecha,precompra } = req.body;
+      var nuevoPedido = {
         fecha: Date.now(),
         consumidorId: consumidorId,
         total: total,
         estado: 'Pendiente',
         puestoId: puestoId,
+        fechaPreCompra: fecha
       };
-      console.log(nuevoPedido);
+      if(precompra){
+        nuevoPedido.estado="Precomprado"
+      }
       
       const pedidoCreado = await pedidoService.create(nuevoPedido, detalles);
       if (pedidoCreado === false) {

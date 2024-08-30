@@ -27,6 +27,10 @@ export const Pedido = sequelize.define('Pedido', {
   codigoEnterga:{
     type: DataTypes.STRING,
     allowNull: true,
+  },
+  fechaPreCompra:{
+    type: DataTypes.DATE,
+    allowNull: true,
   }
 });
 
