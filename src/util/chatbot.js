@@ -1,4 +1,4 @@
-// Importar las bibliotecas necesarias
+/*// Importar las bibliotecas necesarias
 import { ChatOpenAI } from '@langchain/openai';
 import { RunnablePassthrough } from '@langchain/core/runnables';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
@@ -106,3 +106,4 @@ export const pregunta = (async () => {
     const response = await fullChain(user_input);
     console.log(response);
 });
+*/

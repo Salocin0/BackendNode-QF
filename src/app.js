@@ -8,11 +8,15 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import compression from 'express-compression';
 import session from 'express-session';
+import { readFileSync } from 'fs';
 import morgan from 'morgan';
 import passport from 'passport';
+import path from 'path';
+import Stripe from 'stripe';
 import { initPassport } from './config/passport.config.js';
 import { __dirname } from './dirname.js';
 import { RouterProductor } from './routes/Productor.router.js';
+import { RouterAsignaciones } from './routes/asignacion.router.js';
 import { RouterAsociacion } from './routes/asociacion.router.js';
 import { RouterCarrito } from './routes/carrito.router.js';
 import { RouterConsumidor } from './routes/consumidor.router.js';
@@ -20,6 +24,7 @@ import { RouterEncargado } from './routes/encargado.router.js';
 import { RouterEvento } from './routes/evento.router.js';
 import { RouterLogin } from './routes/login.router.js';
 import { RouterNotificacion } from './routes/notificacion.router.js';
+import PaymentRouter from './routes/payment.router.js';
 import { RouterPedido } from './routes/pedido.router.js';
 import { RouterProducto } from './routes/producto.router.js';
 import { RouterPuesto } from './routes/puesto.router.js';
@@ -30,12 +35,7 @@ import { RouterUser } from './routes/user.router.js';
 import { RouterValoracion } from './routes/valoracion.router.js';
 import { sequelize } from './util/connections.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
-import { RouterAsignaciones } from './routes/asignacion.router.js';
-import { readFileSync } from 'fs';
-import PaymentRouter from './routes/payment.router.js';
-import path from 'path';
-import Stripe from 'stripe';
-import {pregunta} from './util/chatbot.js'
+/*import {pregunta} from './util/chatbot.js'*/
 
 dotenv.config();
 //definicion de server de express

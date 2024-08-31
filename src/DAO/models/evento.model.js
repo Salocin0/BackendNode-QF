@@ -26,27 +26,15 @@ export const Evento = sequelize.define('evento', {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  fechaInicio: {
+  fechaHoraInicio: {
     type: DataTypes.DATE,
     allowNull: true,
   },
-  horaInicio: {
-    type: DataTypes.TIME,
-    allowNull: true,
-  },
-  fechaFin: {
+  fechaHoraFin: {
     type: DataTypes.DATE,
     allowNull: true,
   },
   cantidadPuestos: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  cantidadRepartidores: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  capacidadMaxima: {
     type: DataTypes.STRING,
     allowNull: true,
   },
@@ -58,24 +46,12 @@ export const Evento = sequelize.define('evento', {
     type: DataTypes.BOOLEAN,
     allowNull: true,
   },
-  conPreventa: {
+  tienePreventa: {
     type: DataTypes.BOOLEAN,
-    allowNull: true,
-  },
-  tipoPreventa: {
-    type: DataTypes.STRING,
     allowNull: true,
   },
   fechaInicioPreventa: {
     type: DataTypes.DATE,
-    allowNull: true,
-  },
-  fechaFinPreventa: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-  plazoCancelacionPreventa: {
-    type: DataTypes.STRING,
     allowNull: true,
   },
   linkVentaEntradas: {
@@ -99,10 +75,6 @@ export const Evento = sequelize.define('evento', {
     allowNull: true,
   },
   img: {
-    type: DataTypes.TEXT('long'),
-    allowNull: true,
-  },
-  croquis: {
     type: DataTypes.TEXT('long'),
     allowNull: true,
   },
