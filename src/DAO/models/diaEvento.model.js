@@ -15,21 +15,17 @@ export const DiaEvento = sequelize.define('diaEvento', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  horarioInicioEvento: {
-    type: DataTypes.TIME,
+  fechaHoraInicioDiaEvento: {
+    type: DataTypes.DATE,
     allowNull: false,
   },
-  horarioFinEvento: {
-    type: DataTypes.TIME,
+  fechaHoraFinDiaEvento: {
+    type: DataTypes.DATE,
     allowNull: false,
   },
-  horarioInicioPreVenta: {
-    type: DataTypes.TIME,
-    allowNull: true, // Cambiado a true
-  },
-  horarioFinPreVenta: {
-    type: DataTypes.TIME,
-    allowNull: true, // Cambiado a true
+  tienePreventa: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false, // Cambiado a true
   },
   eventoId: {
     type: DataTypes.INTEGER,

@@ -56,7 +56,7 @@ WHERE nombre = 'Valentina' AND apellido = 'Martinez';
 UPDATE public.consumidores
 SET "productorId" = (SELECT id FROM productors WHERE "estaValido" = true AND "habilitado" = true)
 WHERE nombre = 'Daniel' AND apellido = 'Flores';
-
+/*
 -- Evento 1
 INSERT INTO public.eventos 
 (
@@ -333,3 +333,4 @@ INSERT INTO public."DetallePedidos" (
 ) VALUES
     (1, 25.00, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 5),
     (2, 15.10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 5, 5);
+*/
