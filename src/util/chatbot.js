@@ -106,3 +106,7 @@ export const pregunta = (async () => {
     const response = await fullChain(user_input);
     console.log(response);
 });
+
+export const consola = (async () => {
+    console.log('bandera');
+});
