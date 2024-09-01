@@ -110,3 +110,4 @@ export const pregunta = (async () => {
 export const consola = (async () => {
     console.log('bandera');
 });
+*/
