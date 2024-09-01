@@ -56,7 +56,7 @@ WHERE nombre = 'Valentina' AND apellido = 'Martinez';
 UPDATE public.consumidores
 SET "productorId" = (SELECT id FROM productors WHERE "estaValido" = true AND "habilitado" = true)
 WHERE nombre = 'Daniel' AND apellido = 'Flores';
-
+/*
 -- Evento 1
 INSERT INTO public.eventos 
 (
@@ -70,7 +70,7 @@ VALUES
 (
     'Evento Musical', 'Concierto de música en vivo', 'Concierto', 'Pago en Efectivo', 
     NOW() - INTERVAL '1 day', '19:00:00', NOW() + INTERVAL '1 day', 
-    10, 2, 100, true, true, true, 'General', 
+    10, 2, 100, true, true, false, 'General', 
     NOW() - INTERVAL '6 day', NOW() - INTERVAL '1 day', 3, 
     'https://ventaentradas.com/evento1', 'Plaza Central', true, 
     'Catamarca', 'Catamarca', NULL, 'croquis1.pdf', 'EnCurso', 
@@ -79,11 +79,11 @@ VALUES
 -- Evento 2
 (
     'Feria Artesanal', 'Exposición y venta de artesanías locales', 'Feria', 'Pago con Tarjeta', 
-    NOW() + INTERVAL '10 day', '09:00:00', NOW() + INTERVAL '15 day', 
+    NOW() - INTERVAL '1 day', '09:00:00',NOW() + INTERVAL '1 day', 
     20, 3, 200, true, true, true, NULL, 
-    NULL, NULL, NULL, 
+    NOW() - INTERVAL '6 day', NOW() - INTERVAL '1 day', 3, 
     'https://ventaentradas.com/evento2', 'Parque Central', true, 
-    'Icaño', 'Catamarca', NULL, 'croquis2.pdf', 'EnPreparacion', 
+    'Icaño', 'Catamarca', NULL, 'croquis2.pdf', 'EnCurso', 
     NOW(), NOW(), 1
 ),
 -- Evento 3
@@ -100,7 +100,7 @@ VALUES
 (
     'Festival Gastronómico', 'Muestra y venta de comidas típicas', 'Festival', 'Pago con Tarjeta', 
     NOW() + INTERVAL '10 day', '11:00:00', NOW() + INTERVAL '15 day', 
-    25, 4, 300, true, true, true, NULL, 
+    25, 4, 300, true, true, false, NULL, 
     NULL, NULL, NULL, 
     'https://ventaentradas.com/evento4', 'Centro Cultural', true, 
     'Icaño', 'Catamarca', NULL, 'croquis4.pdf', 'Confirmado', 
@@ -194,24 +194,15 @@ INSERT INTO public."Asociacions" (
     "puestoId", 
     "repartidoreId"
 ) VALUES
-    ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1, 1),
-    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, 1),
-    ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 3, 1),
-    ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 1, 1),
-    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 2, 1);
-
-INSERT INTO public."Asociacions" (
-    estado, 
-    motivo, 
-    "createdAt", 
-    "updatedAt", 
-    "eventoId", 
-    "puestoId", 
-    "repartidoreId"
-) VALUES
-    ('Aceptada', 'Motivo del evento 2, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 1, 1),
-    ('Aceptada', 'Motivo del evento 2, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 2, 1),
-    ('Aceptada', 'Motivo del evento 2, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 3, 1);
+    ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 2, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 1, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 3, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 3, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 1, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 2, NULL);
 
 --productos
 INSERT INTO public.productos (
@@ -271,13 +262,15 @@ INSERT INTO public."Pedidos" (
     "consumidorId", 
     "puestoId", 
     "repartidorId", 
-    "eventoId"
+    "eventoId",
+    "codigoEntrega",
+    "puntoEncuentroId"
 ) VALUES
-    (CURRENT_TIMESTAMP, 45.00, 'Pendiente', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1, null, 1),
-    (CURRENT_TIMESTAMP, 60.50, 'Aceptado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, null, 2),
-    (CURRENT_TIMESTAMP, 30.75, 'EnPreparacion', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, null, 1),
-    (CURRENT_TIMESTAMP, 55.25, 'EnCamino', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, null, 2),
-    (CURRENT_TIMESTAMP, 40.10, 'Entregado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, null, 1);
+    (CURRENT_TIMESTAMP, 45.00, 'Pendiente', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1, null, 1,null,null),
+    (CURRENT_TIMESTAMP, 60.50, 'Aceptado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, null, 2,null,null),
+    (CURRENT_TIMESTAMP, 30.75, 'EnPreparacion', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, null, 1,null,null),
+    (CURRENT_TIMESTAMP, 55.25, 'EnCamino', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, 1, 2,'ABC123',1),
+    (CURRENT_TIMESTAMP, 40.10, 'Entregado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, null, 1,null,null);
 
 -- Insertar detalles para el pedido con id = 1
 INSERT INTO public."DetallePedidos" (
@@ -340,3 +333,4 @@ INSERT INTO public."DetallePedidos" (
 ) VALUES
     (1, 25.00, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 5),
     (2, 15.10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 5, 5);
+*/

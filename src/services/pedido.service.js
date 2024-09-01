@@ -7,31 +7,52 @@ import { Producto } from '../DAO/models/producto.model.js';
 import { Puesto } from '../DAO/models/puesto.model.js';
 import { estadosPedido } from '../estados/estados/estadosPedido.js';
 import { notificacionesService } from './notificaciones.service.js';
+import { Repartidor } from '../DAO/models/repartidor.model.js';
+import { PuntoEncuentro } from '../DAO/models/puntoEncuentro.model.js';
+import Sequelize from 'sequelize';
 
 class PedidoService {
   async getAll(consumidorId) {
+    const whereConditions = { consumidorId };
+    const includeModels = [
+      { model: Puesto },
+      {
+        model: DetallePedido,
+        as: 'detalles',
+        include: [
+          {
+            model: Producto,
+            as: 'producto'
+          }
+        ]
+      }
+    ];
+  
+    if (await Pedido.findOne({ where: { consumidorId, repartidorId: { [Op.ne]: null } } })) {
+      includeModels.push({
+        model: Repartidor,
+        include: [
+          {
+            model: Consumidor,
+          }
+        ]
+      });
+    }
+  
+    if (await Pedido.findOne({ where: { consumidorId, puntoEncuentroId: { [Op.ne]: null } } })) {
+      includeModels.push({
+        model: PuntoEncuentro,
+      });
+    }
+  
     const pedidos = await Pedido.findAll({
-      where: {
-        consumidorId: consumidorId,
-      },
-      include: [
-        { model: Puesto },
-        {
-          model: DetallePedido,
-          as: 'detalles',
-          include: [
-            {
-              model: Producto,  
-              as: 'producto' 
-            }
-          ]
-        }
-      ],
+      where: whereConditions,
+      include: includeModels,
     });
+  
     return pedidos;
   }
   
-
   async getAllPuesto(consumidorId) {
     const consumidor = await Consumidor.findOne({
       where: {
@@ -72,11 +93,7 @@ class PedidoService {
     console.log('Pedidos obtenidos:', pedidos);
     return pedidos;
   }
-  catch(error) {
-    console.error('Error al obtener pedidos por consumidor:', error);
-    throw error;
-  }
-
+  
   async getAllRepartidor(consumidorId) {
     const consumidor = await Consumidor.findOne({
       where: {
@@ -86,34 +103,47 @@ class PedidoService {
 
     const repartidorId = consumidor.repartidorId;
 
+    const includeModels = [
+      {
+        model: DetallePedido,
+        as: 'detalles',
+        include: [
+          {
+            model: Producto,
+            as: 'producto',
+          },
+        ],
+      },
+      { model: Puesto },
+      { model: Consumidor },
+      {
+        model: Repartidor,
+        include: [
+          {
+            model: Consumidor,
+          }
+        ]
+      }
+    ];
+
+    if (await Pedido.findOne({ where: { repartidorId, puntoEncuentroId: { [Op.ne]: null } } })) {
+      includeModels.push({
+        model: PuntoEncuentro,
+      });
+    }
+
     const pedidos = await Pedido.findAll({
       where: {
         repartidorId: repartidorId,
         estado: {
-          [Op.or]: ["Asignado"],
+          [Op.or]: ["EnCamino"],
         },
       },
-      include: [
-        {
-          model: DetallePedido,
-          as: 'detalles',
-          include: [
-            {
-              model: Producto,
-              as: 'producto',
-            },
-          ],
-        },
-        { model: Puesto },
-      ],
+      include: includeModels,
     });
 
     console.log('Pedidos obtenidos:', pedidos);
     return pedidos;
-  }
-  catch(error) {
-    console.error('Error al obtener pedidos por consumidor:', error);
-    throw error;
   }
 
   async getOne(id) {
@@ -147,13 +177,12 @@ class PedidoService {
     const tituloNotificacion = notificationTexts.consumidor.titulo;
     const descripcionNotificacion = notificationTexts.consumidor.descripcion;
 
-    console.log(tituloNotificacion,descripcionNotificacion,"dsfasfdasdfasdfdasf");
+    console.log(tituloNotificacion, descripcionNotificacion, "dsfasfdasdfasdfdasf");
 
-    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAPuesto(puestoId, tituloNotificacion,descripcionNotificacion);
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAPuesto(puestoId, tituloNotificacion, descripcionNotificacion);
 
     return resultadoNotificacion;
   }
-
 
   async create(pedido, detallesPedido) {
     const pedidoCreado = await Pedido.create(pedido);
@@ -164,27 +193,25 @@ class PedidoService {
     }
   }
 
-    async updateState(pedidoId, accion) {
-      try {
-        const pedido = await this.getOne(pedidoId); 
-        const estadoActual = pedido.estado;
-  
-        console.log(estadoActual);
-        console.log(accion)
-  
-        if (estadosPedido[estadoActual] && estadosPedido[estadoActual][accion]) {
-          await estadosPedido[estadoActual][accion](pedido);
-          return { success: true, message: 'Estado del pedido actualizado.' };
-        } else {
-          return { success: false, message: 'No se encontró la acción para el estado actual.' };
-        }
-      } catch (error) {
-        console.error(error);
-        throw new Error('Error al cambiar el estado del pedido.');
-      }
-    }
-  
-  }
+  async updateState(pedidoId, accion) {
+    try {
+      const pedido = await this.getOne(pedidoId); 
+      const estadoActual = pedido.estado;
 
+      console.log(estadoActual);
+      console.log(accion);
+
+      if (estadosPedido[estadoActual] && estadosPedido[estadoActual][accion]) {
+        await estadosPedido[estadoActual][accion](pedido);
+        return { success: true, message: 'Estado del pedido actualizado.' };
+      } else {
+        return { success: false, message: 'No se encontró la acción para el estado actual.' };
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error al cambiar el estado del pedido.');
+    }
+  }
+}
 
 export const pedidoService = new PedidoService();

@@ -8,8 +8,7 @@ import { pregunta, consola } from "../util/chatbot.js";
 
 class NotificacionesService {
     async enviarNotificacionesAPuesto(puestoId, tituloNotificacion, descripcionNotificacion) {
-        consola()
-        //pregunta()
+        pregunta()
         const {tokenUsuarioWeb,tokenUsuarioMobile} = await this.buscarTokenPorPuesto(puestoId)
         const titulo = tituloNotificacion;
         const descripcion = descripcionNotificacion;
