@@ -111,3 +111,57 @@ export const consola = (async () => {
     console.log('bandera');
 });
 */
+
+
+//------------------------------------------------------------------------------------------------------
+// chatbot.js
+
+import { LLMChain } from "langchain/chains";
+import { PromptTemplate } from "@langchain/core/prompts";
+import { ChatOpenAI } from "@langchain/openai";
+import dotenv from 'dotenv';
+
+// Cargar el archivo .env
+dotenv.config();
+
+//const userMessage = 'Capital de china?'
+
+// Usar el archivo de variables de entorno para obtener la API key
+const apiKey = process.env.CHATBOT_API_KEY;
+
+
+// Configuración del modelo OpenAI
+const openAIModel = new ChatOpenAI({
+    apiKey: apiKey,
+    modelName: 'gpt-3.5-turbo',
+    temperature: 0,  // Sin creatividad
+    maxTokens: 150,  // Puedes ajustar según tus necesidades
+});
+
+// Configuración del template para las preguntas
+const template = new PromptTemplate({
+    inputVariables: ['input'],
+    template: '{input}',  // Si esta línea es muy simple, considera definir un formato más complejo
+});
+
+// Configuración de LLMChain, asegurando que el template esté correctamente definido
+const chain = new LLMChain({
+    llm: openAIModel,
+    prompt: template,  // Asegúrate de usar 'prompt' en lugar de 'promptTemplate'
+});
+
+export async function getChatResponse(userMessage) {
+    try {
+        const response = await chain.call({ input: userMessage });
+        return response.text;
+    } catch (error) {
+        console.error('Error al obtener la respuesta de OpenAI:', error);
+        throw error;
+    }
+}
+
+//getChatResponse(userMessage)
+
+//const chat_response = await getChatResponse(userMessage)
+
+//console.log(chat_response)

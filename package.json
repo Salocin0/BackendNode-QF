@@ -23,7 +23,9 @@
   },
   "homepage": "https://github.com/Salocin0/PrimerPreentregaDurelli-backend#readme",
   "dependencies": {
+    "@langchain/community": "^0.2.31",
     "@langchain/core": "^0.2.31",
+    "@langchain/langgraph": "^0.1.9",
     "@langchain/openai": "^0.2.8",
     "backend_qf": "file:",
     "bcrypt": "^5.1.1",

@@ -4,15 +4,16 @@ import { sendNotificacionesWeb } from "../util/Notificaciones.js";
 import { asociacionService } from "./asociacion.service.js";
 import { productorService } from "./productor.service.js";
 import { puestoService } from "./puesto.service.js";
-//import { pregunta, consola } from "../util/chatbot.js";
+import { getChatResponse } from "../util/chatbot.js";
 
 class ChatbotService {
-    async enviarChatbotTexto(user_message) {
-
+    async enviarChatbotTexto(userMessage) {
+        
+        const chat_response = await getChatResponse(userMessage)
         
         return {
-            "user_message": user_message,
-            chat_response: ' + respuesta del chat'
+            "user_message": userMessage,
+            "chat_response": chat_response
         }
     }
 }

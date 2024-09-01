@@ -4,7 +4,7 @@ import { chatbotService } from '../services/chatbot.service.js';
 class ChatbotController {
   async createChatbotText(req, res) {
     try {
-      const message = req.body.user_message
+      const message = req.body.userMessage
       const text_response = await chatbotService.enviarChatbotTexto(message);
       if (text_response) {
         return res.status(200).json({
