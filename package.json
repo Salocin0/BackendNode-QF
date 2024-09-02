@@ -23,7 +23,9 @@
   },
   "homepage": "https://github.com/Salocin0/PrimerPreentregaDurelli-backend#readme",
   "dependencies": {
+    "@langchain/community": "^0.2.31",
     "@langchain/core": "^0.2.31",
+    "@langchain/langgraph": "^0.1.9",
     "@langchain/openai": "^0.2.8",
     "backend_qf": "file:",
     "bcrypt": "^5.1.1",
@@ -60,7 +62,8 @@
     "sequelize": "^6.37.3",
     "session-file-store": "^1.5.0",
     "socket.io": "^4.7.5",
-    "stripe": "^16.7.0"
+    "stripe": "^16.7.0",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "@types/node": "^22.2.0",

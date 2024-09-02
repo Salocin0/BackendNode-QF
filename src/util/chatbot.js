@@ -106,4 +106,90 @@ export const pregunta = (async () => {
     const response = await fullChain(user_input);
     console.log(response);
 });
+
+export const consola = (async () => {
+    console.log('bandera');
+});
 */
+
+
+//------------------------------------------------------------------------------------------------------
+// chatbot.js
+
+import { LLMChain } from "langchain/chains";
+import { PromptTemplate } from "@langchain/core/prompts";
+import { ChatOpenAI } from "@langchain/openai";
+
+import { DataSource } from "typeorm";
+import { SqlDatabase } from "langchain/sql_db";
+
+import dotenv from 'dotenv';
+
+// Cargar el archivo .env
+dotenv.config();
+
+// Usar el archivo de variables de entorno para obtener la API key
+const apiKey = process.env.CHATBOT_API_KEY;
+
+//const userMessage = 'Capital de china?'
+
+// definir la db a utilizar
+const datasource = new DataSource({
+    type: "postgres",              // Tipo de base de datos
+    host: process.env.DB_HOST,             // Host donde se encuentra tu base de datos
+    port: process.env.DB_PORT,                    // Puerto de PostgreSQL (5432 por defecto)
+    username: process.env.DB_USER,        // Tu nombre de usuario de PostgreSQL
+    password: process.env.DB_PASSWORD,     // Tu contraseña de PostgreSQL
+    database: process.env.DB_NAME, // Nombre de la base de datos
+    //synchronize: true,             // Sincroniza la base de datos con tu esquema (ten cuidado con esto en producción)
+    //logging: true,                 // Habilita el logging (opcional)
+  });
+
+
+  //conectar con la db
+  const db = await SqlDatabase.fromDataSourceParams({
+    appDataSource: datasource,
+  });
+
+  // Info del esquema
+  const schemaInfo = await db.getTableInfo();
+  
+  // Ejemplo de query
+  const result = await db.run("SELECT COUNT(*) AS total FROM consumidores;");
+
+
+// Configuración del modelo OpenAI
+const openAIModel = new ChatOpenAI({
+    apiKey: apiKey,
+    modelName: 'gpt-3.5-turbo',
+    temperature: 0,  // Sin creatividad
+    maxTokens: 150,  // Puedes ajustar según tus necesidades
+});
+
+// Configuración del template para las preguntas
+const template = new PromptTemplate({
+    inputVariables: ['input'],
+    template: '{input}',  // Si esta línea es muy simple, considera definir un formato más complejo
+});
+
+// Configuración de LLMChain, asegurando que el template esté correctamente definido
+const chain = new LLMChain({
+    llm: openAIModel,
+    prompt: template,  // Asegúrate de usar 'prompt' en lugar de 'promptTemplate'
+});
+
+export async function getChatResponse(userMessage) {
+    try {
+        const response = await chain.call({ input: userMessage });
+        return response.text;
+    } catch (error) {
+        console.error('Error al obtener la respuesta de OpenAI:', error);
+        throw error;
+    }
+}
+
+//getChatResponse(userMessage)
+
+//const chat_response = await getChatResponse(userMessage)
+
+//console.log(chat_response)

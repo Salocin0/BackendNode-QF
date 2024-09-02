@@ -36,6 +36,7 @@ import { RouterValoracion } from './routes/valoracion.router.js';
 import { sequelize } from './util/connections.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
 /*import {pregunta} from './util/chatbot.js'*/
+import  RouterChatbot  from './routes/chatbot.router.js'
 
 dotenv.config();
 //definicion de server de express
@@ -94,6 +95,7 @@ app.use('/puntosEncuentro',RouterPuntoEncuentro);
 app.use('/asignaciones',RouterAsignaciones);
 app.use('/notificaciones4', RouterNotificacion);
 app.use('/payment-sheet', PaymentRouter);
+app.use('/chatbot', RouterChatbot)
 
 
 async function connectDB() {
