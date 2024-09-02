@@ -119,15 +119,43 @@ export const consola = (async () => {
 import { LLMChain } from "langchain/chains";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { ChatOpenAI } from "@langchain/openai";
+
+import { DataSource } from "typeorm";
+import { SqlDatabase } from "langchain/sql_db";
+
 import dotenv from 'dotenv';
 
 // Cargar el archivo .env
 dotenv.config();
 
-//const userMessage = 'Capital de china?'
-
 // Usar el archivo de variables de entorno para obtener la API key
 const apiKey = process.env.CHATBOT_API_KEY;
+
+//const userMessage = 'Capital de china?'
+
+// definir la db a utilizar
+const datasource = new DataSource({
+    type: "postgres",              // Tipo de base de datos
+    host: process.env.DB_HOST,             // Host donde se encuentra tu base de datos
+    port: process.env.DB_PORT,                    // Puerto de PostgreSQL (5432 por defecto)
+    username: process.env.DB_USER,        // Tu nombre de usuario de PostgreSQL
+    password: process.env.DB_PASSWORD,     // Tu contraseña de PostgreSQL
+    database: process.env.DB_NAME, // Nombre de la base de datos
+    //synchronize: true,             // Sincroniza la base de datos con tu esquema (ten cuidado con esto en producción)
+    //logging: true,                 // Habilita el logging (opcional)
+  });
+
+
+  //conectar con la db
+  const db = await SqlDatabase.fromDataSourceParams({
+    appDataSource: datasource,
+  });
+
+  // Info del esquema
+  const schemaInfo = await db.getTableInfo();
+  
+  // Ejemplo de query
+  const result = await db.run("SELECT COUNT(*) AS total FROM consumidores;");
 
 
 // Configuración del modelo OpenAI
