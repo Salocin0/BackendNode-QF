@@ -4,6 +4,7 @@ import { estadosEvento } from '../estados/estados/estadosEvento.js';
 import { asociacionService } from './asociacion.service.js';
 import { consumidorService } from './consumidor.service.js';
 import { restriccionService } from './restriccion.service.js';
+import { DiaEvento } from '../DAO/models/diaEvento.model.js';
 
 class EventoService {
   async getAll(consumidorId) {
@@ -26,9 +27,15 @@ class EventoService {
       where: {
         estado: estado,
       },
+      include: [
+        {
+          model: DiaEvento,
+        },
+      ],
     });
     return eventos;
   }
+  
 
   async getOne(id) {
     const evento = Evento.findByPk(id);

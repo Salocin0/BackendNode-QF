@@ -24,7 +24,7 @@ export const Pedido = sequelize.define('Pedido', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  codigoEnterga:{
+  codigoEntrega:{
     type: DataTypes.STRING,
     allowNull: true,
   },

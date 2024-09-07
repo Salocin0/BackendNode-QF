@@ -4,11 +4,9 @@ import { sendNotificacionesWeb } from "../util/Notificaciones.js";
 import { asociacionService } from "./asociacion.service.js";
 import { productorService } from "./productor.service.js";
 import { puestoService } from "./puesto.service.js";
-/*import { pregunta } from "../util/chatbot.js";*/
 
 class NotificacionesService {
     async enviarNotificacionesAPuesto(puestoId, tituloNotificacion, descripcionNotificacion) {
-        /*pregunta()*/
         const {tokenUsuarioWeb,tokenUsuarioMobile} = await this.buscarTokenPorPuesto(puestoId)
         const titulo = tituloNotificacion;
         const descripcion = descripcionNotificacion;

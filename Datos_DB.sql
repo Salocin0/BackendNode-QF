@@ -56,66 +56,137 @@ WHERE nombre = 'Valentina' AND apellido = 'Martinez';
 UPDATE public.consumidores
 SET "productorId" = (SELECT id FROM productors WHERE "estaValido" = true AND "habilitado" = true)
 WHERE nombre = 'Daniel' AND apellido = 'Flores';
-/*
+
 -- Evento 1
 INSERT INTO public.eventos 
 (
-    nombre, descripcion, "tipoEvento", "tipoPago", "fechaInicio", "horaInicio", "fechaFin", 
-    "cantidadPuestos", "cantidadRepartidores", "capacidadMaxima", "conButaca", "conRepartidor", 
-    "conPreventa", "tipoPreventa", "fechaInicioPreventa", "fechaFinPreventa", 
-    "plazoCancelacionPreventa", "linkVentaEntradas", ubicacion, habilitado, 
-    localidad, provincia, img, croquis, estado, "createdAt", "updatedAt", "productorId"
+    nombre, descripcion, "tipoEvento", "tipoPago", 
+    "cantidadPuestos", "conButaca", "conRepartidor", 
+    "tienePreventa", 
+    "linkVentaEntradas", ubicacion, habilitado, 
+    localidad, provincia, img, estado, "createdAt", "updatedAt", "productorId"
 )
 VALUES
 (
     'Evento Musical', 'Concierto de música en vivo', 'Concierto', 'Pago en Efectivo', 
-    NOW() - INTERVAL '1 day', '19:00:00', NOW() + INTERVAL '1 day', 
-    10, 2, 100, true, true, true, 'General', 
-    NOW() - INTERVAL '6 day', NOW() - INTERVAL '1 day', 3, 
+    10, true, true, false, 
     'https://ventaentradas.com/evento1', 'Plaza Central', true, 
-    'Catamarca', 'Catamarca', NULL, 'croquis1.pdf', 'EnCurso', 
+    'Catamarca', 'Catamarca', NULL, 'EnCurso', 
     NOW(), NOW(), 1
 ),
 -- Evento 2
 (
     'Feria Artesanal', 'Exposición y venta de artesanías locales', 'Feria', 'Pago con Tarjeta', 
-    NOW() + INTERVAL '10 day', '09:00:00', NOW() + INTERVAL '15 day', 
-    20, 3, 200, true, true, true, NULL, 
-    NULL, NULL, NULL, 
+    20, true, true, true, 
     'https://ventaentradas.com/evento2', 'Parque Central', true, 
-    'Icaño', 'Catamarca', NULL, 'croquis2.pdf', 'EnPreparacion', 
+    'Icaño', 'Catamarca', NULL, 'EnCurso', 
     NOW(), NOW(), 1
 ),
 -- Evento 3
 (
     'Teatro al Aire Libre', 'Obra de teatro en espacio abierto', 'Teatro', 'Pago en Efectivo', 
-    NOW() + INTERVAL '10 day', '20:00:00', NOW() + INTERVAL '15 day', 
-    15, 1, 150, true, true, true, 'VIP', 
-    NOW() + INTERVAL '10 day', NOW() + INTERVAL '15 day', 1, 
+    15, true, true, true, 
     'https://ventaentradas.com/evento3', 'Anfiteatro', true, 
-    'Catamarca', 'Catamarca', NULL, 'croquis3.pdf', 'Confirmado', 
+    'Catamarca', 'Catamarca', NULL, 'Confirmado', 
     NOW(), NOW(), 1
 ),
 -- Evento 4
 (
     'Festival Gastronómico', 'Muestra y venta de comidas típicas', 'Festival', 'Pago con Tarjeta', 
-    NOW() + INTERVAL '10 day', '11:00:00', NOW() + INTERVAL '15 day', 
-    25, 4, 300, true, true, true, NULL, 
-    NULL, NULL, NULL, 
+    25, true, true, false,
     'https://ventaentradas.com/evento4', 'Centro Cultural', true, 
-    'Icaño', 'Catamarca', NULL, 'croquis4.pdf', 'Confirmado', 
+    'Icaño', 'Catamarca', NULL, 'Confirmado', 
     NOW(), NOW(), 1
 ),
 -- Evento 5
 (
     'Carrera de Maratón', 'Competencia de maratón en la ciudad', 'Deportivo', 'Pago en Efectivo', 
-    NOW() + INTERVAL '10 day', '07:00:00', NOW() + INTERVAL '15 day', 
-    5, 10, 500, true, true, true, 'Competencia', 
-    NOW() + INTERVAL '10 day', NOW() + INTERVAL '15 day', 5, 
+    5, true, true, true, 
     'https://ventaentradas.com/evento5', 'Ciudad Completa', true, 
-    'Catamarca', 'Catamarca', NULL, 'croquis5.pdf', 'EnPreparacion', 
+    'Catamarca', 'Catamarca', NULL, 'EnPreparacion', 
     NOW(), NOW(), 1
 );
+
+-- Días Evento para Evento 1: Evento Musical
+INSERT INTO "diaEventos" 
+(
+    nombre, descripcion, "fechaHoraInicioDiaEvento", "fechaHoraFinDiaEvento", "tienePreventa", "eventoId", "createdAt", "updatedAt"
+)
+VALUES
+(
+    'Día 1 - Concierto Principal', 'Inicio del concierto principal con artistas invitados', NOW(), NOW() + INTERVAL '4 HOUR', false, 1, NOW(), NOW()
+),
+(
+    'Día 2 - Sesión Acústica', 'Sesión acústica en un ambiente más íntimo', NOW() + INTERVAL '1 DAY', NOW() + INTERVAL '1 DAY 3 HOUR', false, 1, NOW(), NOW()
+),
+(
+    'Día 3 - Cierre con DJ en Vivo', 'Fiesta de cierre con DJ en vivo', NOW() + INTERVAL '2 DAY 2 HOUR', NOW() + INTERVAL '2 DAY 5 HOUR', false, 1, NOW(), NOW()
+);
+
+-- Días Evento para Evento 2: Feria Artesanal
+INSERT INTO "diaEventos"  
+(
+    nombre, descripcion, "fechaHoraInicioDiaEvento", "fechaHoraFinDiaEvento", "tienePreventa", "eventoId", "createdAt", "updatedAt"
+)
+VALUES
+(
+    'Día 1 - Apertura de Feria', 'Inauguración y primeras ventas de artesanías', NOW() + INTERVAL '7 DAY', NOW() + INTERVAL '7 DAY 9 HOUR', true, 2, NOW(), NOW()
+),
+(
+    'Día 2 - Talleres Artesanales', 'Talleres interactivos con los artesanos', NOW() + INTERVAL '8 DAY', NOW() + INTERVAL '8 DAY 9 HOUR', true, 2, NOW(), NOW()
+),
+(
+    'Día 3 - Clausura y Entrega de Premios', 'Cierre del evento con entrega de premios a los mejores artesanos', NOW() + INTERVAL '9 DAY', NOW() + INTERVAL '9 DAY 8 HOUR', true, 2, NOW(), NOW()
+);
+
+-- Días Evento para Evento 3: Teatro al Aire Libre
+INSERT INTO "diaEventos" 
+(
+    nombre, descripcion, "fechaHoraInicioDiaEvento", "fechaHoraFinDiaEvento", "tienePreventa", "eventoId", "createdAt", "updatedAt"
+)
+VALUES
+(
+    'Día 1 - Función de Apertura', 'Primera función con la obra principal', NOW() + INTERVAL '14 DAY', NOW() + INTERVAL '14 DAY 2 HOUR', true, 3, NOW(), NOW()
+),
+(
+    'Día 2 - Función para Niños', 'Obra de teatro dedicada a los niños', NOW() + INTERVAL '15 DAY', NOW() + INTERVAL '15 DAY 2 HOUR', true, 3, NOW(), NOW()
+),
+(
+    'Día 3 - Función de Clausura', 'Última función con sorpresas y despedida', NOW() + INTERVAL '16 DAY', NOW() + INTERVAL '16 DAY 2 HOUR', true, 3, NOW(), NOW()
+);
+
+-- Días Evento para Evento 4: Festival Gastronómico
+INSERT INTO "diaEventos" 
+(
+    nombre, descripcion, "fechaHoraInicioDiaEvento", "fechaHoraFinDiaEvento", "tienePreventa", "eventoId", "createdAt", "updatedAt"
+)
+VALUES
+(
+    'Día 1 - Degustación de Platos Regionales', 'Exhibición y venta de platos típicos regionales', NOW() + INTERVAL '21 DAY', NOW() + INTERVAL '21 DAY 8 HOUR', false, 4, NOW(), NOW()
+),
+(
+    'Día 2 - Concurso de Chef', 'Competencia entre chefs locales para el mejor plato', NOW() + INTERVAL '22 DAY', NOW() + INTERVAL '22 DAY 8 HOUR', false, 4, NOW(), NOW()
+),
+(
+    'Día 3 - Cierre y Entrega de Premios', 'Entrega de premios y clausura del festival', NOW() + INTERVAL '23 DAY', NOW() + INTERVAL '23 DAY 6 HOUR', false, 4, NOW(), NOW()
+);
+
+-- Días Evento para Evento 5: Carrera de Maratón
+INSERT INTO "diaEventos" 
+(
+    nombre, descripcion, "fechaHoraInicioDiaEvento", "fechaHoraFinDiaEvento", "tienePreventa", "eventoId", "createdAt", "updatedAt"
+)
+VALUES
+(
+    'Día 1 - Carrera Infantil', 'Competencia para los más pequeños', NOW() + INTERVAL '28 DAY 7 HOUR', NOW() + INTERVAL '28 DAY 9 HOUR', true, 5, NOW(), NOW()
+),
+(
+    'Día 2 - Carrera de Relevos', 'Competencia en equipos de relevos', NOW() + INTERVAL '29 DAY 7 HOUR', NOW() + INTERVAL '29 DAY 10 HOUR', true, 5, NOW(), NOW()
+),
+(
+    'Día 3 - Carrera Principal', 'Maratón principal a lo largo de la ciudad', NOW() + INTERVAL '30 DAY 7 HOUR', NOW() + INTERVAL '30 DAY 12 HOUR', true, 5, NOW(), NOW()
+);
+
 
 
 --set puntos de encuento a evento 1
@@ -194,24 +265,15 @@ INSERT INTO public."Asociacions" (
     "puestoId", 
     "repartidoreId"
 ) VALUES
-    ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1, 1),
-    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, 1),
-    ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 3, 1),
-    ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 1, 1),
-    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 2, 1);
-
-INSERT INTO public."Asociacions" (
-    estado, 
-    motivo, 
-    "createdAt", 
-    "updatedAt", 
-    "eventoId", 
-    "puestoId", 
-    "repartidoreId"
-) VALUES
-    ('Aceptada', 'Motivo del evento 2, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 1, 1),
-    ('Aceptada', 'Motivo del evento 2, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 2, 1),
-    ('Aceptada', 'Motivo del evento 2, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 3, 1);
+    ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 2, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 1, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 3, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 3, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 1, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 2, NULL);
 
 --productos
 INSERT INTO public.productos (
@@ -271,13 +333,15 @@ INSERT INTO public."Pedidos" (
     "consumidorId", 
     "puestoId", 
     "repartidorId", 
-    "eventoId"
+    "eventoId",
+    "codigoEntrega",
+    "puntoEncuentroId"
 ) VALUES
-    (CURRENT_TIMESTAMP, 45.00, 'Pendiente', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1, null, 1),
-    (CURRENT_TIMESTAMP, 60.50, 'Aceptado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, null, 2),
-    (CURRENT_TIMESTAMP, 30.75, 'EnPreparacion', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, null, 1),
-    (CURRENT_TIMESTAMP, 55.25, 'EnCamino', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, null, 2),
-    (CURRENT_TIMESTAMP, 40.10, 'Entregado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, null, 1);
+    (CURRENT_TIMESTAMP, 45.00, 'Pendiente', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1, null, 1,null,null),
+    (CURRENT_TIMESTAMP, 60.50, 'Aceptado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, null, 2,null,null),
+    (CURRENT_TIMESTAMP, 30.75, 'EnPreparacion', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, null, 1,null,null),
+    (CURRENT_TIMESTAMP, 55.25, 'EnCamino', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, 1, 2,'ABC123',1),
+    (CURRENT_TIMESTAMP, 40.10, 'Entregado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, null, 1,null,null);
 
 -- Insertar detalles para el pedido con id = 1
 INSERT INTO public."DetallePedidos" (
@@ -340,4 +404,3 @@ INSERT INTO public."DetallePedidos" (
 ) VALUES
     (1, 25.00, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 5),
     (2, 15.10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 5, 5);
-*/
