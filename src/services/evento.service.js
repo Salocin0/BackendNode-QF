@@ -74,11 +74,11 @@ class EventoService {
     nuevoEvento.productorId = consumidor.productorId;
     const eventoCreado = await Evento.create(nuevoEvento);
     this.crearEvento(eventoCreado);
-    //nuevoEvento.restricciones.forEach(async (restriccion) => {
-      //restriccion.eventoId = eventoCreado.id;
-      //const restriccionCreada = await restriccionService.create(restriccion);
-      //console.log(restriccionCreada);
-    //});
+    nuevoEvento.restricciones.forEach(async (restriccion) => {
+      restriccion.eventoId = eventoCreado.id;
+      const restriccionCreada = await restriccionService.create(restriccion);
+      console.log(restriccionCreada);
+    });
     return eventoCreado;
   }
 

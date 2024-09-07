@@ -169,9 +169,10 @@ class EventoController {
             latitud,
             longitud,
             diasEvento,
+
         } = req.body;
 
-        console.log(req.body);
+        console.log(req.body.restricciones);
 
         // Validar campos requeridos
         if (!nombre || !fechaHoraInicioEvento || !fechaHoraFinEvento) {
@@ -223,7 +224,10 @@ class EventoController {
             diasEvento: diasEvento,
         };
 
-        console.log('Datos del evento:', nuevoEvento);
+        console.log(nuevoEvento.fechaHoraInicio)
+        console.log(nuevoEvento.fechaHoraFin)
+
+        //console.log('Datos del evento:', nuevoEvento);
 
         // Crear el evento
         const eventoCreado = await eventoService.create(nuevoEvento);
