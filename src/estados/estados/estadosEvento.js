@@ -1,6 +1,8 @@
 import { cancelado } from '../estadosConcretosEventos/canceladoEvento.state.js';
 import { Confirmado } from '../estadosConcretosEventos/confirmadoEvento.state.js';
 import { EnCurso } from '../estadosConcretosEventos/enCursoEvento.state.js';
+import { EnPreparacion1 } from '../estadosConcretosEventos/enPreparacion1Evento.state.js';
+import { EnPreparacion2 } from '../estadosConcretosEventos/enPreparacion2Evento.state.js';
 import { EnPreparacion } from '../estadosConcretosEventos/enPreparacionEvento.state.js';
 import { finalizado } from '../estadosConcretosEventos/finalizadoEvento.state.js';
 import { Pausado } from '../estadosConcretosEventos/pausadoEvento.state.js';
@@ -41,6 +43,88 @@ export const estadosEvento = {
 
     continuarEvento: (evento) => {
       return EnPreparacion.continuarEvento(evento);
+    },
+  },
+
+  EnPreparacion1: {
+    crearEvento: async (evento) => {
+      return EnPreparacion1.crearEvento(evento);
+    },
+
+    confirmarEvento: (evento) => {
+      return EnPreparacion1.confirmarEvento(evento);
+    },
+
+    cancelarEvento: (evento) => {
+      return EnPreparacion1.cancelarEvento(evento);
+    },
+
+    iniciarEvento: (evento) => {
+      return EnPreparacion1.iniciarEvento(evento);
+    },
+
+    finalizarEvento: (evento) => {
+      return EnPreparacion1.finalizarEvento(evento);
+    },
+
+    reprogramarEvento: (evento) => {
+      return EnPreparacion1.reprogramarEvento(evento);
+    },
+
+    activarEvento: (evento) => {
+      return EnPreparacion1.activarEvento(evento);
+    },
+
+    desactivarEvento: (evento) => {
+      return EnPreparacion1.desactivarEvento(evento);
+    },
+
+    continuarEvento: (evento) => {
+      return EnPreparacion1.continuarEvento(evento);
+    },
+    actualizarEvento: (evento) => {
+      return EnPreparacion1.actualizarEvento(evento);
+    },
+  },
+
+  EnPreparacion2: {
+    crearEvento: async (evento) => {
+      return EnPreparacion1.crearEvento(evento);
+    },
+
+    confirmarEvento: (evento) => {
+      return EnPreparacion1.confirmarEvento(evento);
+    },
+
+    cancelarEvento: (evento) => {
+      return EnPreparacion1.cancelarEvento(evento);
+    },
+
+    iniciarEvento: (evento) => {
+      return EnPreparacion1.iniciarEvento(evento);
+    },
+
+    finalizarEvento: (evento) => {
+      return EnPreparacion1.finalizarEvento(evento);
+    },
+
+    reprogramarEvento: (evento) => {
+      return EnPreparacion1.reprogramarEvento(evento);
+    },
+
+    activarEvento: (evento) => {
+      return EnPreparacion1.activarEvento(evento);
+    },
+
+    desactivarEvento: (evento) => {
+      return EnPreparacion1.desactivarEvento(evento);
+    },
+
+    continuarEvento: (evento) => {
+      return EnPreparacion1.continuarEvento(evento);
+    },
+    actualizarEvento: (evento) => {
+      return EnPreparacion2.actualizarEvento(evento);
     },
   },
 
@@ -162,7 +246,7 @@ export const estadosEvento = {
     crearEvento: async (evento) => {
       return cancelado.crearEvento(evento);
     },
-    
+
     confirmarEvento: (evento) => {
       return cancelado.confirmar(evento);
     },
@@ -228,7 +312,7 @@ export const estadosEvento = {
     desactivarEvento: (evento) => {
       return finalizado.desactivarEvento(evento);
     },
-    
+
     continuarEvento: (evento) => {
       return finalizado.continuarEvento(evento);
     },

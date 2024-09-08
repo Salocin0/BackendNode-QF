@@ -12,6 +12,8 @@ RouterEvento.get('/:id', eventoController.getOneController);
 
 RouterEvento.put('/:id', eventoController.updateOneController);
 
+RouterEvento.put('/preparacion/:id', eventoController.updateOneControllerPreparacion);
+
 RouterEvento.post('/', eventoController.createOneController);
 
 RouterEvento.post('/cambiarEstado/:id/:accion', eventoController.updateStateController);

@@ -1,4 +1,4 @@
-import { chatbotService } from '../services/chatbot.service.js';
+/*import { chatbotService } from '../services/chatbot.service.js';
 
 
 class ChatbotController {
@@ -32,3 +32,4 @@ class ChatbotController {
 
 export const chatbotController = new ChatbotController();
 
+*/

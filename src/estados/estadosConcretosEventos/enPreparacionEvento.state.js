@@ -1,6 +1,6 @@
 export const EnPreparacion = {
   crearEvento: async (evento) => {
-    evento.estado = 'EnPreparacion';
+    evento.estado = 'EnPreparacion1';
     await evento.save();
     return evento;
   },
