@@ -42,6 +42,22 @@ class EventoService {
     return evento;
   }
 
+  async getOneDays(id) {
+    try {
+      const evento = await Evento.findByPk(id);
+
+      if (!evento) {
+        throw new Error('Evento no encontrado');
+      }
+
+      console.log(evento);
+      return evento.cantidadDiasEvento;
+    } catch (error) {
+      console.error("Error al obtener la cantidad de días del evento:", error);
+      throw error;
+    }
+  }
+
     async update(id, datosEventoActualizar) {
       if (!datosEventoActualizar) {
         throw new Error('El objeto evento no puede ser undefined');
@@ -75,6 +91,7 @@ class EventoService {
       if (datosEventoActualizar.linkVentaEntradas !== undefined) eventodb.linkVentaEntradas = datosEventoActualizar.linkVentaEntradas;
       if (datosEventoActualizar.ubicacion !== undefined) eventodb.ubicacion = datosEventoActualizar.ubicacion;
       if (datosEventoActualizar.estado !== undefined) eventodb.estado = datosEventoActualizar.estado;
+      if (datosEventoActualizar.cantidadDiasEvento !== undefined) eventodb.cantidadDiasEvento = datosEventoActualizar.cantidadDiasEvento;
 
       this.actualizarEvento(eventodb);
 

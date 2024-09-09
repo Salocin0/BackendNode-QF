@@ -89,6 +89,10 @@ export const Evento = sequelize.define('evento', {
   latitud: {
     type: DataTypes.STRING,
     allowNull: true,
+  },
+  cantidadDiasEvento: {
+    type: DataTypes.STRING,
+    allowNull: true,
   }
 });
 
