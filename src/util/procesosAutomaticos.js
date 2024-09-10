@@ -9,8 +9,7 @@ export function procesosAutomaticos() {
     //Asignar repartidores a pedidos
   });
   cron.schedule('*/5 * * * * *', async () => {
-      /*try {
-          //await borrarAsignacionesPendienteViejas();
+      try {
           await caducarAsignaciones();
           const pedidos = await obtenerPedidosParaAsignacion();
   
@@ -18,20 +17,24 @@ export function procesosAutomaticos() {
               const existeAsignacion = await verificarAsignacionPorPedido(pedido.id);
   
               if (!existeAsignacion) {
-                  const repartidor = await obtenerRepartidoresOrdenados(pedido.eventoId);
-  
-                  if (repartidor && repartidor.length > 0) {
-                      await asignacionService.create("Pendiente", pedido.id, repartidor[0].repartidoreId);
-                      console.log(`Asignación creada para pedido ${pedido.id} con repartidor ${repartidor[0].repartidoreId}`);
-                  } else {
-                      console.log(`No se encontró repartidor para el pedido ${pedido.id}`);
-                      await borrarAsignacionesRechazadas();
-                  }
+                const repartidorid = await obtenerRepartidor(pedido.eventoId,pedido.id)
+                if(repartidorid.repartidoreId===-2){
+                    console.log("error al asignar repartidor")
+                }
+                if(repartidorid.repartidoreId===-1){
+                    await borrarAsignacionesRechazadas();
+                } else{
+                    if (repartidorid.repartidoreId) {
+                        console.log(`Asignación creada para pedido ${pedido.id} con repartidor ${repartidorid}`);
+                        await asignacionService.create("Pendiente", pedido.id, repartidorid.repartidoreId);
+                        
+                    }
+                }
               }
           }
       } catch (error) {
           console.error('Error al asignar repartidores:', error);
-      }*/
+      }
   });
  
 }
@@ -78,99 +81,31 @@ export async function obtenerPedidosParaAsignacion() {
 }
 
 // Obtener repartidores ordenados por prioridad
-const obtenerRepartidoresOrdenados = async (eventoId) => {
-    const query = `
-        WITH Repartidores_Sin_Pedidos AS (
- SELECT
-                r.id AS "repartidoreId"
-            FROM
-                "repartidores" r
-            WHERE
-                r.id NOT IN (SELECT "repartidorId" FROM "Pedidos" WHERE "repartidorId" IS NOT NULL)
-                AND r.id NOT IN (SELECT "repartidoreId" FROM "Asociacions" WHERE estado = 'Aceptado')
-				        and r.id not in (select "repartidoreId" from "Asignacions" where estado = 'Caducado' or estado ='Cancelado')
-                and r.id not in (select "repartidoreId" from "Pedidos" where estado = Entregado) 
-                and r.id not in (select "repartidorId" from "valoracionRepartidors")
-        ),
-        Repartidores_Con_Pedidos AS (
-            SELECT
-                r.id AS "repartidoreId"
-            FROM
-                "repartidores" r
-            WHERE
-                r.id IN (SELECT "repartidorId" FROM "Pedidos" WHERE "repartidorId" IS NOT NULL)
-                AND r.id IN (SELECT "repartidoreId" FROM "Asociacions" WHERE estado = 'Aceptado')
-                and r.id not in (select "repartidoreId" from "Asignacions" where estado = 'Caducado' or estado ='Cancelado')
-                and r.id not in (Repartidores_Sin_Pedidos.repartidoreId)
-                and r.id in (select "repartidoreId" from "Pedidos" where estado = Entregado) 
-        ),
-        Repartidores_Con_Solo_Pedidos_calificados AS (
-            SELECT
-                r.id AS "repartidoreId"
-            FROM
-                "repartidores" r
-            WHERE
-                r.id IN (SELECT "repartidorId" FROM "Pedidos" WHERE "repartidorId" IS NOT NULL)
-                AND r.id IN (SELECT "repartidoreId" FROM "Asociacions" WHERE estado = 'Aceptado')
-                and r.id not in (select "repartidoreId" from "Asignacions" where estado = 'Caducado' or estado ='Cancelado')
-                and r.id in (select "repartidorId" from "valoracionRepartidors")
-        )
-        SELECT 
-            "repartidoreId",
-            prioridad
-        FROM (
-            SELECT 
-                rs."repartidoreId",
-                1 AS prioridad
-            FROM
-                Repartidores_Sin_Pedidos rs
-            WHERE
-                NOT EXISTS (
-                    SELECT 1
-                    FROM "Asociacions" a
-                    WHERE a."eventoId" = :eventoId  
-                      AND a.estado = 'Aceptado'
-                      AND a."repartidoreId" = rs."repartidoreId"
-                )
-            UNION
-            SELECT 
-                rp."repartidoreId",
-                2 AS prioridad
-            FROM
-                Repartidores_Con_Pedidos rp
-            WHERE
-                NOT EXISTS (
-                    SELECT 1
-                    FROM "Asociacions" a
-                    WHERE a."eventoId" = :eventoId  
-                      AND a.estado = 'Aceptado'
-                      AND a."repartidoreId" = rp."repartidoreId"
-                )
-            UNION
-            SELECT 
-                rr."repartidoreId",
-                3 AS prioridad
-            FROM
-                Repartidores_Con_Solo_Pedidos_calificados rr
-            WHERE
-                NOT EXISTS (
-                    SELECT 1
-                    FROM "Asociacions" a
-                    WHERE a."eventoId" = :eventoId
-                      AND a.estado = 'Aceptado'
-                      AND a."repartidoreId" = rr."repartidoreId"
-                )
-        ) AS Repartidores_Prioridad
-        ORDER BY
-            prioridad;
-    `;
+const obtenerRepartidor = async (eventoId, pedidoId) => {
+    try {
+        // Ejecutar la función SQL para obtener el repartidor seleccionado
+        const [results] = await sequelize.query(`
+            SELECT seleccionar_repartidor_por_evento(:eventoId, :pedidoId) AS repartidor_id;
+        `, {
+            replacements: { eventoId, pedidoId },
+            type: sequelize.QueryTypes.SELECT
+        });
+        console.log("resultados",results)
 
-    const repartidores = await sequelize.query(query, {
-        replacements: { eventoId },
-        type: sequelize.QueryTypes.SELECT,
-    });
-
-    return repartidores;
+        // Verificar si se encontró un repartidor
+        const repartidorId = results.repartidor_id;
+        if (repartidorId === -1) {
+            console.log(`No hay repartidores disponibles para el evento ${eventoId} y pedido ${pedidoId}`);
+            return -1;
+        } else {
+            return {
+                repartidoreId: repartidorId
+            };
+        }
+    } catch (error) {
+        console.error('Error al obtener repartidor:', error);
+        return -2;
+    }
 };
 
 // Borrar asignaciones pendientes viejas

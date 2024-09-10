@@ -9,7 +9,7 @@ class AsignacionService {
   async create(estado, pedidoId, repartidorId) {
     const asignacion = {
       estado: estado,
-      PedidoId: pedidoId,
+      PedidoId: Number(pedidoId),
       repartidoreId: repartidorId,
     };
     const asignacionCreada = await Asignacion.create(asignacion);
