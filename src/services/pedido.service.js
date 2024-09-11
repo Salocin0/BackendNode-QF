@@ -193,6 +193,33 @@ class PedidoService {
     }
   }
 
+  async setDatosExtraPedido(idpedido, idRepartidor, codigo, idPE) {
+    try {
+      let pedido = await this.getOne(idpedido);
+      if (!pedido) {
+        throw new Error('Pedido no encontrado');
+      }
+  
+      // Verifica que el objeto pedido se actualice correctamente
+      console.log('pedido antes de actualizar:', pedido);
+  
+      pedido.repartidorId = idRepartidor;
+      pedido.codigoEntrega = codigo;
+      pedido.puntoEncuentroId = Number(idPE.id);
+  
+      // Verifica que los cambios se reflejen en el objeto pedido
+      console.log('pedido después de actualizar:', pedido);
+  
+      await pedido.save();
+      console.log('Pedido guardado exitosamente');
+      return pedido;
+    } catch (error) {
+      console.error('Error al guardar el pedido:', error);
+      throw error;
+    }
+  }
+  
+
   async updateState(pedidoId, accion) {
     try {
       const pedido = await this.getOne(pedidoId); 

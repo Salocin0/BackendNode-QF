@@ -4,9 +4,7 @@ class AsignacionController {
   async getOneController(req, res) {
     try {
       const consumidorid = req.headers['consumidorid'];
-      console.log(consumidorid)
       const asignacion = await asignacionService.getOne(consumidorid);
-      console.log(asignacion)
       if (asignacion !== null) {
         return res.status(200).json({
           status: 'success',

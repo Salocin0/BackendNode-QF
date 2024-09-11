@@ -181,6 +181,8 @@ class PedidoController {
         accion = 'enCamino';
       } if (accion === 'Cancelado'){
         accion = 'cancelar';
+      } if (accion === 'Finalizado'){
+        accion = 'finalizar';
       }
 
       console.log("ACA:", accion); // Asegúrate de que 'accion' tiene el valor esperado

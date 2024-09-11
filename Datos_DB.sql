@@ -340,7 +340,7 @@ INSERT INTO public."Pedidos" (
     (CURRENT_TIMESTAMP, 45.00, 'Pendiente', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1, null, 1,null,null),
     (CURRENT_TIMESTAMP, 60.50, 'Aceptado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, null, 2,null,null),
     (CURRENT_TIMESTAMP, 30.75, 'EnPreparacion', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, null, 1,null,null),
-    (CURRENT_TIMESTAMP, 55.25, 'EnCamino', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, 1, 2,'ABC123',1),
+    (CURRENT_TIMESTAMP, 55.25, 'EnCamino', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, null, 1,null,null),
     (CURRENT_TIMESTAMP, 40.10, 'Entregado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, null, 1,null,null);
 
 -- Insertar detalles para el pedido con id = 1
@@ -446,7 +446,7 @@ BEGIN
     SELECT COUNT(*) INTO total_repartidores_sin_estrellas
     FROM "repartidores" r
     JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
-    LEFT JOIN "valoracionRepartidores" vr ON r.id = vr."repartidorId"
+    LEFT JOIN "valoracionRepartidors" vr ON r.id = vr."repartidorId"
     WHERE vr."repartidorId" IS NULL 
       AND asi."eventoId" = evento_id
       AND r.id NOT IN (
@@ -467,7 +467,7 @@ BEGIN
         JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
         WHERE NOT EXISTS (
             SELECT 1 
-            FROM "valoracionRepartidores" vr 
+            FROM "valoracionRepartidors" vr 
             WHERE r.id = vr."repartidorId"
         ) 
         AND asi."eventoId" = evento_id
@@ -492,7 +492,7 @@ BEGIN
     JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
     WHERE NOT EXISTS (
         SELECT 1 
-        FROM "valoracionRepartidores" vr 
+        FROM "valoracionRepartidors" vr 
         WHERE r.id = vr."repartidorId"
     ) 
     AND asi."eventoId" = evento_id
@@ -504,7 +504,7 @@ BEGIN
     ORDER BY (
         SELECT COUNT(*) 
         FROM "Asignacions" a2 
-        WHERE a2."repartidoreId" = r.id AND a2."eventoId" = evento_id
+        WHERE a2."repartidoreId" = r.id AND a2."PedidoId" = pedido_id
     )
     LIMIT 1;
     
@@ -518,7 +518,7 @@ BEGIN
     SELECT r.id INTO repartidor_seleccionado
     FROM "repartidores" r
     JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
-    JOIN "valoracionRepartidores" vr ON r.id = vr."repartidorId"
+    JOIN "valoracionRepartidors" vr ON r.id = vr."repartidorId"
     WHERE asi."eventoId" = evento_id
     AND r.id NOT IN (
         SELECT a."repartidoreId"
@@ -540,7 +540,7 @@ BEGIN
         SELECT r.id, AVG(vr.puntuacion) / COUNT(*) as ratio
         FROM "repartidores" r
         JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
-        JOIN "valoracionRepartidores" vr ON r.id = vr."repartidorId"
+        JOIN "valoracionRepartidors" vr ON r.id = vr."repartidorId"
         WHERE asi."eventoId" = evento_id
         AND r.id NOT IN (
             SELECT a."repartidoreId"
@@ -556,7 +556,7 @@ BEGIN
             SELECT AVG(vr.puntuacion) / COUNT(*) as ratio
             FROM "repartidores" r
             JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
-            JOIN "valoracionRepartidores" vr ON r.id = vr."repartidorId"
+            JOIN "valoracionRepartidors" vr ON r.id = vr."repartidorId"
             WHERE asi."eventoId" = evento_id
             AND r.id NOT IN (
                 SELECT a."repartidoreId"

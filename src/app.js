@@ -106,6 +106,7 @@ async function connectDB() {
     const sql = readFileSync(sqlFilePath, 'utf-8'); //COMENTAR SI FORCE SE COLOCA EN FALCE
     await sequelize.query(sql); //COMENTAR SI FORCE SE COLOCA EN FALCE
     console.log('Datos iniciales cargados exitosamente.'); //COMENTAR SI FORCE SE COLOCA EN FALCE
+    procesosAutomaticos();
     app.listen(port, () => {
       console.log('Servidor escuchando en el puerto ' + port);
     });
@@ -116,5 +117,5 @@ async function connectDB() {
 //conectar a la base de datos
 connectDB();
 //ejecutar procesos automaticos
-procesosAutomaticos();
+
 
