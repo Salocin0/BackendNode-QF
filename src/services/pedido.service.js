@@ -10,6 +10,7 @@ import { notificacionesService } from './notificaciones.service.js';
 import { Repartidor } from '../DAO/models/repartidor.model.js';
 import { PuntoEncuentro } from '../DAO/models/puntoEncuentro.model.js';
 import Sequelize from 'sequelize';
+import { Usuario } from '../DAO/models/users.model.js';
 
 class PedidoService {
   async getAll(consumidorId) {
@@ -115,23 +116,24 @@ class PedidoService {
         ],
       },
       { model: Puesto },
-      { model: Consumidor },
+      { model: Consumidor, include: [{ model: Usuario, as: 'usuario' }] }, // Include Usuario relation here
       {
         model: Repartidor,
         include: [
           {
             model: Consumidor,
-          }
-        ]
-      }
+            include: [{ model: Usuario, as: 'usuario' }], // Include Usuario for Repartidor's Consumidor
+          },
+        ],
+      },
     ];
-
+    
     if (await Pedido.findOne({ where: { repartidorId, puntoEncuentroId: { [Op.ne]: null } } })) {
       includeModels.push({
         model: PuntoEncuentro,
       });
     }
-
+    
     const pedidos = await Pedido.findAll({
       where: {
         repartidorId: repartidorId,
@@ -141,9 +143,9 @@ class PedidoService {
       },
       include: includeModels,
     });
-
+    
     console.log('Pedidos obtenidos:', pedidos);
-    return pedidos;
+    return pedidos;    
   }
 
   async getOne(id) {
