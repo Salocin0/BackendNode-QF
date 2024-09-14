@@ -13,12 +13,19 @@ class EventoService {
       where: {
         productorId: consumidor.productorId,
       },
+      include: [{
+        model: DiaEvento,
+      }],
     });
+  
     return eventos;
   }
+  
 
   async getAll() {
-    const eventos = await Evento.findAll();
+    const eventos = await Evento.findAll({include: [{
+      model: DiaEvento,
+    }]});
     return eventos;
   }
 
