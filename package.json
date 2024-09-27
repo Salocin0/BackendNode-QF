@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/Salocin0/PrimerPreentregaDurelli-backend#readme",
   "dependencies": {
+    "@faker-js/faker": "^9.0.1",
     "@langchain/community": "^0.2.31",
     "@langchain/core": "^0.2.31",
     "@langchain/langgraph": "^0.1.9",
