@@ -113,6 +113,7 @@ async function connectDB() {
   }
 }
 
+
 async function DatosIniciales() {
   try {
     const sqlFilePath = path.resolve(__dirname, '../Datos_DB.sql');
