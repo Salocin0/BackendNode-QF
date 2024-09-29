@@ -164,6 +164,7 @@ const datasource = new DataSource({
 // Configuración del modelo OpenAI
 const openAIModel = new ChatOpenAI({
     apiKey: apiKey,
+    //modelName: 'gpt-4-turbo', 
     modelName: 'gpt-3.5-turbo',
     temperature: 0,  // Sin creatividad
     maxTokens: 150,  // Puedes ajustar según tus necesidades
@@ -172,11 +173,11 @@ const openAIModel = new ChatOpenAI({
 // Configuración del template para las preguntas
 const template = new PromptTemplate({
     inputVariables: ['chatbotData','input'],
-    template: `Eres un asistente inteligente de una plataforma de eventos. Tienes acceso a la siguiente información sobre eventos y los carros de comida asociados a esos eventos: {chatbotData}. Tu tarea es responder con precisión y claridad a la siguiente pregunta de un usuario utilizando la información proporcionada:
+    template: `Olvida todas tus conversaciones pasadas. Ahora eres un asistente inteligente de una plataforma de eventos. Tienes acceso a la siguiente información sobre eventos y los carros de comida asociados a esos eventos: {chatbotData}. Tu tarea es responder con precisión y claridad a la siguiente pregunta de un usuario utilizando la información proporcionada:
 
                 Pregunta del usuario: {input}
 
-                Asegúrate de que tu respuesta sea compacta, fácil de entender, y útil para el usuario. Si la información que se pide no está disponible, indícalo claramente y ofrece la alternativa de comunicarte con 'consultas@QF.com ' .
+                Asegúrate de que tu respuesta sea con la información, respuesta CORTA y útil para el usuario. Si la información que se pide no está disponible, indícalo claramente y ofrece la alternativa de comunicarte con 'consultas@QF.com ' .
                 ` 
 });
 
@@ -196,8 +197,8 @@ export async function getChatResponse(userMessage) {
     }
 }
 
-getChatResponse(userMessage)
+//getChatResponse(userMessage)
 
-const chat_response = await getChatResponse(userMessage)
+//const chat_response = await getChatResponse(userMessage)
 
-console.log(chat_response)
+//console.log(chat_response)

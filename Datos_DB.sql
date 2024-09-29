@@ -71,7 +71,7 @@ VALUES
     'Evento Musical', 'Concierto de música en vivo', 'Concierto', 'Pago en Efectivo', 
     10, true, true, false, 
     'https://ventaentradas.com/evento1', 'Plaza Central', true, 
-    'Catamarca', 'Catamarca', NULL, 'EnCurso', 
+    'Villa María', 'Córdoba', NULL, 'EnCurso', 
     NOW(), NOW(), 1
 ),
 -- Evento 2
@@ -87,15 +87,15 @@ VALUES
     'Teatro al Aire Libre', 'Obra de teatro en espacio abierto', 'Teatro', 'Pago en Efectivo', 
     15, true, true, true, 
     'https://ventaentradas.com/evento3', 'Anfiteatro', true, 
-    'Catamarca', 'Catamarca', NULL, 'Confirmado', 
+    'Villa María', 'Córdoba', NULL, 'Confirmado', 
     NOW(), NOW(), 1
 ),
 -- Evento 4
 (
     'Festival Gastronómico', 'Muestra y venta de comidas típicas', 'Festival', 'Pago con Tarjeta', 
     25, true, true, false,
-    'https://ventaentradas.com/evento4', 'Centro Cultural', true, 
-    'Icaño', 'Catamarca', NULL, 'Confirmado', 
+    'https://ventaentradas.com/evento4', 'Quality Espacio', true, 
+    'Ciudad de Córdoba', 'Córdoba', NULL, 'Confirmado', 
     NOW(), NOW(), 1
 ),
 -- Evento 5
@@ -213,9 +213,11 @@ INSERT INTO public.puestos (
     "updatedAt", 
     "encargadoId"
 ) VALUES
-    ('Gourmet Street Food', 201, 'Food Truck', 'gourmet_banner.png', 'gourmet_logo.png', '5551234567', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Eco Fresh Produce', 202, 'Farmers Market', 'eco_banner.png', 'eco_logo.png', '5559876543', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Taco Fiesta', 203, 'Mexican Food', 'taco_banner.png', 'taco_logo.png', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
+    ('Gourmet Green Food', 201, 'Comida Vegana', 'gourmet_banner.png', 'gourmet_logo.png', '5551234567', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Parrilla Miguelito', 202, 'Carnes Asadas', 'eco_banner.png', 'eco_logo.png', '5559876543', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Taco Fiesta', 203, 'Comida Mexicana', 'taco_banner.png', 'taco_logo.png', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Healty Food Truck', 204, 'Comida Sin Gluten', 'taco_banner.png', 'taco_logo.png', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Indian Food Truck', 205, 'Comida India', 'taco_banner.png', 'taco_logo.png', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
 
 --set asociacion repartidor a evento 1
 INSERT INTO public."Asociacions" (
@@ -268,12 +270,15 @@ INSERT INTO public."Asociacions" (
     ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1, NULL),
     ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, NULL),
     ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, NULL),
-    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 2, NULL),
     ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 1, NULL),
-    ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 3, NULL),
-    ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 3, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 2, NULL),
     ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 1, NULL),
-    ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 2, NULL);
+    ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 3, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 1, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 2, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 3, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 4, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 5, NULL);
 
 --productos
 INSERT INTO public.productos (
@@ -579,8 +584,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Vista que alimenta el chatbot
-create view chatbotData as
+-- Eliminar la vista si ya existe
+DROP VIEW IF EXISTS chatbotData;
+
+-- Crear la vista que alimenta el chatbot
+CREATE VIEW chatbotData AS
 SELECT 
     ev."nombre", 
     ev."descripcion", 
@@ -596,6 +604,6 @@ SELECT
     ps."tipoNegocio"
 FROM public."eventos" AS ev
 INNER JOIN public."Asociacions" AS ac
-ON ev.id = ac."eventoId"
+    ON ev.id = ac."eventoId"
 INNER JOIN public."puestos" AS ps
-ON ac."puestoId" = ps.id;
+    ON ac."puestoId" = ps.id;
