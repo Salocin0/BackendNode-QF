@@ -115,7 +115,7 @@ export const consola = (async () => {
 
 //------------------------------------------------------------------------------------------------------
 // chatbot.js
-/*
+
 
 import { LLMChain } from "langchain/chains";
 import { PromptTemplate } from "@langchain/core/prompts";
@@ -196,9 +196,8 @@ export async function getChatResponse(userMessage) {
     }
 }
 
-//getChatResponse(userMessage)
+getChatResponse(userMessage)
 
-//const chat_response = await getChatResponse(userMessage)
+const chat_response = await getChatResponse(userMessage)
 
-//console.log(chat_response)
-*/
+console.log(chat_response)
