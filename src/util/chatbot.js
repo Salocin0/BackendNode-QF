@@ -155,7 +155,9 @@ const datasource = new DataSource({
   const schemaInfo = await db.getTableInfo();
   
   // Ejemplo de query
-  const result = await db.run("SELECT COUNT(*) AS total FROM consumidores;");
+  //const result = await db.run("SELECT COUNT(*) AS total FROM consumidores;");
+
+  const result = await db.run("SELECT * FROM public.chatbotData;");
 
 
 // Configuración del modelo OpenAI
@@ -168,8 +170,13 @@ const openAIModel = new ChatOpenAI({
 
 // Configuración del template para las preguntas
 const template = new PromptTemplate({
-    inputVariables: ['input'],
-    template: '{input}',  // Si esta línea es muy simple, considera definir un formato más complejo
+    inputVariables: ['chatbotData','input'],
+    template: `Eres un asistente inteligente de una plataforma de eventos. Tienes acceso a la siguiente información sobre eventos y los carros de comida asociados a esos eventos: {chatbotData}. Tu tarea es responder con precisión y claridad a la siguiente pregunta de un usuario utilizando la información proporcionada:
+
+                Pregunta del usuario: {input}
+
+                Asegúrate de que tu respuesta sea compacta, fácil de entender, y útil para el usuario. Si la información que se pide no está disponible, indícalo claramente y ofrece la alternativa de comunicarte con 'consultas@QF.com ' .
+                ` 
 });
 
 // Configuración de LLMChain, asegurando que el template esté correctamente definido
@@ -180,7 +187,7 @@ const chain = new LLMChain({
 
 export async function getChatResponse(userMessage) {
     try {
-        const response = await chain.call({ input: userMessage });
+        const response = await chain.call({ input: userMessage , chatbotData: result});
         return response.text;
     } catch (error) {
         console.error('Error al obtener la respuesta de OpenAI:', error);

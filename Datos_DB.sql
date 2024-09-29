@@ -404,3 +404,25 @@ INSERT INTO public."DetallePedidos" (
 ) VALUES
     (1, 25.00, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 5),
     (2, 15.10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 5, 5);
+
+
+-- Vista que alimenta el chatbot
+create view chatbotData as
+SELECT 
+    ev."nombre", 
+    ev."descripcion", 
+    ev."tipoEvento", 
+    ev."conButaca", 
+    ev."tienePreventa", 
+    ev."linkVentaEntradas", 
+    ev."ubicacion", 
+    ev."localidad", 
+    ev."provincia", 
+    ev."estado", 
+    ps."nombreCarro", 
+    ps."tipoNegocio"
+FROM public."eventos" AS ev
+INNER JOIN public."Asociacions" AS ac
+ON ev.id = ac."eventoId"
+INNER JOIN public."puestos" AS ps
+ON ac."puestoId" = ps.id;
