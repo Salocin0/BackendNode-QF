@@ -101,8 +101,8 @@ app.use('/payment-sheet', PaymentRouter);
 
 async function connectDB() {
   try {
-    await sequelize.sync({ force: true }); // false no modifica la base de datos
-    DatosIniciales() //COMENTAR SI FORCE SE COLOCA EN FALSE
+    await sequelize.sync({ force: false }); // false no modifica la base de datos
+    //DatosIniciales() //COMENTAR SI FORCE SE COLOCA EN FALSE
     //generateAllData() //COMENTAR SI FORCE SE COLOCA EN FALSE
     procesosAutomaticos();
     app.listen(port, () => {
