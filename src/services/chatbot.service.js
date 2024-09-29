@@ -1,4 +1,4 @@
-import { sendNotificacionesMobile } from "../../dist/util/NotificacionesMobile.js";
+/*import { sendNotificacionesMobile } from "../../dist/util/NotificacionesMobile.js";
 import { userController } from "../controllers/users.controller.js";
 import { sendNotificacionesWeb } from "../util/Notificaciones.js";
 import { asociacionService } from "./asociacion.service.js";
@@ -19,3 +19,5 @@ class ChatbotService {
 }
 
 export const chatbotService = new ChatbotService();
+
+*/

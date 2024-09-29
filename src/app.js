@@ -35,8 +35,9 @@ import { RouterUser } from './routes/user.router.js';
 import { RouterValoracion } from './routes/valoracion.router.js';
 import { sequelize } from './util/connections.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
+import { generateAllData } from './util/faker.js';
 /*import {pregunta} from './util/chatbot.js'*/
-import  RouterChatbot  from './routes/chatbot.router.js'
+/*import  RouterChatbot  from './routes/chatbot.router.js'*/
 
 dotenv.config();
 //definicion de server de express
@@ -95,17 +96,15 @@ app.use('/puntosEncuentro',RouterPuntoEncuentro);
 app.use('/asignaciones',RouterAsignaciones);
 app.use('/notificaciones4', RouterNotificacion);
 app.use('/payment-sheet', PaymentRouter);
-app.use('/chatbot', RouterChatbot)
+//app.use('/chatbot', RouterChatbot)
 
 
 async function connectDB() {
   try {
     await sequelize.sync({ force: true }); // false no modifica la base de datos
-    const sqlFilePath = path.resolve(__dirname, '../Datos_DB.sql'); //COMENTAR SI FORCE SE COLOCA EN FALCE
-    console.log('Ruta al archivo SQL:', sqlFilePath); //COMENTAR SI FORCE SE COLOCA EN FALCE
-    const sql = readFileSync(sqlFilePath, 'utf-8'); //COMENTAR SI FORCE SE COLOCA EN FALCE
-    await sequelize.query(sql); //COMENTAR SI FORCE SE COLOCA EN FALCE
-    console.log('Datos iniciales cargados exitosamente.'); //COMENTAR SI FORCE SE COLOCA EN FALCE
+    DatosIniciales() //COMENTAR SI FORCE SE COLOCA EN FALSE
+    generateAllData() //COMENTAR SI FORCE SE COLOCA EN FALSE
+    procesosAutomaticos();
     app.listen(port, () => {
       console.log('Servidor escuchando en el puerto ' + port);
     });
@@ -113,8 +112,21 @@ async function connectDB() {
     console.error('Error al conectar con la base de datos:', error);
   }
 }
+
+async function DatosIniciales() {
+  try {
+    const sqlFilePath = path.resolve(__dirname, '../Datos_DB.sql');
+    console.log('Ruta al archivo SQL:', sqlFilePath);
+    const sql = readFileSync(sqlFilePath, 'utf-8');
+    await sequelize.query(sql);
+    console.log('Datos iniciales cargados exitosamente.'); 
+  } catch (error) {
+    console.error('Error al setear los datos iniciales', error);
+  }
+}
+
 //conectar a la base de datos
 connectDB();
 //ejecutar procesos automaticos
-procesosAutomaticos();
+
 

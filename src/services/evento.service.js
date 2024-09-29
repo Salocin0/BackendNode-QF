@@ -1,10 +1,10 @@
+import { DiaEvento } from '../DAO/models/diaEvento.model.js';
 import { Evento } from '../DAO/models/evento.model.js';
 import { EstadosEvento } from '../enums/Estados.enums.js';
 import { estadosEvento } from '../estados/estados/estadosEvento.js';
 import { asociacionService } from './asociacion.service.js';
 import { consumidorService } from './consumidor.service.js';
 import { restriccionService } from './restriccion.service.js';
-import { DiaEvento } from '../DAO/models/diaEvento.model.js';
 
 class EventoService {
   async getAll(consumidorId) {
@@ -13,12 +13,19 @@ class EventoService {
       where: {
         productorId: consumidor.productorId,
       },
+      include: [{
+        model: DiaEvento,
+      }],
     });
+  
     return eventos;
   }
+  
 
   async getAll() {
-    const eventos = await Evento.findAll();
+    const eventos = await Evento.findAll({include: [{
+      model: DiaEvento,
+    }]});
     return eventos;
   }
 
@@ -35,57 +42,104 @@ class EventoService {
     });
     return eventos;
   }
-  
+
 
   async getOne(id) {
     const evento = Evento.findByPk(id);
     return evento;
   }
 
-  async update(id, evento) {
-    const eventodb = await Evento.findByPk(id);
-    eventodb.nombre = evento.nombre;
-    eventodb.descripcion = evento.descripcion;
-    eventodb.tipoEvento = evento.tipoEvento;
-    eventodb.tipoPago = evento.tipoPago;
-    eventodb.fechaInicio = evento.fechaInicio || eventodb.fechaInicio;
-    eventodb.horaInicio = evento.horaInicio || eventodb.horaInicio;
-    eventodb.fechaFin = evento.fechaFin || eventodb.fechaFin;
-    eventodb.cantidadPuestos = evento.cantidadPuestos;
-    eventodb.cantidadRepartidores = evento.cantidadRepartidores;
-    eventodb.capacidadMaxima = evento.capacidadMaxima;
-    eventodb.conButaca = evento.conButaca;
-    eventodb.conRepartidor = evento.conRepartidor || eventodb.conRepartidor;
-    eventodb.conPreventa = evento.conPreventa;
-    eventodb.tipoPreventa = evento.tipoPreventa;
-    eventodb.fechaInicioPreventa = evento.fechaInicioPreventa;
-    eventodb.fechaFinPreventa = evento.fechaFinPreventa;
-    eventodb.plazoCancelacionPreventa = evento.plazoCancelacionPreventa;
-    eventodb.linkVentaEntradas = evento.linkVentaEntradas;
-    eventodb.ubicacion = evento.ubicacion;
-    eventodb.estado = evento.estado;
-    await eventodb.save();
-    evento.restricciones.forEach(async (restriccion) => {
-      console.log(restriccion.id);
-      if (restriccion.id === undefined) {
-        restriccion.eventoId = id;
-        restriccion.consumidoreId = evento.consumidorId;
-        await restriccionService.create(restriccion);
+  async getOneDays(id) {
+    try {
+      const evento = await Evento.findByPk(id);
+
+      if (!evento) {
+        throw new Error('Evento no encontrado');
       }
-    });
-    return eventodb;
+
+      console.log(evento);
+      return evento.cantidadDiasEvento;
+    } catch (error) {
+      console.error("Error al obtener la cantidad de días del evento:", error);
+      throw error;
+    }
   }
+
+    async update(id, datosEventoActualizar) {
+      if (!datosEventoActualizar) {
+        throw new Error('El objeto evento no puede ser undefined');
+      }
+
+      const eventodb = await Evento.findByPk(id);
+      console.log("EVENTODB" + eventodb)
+
+      if (!eventodb) {
+        throw new Error('No se encontró el evento con el id proporcionado');
+      }
+
+      // Solo actualiza los campos si están definidos en el objeto datosEventoActualizar
+      if (datosEventoActualizar.nombre !== undefined) eventodb.nombre = datosEventoActualizar.nombre;
+      if (datosEventoActualizar.descripcion !== undefined) eventodb.descripcion = datosEventoActualizar.descripcion;
+      if (datosEventoActualizar.tipoEvento !== undefined) eventodb.tipoEvento = datosEventoActualizar.tipoEvento;
+      if (datosEventoActualizar.tipoPago !== undefined) eventodb.tipoPago = datosEventoActualizar.tipoPago;
+      if (datosEventoActualizar.fechaInicio !== undefined) eventodb.fechaHoraInicio = datosEventoActualizar.fechaInicio;
+      if (datosEventoActualizar.horaInicio !== undefined) eventodb.horaInicio = datosEventoActualizar.horaInicio;
+      if (datosEventoActualizar.fechaFin !== undefined) eventodb.fechaHoraFin = datosEventoActualizar.fechaFin;
+      if (datosEventoActualizar.cantidadPuestos !== undefined) eventodb.cantidadPuestos = datosEventoActualizar.cantidadPuestos;
+      if (datosEventoActualizar.cantidadRepartidores !== undefined) eventodb.cantidadRepartidores = datosEventoActualizar.cantidadRepartidores;
+      if (datosEventoActualizar.capacidadMaxima !== undefined) eventodb.capacidadMaxima = datosEventoActualizar.capacidadMaxima;
+      if (datosEventoActualizar.conButaca !== undefined) eventodb.conButaca = datosEventoActualizar.conButaca;
+      if (datosEventoActualizar.conRepartidor !== undefined) eventodb.conRepartidor = datosEventoActualizar.conRepartidor;
+      if (datosEventoActualizar.conPreventa !== undefined) eventodb.conPreventa = datosEventoActualizar.conPreventa;
+      if (datosEventoActualizar.tipoPreventa !== undefined) eventodb.tipoPreventa = datosEventoActualizar.tipoPreventa;
+      if (datosEventoActualizar.fechaInicioPreventa !== undefined) eventodb.fechaInicioPreventa = datosEventoActualizar.fechaInicioPreventa;
+      if (datosEventoActualizar.fechaFinPreventa !== undefined) eventodb.fechaFinPreventa = datosEventoActualizar.fechaFinPreventa;
+      if (datosEventoActualizar.plazoCancelacionPreventa !== undefined) eventodb.plazoCancelacionPreventa = datosEventoActualizar.plazoCancelacionPreventa;
+      if (datosEventoActualizar.linkVentaEntradas !== undefined) eventodb.linkVentaEntradas = datosEventoActualizar.linkVentaEntradas;
+      if (datosEventoActualizar.ubicacion !== undefined) eventodb.ubicacion = datosEventoActualizar.ubicacion;
+      if (datosEventoActualizar.estado !== undefined) eventodb.estado = datosEventoActualizar.estado;
+      if (datosEventoActualizar.cantidadDiasEvento !== undefined) eventodb.cantidadDiasEvento = datosEventoActualizar.cantidadDiasEvento;
+
+      this.actualizarEvento(eventodb);
+
+
+      await eventodb.save();
+
+      if (datosEventoActualizar.restricciones) {
+        for (const restriccion of datosEventoActualizar.restricciones) {
+          if (restriccion.id === undefined) {
+            restriccion.eventoId = id;
+            restriccion.consumidorId = datosEventoActualizar.consumidorId; // Aquí también
+            await restriccionService.create(restriccion);
+          }
+        }
+      }
+
+      return eventodb;
+    }
+
+
 
   async create(nuevoEvento) {
     const consumidor = await consumidorService.getOne(nuevoEvento.consumidorId);
     nuevoEvento.productorId = consumidor.productorId;
+    console.log("service:" + nuevoEvento.estado);
     const eventoCreado = await Evento.create(nuevoEvento);
+
     this.crearEvento(eventoCreado);
-    //nuevoEvento.restricciones.forEach(async (restriccion) => {
-      //restriccion.eventoId = eventoCreado.id;
-      //const restriccionCreada = await restriccionService.create(restriccion);
-      //console.log(restriccionCreada);
-    //});
+
+    if (nuevoEvento.restricciones && nuevoEvento.restricciones.length > 0) {
+      nuevoEvento.restricciones.forEach(async (restriccion) => {
+        restriccion.eventoId = eventoCreado.id;
+        try {
+          const restriccionCreada = await restriccionService.create(restriccion);
+          console.log(restriccionCreada);
+        } catch (error) {
+          console.error("Error al crear la restricción:", error);
+        }
+      });
+    }
+
     return eventoCreado;
   }
 
@@ -117,6 +171,11 @@ class EventoService {
   async crearEvento(evento) {
     estadosEvento.EnPreparacion.crearEvento(evento);
   }
+
+  async actualizarEvento(evento) {
+    estadosEvento.EnPreparacion1.actualizarEvento(evento);
+  }
+
 
   async getAllInStateAndWithoutAsociacionValida(estado, idConsumidor) {
     try {

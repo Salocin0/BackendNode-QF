@@ -18,11 +18,11 @@ export const Producto = sequelize.define('producto', {
   },
   aderezos: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   img: {
     type: DataTypes.TEXT('long'),
-    allowNull: false,
+    allowNull: true,
   },
   precio: {
     type: DataTypes.FLOAT,

@@ -130,13 +130,13 @@ INSERT INTO "diaEventos"
 )
 VALUES
 (
-    'Día 1 - Apertura de Feria', 'Inauguración y primeras ventas de artesanías', NOW() + INTERVAL '7 DAY', NOW() + INTERVAL '7 DAY 9 HOUR', true, 2, NOW(), NOW()
+    'Día 1 - Apertura de Feria', 'Inauguración y primeras ventas de artesanías', NOW(), NOW() + INTERVAL '4 HOUR', true, 2, NOW(), NOW()
 ),
 (
-    'Día 2 - Talleres Artesanales', 'Talleres interactivos con los artesanos', NOW() + INTERVAL '8 DAY', NOW() + INTERVAL '8 DAY 9 HOUR', true, 2, NOW(), NOW()
+    'Día 2 - Talleres Artesanales', 'Talleres interactivos con los artesanos',  NOW() + INTERVAL '1 DAY', NOW() + INTERVAL '1 DAY 3 HOUR', true, 2, NOW(), NOW()
 ),
 (
-    'Día 3 - Clausura y Entrega de Premios', 'Cierre del evento con entrega de premios a los mejores artesanos', NOW() + INTERVAL '9 DAY', NOW() + INTERVAL '9 DAY 8 HOUR', true, 2, NOW(), NOW()
+    'Día 3 - Clausura y Entrega de Premios', 'Cierre del evento con entrega de premios a los mejores artesanos', NOW() + INTERVAL '2 DAY 2 HOUR', NOW() + INTERVAL '2 DAY 5 HOUR', true, 2, NOW(), NOW()
 );
 
 -- Días Evento para Evento 3: Teatro al Aire Libre
@@ -340,7 +340,7 @@ INSERT INTO public."Pedidos" (
     (CURRENT_TIMESTAMP, 45.00, 'Pendiente', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 1, null, 1,null,null),
     (CURRENT_TIMESTAMP, 60.50, 'Aceptado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, null, 2,null,null),
     (CURRENT_TIMESTAMP, 30.75, 'EnPreparacion', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, null, 1,null,null),
-    (CURRENT_TIMESTAMP, 55.25, 'EnCamino', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, 1, 2,'ABC123',1),
+    (CURRENT_TIMESTAMP, 55.25, 'EnCamino', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, null, 1,null,null),
     (CURRENT_TIMESTAMP, 40.10, 'Entregado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, null, 1,null,null);
 
 -- Insertar detalles para el pedido con id = 1
@@ -405,6 +405,178 @@ INSERT INTO public."DetallePedidos" (
     (1, 25.00, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 5),
     (2, 15.10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 5, 5);
 
+CREATE OR REPLACE FUNCTION seleccionar_repartidor_por_evento(evento_id INTEGER, pedido_id INTEGER)
+RETURNS INTEGER AS $$
+DECLARE
+    repartidor_seleccionado INTEGER;
+    total_asignaciones_pendientes INTEGER;
+    total_repartidores_sin_estrellas INTEGER;
+    total_asignaciones INTEGER;
+BEGIN
+    -- 1. Verificar si todos los repartidores asociados al evento están libres y no tienen entregas pendientes
+    SELECT COUNT(*) INTO total_asignaciones_pendientes
+    FROM "Asignacions" a
+    JOIN "Asociacions" asi ON a."repartidoreId" = asi."repartidoreId"
+    WHERE a.estado = 'Pendiente' 
+      AND asi."eventoId" = evento_id
+      AND a."PedidoId" != pedido_id;  -- Excluir asignaciones al pedido_id pasado
+
+    IF total_asignaciones_pendientes = 0 THEN
+        -- Seleccionar un repartidor aleatoriamente asociado al evento
+        SELECT r.id INTO repartidor_seleccionado
+        FROM "repartidores" r
+        JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
+        WHERE asi."eventoId" = evento_id
+          AND r.id NOT IN (
+              SELECT a."repartidoreId"
+              FROM "Asignacions" a
+              WHERE a."PedidoId" = pedido_id
+          )  -- Excluir repartidores con asignaciones al pedido_id
+        ORDER BY RANDOM()
+        LIMIT 1;
+        
+        IF FOUND THEN
+            RETURN repartidor_seleccionado;
+        ELSE
+            RETURN -1;
+        END IF;
+    END IF;
+
+    -- 2. Caso 1: Repartidores sin estrellas y sin pedidos asociados al evento
+    SELECT COUNT(*) INTO total_repartidores_sin_estrellas
+    FROM "repartidores" r
+    JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
+    LEFT JOIN "valoracionRepartidors" vr ON r.id = vr."repartidorId"
+    WHERE vr."repartidorId" IS NULL 
+      AND asi."eventoId" = evento_id
+      AND r.id NOT IN (
+          SELECT a."repartidoreId"
+          FROM "Asignacions" a
+          WHERE a."PedidoId" = pedido_id
+      );  -- Excluir repartidores con asignaciones al pedido_id
+
+    SELECT COUNT(*) INTO total_asignaciones
+    FROM "Asignacions" a
+    JOIN "Asociacions" asi ON a."repartidoreId" = asi."repartidoreId"
+    WHERE asi."eventoId" = evento_id
+      AND a."PedidoId" != pedido_id;  -- Excluir asignaciones al pedido_id
+
+    IF total_repartidores_sin_estrellas > 0 AND total_asignaciones = 0 THEN
+        SELECT r.id INTO repartidor_seleccionado
+        FROM "repartidores" r
+        JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
+        WHERE NOT EXISTS (
+            SELECT 1 
+            FROM "valoracionRepartidors" vr 
+            WHERE r.id = vr."repartidorId"
+        ) 
+        AND asi."eventoId" = evento_id
+        AND r.id NOT IN (
+            SELECT a."repartidoreId"
+            FROM "Asignacions" a
+            WHERE a."PedidoId" = pedido_id
+        )  -- Excluir repartidores con asignaciones al pedido_id
+        ORDER BY RANDOM()
+        LIMIT 1;
+        
+        IF FOUND THEN
+            RETURN repartidor_seleccionado;
+        ELSE
+            RETURN -1;
+        END IF;
+    END IF;
+
+    -- 3. Caso 2: Repartidores con estrellas y otros sin, asociados al evento
+    SELECT r.id INTO repartidor_seleccionado
+    FROM "repartidores" r
+    JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
+    WHERE NOT EXISTS (
+        SELECT 1 
+        FROM "valoracionRepartidors" vr 
+        WHERE r.id = vr."repartidorId"
+    ) 
+    AND asi."eventoId" = evento_id
+    AND r.id NOT IN (
+        SELECT a."repartidoreId"
+        FROM "Asignacions" a
+        WHERE a."PedidoId" = pedido_id
+    )  -- Excluir repartidores con asignaciones al pedido_id
+    ORDER BY (
+        SELECT COUNT(*) 
+        FROM "Asignacions" a2 
+        WHERE a2."repartidoreId" = r.id AND a2."PedidoId" = pedido_id
+    )
+    LIMIT 1;
+    
+    IF FOUND THEN
+        RETURN repartidor_seleccionado;
+    ELSE
+        RETURN -1;
+    END IF;
+
+    -- 4. Caso 3: Todos los repartidores con estrellas, asociados al evento
+    SELECT r.id INTO repartidor_seleccionado
+    FROM "repartidores" r
+    JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
+    JOIN "valoracionRepartidors" vr ON r.id = vr."repartidorId"
+    WHERE asi."eventoId" = evento_id
+    AND r.id NOT IN (
+        SELECT a."repartidoreId"
+        FROM "Asignacions" a
+        WHERE a."PedidoId" = pedido_id
+    )  -- Excluir repartidores con asignaciones al pedido_id
+    ORDER BY vr.puntuacion DESC
+    LIMIT 1;
+    
+    IF FOUND THEN
+        RETURN repartidor_seleccionado;
+    ELSE
+        RETURN -1;
+    END IF;
+
+    -- 5. Caso 4: Mismo puntaje, asociados al evento
+    SELECT r.id INTO repartidor_seleccionado
+    FROM (
+        SELECT r.id, AVG(vr.puntuacion) / COUNT(*) as ratio
+        FROM "repartidores" r
+        JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
+        JOIN "valoracionRepartidors" vr ON r.id = vr."repartidorId"
+        WHERE asi."eventoId" = evento_id
+        AND r.id NOT IN (
+            SELECT a."repartidoreId"
+            FROM "Asignacions" a
+            WHERE a."PedidoId" = pedido_id
+        )  -- Excluir repartidores con asignaciones al pedido_id
+        GROUP BY r.id
+        HAVING COUNT(*) > 0
+    ) t
+    WHERE ratio = (
+        SELECT MAX(ratio)
+        FROM (
+            SELECT AVG(vr.puntuacion) / COUNT(*) as ratio
+            FROM "repartidores" r
+            JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
+            JOIN "valoracionRepartidors" vr ON r.id = vr."repartidorId"
+            WHERE asi."eventoId" = evento_id
+            AND r.id NOT IN (
+                SELECT a."repartidoreId"
+                FROM "Asignacions" a
+                WHERE a."PedidoId" = pedido_id
+            )  -- Excluir repartidores con asignaciones al pedido_id
+            GROUP BY r.id
+        ) sub
+    )
+    ORDER BY RANDOM()
+    LIMIT 1;
+    
+    IF FOUND THEN
+        RETURN repartidor_seleccionado;
+    ELSE
+        RETURN -1;
+    END IF;
+
+END;
+$$ LANGUAGE plpgsql;
 
 -- Vista que alimenta el chatbot
 create view chatbotData as

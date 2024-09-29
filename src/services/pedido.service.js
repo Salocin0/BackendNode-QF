@@ -10,6 +10,7 @@ import { notificacionesService } from './notificaciones.service.js';
 import { Repartidor } from '../DAO/models/repartidor.model.js';
 import { PuntoEncuentro } from '../DAO/models/puntoEncuentro.model.js';
 import Sequelize from 'sequelize';
+import { Usuario } from '../DAO/models/users.model.js';
 
 class PedidoService {
   async getAll(consumidorId) {
@@ -115,23 +116,24 @@ class PedidoService {
         ],
       },
       { model: Puesto },
-      { model: Consumidor },
+      { model: Consumidor, include: [{ model: Usuario, as: 'usuario' }] }, // Include Usuario relation here
       {
         model: Repartidor,
         include: [
           {
             model: Consumidor,
-          }
-        ]
-      }
+            include: [{ model: Usuario, as: 'usuario' }], // Include Usuario for Repartidor's Consumidor
+          },
+        ],
+      },
     ];
-
+    
     if (await Pedido.findOne({ where: { repartidorId, puntoEncuentroId: { [Op.ne]: null } } })) {
       includeModels.push({
         model: PuntoEncuentro,
       });
     }
-
+    
     const pedidos = await Pedido.findAll({
       where: {
         repartidorId: repartidorId,
@@ -141,9 +143,9 @@ class PedidoService {
       },
       include: includeModels,
     });
-
+    
     console.log('Pedidos obtenidos:', pedidos);
-    return pedidos;
+    return pedidos;    
   }
 
   async getOne(id) {
@@ -192,6 +194,33 @@ class PedidoService {
       await DetallePedido.create(detallePedido);
     }
   }
+
+  async setDatosExtraPedido(idpedido, idRepartidor, codigo, idPE) {
+    try {
+      let pedido = await this.getOne(idpedido);
+      if (!pedido) {
+        throw new Error('Pedido no encontrado');
+      }
+  
+      // Verifica que el objeto pedido se actualice correctamente
+      console.log('pedido antes de actualizar:', pedido);
+  
+      pedido.repartidorId = idRepartidor;
+      pedido.codigoEntrega = codigo;
+      pedido.puntoEncuentroId = Number(idPE.id);
+  
+      // Verifica que los cambios se reflejen en el objeto pedido
+      console.log('pedido después de actualizar:', pedido);
+  
+      await pedido.save();
+      console.log('Pedido guardado exitosamente');
+      return pedido;
+    } catch (error) {
+      console.error('Error al guardar el pedido:', error);
+      throw error;
+    }
+  }
+  
 
   async updateState(pedidoId, accion) {
     try {
