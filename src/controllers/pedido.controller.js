@@ -110,7 +110,6 @@ class PedidoController {
     }
   }
 
-
   async createOneController(req, res) {
     try {
       const { detalles, consumidorId, total, puestoId,fecha,precompra } = req.body;
@@ -120,7 +119,7 @@ class PedidoController {
         total: total,
         estado: 'Pendiente',
         puestoId: puestoId,
-        fechaPreCompra: fecha
+        fechaPreCompra: !isNaN(new Date(fecha).getTime()) ? new Date(fecha) : null
       };
       if(precompra){
         nuevoPedido.estado="Precomprado"
