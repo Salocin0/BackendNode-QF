@@ -228,6 +228,7 @@ class AsociacionController {
       const eventoid = req.params.eventoId;
       const puestoId = req.params.puestoId;
       const consumidorId = req.params.consumidorId;
+      console.log(puestoId);
       const existingAsociacion = null;
       if(Number(puestoId)===0){
         existingAsociacion = await asociacionService.getEventoByRepartidor(Number(eventoid),Number(consumidorId))
@@ -326,7 +327,7 @@ class AsociacionController {
       const asociacionCreada = await asociacionService.create(nuevaAsociacion, null, consumidorId);
 
       if (asociacionCreada) {
-        const asociacionNotificaciones = await asociacionService.sendNotificacionesWebEventoAsociacion(eventoid)
+        //const asociacionNotificaciones = await asociacionService.sendNotificacionesWebEventoAsociacion(eventoid)
 
         return res.status(200).json({
           status: 'success',

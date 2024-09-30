@@ -34,11 +34,6 @@ class EventoService {
       where: {
         estado: estado,
       },
-      include: [
-        {
-          model: DiaEvento,
-        },
-      ],
     });
     return eventos;
   }
