@@ -6,6 +6,7 @@ import { consumidorService } from './consumidor.service.js';
 import { eventoService } from './evento.service.js';
 import { notificacionesService } from './notificaciones.service.js';
 import { puestoService } from './puesto.service.js';
+import { Puesto } from '../DAO/models/puesto.model.js';
 
 class AsociacionService {
   async getAll(consumidorId) {
@@ -14,9 +15,16 @@ class AsociacionService {
       where: {
         repartidoreId: consumidor.repartidorId,
       },
+      include: [
+        {
+          model: Puesto,
+        },
+      ],
     });
+  
     return asociaciones;
   }
+  
 
   async getAllByPuesto(estado, consumidorId) {
     try {

@@ -376,11 +376,6 @@ class EventoController {
     }
 }
 
-
-
-
-
-
   async deleteOneController(req, res) {
     try {
       const id = req.params.id;

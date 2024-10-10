@@ -96,7 +96,7 @@ app.use('/puntosEncuentro',RouterPuntoEncuentro);
 app.use('/asignaciones',RouterAsignaciones);
 app.use('/notificaciones4', RouterNotificacion);
 app.use('/payment-sheet', PaymentRouter);
-app.use('/chatbot', RouterChatbot)
+//app.use('/chatbot', RouterChatbot)
 
 
 async function connectDB() {
