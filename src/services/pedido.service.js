@@ -35,6 +35,11 @@ class PedidoService {
         include: [
           {
             model: Consumidor,
+            include: [
+              {
+                model: Usuario,
+              }
+            ]
           }
         ]
       });

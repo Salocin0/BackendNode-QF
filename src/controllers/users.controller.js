@@ -409,6 +409,34 @@ class UserController {
     }
   }
 
+  async newUbicacion(req, res) {
+    try {
+      const { longitud, latitud, idUsuario } = req.body;
+      const usuario = await userService.updateLocation(longitud, latitud, idUsuario);
+      if (usuario) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'ubicacion actualizada',
+          code: 200,
+          data: usuario,
+        });
+      } else {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'error al actualizar la ubicacion',
+          code: 400,
+          data: usuario,
+        });
+      }
+    } catch (e) {
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
   async login(req, res, next) {
     passport.authenticate('local-signup', async (err, user, info) => {
       if (err) {

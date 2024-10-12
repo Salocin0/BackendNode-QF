@@ -27,6 +27,8 @@ RouterUser.post('/update/:id/to/:rol', userController.updateRolController);
 
 RouterUser.post('/habilitar', userController.habilitar);
 
+RouterUser.post('/newUbicacion', userController.newUbicacion);
+
 RouterUser.put('/habilitar', userController.habilitarUsuario);
 
 RouterUser.delete('/:id', userController.deshabilitarUsuario);

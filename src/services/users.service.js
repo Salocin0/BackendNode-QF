@@ -81,7 +81,6 @@ class UserService {
   }
 
   async create(usuario) {
-
     const user = {
       contraseña: createHashPW(usuario.contraseña),
       usuario: usuario.nombreDeUsuario,
@@ -186,21 +185,29 @@ class UserService {
     }
   }
 
-  async setTokens(userid,tokenWeb,tokenMobile) {
+  async setTokens(userid, tokenWeb, tokenMobile) {
     const usuario = await Usuario.findByPk(userid);
     if (usuario) {
-      if(tokenWeb!=null){
+      if (tokenWeb != null) {
         usuario.tokenWeb = tokenWeb;
       }
-      if(tokenMobile!=null){
-        usuario.tokenMobile=tokenMobile
+      if (tokenMobile != null) {
+        usuario.tokenMobile = tokenMobile;
       }
       await usuario.save();
       return usuario;
     }
   }
 
-  
+  async updateLocation(longitud, latitud, idUsuario) {
+    const usuario = await Usuario.findByPk(idUsuario);
+    if (usuario) {
+      usuario.longitud = longitud;
+      usuario.latitud = latitud;
+      await usuario.save();
+      return usuario;
+    }
+  }
 }
 
 export const userService = new UserService();
