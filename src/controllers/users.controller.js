@@ -6,6 +6,7 @@ import { sessionStore } from '../app.js';
 import { userService } from '../services/users.service.js';
 import { createHashPW } from '../util/bcrypt.js';
 import { sendEmail } from '../util/emailSender.js';
+import { puestoService } from '../services/puesto.service.js';
 
 
 class UserController {
@@ -251,6 +252,39 @@ class UserController {
     }
   }
 
+  async getTokenByPuestoId(puestoId) {
+    try {
+      const puesto = await puestoService.getOne(puestoId)
+      console.log(puesto)
+      const encargadoid= puesto.encargadoId
+
+      const consumidor = await Consumidor.findOne({
+        where: { encargadoId: encargadoid },
+      });
+
+      if (!consumidor) {
+        throw new Error(`No se encontró el consumidor con productorId ${repartidorId}`);
+      }
+
+      const consumidorid = consumidor.id;
+      const usuario = Usuario.findOne({
+        where: { consumidorId: consumidorid },
+      });
+
+
+      // El usuario asociado debería estar disponible a través de la relación definida en Consumidor
+
+
+      const tokenUsuarioWeb = usuario.tokenWeb;
+      const tokenUsuarioMobile = usuario.tokenMobile;
+
+      // Devolver el tokenWeb del usuario encontrado
+      return {tokenUsuarioWeb,tokenUsuarioMobile};
+    } catch (error) {
+      console.error(`Error al obtener el token del puesto ${puestoId}:`, error);
+      throw error;
+    }
+  }
 
   async userSession(req, res) {
     console.log(req.body.sessionID)

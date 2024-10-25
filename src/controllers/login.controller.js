@@ -1,9 +1,12 @@
+import { consumidorService } from "../services/consumidor.service.js";
 import { userService } from "../services/users.service.js";
 class LoginController {
   async login(req, res) {
     try {
       if (req.user.emailValidado === true) {
         const sessionId = req.sessionID;
+        const consumidor = await consumidorService.getOne(req.user.consumidorId);
+        
         req.session.user = {
           email: req.user.email,
           usuario: req.user.usuario,
@@ -11,6 +14,8 @@ class LoginController {
           tipoUsuario: req.user.tipoUsuario,
           id: req.user.id,
           sessionId: sessionId,
+          nombre: consumidor.nombre,
+          apellido: consumidor.apellido,
         };
       } else {
         return res.status(200).json({

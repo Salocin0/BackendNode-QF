@@ -179,7 +179,7 @@ class AsociacionService {
     const tituloNotificacion = notificationTexts.repartidor.titulo;
     const descripcionNotificacion = notificationTexts.repartidor.descripcionAceptada;
 
-    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAceptaradaRepartidor(Id, tituloNotificacion,descripcionNotificacion);
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAceptaradaRepartidorAPartirAsociacion(Id, tituloNotificacion,descripcionNotificacion);
 
     return resultadoNotificacion;
   }
@@ -187,8 +187,7 @@ class AsociacionService {
   async sendNotificacionesWebRechazarAsociacionRepartido(Id){
     const tituloNotificacion = notificationTexts.repartidor.titulo;
     const descripcionNotificacion = notificationTexts.repartidor.descripcionRechazada;
-    console.log("ENTRE AMIGO");
-    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAceptaradaRepartidor(Id, tituloNotificacion,descripcionNotificacion);
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAceptaradaRepartidorAPartirAsociacion(Id, tituloNotificacion,descripcionNotificacion);
 
     return resultadoNotificacion;
   }

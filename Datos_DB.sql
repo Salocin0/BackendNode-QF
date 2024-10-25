@@ -257,6 +257,24 @@ INSERT INTO public."Asociacions" (
     1
 );
 
+INSERT INTO public."Asociacions" (
+    estado, 
+    motivo, 
+    "createdAt", 
+    "updatedAt", 
+    "eventoId", 
+    "puestoId", 
+    "repartidoreId"
+) VALUES (
+    'Aceptada', 
+    'Motivo del evento 2', 
+    CURRENT_TIMESTAMP, 
+    CURRENT_TIMESTAMP, 
+    3, 
+    NULL, 
+    1
+);
+
 --set asociacions puestos a eventos
 INSERT INTO public."Asociacions" (
     estado, 
@@ -272,7 +290,10 @@ INSERT INTO public."Asociacions" (
     ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, NULL),
     ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 1, NULL),
     ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 2, NULL),
-    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 1, NULL),
+    ('PendienteDeAceptacion', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 1, NULL),
+    ('ConObservacion', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, NULL, 1),
+    ('Rechazada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 3, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, NULL, 1),
     ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 3, NULL),
     ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 1, NULL),
     ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 2, NULL),
@@ -346,7 +367,7 @@ INSERT INTO public."Pedidos" (
     (CURRENT_TIMESTAMP, 60.50, 'Aceptado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, NULL, 2, NULL, NULL),
     (CURRENT_TIMESTAMP, 30.75, 'EnPreparacion', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, NULL, 1, NULL, NULL),
     (CURRENT_TIMESTAMP, 55.25, 'EnCamino', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, 1, 1, 'ABC123', 1),
-    (CURRENT_TIMESTAMP, 40.10, 'Entregado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, NULL, 1, NULL, NULL);
+    (CURRENT_TIMESTAMP, 40.10, 'Entregado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, 1, 1, NULL, NULL);
 
 
 -- Insertar detalles para el pedido con id = 1
