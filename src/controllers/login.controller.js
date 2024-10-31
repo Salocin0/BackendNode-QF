@@ -6,6 +6,7 @@ class LoginController {
       if (req.user.emailValidado === true) {
         const sessionId = req.sessionID;
         const consumidor = await consumidorService.getOne(req.user.consumidorId);
+        const user = await userService.getOne(req.user.id);
         
         req.session.user = {
           email: req.user.email,
@@ -16,6 +17,8 @@ class LoginController {
           sessionId: sessionId,
           nombre: consumidor.nombre,
           apellido: consumidor.apellido,
+          tokenMobile: user.tokenMobile,
+          tokenWeb: user.tokenWeb
         };
       } else {
         return res.status(200).json({

@@ -191,10 +191,12 @@ class UserService {
       if (tokenWeb != null) {
         usuario.tokenWeb = tokenWeb;
       }
+      console.log("tokenweb", tokenWeb);
       if (tokenMobile != null) {
         usuario.tokenMobile = tokenMobile;
       }
       await usuario.save();
+      console.log(usuario);
       return usuario;
     }
   }
