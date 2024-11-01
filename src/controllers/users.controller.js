@@ -540,6 +540,85 @@ class UserController {
       });
     }
   }
+
+  async cerrarWeb(req, res) {
+    try {
+      const { id } = req.body; // Desestructuramos el id de req.body
+      if (!id) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'id is required',
+          code: 400,
+          data: {},
+        });
+      }
+      const usuario = await userService.getOne(id);
+      if (usuario) {
+        usuario.tokenWeb = null;
+        await usuario.save();
+        return res.status(200).json({
+          status: 'success',
+          msg: 'user validado',
+          code: 200,
+          data: usuario,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'error',
+          msg: 'usuario no encontrado',
+          code: 404,
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+
+  async cerrarMobile(req, res) {
+    try {
+      const { id } = req.body; // Desestructuramos el id de req.body
+      if (!id) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'id is required',
+          code: 400,
+          data: {},
+        });
+      }
+      const usuario = await userService.getOne(id);
+      if (usuario) {
+        usuario.tokenMobile = null;
+        await usuario.save();
+        return res.status(200).json({
+          status: 'sucess',
+          msg: 'user validado',
+          code: 200,
+          data: usuario,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'incorrect code',
+          code: 200,
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
 }
 
 export const userController = new UserController();

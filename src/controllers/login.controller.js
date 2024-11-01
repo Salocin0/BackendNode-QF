@@ -1,5 +1,6 @@
 import { consumidorService } from "../services/consumidor.service.js";
 import { userService } from "../services/users.service.js";
+import { notificacionesService } from "../services/notificaciones.service.js";
 class LoginController {
   async login(req, res) {
     try {
@@ -7,7 +8,6 @@ class LoginController {
         const sessionId = req.sessionID;
         const consumidor = await consumidorService.getOne(req.user.consumidorId);
         const user = await userService.getOne(req.user.id);
-        
         req.session.user = {
           email: req.user.email,
           usuario: req.user.usuario,

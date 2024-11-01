@@ -32,3 +32,7 @@ RouterUser.post('/newUbicacion', userController.newUbicacion);
 RouterUser.put('/habilitar', userController.habilitarUsuario);
 
 RouterUser.delete('/:id', userController.deshabilitarUsuario);
+
+RouterUser.post('/cerrarWeb', userController.cerrarWeb);
+
+RouterUser.post('/cerrarMobile', userController.cerrarMobile);

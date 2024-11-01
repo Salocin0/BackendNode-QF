@@ -18,6 +18,17 @@ class NotificacionesService {
     }
   }
 
+  async enviarNotificacionesAUsuario(usuarioId, tituloNotificacion, descripcionNotificacion, tokenUsuarioMobile, tokenUsuarioWeb) {
+    const titulo = tituloNotificacion;
+    const descripcion = descripcionNotificacion;
+    if (tokenUsuarioWeb) {
+      await sendNotificacionesWeb(tokenUsuarioWeb, titulo, descripcion);
+    }
+    if (tokenUsuarioMobile) {
+      await sendNotificacionesMobile(tokenUsuarioMobile, titulo, descripcion);
+    }
+  }
+
   async enviarNotificacionesAsociacion(eventoId, tituloNotificacion, descripcionNotificacion) {
     const { tokenUsuarioWeb, tokenUsuarioMobile } = await this.buscarTokenPorEvento(eventoId);
     const titulo = tituloNotificacion;

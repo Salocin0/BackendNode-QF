@@ -196,7 +196,6 @@ class UserService {
         usuario.tokenMobile = tokenMobile;
       }
       await usuario.save();
-      console.log(usuario);
       return usuario;
     }
   }
