@@ -128,6 +128,7 @@ async function DatosIniciales() {
 
 //conectar a la base de datos
 connectDB();
+console.log(process.env)
 //ejecutar procesos automaticos
 
 
