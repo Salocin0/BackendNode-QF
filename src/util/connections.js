@@ -1,7 +1,4 @@
-import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize';
-
-dotenv.config();
 
 export const sequelize = new Sequelize({
   database: process.env.DB_NAME,
@@ -11,7 +8,10 @@ export const sequelize = new Sequelize({
   host: process.env.DB_HOST,
   schema: process.env.DB_SCHEMA,
   dialect: process.env.DB_DIALECT || 'postgres',
-  dialectOptions: {
-    ssl:process.env.DB_SSL === 'true', 
-  },
+  dialectOptions: process.env.DB_SSL === 'true' ? {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false, // Cambiar a true si quieres validar el certificado en producción
+    },
+  } : {}, // No incluir opciones SSL si no se necesita
 });
