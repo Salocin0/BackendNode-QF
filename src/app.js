@@ -101,30 +101,18 @@ app.use('/payment-sheet', PaymentRouter);
 
 async function connectDB() {
   try {
-    const isDevelopment = process.env.NODE_ENV === 'development'; // Detecta el entorno
-    const forceSync = isDevelopment && process.env.DB_FORCE === 'true'; // Usa `force` solo en desarrollo si DB_FORCE=true
-
-    await sequelize.authenticate(); // Verifica la conexión antes de sincronizar
-    console.log('Conexión exitosa a la base de datos.');
-
-    await sequelize.sync({ force: forceSync });
-    console.log(`Base de datos sincronizada (force: ${forceSync}).`);
-
-    if (forceSync) {
-      console.log('Cargando datos iniciales...');
-      DatosIniciales(); // Solo se ejecuta si `force` es true
-      // generateAllData(); // Descomenta si necesario
-    }
-
-    procesosAutomaticos(); // Procesos que no dependen de `force`
+    await sequelize.sync({ force: true }); // false no modifica la base de datos
+    DatosIniciales() //COMENTAR SI FORCE SE COLOCA EN FALSE
+    //generateAllData() //COMENTAR SI FORCE SE COLOCA EN FALSE
+    procesosAutomaticos();
+    app.listen(port, () => {
+      console.log('Servidor escuchando en el puerto ' + port);
+    });
   } catch (error) {
     console.error('Error al conectar con la base de datos:', error);
   }
 }
 
-app.listen(port, () => {
-  console.log(`Servidor escuchando en el puerto ${port}`);
-});
 
 async function DatosIniciales() {
   try {

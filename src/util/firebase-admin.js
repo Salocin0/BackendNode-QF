@@ -1,7 +1,6 @@
 // firebase-admin.js
-
-const admin = require('firebase-admin');
-const serviceAccount = require('../../serviceAccountKey.json'); // Ruta al archivo JSON de credenciales
+import admin from 'firebase-admin'; // Ajusta la importación según tu configuración de Firebase Admin
+import serviceAccount from "../../serviceAccountKey.json" assert { type: "json" };
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
