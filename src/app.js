@@ -105,14 +105,15 @@ async function connectDB() {
     DatosIniciales() //COMENTAR SI FORCE SE COLOCA EN FALSE
     //generateAllData() //COMENTAR SI FORCE SE COLOCA EN FALSE
     procesosAutomaticos();
-    app.listen(port, () => {
-      console.log('Servidor escuchando en el puerto ' + port);
-    });
+
   } catch (error) {
     console.error('Error al conectar con la base de datos:', error);
   }
 }
 
+app.listen(port, () => {
+  console.log('Servidor escuchando en el puerto ' + port);
+});
 
 async function DatosIniciales() {
   try {

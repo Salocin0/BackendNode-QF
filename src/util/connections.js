@@ -6,17 +6,20 @@ dotenv.config();
 let sequelize;
 
 if (process.env.NODE_ENV === 'production') {
-  // Si es producción, usar la URL completa de conexión
+  // If in production, use the full connection URL
   const dbUrl = process.env.DB_URL || '';
 
   sequelize = new Sequelize(dbUrl, {
     dialect: 'postgres',
     dialectOptions: {
-      ssl: { require: true, rejectUnauthorized: false }  // Configuración de SSL
+      ssl: {
+        require: true, 
+        rejectUnauthorized: false,  // Disable certificate validation (for cloud-hosted DBs like Render)
+      },
     },
   });
 } else {
-  // Si no es producción, usa la configuración anterior
+  // If not in production, use the environment variables
   sequelize = new Sequelize({
     database: process.env.DB_NAME,
     username: process.env.DB_USER,
@@ -27,7 +30,7 @@ if (process.env.NODE_ENV === 'production') {
     dialect: process.env.DB_DIALECT || 'postgres',
     dialectOptions: process.env.DB_SSL === 'true' 
       ? { ssl: { require: true, rejectUnauthorized: false } }
-      : {}, // Si DB_SSL es 'true', usa SSL, sino no.
+      : {}, // Use SSL if DB_SSL is 'true', otherwise no SSL
   });
 }
 
