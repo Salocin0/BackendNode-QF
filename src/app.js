@@ -1,11 +1,11 @@
 //prueba
-import bodyParser from 'body-parser';
+/*import bodyParser from 'body-parser';
 import flash from 'connect-flash';
 import SequelizeStoreInit from 'connect-session-sequelize';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import * as dotenv from 'dotenv';
-import express from 'express';
+
+
 import compression from 'express-compression';
 import session from 'express-session';
 import { readFileSync } from 'fs';
@@ -37,8 +37,9 @@ import { sequelize } from './util/connections.js';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
 import { generateAllData } from './util/faker.js';
 /*import {pregunta} from './util/chatbot.js'*/
-import  RouterChatbot  from './routes/chatbot.router.js'
-
+/*import  RouterChatbot  from './routes/chatbot.router.js'*/
+import dotenv from 'dotenv';
+import express from 'express';
 dotenv.config();
 console.log(process.env);
 //definicion de server de express
