@@ -47,10 +47,10 @@ const port = 8000;
 
 const stripe = Stripe('sk_test_51PnpcMRoRlWr6LoNVHnAJMDXVOFLMlAAeTxMZUvUuWmPt4qMChWK3SYn8ZPcwE8cwg5dsEmkEIPWjlFBRzBOOpco00YLHUKBoL');
 //inicializacion de la base de datos
-/*const SequelizeStore = SequelizeStoreInit(session.Store);
+const SequelizeStore = SequelizeStoreInit(session.Store);
 export const sessionStore = new SequelizeStore({
   db: sequelize,
-});*/
+});
 //Limit
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
