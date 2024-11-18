@@ -1,6 +1,6 @@
 // firebase-admin.js
 import admin from 'firebase-admin'; // Ajusta la importación según tu configuración de Firebase Admin
-import serviceAccount from "../../serviceAccountKey.json" assert { type: "json" };
+import serviceAccount from "../../etc/secrets/serviceAccountKey.json" assert { type: "json" };
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
