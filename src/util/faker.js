@@ -68,6 +68,8 @@ export async function generateUsers(count = 100) {
           total: 0, // Placeholder for now
           createdAt: new Date(),
           updatedAt: new Date(),
+          //fecha de entrega al repartidor (entre 5 y 20 min)
+          //fecha de entrega al consumidor (entre 7 a 15 min)
         });
 
         let total = 0;
