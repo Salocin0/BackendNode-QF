@@ -85,7 +85,25 @@ app.use(flash());
 // URLs
 app.use(express.static(__dirname + '/public'));
 
-
+app.use('/user', RouterUser);
+app.use('/consumidor', RouterConsumidor);
+app.use('/login', RouterLogin);
+app.use('/encargado', RouterEncargado);
+app.use('/productor', RouterProductor);
+app.use('/repartidor', RouterRepartidor);
+app.use('/puesto', RouterPuesto);
+app.use('/producto', RouterProducto);
+app.use('/evento', RouterEvento);
+app.use('/restriccion', RouterRestriccion);
+app.use('/asociacion', RouterAsociacion);
+app.use('/carrito', RouterCarrito);
+app.use('/pedido', RouterPedido);
+app.use('/valoracion', RouterValoracion);
+app.use('/puntosEncuentro',RouterPuntoEncuentro);
+app.use('/asignaciones',RouterAsignaciones);
+app.use('/notificaciones4', RouterNotificacion);
+app.use('/payment-sheet', PaymentRouter);
+app.use('/chatbot', RouterChatbot)
 
 async function connectDB() {
   try {
@@ -117,25 +135,7 @@ async function DatosIniciales() {
 connectDB();
 //ejecutar procesos automaticos
 
-app.use('/user', RouterUser);
-app.use('/consumidor', RouterConsumidor);
-app.use('/login', RouterLogin);
-app.use('/encargado', RouterEncargado);
-app.use('/productor', RouterProductor);
-app.use('/repartidor', RouterRepartidor);
-app.use('/puesto', RouterPuesto);
-app.use('/producto', RouterProducto);
-app.use('/evento', RouterEvento);
-app.use('/restriccion', RouterRestriccion);
-app.use('/asociacion', RouterAsociacion);
-app.use('/carrito', RouterCarrito);
-app.use('/pedido', RouterPedido);
-app.use('/valoracion', RouterValoracion);
-app.use('/puntosEncuentro',RouterPuntoEncuentro);
-app.use('/asignaciones',RouterAsignaciones);
-app.use('/notificaciones4', RouterNotificacion);
-app.use('/payment-sheet', PaymentRouter);
-app.use('/chatbot', RouterChatbot)
+
 
 app.listen(port, () => {
   console.log('Servidor escuchando en el puerto ' + port);
