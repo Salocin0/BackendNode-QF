@@ -41,7 +41,6 @@ import { generateAllData } from './util/faker.js';
 import dotenv from 'dotenv';
 import express from 'express';
 dotenv.config();
-console.log(process.env);
 //definicion de server de express
 const app = express();
 const port = 8000;
@@ -103,7 +102,7 @@ app.use('/payment-sheet', PaymentRouter);*/
 //app.use('/chatbot', RouterChatbot)
 
 
-/*async function connectDB() {
+async function connectDB() {
   try {
     await sequelize.sync({ force: true }); // false no modifica la base de datos
     DatosIniciales() //COMENTAR SI FORCE SE COLOCA EN FALSE
@@ -113,13 +112,13 @@ app.use('/payment-sheet', PaymentRouter);*/
   } catch (error) {
     console.error('Error al conectar con la base de datos:', error);
   }
-}*/
+}
 
 app.listen(port, () => {
   console.log('Servidor escuchando en el puerto ' + port);
 });
 
-/*async function DatosIniciales() {
+async function DatosIniciales() {
   try {
     const sqlFilePath = path.resolve(__dirname, '../Datos_DB.sql');
     console.log('Ruta al archivo SQL:', sqlFilePath);
@@ -129,10 +128,10 @@ app.listen(port, () => {
   } catch (error) {
     console.error('Error al setear los datos iniciales', error);
   }
-}*/
+}
 
 //conectar a la base de datos
-//connectDB();
+connectDB();
 //ejecutar procesos automaticos
 
 
