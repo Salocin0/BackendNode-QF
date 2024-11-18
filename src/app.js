@@ -1,5 +1,5 @@
 //prueba
-/*import bodyParser from 'body-parser';
+import bodyParser from 'body-parser';
 import flash from 'connect-flash';
 
 import cookieParser from 'cookie-parser';
@@ -34,9 +34,7 @@ import { RouterRestriccion } from './routes/restriccion.router.js';
 import { RouterUser } from './routes/user.router.js';
 import { RouterValoracion } from './routes/valoracion.router.js';
 
-
-/*import {pregunta} from './util/chatbot.js'*/
-/*import  RouterChatbot  from './routes/chatbot.router.js'*/
+import  RouterChatbot  from './routes/chatbot.router.js'
 import dotenv from 'dotenv';
 import express from 'express';
 import { sequelize } from './util/connections.js';
@@ -60,7 +58,7 @@ app.use(
   })
 );
 import session from 'express-session';
-/*
+
 const stripe = Stripe('sk_test_51PnpcMRoRlWr6LoNVHnAJMDXVOFLMlAAeTxMZUvUuWmPt4qMChWK3SYn8ZPcwE8cwg5dsEmkEIPWjlFBRzBOOpco00YLHUKBoL');
 //inicializacion de la base de datos
 
@@ -86,32 +84,14 @@ app.use(bodyParser.json());
 app.use(flash());
 // URLs
 app.use(express.static(__dirname + '/public'));
-/*app.use('/user', RouterUser);
-app.use('/consumidor', RouterConsumidor);
-app.use('/login', RouterLogin);
-app.use('/encargado', RouterEncargado);
-app.use('/productor', RouterProductor);
-app.use('/repartidor', RouterRepartidor);
-app.use('/puesto', RouterPuesto);
-app.use('/producto', RouterProducto);
-app.use('/evento', RouterEvento);
-app.use('/restriccion', RouterRestriccion);
-app.use('/asociacion', RouterAsociacion);
-app.use('/carrito', RouterCarrito);
-app.use('/pedido', RouterPedido);
-app.use('/valoracion', RouterValoracion);
-app.use('/puntosEncuentro',RouterPuntoEncuentro);
-app.use('/asignaciones',RouterAsignaciones);
-app.use('/notificaciones4', RouterNotificacion);
-app.use('/payment-sheet', PaymentRouter);*/
-//app.use('/chatbot', RouterChatbot)
+
 
 
 async function connectDB() {
   try {
     await sequelize.sync({ force: true }); // false no modifica la base de datos
     DatosIniciales() //COMENTAR SI FORCE SE COLOCA EN FALSE
-    //generateAllData() //COMENTAR SI FORCE SE COLOCA EN FALSE
+    generateAllData() //COMENTAR SI FORCE SE COLOCA EN FALSE
     procesosAutomaticos();
 
   } catch (error) {
@@ -119,9 +99,7 @@ async function connectDB() {
   }
 }
 
-app.listen(port, () => {
-  console.log('Servidor escuchando en el puerto ' + port);
-});
+
 
 async function DatosIniciales() {
   try {
@@ -139,4 +117,26 @@ async function DatosIniciales() {
 connectDB();
 //ejecutar procesos automaticos
 
+app.use('/user', RouterUser);
+app.use('/consumidor', RouterConsumidor);
+app.use('/login', RouterLogin);
+app.use('/encargado', RouterEncargado);
+app.use('/productor', RouterProductor);
+app.use('/repartidor', RouterRepartidor);
+app.use('/puesto', RouterPuesto);
+app.use('/producto', RouterProducto);
+app.use('/evento', RouterEvento);
+app.use('/restriccion', RouterRestriccion);
+app.use('/asociacion', RouterAsociacion);
+app.use('/carrito', RouterCarrito);
+app.use('/pedido', RouterPedido);
+app.use('/valoracion', RouterValoracion);
+app.use('/puntosEncuentro',RouterPuntoEncuentro);
+app.use('/asignaciones',RouterAsignaciones);
+app.use('/notificaciones4', RouterNotificacion);
+app.use('/payment-sheet', PaymentRouter);
+app.use('/chatbot', RouterChatbot)
 
+app.listen(port, () => {
+  console.log('Servidor escuchando en el puerto ' + port);
+});
