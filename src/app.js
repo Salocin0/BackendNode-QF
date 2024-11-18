@@ -40,10 +40,11 @@ import { generateAllData } from './util/faker.js';
 import  RouterChatbot  from './routes/chatbot.router.js'
 
 dotenv.config();
+console.log(process.env);
 //definicion de server de express
 const app = express();
 const port = 8000;
-console.log(process.env);
+
 const stripe = Stripe('sk_test_51PnpcMRoRlWr6LoNVHnAJMDXVOFLMlAAeTxMZUvUuWmPt4qMChWK3SYn8ZPcwE8cwg5dsEmkEIPWjlFBRzBOOpco00YLHUKBoL');
 //inicializacion de la base de datos
 const SequelizeStore = SequelizeStoreInit(session.Store);
@@ -129,7 +130,7 @@ async function DatosIniciales() {
 }
 
 //conectar a la base de datos
-connectDB();
+//connectDB();
 //ejecutar procesos automaticos
 
 
