@@ -44,7 +44,8 @@ console.log(process.env);
 //definicion de server de express
 const app = express();
 const port = 8000;
-
+export const sessionStore = null
+/*
 const stripe = Stripe('sk_test_51PnpcMRoRlWr6LoNVHnAJMDXVOFLMlAAeTxMZUvUuWmPt4qMChWK3SYn8ZPcwE8cwg5dsEmkEIPWjlFBRzBOOpco00YLHUKBoL');
 //inicializacion de la base de datos
 const SequelizeStore = SequelizeStoreInit(session.Store);
