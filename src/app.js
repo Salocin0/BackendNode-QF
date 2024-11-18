@@ -47,10 +47,10 @@ const port = 8000;
 
 const stripe = Stripe('sk_test_51PnpcMRoRlWr6LoNVHnAJMDXVOFLMlAAeTxMZUvUuWmPt4qMChWK3SYn8ZPcwE8cwg5dsEmkEIPWjlFBRzBOOpco00YLHUKBoL');
 //inicializacion de la base de datos
-const SequelizeStore = SequelizeStoreInit(session.Store);
+/*const SequelizeStore = SequelizeStoreInit(session.Store);
 export const sessionStore = new SequelizeStore({
   db: sequelize,
-});
+});*/
 //Limit
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
@@ -80,7 +80,7 @@ app.use(bodyParser.json());
 app.use(flash());
 // URLs
 app.use(express.static(__dirname + '/public'));
-app.use('/user', RouterUser);
+/*app.use('/user', RouterUser);
 app.use('/consumidor', RouterConsumidor);
 app.use('/login', RouterLogin);
 app.use('/encargado', RouterEncargado);
@@ -97,11 +97,11 @@ app.use('/valoracion', RouterValoracion);
 app.use('/puntosEncuentro',RouterPuntoEncuentro);
 app.use('/asignaciones',RouterAsignaciones);
 app.use('/notificaciones4', RouterNotificacion);
-app.use('/payment-sheet', PaymentRouter);
+app.use('/payment-sheet', PaymentRouter);*/
 //app.use('/chatbot', RouterChatbot)
 
 
-async function connectDB() {
+/*async function connectDB() {
   try {
     await sequelize.sync({ force: true }); // false no modifica la base de datos
     DatosIniciales() //COMENTAR SI FORCE SE COLOCA EN FALSE
@@ -111,13 +111,13 @@ async function connectDB() {
   } catch (error) {
     console.error('Error al conectar con la base de datos:', error);
   }
-}
+}*/
 
 app.listen(port, () => {
   console.log('Servidor escuchando en el puerto ' + port);
 });
 
-async function DatosIniciales() {
+/*async function DatosIniciales() {
   try {
     const sqlFilePath = path.resolve(__dirname, '../Datos_DB.sql');
     console.log('Ruta al archivo SQL:', sqlFilePath);
@@ -127,7 +127,7 @@ async function DatosIniciales() {
   } catch (error) {
     console.error('Error al setear los datos iniciales', error);
   }
-}
+}*/
 
 //conectar a la base de datos
 //connectDB();
