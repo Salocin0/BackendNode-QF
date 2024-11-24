@@ -121,7 +121,6 @@ class UserService {
   async updateRol(id, rol, datosRol) {
     const user = await Usuario.findOne({ where: { id: id } });
     if (user) {
-      console.log(datosRol);
       if (rol == 'productor') {
         const productor = await productorService.create(datosRol);
         const consumidor = await consumidorService.getOne(user.consumidoreId);
@@ -137,6 +136,7 @@ class UserService {
       } else if (rol == 'repartidor') {
         const repartidor = await repartidorService.create();
         const consumidor = await consumidorService.getOne(user.consumidoreId);
+        console.log(repartidor, consumidor);
         consumidor.repartidorId = repartidor.id;
         consumidor.save();
         user.tipoUsuario = 'repartidor';

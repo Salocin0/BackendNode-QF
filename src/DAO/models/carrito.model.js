@@ -68,7 +68,7 @@ Carrito.prototype.actualizarCantidad = async function (productoId, nuevaCantidad
   }
   if (producto) {
     const item = await ItemCarrito.findOne({
-      where: { CarritoId: this.id, ProductoId: productoId },
+      where: { CarritoId: this.id, productoId: productoId },
     });
     if (item) {
       item.cantidad = nuevaCantidad;
