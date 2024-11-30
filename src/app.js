@@ -101,7 +101,7 @@ app.use('/pedido', RouterPedido);
 app.use('/valoracion', RouterValoracion);
 app.use('/puntosEncuentro',RouterPuntoEncuentro);
 app.use('/asignaciones',RouterAsignaciones);
-app.use('/notificaciones4', RouterNotificacion);
+app.use('/notificaciones', RouterNotificacion);
 app.use('/payment-sheet', PaymentRouter);
 app.use('/chatbot', RouterChatbot)
 
@@ -116,8 +116,6 @@ async function connectDB() {
     console.error('Error al conectar con la base de datos:', error);
   }
 }
-
-
 
 async function DatosIniciales() {
   try {

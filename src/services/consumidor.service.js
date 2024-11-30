@@ -20,6 +20,27 @@ class ConsumidorService {
     return consumidor;
   }
 
+  async getOneByEncargadoId(id) {
+    const consumidor = await Consumidor.findOne({
+      where: { encargadoId: id },
+    });
+    return consumidor;
+  }
+
+  async getOneByProductorId(id) {
+    const consumidor = await Consumidor.findOne({
+      where: { productorId: id },
+    });
+    return consumidor;
+  }
+
+  async getOneByRepartidorId(id) {
+    const consumidor = await Consumidor.findOne({
+      where: { repartidorId: id },
+    });
+    return consumidor;
+  }
+
   async updateOne(id, consumidor) {
     const consumidorbase = await Consumidor.findByPk(id);
     const encargado = await encargadoService.getOne(consumidor.encargadoId);

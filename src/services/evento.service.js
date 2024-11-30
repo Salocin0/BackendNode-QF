@@ -52,7 +52,11 @@ class EventoService {
 
 
   async getOne(id) {
-    const evento = Evento.findByPk(id);
+    const evento = Evento.findByPk(id,{
+      include: [{
+        model: DiaEvento,
+      }]
+    });
     return evento;
   }
 

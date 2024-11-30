@@ -19,6 +19,11 @@ class UserService {
     return usuario;
   }
 
+  async getOneByConsumidorId(id) {
+    const usuario = await Usuario.findOne({ where: { consumidorId: id } });
+    return usuario;
+  }
+
   async getOneByCodigoDeRecuperacion(codigo) {
     const usuario = await Usuario.findOne({
       where: {
