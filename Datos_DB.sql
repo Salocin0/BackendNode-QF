@@ -633,26 +633,27 @@ DROP VIEW IF EXISTS chatbotData;
 --     JOIN puestos ps ON ac."puestoId" = ps.id
 --GROUP BY ev.id;
 
-CREATE VIEW chatbotData AS
- SELECT ev.nombre,
-    ev.descripcion,
-    ev."tipoEvento",
-    ( SELECT date(min(de."fechaHoraInicioDiaEvento")) AS date
-           FROM "diaEventos" de
-          WHERE de."eventoId" = ev.id) AS "fechaInicioEvento",
-    ( SELECT date(max(de."fechaHoraFinDiaEvento")) AS date
-           FROM "diaEventos" de
-          WHERE de."eventoId" = ev.id) AS "fechaFinEvento",
-    ev."conButaca",
-    ev."tienePreventa",
-    ev."linkVentaEntradas",
-    ev.ubicacion,
-    ev.localidad,
-    ev.provincia,
-    ev.estado,
-    string_agg(DISTINCT ps."nombreCarro"::text, ', '::text) AS "nombreCarroLista",
-    string_agg(DISTINCT ps."tipoNegocio"::text, ', '::text) AS "tipoNegocioLista"
-   FROM eventos ev
-     JOIN "Asociacions" ac ON ev.id = ac."eventoId"
-     JOIN puestos ps ON ac."puestoId" = ps.id
-  GROUP BY ev.id;
+CREATE OR REPLACE VIEW chatbotData AS
+SELECT ev.nombre,
+       ev.descripcion,
+       ev."tipoEvento",
+       (SELECT date(min(de."fechaHoraInicioDiaEvento")) AS date
+        FROM "diaEventos" de
+        WHERE de."eventoId" = ev.id) AS "fechaInicioEvento",
+       (SELECT date(max(de."fechaHoraFinDiaEvento")) AS date
+        FROM "diaEventos" de
+        WHERE de."eventoId" = ev.id) AS "fechaFinEvento",
+       ev."conButaca",
+       ev."tienePreventa",
+       ev."linkVentaEntradas",
+       ev.ubicacion,
+       ev.localidad,
+       ev.provincia,
+       ev.estado,
+       string_agg(DISTINCT ps."nombreCarro"::text, ', '::text) AS "nombreCarroLista",
+       string_agg(DISTINCT ps."tipoNegocio"::text, ', '::text) AS "tipoNegocioLista"
+FROM eventos ev
+     LEFT JOIN "Asociacions" ac ON ev.id = ac."eventoId"
+     LEFT JOIN puestos ps ON ac."puestoId" = ps.id
+WHERE ev.estado IN ('EnCurso', 'Confirmado') -- Filtro por estado
+GROUP BY ev.id;
