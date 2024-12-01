@@ -3,7 +3,6 @@ import { Sequelize } from 'sequelize';
 import { LLMChain } from "langchain/chains";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { ChatOpenAI } from "@langchain/openai";
-import { SqlDatabase } from "langchain/sql_db";
 
 dotenv.config();
 
@@ -13,40 +12,27 @@ const sequelize = new Sequelize({
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
   host: process.env.DB_HOST,
-  schema: process.env.DB_SCHEMA,
   dialect: process.env.DB_DIALECT || 'postgres',
   dialectOptions: {
     ssl: process.env.DB_SSL === 'true',
   },
 });
 
-async function getDatabaseConnection() {
+async function getChatResponse(userMessage) {
   try {
+    // Verificar conexión a la base de datos
     await sequelize.authenticate();
     console.log('Conexión a la base de datos establecida exitosamente.');
+
+
+    // Refrescar la vista materializada
+   //await sequelize.query("REFRESH MATERIALIZED VIEW public.chatbotData;");
+
+    // Realizar consulta directa usando Sequelize
+    const [results] = await sequelize.query("SELECT * FROM public.chatbotData;");
     
-    const db = await SqlDatabase.fromDataSourceParams({
-      appDataSource: sequelize, // Usa Sequelize como fuente de datos
-    });
 
-    return db;
-  } catch (error) {
-    console.error('No se pudo conectar a la base de datos:', error);
-    throw error;
-  }
-}
 
-export async function getChatResponse(userMessage) {
-  try {
-    const db = await getDatabaseConnection();
-
-    // Obtén el esquema de la base de datos
-    const schemaInfo = await db.getTableInfo();
-    console.log('Información del esquema:', schemaInfo);
-
-    // Ejecuta una consulta en la base de datos
-    const result = await db.run("SELECT * FROM public.chatbotData;");
-    
     const apiKey = process.env.CHATBOT_API_KEY;
 
     const openAIModel = new ChatOpenAI({
@@ -71,10 +57,16 @@ export async function getChatResponse(userMessage) {
       prompt: template,
     });
 
-    const response = await chain.call({ input: userMessage, chatbotData: result });
+    // Convertir los resultados en un formato legible
+    const chatbotData = JSON.stringify(results);
+
+    const response = await chain.call({ input: userMessage, chatbotData });
     return response.text;
   } catch (error) {
     console.error('Error al obtener la respuesta de OpenAI:', error);
     throw error;
   }
 }
+
+export { getChatResponse };
+

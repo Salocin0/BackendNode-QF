@@ -609,26 +609,50 @@ $$ LANGUAGE plpgsql;
 DROP VIEW IF EXISTS chatbotData;
 
 -- Crear la vista que alimenta el chatbot
+--CREATE VIEW chatbotData AS
+--SELECT ev.nombre,
+ --      ev.descripcion,
+--       ev."tipoEvento",
+--       (SELECT DATE(MIN(de."fechaHoraInicioDiaEvento")) 
+--        FROM "diaEventos" de 
+--        WHERE de."eventoId" = ev.id) AS "fechaInicioEvento",
+--       (SELECT DATE(MAX(de."fechaHoraFinDiaEvento")) 
+--        FROM "diaEventos" de 
+--        WHERE de."eventoId" = ev.id) AS "fechaFinEvento",
+--       ev."conButaca",
+--       ev."tienePreventa",
+--       ev."linkVentaEntradas",
+--       ev.ubicacion,
+--       ev.localidad,
+--       ev.provincia,
+--       ev.estado,
+--       STRING_AGG(DISTINCT ps."nombreCarro", ', ') AS "nombreCarroLista",
+--       STRING_AGG(DISTINCT ps."tipoNegocio", ', ') AS "tipoNegocioLista"
+--FROM eventos ev
+--     JOIN "Asociacions" ac ON ev.id = ac."eventoId"
+--     JOIN puestos ps ON ac."puestoId" = ps.id
+--GROUP BY ev.id;
+
 CREATE VIEW chatbotData AS
-SELECT ev.nombre,
-       ev.descripcion,
-       ev."tipoEvento",
-       (SELECT DATE(MIN(de."fechaHoraInicioDiaEvento")) 
-        FROM "diaEventos" de 
-        WHERE de."eventoId" = ev.id) AS "fechaInicioEvento",
-       (SELECT DATE(MAX(de."fechaHoraFinDiaEvento")) 
-        FROM "diaEventos" de 
-        WHERE de."eventoId" = ev.id) AS "fechaFinEvento",
-       ev."conButaca",
-       ev."tienePreventa",
-       ev."linkVentaEntradas",
-       ev.ubicacion,
-       ev.localidad,
-       ev.provincia,
-       ev.estado,
-       STRING_AGG(DISTINCT ps."nombreCarro", ', ') AS "nombreCarroLista",
-       STRING_AGG(DISTINCT ps."tipoNegocio", ', ') AS "tipoNegocioLista"
-FROM eventos ev
+ SELECT ev.nombre,
+    ev.descripcion,
+    ev."tipoEvento",
+    ( SELECT date(min(de."fechaHoraInicioDiaEvento")) AS date
+           FROM "diaEventos" de
+          WHERE de."eventoId" = ev.id) AS "fechaInicioEvento",
+    ( SELECT date(max(de."fechaHoraFinDiaEvento")) AS date
+           FROM "diaEventos" de
+          WHERE de."eventoId" = ev.id) AS "fechaFinEvento",
+    ev."conButaca",
+    ev."tienePreventa",
+    ev."linkVentaEntradas",
+    ev.ubicacion,
+    ev.localidad,
+    ev.provincia,
+    ev.estado,
+    string_agg(DISTINCT ps."nombreCarro"::text, ', '::text) AS "nombreCarroLista",
+    string_agg(DISTINCT ps."tipoNegocio"::text, ', '::text) AS "tipoNegocioLista"
+   FROM eventos ev
      JOIN "Asociacions" ac ON ev.id = ac."eventoId"
      JOIN puestos ps ON ac."puestoId" = ps.id
-GROUP BY ev.id;
+  GROUP BY ev.id;
