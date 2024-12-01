@@ -70,7 +70,7 @@ VALUES
 (
     'Evento Musical', 'Concierto de música en vivo', 'Concierto', 'Pago en Efectivo', 
     10, true, true, false, 
-    'https://ventaentradas.com/evento1', 'Plaza Central', true, 
+    'https://infoe.com/evento1', 'Plaza Central', true, 
     'Villa María', 'Córdoba', NULL, 'EnCurso', 
     NOW(), NOW(), 1
 ),
@@ -78,7 +78,7 @@ VALUES
 (
     'Feria Artesanal', 'Exposición y venta de artesanías locales', 'Feria', 'Pago con Tarjeta', 
     20, true, true, true, 
-    'https://ventaentradas.com/evento2', 'Parque Central', true, 
+    'https://infoe.com/evento2', 'Parque Central', true, 
     'Icaño', 'Catamarca', NULL, 'EnCurso', 
     NOW(), NOW(), 1
 ),
@@ -86,7 +86,7 @@ VALUES
 (
     'Teatro al Aire Libre', 'Obra de teatro en espacio abierto', 'Teatro', 'Pago en Efectivo', 
     15, true, true, true, 
-    'https://ventaentradas.com/evento3', 'Anfiteatro', true, 
+    'https://infoe.com/evento3', 'Anfiteatro', true, 
     'Villa María', 'Córdoba', NULL, 'Confirmado', 
     NOW(), NOW(), 1
 ),
@@ -94,7 +94,7 @@ VALUES
 (
     'Festival Gastronómico', 'Muestra y venta de comidas típicas', 'Festival', 'Pago con Tarjeta', 
     25, true, true, false,
-    'https://ventaentradas.com/evento4', 'Quality Espacio', true, 
+    'https://infoe.com/evento4', 'Quality Espacio', true, 
     'Ciudad de Córdoba', 'Córdoba', NULL, 'Confirmado', 
     NOW(), NOW(), 1
 ),
@@ -102,7 +102,7 @@ VALUES
 (
     'Carrera de Maratón', 'Competencia de maratón en la ciudad', 'Deportivo', 'Pago en Efectivo', 
     5, true, true, true, 
-    'https://ventaentradas.com/evento5', 'Ciudad Completa', true, 
+    'https://infoe.com/evento5', 'Ciudad Completa', true, 
     'Catamarca', 'Catamarca', NULL, 'EnPreparacion', 
     NOW(), NOW(), 1
 );
@@ -589,21 +589,25 @@ DROP VIEW IF EXISTS chatbotData;
 
 -- Crear la vista que alimenta el chatbot
 CREATE VIEW chatbotData AS
-SELECT 
-    ev."nombre", 
-    ev."descripcion", 
-    ev."tipoEvento", 
-    ev."conButaca", 
-    ev."tienePreventa", 
-    ev."linkVentaEntradas", 
-    ev."ubicacion", 
-    ev."localidad", 
-    ev."provincia", 
-    ev."estado", 
-    ps."nombreCarro", 
-    ps."tipoNegocio"
-FROM public."eventos" AS ev
-INNER JOIN public."Asociacions" AS ac
-    ON ev.id = ac."eventoId"
-INNER JOIN public."puestos" AS ps
-    ON ac."puestoId" = ps.id;
+SELECT ev.nombre,
+       ev.descripcion,
+       ev."tipoEvento",
+       (SELECT DATE(MIN(de."fechaHoraInicioDiaEvento")) 
+        FROM "diaEventos" de 
+        WHERE de."eventoId" = ev.id) AS "fechaInicioEvento",
+       (SELECT DATE(MAX(de."fechaHoraFinDiaEvento")) 
+        FROM "diaEventos" de 
+        WHERE de."eventoId" = ev.id) AS "fechaFinEvento",
+       ev."conButaca",
+       ev."tienePreventa",
+       ev."linkVentaEntradas",
+       ev.ubicacion,
+       ev.localidad,
+       ev.provincia,
+       ev.estado,
+       STRING_AGG(DISTINCT ps."nombreCarro", ', ') AS "nombreCarroLista",
+       STRING_AGG(DISTINCT ps."tipoNegocio", ', ') AS "tipoNegocioLista"
+FROM eventos ev
+     JOIN "Asociacions" ac ON ev.id = ac."eventoId"
+     JOIN puestos ps ON ac."puestoId" = ps.id
+GROUP BY ev.id;
