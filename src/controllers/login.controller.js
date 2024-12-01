@@ -15,8 +15,8 @@ class LoginController {
           tipoUsuario: req.user.tipoUsuario,
           id: req.user.id,
           sessionId: sessionId,
-          nombre: consumidor.nombre,
-          apellido: consumidor.apellido,
+          nombre: consumidor?.nombre,
+          apellido: consumidor?.apellido,
           tokenMobile: user.tokenMobile,
           tokenWeb: user.tokenWeb
         };

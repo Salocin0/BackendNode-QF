@@ -104,7 +104,7 @@ class UserService {
     let prod = null;
     let enca = null;
     let repa = null;
-    user.consumidoreId = consu.id;
+    user.consumidorId = consu.id;
     user.save();
     if (user.tipoUsuario == 'productor') {
       prod = await productorService.create(productor);
