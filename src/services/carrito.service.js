@@ -38,6 +38,7 @@ class CarritoService {
             cantidad: item.cantidad,
             nombre: item.producto.nombre,
             precio: item.producto.precio,
+            fecha: item.fecha,
             id: item.producto.id,
             puestoId: item.producto.puestoId,
           })),
@@ -65,10 +66,10 @@ class CarritoService {
     }
   }
 
-  async addToCart(consumidorId, ProductoId) {
+  async addToCart(consumidorId, ProductoId,fecha) {
     try {
       const carrito = await this.getOne(consumidorId);
-      carrito.agregarProducto(ProductoId, 1);
+      carrito.agregarProducto(ProductoId, 1,fecha);
       return carrito;
     } catch (error) {
       console.error(error);
