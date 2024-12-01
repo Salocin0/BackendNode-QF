@@ -35,6 +35,11 @@ class PedidoService {
         include: [
           {
             model: Consumidor,
+            include: [
+              {
+                model: Usuario,
+              }
+            ]
           }
         ]
       });
@@ -138,7 +143,7 @@ class PedidoService {
       where: {
         repartidorId: repartidorId,
         estado: {
-          [Op.or]: ["EnCamino"],
+          [Op.or]: ["EnCamino", "Entregado"],
         },
       },
       include: includeModels,

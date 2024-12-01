@@ -6,6 +6,7 @@ import { consumidorService } from './consumidor.service.js';
 import { eventoService } from './evento.service.js';
 import { notificacionesService } from './notificaciones.service.js';
 import { puestoService } from './puesto.service.js';
+import { Puesto } from '../DAO/models/puesto.model.js';
 
 class AsociacionService {
   async getAll(consumidorId) {
@@ -14,9 +15,16 @@ class AsociacionService {
       where: {
         repartidoreId: consumidor.repartidorId,
       },
+      include: [
+        {
+          model: Puesto,
+        },
+      ],
     });
+  
     return asociaciones;
   }
+  
 
   async getAllByPuesto(estado, consumidorId) {
     try {
@@ -171,7 +179,7 @@ class AsociacionService {
     const tituloNotificacion = notificationTexts.repartidor.titulo;
     const descripcionNotificacion = notificationTexts.repartidor.descripcionAceptada;
 
-    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAceptaradaRepartidor(Id, tituloNotificacion,descripcionNotificacion);
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAceptaradaRepartidorAPartirAsociacion(Id, tituloNotificacion,descripcionNotificacion);
 
     return resultadoNotificacion;
   }
@@ -179,8 +187,7 @@ class AsociacionService {
   async sendNotificacionesWebRechazarAsociacionRepartido(Id){
     const tituloNotificacion = notificationTexts.repartidor.titulo;
     const descripcionNotificacion = notificationTexts.repartidor.descripcionRechazada;
-    console.log("ENTRE AMIGO");
-    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAceptaradaRepartidor(Id, tituloNotificacion,descripcionNotificacion);
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAceptaradaRepartidorAPartirAsociacion(Id, tituloNotificacion,descripcionNotificacion);
 
     return resultadoNotificacion;
   }

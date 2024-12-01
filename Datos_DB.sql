@@ -213,11 +213,11 @@ INSERT INTO public.puestos (
     "updatedAt", 
     "encargadoId"
 ) VALUES
-    ('Gourmet Green Food', 201, 'Comida Vegana', 'gourmet_banner.png', 'gourmet_logo.png', '5551234567', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Parrilla Miguelito', 202, 'Carnes Asadas', 'eco_banner.png', 'eco_logo.png', '5559876543', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Taco Fiesta', 203, 'Comida Mexicana', 'taco_banner.png', 'taco_logo.png', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Healty Food Truck', 204, 'Comida Sin Gluten', 'taco_banner.png', 'taco_logo.png', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Indian Food Truck', 205, 'Comida India', 'taco_banner.png', 'taco_logo.png', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
+    ('Gourmet Green Food', 201, 'Comida Vegana', '', '', '5551234567', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Parrilla Miguelito', 202, 'Carnes Asadas', '', '', '5559876543', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Taco Fiesta', 203, 'Comida Mexicana', '', '', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Healty Food Truck', 204, 'Comida Sin Gluten', '', '', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Indian Food Truck', 205, 'Comida India', '', '', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
 
 --set asociacion repartidor a evento 1
 INSERT INTO public."Asociacions" (
@@ -257,6 +257,24 @@ INSERT INTO public."Asociacions" (
     1
 );
 
+INSERT INTO public."Asociacions" (
+    estado, 
+    motivo, 
+    "createdAt", 
+    "updatedAt", 
+    "eventoId", 
+    "puestoId", 
+    "repartidoreId"
+) VALUES (
+    'Aceptada', 
+    'Motivo del evento 2', 
+    CURRENT_TIMESTAMP, 
+    CURRENT_TIMESTAMP, 
+    3, 
+    NULL, 
+    1
+);
+
 --set asociacions puestos a eventos
 INSERT INTO public."Asociacions" (
     estado, 
@@ -272,7 +290,10 @@ INSERT INTO public."Asociacions" (
     ('Aceptada', 'Motivo del evento 1, puesto 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, NULL),
     ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 1, NULL),
     ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 2, NULL),
-    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 1, NULL),
+    ('PendienteDeAceptacion', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 1, NULL),
+    ('ConObservacion', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, NULL, 1),
+    ('Rechazada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 3, NULL),
+    ('Aceptada', 'Motivo del evento 1, puesto 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, NULL, 1),
     ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 3, NULL),
     ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 1, NULL),
     ('Aceptada', 'Motivo del evento 1, puesto 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4, 2, NULL),
@@ -292,9 +313,9 @@ INSERT INTO public.productos (
     "updatedAt", 
     "puestoId"
 ) VALUES
-    ('Producto 1 - Puesto 1', 'Descripción del producto 1', 'Aderezo 1', 'img1.jpg', 10.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Producto 2 - Puesto 1', 'Descripción del producto 2', 'Aderezo 2', 'img2.jpg', 12.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Producto 3 - Puesto 1', 'Descripción del producto 3', 'Aderezo 3', 'img3.jpg', 8.75, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
+    ('Producto 1 - Puesto 1', 'Descripción del producto 1', 'Aderezo 1', '', 10.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Producto 2 - Puesto 1', 'Descripción del producto 2', 'Aderezo 2', '', 12.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Producto 3 - Puesto 1', 'Descripción del producto 3', 'Aderezo 3', '', 8.75, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
 
 
 INSERT INTO public.productos (
@@ -308,9 +329,9 @@ INSERT INTO public.productos (
     "updatedAt", 
     "puestoId"
 ) VALUES
-    ('Producto 1 - Puesto 2', 'Descripción del producto 1', 'Aderezo 1', 'img1.jpg', 15.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2),
-    ('Producto 2 - Puesto 2', 'Descripción del producto 2', 'Aderezo 2', 'img2.jpg', 18.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2),
-    ('Producto 3 - Puesto 2', 'Descripción del producto 3', 'Aderezo 3', 'img3.jpg', 11.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2);
+    ('Producto 1 - Puesto 2', 'Descripción del producto 1', 'Aderezo 1', '', 15.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2),
+    ('Producto 2 - Puesto 2', 'Descripción del producto 2', 'Aderezo 2', '', 18.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2),
+    ('Producto 3 - Puesto 2', 'Descripción del producto 3', 'Aderezo 3', '', 11.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2);
 
 INSERT INTO public.productos (
     nombre, 
@@ -323,9 +344,9 @@ INSERT INTO public.productos (
     "updatedAt", 
     "puestoId"
 ) VALUES
-    ('Producto 1 - Puesto 3', 'Descripción del producto 1', 'Aderezo 1', 'img1.jpg', 9.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3),
-    ('Producto 2 - Puesto 3', 'Descripción del producto 2', 'Aderezo 2', 'img2.jpg', 14.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3),
-    ('Producto 3 - Puesto 3', 'Descripción del producto 3', 'Aderezo 3', 'img3.jpg', 7.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3);
+    ('Producto 1 - Puesto 3', 'Descripción del producto 1', 'Aderezo 1', '', 9.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3),
+    ('Producto 2 - Puesto 3', 'Descripción del producto 2', 'Aderezo 2', '', 14.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3),
+    ('Producto 3 - Puesto 3', 'Descripción del producto 3', 'Aderezo 3', '', 7.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3);
 
 -- Insertar 5 pedidos
 
@@ -346,7 +367,7 @@ INSERT INTO public."Pedidos" (
     (CURRENT_TIMESTAMP, 60.50, 'Aceptado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, NULL, 2, NULL, NULL),
     (CURRENT_TIMESTAMP, 30.75, 'EnPreparacion', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, NULL, 1, NULL, NULL),
     (CURRENT_TIMESTAMP, 55.25, 'EnCamino', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 2, 1, 1, 'ABC123', 1),
-    (CURRENT_TIMESTAMP, 40.10, 'Entregado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, NULL, 1, NULL, NULL);
+    (CURRENT_TIMESTAMP, 40.10, 'Entregado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 3, 1, 1, NULL, NULL);
 
 
 -- Insertar detalles para el pedido con id = 1

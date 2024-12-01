@@ -13,5 +13,4 @@ export const sequelize = new Sequelize({
   dialect: process.env.DB_DIALECT || 'postgres',
   dialectOptions: {
     ssl:process.env.DB_SSL === 'true',
-  },
-});
+  },})

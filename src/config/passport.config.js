@@ -35,8 +35,8 @@ export function initPassport() {
             console.log('Invalid Password');
             return done(null, false);
           }
-          const {tokenMobile} = req?.body ?? "no lo puedo leer";
-          userService.setTokens(user.id,null,tokenMobile)
+          const {tokenMobile,tokenWeb} = req?.body ?? "no lo puedo leer";
+          userService.setTokens(user.id,tokenWeb,tokenMobile)
           return done(null, user);
         } catch (err) {
           console.log(err);

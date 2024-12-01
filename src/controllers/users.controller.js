@@ -6,6 +6,7 @@ import { sessionStore } from '../app.js';
 import { userService } from '../services/users.service.js';
 import { createHashPW } from '../util/bcrypt.js';
 import { sendEmail } from '../util/emailSender.js';
+import { puestoService } from '../services/puesto.service.js';
 
 
 class UserController {
@@ -251,6 +252,39 @@ class UserController {
     }
   }
 
+  async getTokenByPuestoId(puestoId) {
+    try {
+      const puesto = await puestoService.getOne(puestoId)
+      console.log(puesto)
+      const encargadoid= puesto.encargadoId
+
+      const consumidor = await Consumidor.findOne({
+        where: { encargadoId: encargadoid },
+      });
+
+      if (!consumidor) {
+        throw new Error(`No se encontró el consumidor con productorId ${repartidorId}`);
+      }
+
+      const consumidorid = consumidor.id;
+      const usuario = Usuario.findOne({
+        where: { consumidorId: consumidorid },
+      });
+
+
+      // El usuario asociado debería estar disponible a través de la relación definida en Consumidor
+
+
+      const tokenUsuarioWeb = usuario.tokenWeb;
+      const tokenUsuarioMobile = usuario.tokenMobile;
+
+      // Devolver el tokenWeb del usuario encontrado
+      return {tokenUsuarioWeb,tokenUsuarioMobile};
+    } catch (error) {
+      console.error(`Error al obtener el token del puesto ${puestoId}:`, error);
+      throw error;
+    }
+  }
 
   async userSession(req, res) {
     console.log(req.body.sessionID)
@@ -409,6 +443,34 @@ class UserController {
     }
   }
 
+  async newUbicacion(req, res) {
+    try {
+      const { longitud, latitud, idUsuario } = req.body;
+      const usuario = await userService.updateLocation(longitud, latitud, idUsuario);
+      if (usuario) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'ubicacion actualizada',
+          code: 200,
+          data: usuario,
+        });
+      } else {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'error al actualizar la ubicacion',
+          code: 400,
+          data: usuario,
+        });
+      }
+    } catch (e) {
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
   async login(req, res, next) {
     passport.authenticate('local-signup', async (err, user, info) => {
       if (err) {
@@ -454,6 +516,85 @@ class UserController {
       if (usuario?.codigoValidacion === codigo) {
         usuario.emailValidado = true;
         usuario.codigoValidacion = null;
+        await usuario.save();
+        return res.status(200).json({
+          status: 'sucess',
+          msg: 'user validado',
+          code: 200,
+          data: usuario,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'incorrect code',
+          code: 200,
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+  async cerrarWeb(req, res) {
+    try {
+      const { id } = req.body; // Desestructuramos el id de req.body
+      if (!id) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'id is required',
+          code: 400,
+          data: {},
+        });
+      }
+      const usuario = await userService.getOne(id);
+      if (usuario) {
+        usuario.tokenWeb = null;
+        await usuario.save();
+        return res.status(200).json({
+          status: 'success',
+          msg: 'user validado',
+          code: 200,
+          data: usuario,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'error',
+          msg: 'usuario no encontrado',
+          code: 404,
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+
+  async cerrarMobile(req, res) {
+    try {
+      const { id } = req.body; // Desestructuramos el id de req.body
+      if (!id) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'id is required',
+          code: 400,
+          data: {},
+        });
+      }
+      const usuario = await userService.getOne(id);
+      if (usuario) {
+        usuario.tokenMobile = null;
         await usuario.save();
         return res.status(200).json({
           status: 'sucess',

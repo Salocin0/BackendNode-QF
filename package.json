@@ -5,7 +5,7 @@
   "description": "",
   "main": "app.js",
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   },
   "scripts": {
     "start": "nodemon ./src/app.js",
@@ -28,7 +28,6 @@
     "@langchain/core": "^0.2.31",
     "@langchain/langgraph": "^0.1.9",
     "@langchain/openai": "^0.2.8",
-    "backend_qf": "file:",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "connect-flash": "^0.1.1",
@@ -45,8 +44,6 @@
     "express-session": "^1.18.0",
     "firebase": "^10.12.5",
     "firebase-admin": "^12.3.1",
-    "from": "^0.1.7",
-    "import": "^0.0.6",
     "mongoose": "^8.5.2",
     "mongoose-paginate-v2": "^1.8.3",
     "morgan": "^1.10.0",
@@ -59,7 +56,8 @@
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "passport-local": "^1.0.0",
-    "pg": "^8.12.0",
+    "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.3",
     "session-file-store": "^1.5.0",
     "socket.io": "^4.7.5",

@@ -30,22 +30,33 @@ class EventoService {
   }
 
   async getAllInState(estado) {
-    const eventos = await Evento.findAll({
-      where: {
-        estado: estado,
-      },
-      include: [
-        {
-          model: DiaEvento,
+    try {
+      const eventos = await Evento.findAll({
+        where: {
+          estado: estado,
         },
-      ],
-    });
-    return eventos;
+        include: [
+          {
+            model: DiaEvento,
+            required: false, // include DiaEvento even if it's not associated with Evento
+          },
+        ],
+      });
+  
+      return eventos;
+    } catch (error) {
+      console.error('Error fetching events with estado:', error);
+      throw error;
+    }
   }
 
 
   async getOne(id) {
-    const evento = Evento.findByPk(id);
+    const evento = Evento.findByPk(id,{
+      include: [{
+        model: DiaEvento,
+      }]
+    });
     return evento;
   }
 

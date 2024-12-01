@@ -19,6 +19,11 @@ class UserService {
     return usuario;
   }
 
+  async getOneByConsumidorId(id) {
+    const usuario = await Usuario.findOne({ where: { consumidorId: id } });
+    return usuario;
+  }
+
   async getOneByCodigoDeRecuperacion(codigo) {
     const usuario = await Usuario.findOne({
       where: {
@@ -81,7 +86,6 @@ class UserService {
   }
 
   async create(usuario) {
-
     const user = {
       contraseña: createHashPW(usuario.contraseña),
       usuario: usuario.nombreDeUsuario,
@@ -122,7 +126,6 @@ class UserService {
   async updateRol(id, rol, datosRol) {
     const user = await Usuario.findOne({ where: { id: id } });
     if (user) {
-      console.log(datosRol);
       if (rol == 'productor') {
         const productor = await productorService.create(datosRol);
         const consumidor = await consumidorService.getOne(user.consumidoreId);
@@ -138,6 +141,7 @@ class UserService {
       } else if (rol == 'repartidor') {
         const repartidor = await repartidorService.create();
         const consumidor = await consumidorService.getOne(user.consumidoreId);
+        console.log(repartidor, consumidor);
         consumidor.repartidorId = repartidor.id;
         consumidor.save();
         user.tipoUsuario = 'repartidor';
@@ -186,21 +190,30 @@ class UserService {
     }
   }
 
-  async setTokens(userid,tokenWeb,tokenMobile) {
+  async setTokens(userid, tokenWeb, tokenMobile) {
     const usuario = await Usuario.findByPk(userid);
     if (usuario) {
-      if(tokenWeb!=null){
+      if (tokenWeb != null) {
         usuario.tokenWeb = tokenWeb;
       }
-      if(tokenMobile!=null){
-        usuario.tokenMobile=tokenMobile
+      console.log("tokenweb", tokenWeb);
+      if (tokenMobile != null) {
+        usuario.tokenMobile = tokenMobile;
       }
       await usuario.save();
       return usuario;
     }
   }
 
-  
+  async updateLocation(longitud, latitud, idUsuario) {
+    const usuario = await Usuario.findByPk(idUsuario);
+    if (usuario) {
+      usuario.longitud = longitud;
+      usuario.latitud = latitud;
+      await usuario.save();
+      return usuario;
+    }
+  }
 }
 
 export const userService = new UserService();

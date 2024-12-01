@@ -20,6 +20,7 @@ class PuestoController {
         });
       }
     } catch (e) {
+      console.log(e)
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',
@@ -245,6 +246,7 @@ class PuestoController {
       const estadoActual = puesto.estado;
       if (estadosPuestoDeComida[estadoActual] && estadosPuestoDeComida[estadoActual][accion]) {
         await estadosPuestoDeComida[estadoActual][accion](puesto);
+        res.status(200).json({ message: 'actualizacion correcta' });
       } else {
         res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
       }

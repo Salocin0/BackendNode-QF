@@ -228,7 +228,8 @@ class AsociacionController {
       const eventoid = req.params.eventoId;
       const puestoId = req.params.puestoId;
       const consumidorId = req.params.consumidorId;
-      const existingAsociacion = null;
+      console.log(puestoId);
+      let existingAsociacion = null;
       if(Number(puestoId)===0){
         existingAsociacion = await asociacionService.getEventoByRepartidor(Number(eventoid),Number(consumidorId))
       }else{
@@ -268,7 +269,7 @@ class AsociacionController {
 
       const existingAsociacion = await asociacionService.getEventoByRepartidor(Number(eventoid), Number(consumidorId));
       if (existingAsociacion) {
-        const asociacionNotificaciones = await asociacionService.sendNotificacionesWebRepartidorAsociacion(eventoid)
+        //const asociacionNotificaciones = await asociacionService.sendNotificacionesWebRepartidorAsociacion(eventoid)
 
         return res.status(400).json({
           status: 'error',
@@ -326,7 +327,7 @@ class AsociacionController {
       const asociacionCreada = await asociacionService.create(nuevaAsociacion, null, consumidorId);
 
       if (asociacionCreada) {
-        const asociacionNotificaciones = await asociacionService.sendNotificacionesWebEventoAsociacion(eventoid)
+        //const asociacionNotificaciones = await asociacionService.sendNotificacionesWebEventoAsociacion(eventoid)
 
         return res.status(200).json({
           status: 'success',
@@ -356,40 +357,63 @@ class AsociacionController {
   async getAllByConsumidorId(req, res) {
     try {
       const { consumidorId } = req.params;
+      
+      // Obtener el consumidor
       const consumidor = await Consumidor.findByPk(consumidorId);
-
+  
+      if (!consumidor) {
+        return res.status(404).json({
+          status: 'error',
+          msg: 'Consumidor not found',
+          code: 404,
+          data: {},
+        });
+      }
+  
       const encargadoId = consumidor.encargadoId;
-
+  
+      // Obtener todos los puestos relacionados al encargado
       const puestos = await Puesto.findAll({
-        where: {
-          encargadoId: encargadoId,
-        },
-        attributes: ['id'],
+        where: { encargadoId: encargadoId },
+        attributes: { exclude: ['createdAt', 'updatedAt'] }, // Puedes excluir campos si no los necesitas
       });
-
+  
+      // Obtener los IDs de los puestos
       const puestosIds = puestos.map((puesto) => puesto.id);
-
+  
+      // Obtener asociaciones relacionadas a los puestos
       const asociaciones = await Asociacion.findAll({
-        where: {
-          puestoId: puestosIds,
-        },
+        where: { puestoId: puestosIds },
+        include: [
+          {
+            model: Puesto,
+            attributes: { exclude: ['createdAt', 'updatedAt'] }, // Excluir campos innecesarios
+          },
+          {
+            model: Evento,
+            attributes: { exclude: ['createdAt', 'updatedAt'] }, // Incluir Evento y excluir campos innecesarios
+          },
+        ],
       });
-
+  
+      // Obtener IDs de eventos de las asociaciones
       const eventoIds = asociaciones.map((asociacion) => asociacion.eventoId);
-
+  
+      // Obtener eventos relacionados a las asociaciones
       const eventos = await Evento.findAll({
-        where: {
-          id: eventoIds,
-        },
+        where: { id: eventoIds },
+        attributes: { exclude: ['createdAt', 'updatedAt'] }, // Excluir campos innecesarios
       });
-
+  
       return res.status(200).json({
         status: 'success',
         msg: 'Eventos found',
         code: 200,
         data: {
-          eventos: eventos,
-          asociaciones: asociaciones,
+          consumidor: consumidor, // Incluir el consumidor en la respuesta
+          puestos: puestos,       // Incluir los puestos
+          asociaciones: asociaciones, // Incluir asociaciones
+          eventos: eventos,       // Incluir eventos
         },
       });
     } catch (error) {
@@ -402,6 +426,7 @@ class AsociacionController {
       });
     }
   }
+  
 
   async getAllByConsumidorR(req, res) {
     try {
@@ -430,6 +455,9 @@ class AsociacionController {
             {
               model: Repartidor,
               where: { id: repartidor.id },
+            },
+            {
+              model: Puesto,
             },
           ],
         });
