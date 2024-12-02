@@ -5,27 +5,31 @@ import { pedidoService } from '../services/pedido.service.js';
 import { puntoEncuentroService } from '../services/puntoEncuentro.service.js';
 
 export function procesosAutomaticos() {
-  cron.schedule('* * * * * */5', async () => {
+  cron.schedule('* * * * * */45', async () => {
     try {
       console.warn('procesosAutomaticos');
       await caducarAsignaciones();
       const pedidos = await obtenerPedidosParaAsignacion();
-
+      console.warn('pedidos pendientes de asignar',pedidos);
       for (const pedido of pedidos) {
         const existeAsignacion = await verificarAsignacionPorPedidoCompleto(pedido.id);
+        console.warn('existeAsignacion',existeAsignacion);
 
         if (!existeAsignacion) {
           const repartidorid = await obtenerRepartidor(pedido.eventoId, pedido.id);
           if (repartidorid.repartidoreId == -2) {
+            console.warn("error al asignar repartidor")
             //console.log("error al asignar repartidor")
             await borrarAsignacionesRechazadas();
             await borrarAsignacionesCaducadas();
           }
           if (repartidorid.repartidoreId == -1) {
+            console.warn("no hay repartidores disponibles")
             await borrarAsignacionesRechazadas();
             await borrarAsignacionesCaducadas();
           } else {
             if (repartidorid.repartidoreId) {
+                console.warn("hay repartidores disponibles")
               //console.log(`Asignación creada para pedido ${pedido.id} con repartidor ${repartidorid}`);
               await asignacionService.create('Pendiente', pedido.id, repartidorid.repartidoreId);
             }
