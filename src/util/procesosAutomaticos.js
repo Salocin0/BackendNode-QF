@@ -5,54 +5,53 @@ import { pedidoService } from '../services/pedido.service.js';
 import { puntoEncuentroService } from '../services/puntoEncuentro.service.js';
 
 export function procesosAutomaticos() {
-  cron.schedule('* * * * * */45', async () => {
-    try {
-      console.warn('procesosAutomaticos');
-      await caducarAsignaciones();
-      const pedidos = await obtenerPedidosParaAsignacion();
-      console.warn('pedidos pendientes de asignar',pedidos);
-      for (const pedido of pedidos) {
-        const existeAsignacion = await verificarAsignacionPorPedidoCompleto(pedido.id);
-        console.warn('existeAsignacion',existeAsignacion);
-
-        if (!existeAsignacion) {
-          const repartidorid = await obtenerRepartidor(pedido.eventoId, pedido.id);
-          if (repartidorid.repartidoreId == -2) {
-            console.warn("error al asignar repartidor")
-            //console.log("error al asignar repartidor")
-            await borrarAsignacionesRechazadas();
-            await borrarAsignacionesCaducadas();
-          }
-          if (repartidorid.repartidoreId == -1) {
-            console.warn("no hay repartidores disponibles")
-            await borrarAsignacionesRechazadas();
-            await borrarAsignacionesCaducadas();
-          } else {
-            if (repartidorid.repartidoreId) {
-                console.warn("hay repartidores disponibles")
-              //console.log(`Asignación creada para pedido ${pedido.id} con repartidor ${repartidorid}`);
-              await asignacionService.create('Pendiente', pedido.id, repartidorid.repartidoreId);
+    setInterval(async () => {
+      try {
+        console.warn('procesosAutomaticos');
+        await caducarAsignaciones();
+        const pedidos = await obtenerPedidosParaAsignacion();
+        console.warn('pedidos pendientes de asignar', pedidos);
+  
+        for (const pedido of pedidos) {
+          const existeAsignacion = await verificarAsignacionPorPedidoCompleto(pedido.id);
+          console.warn('existeAsignacion', existeAsignacion);
+  
+          if (!existeAsignacion) {
+            const repartidorid = await obtenerRepartidor(pedido.eventoId, pedido.id);
+            if (repartidorid.repartidoreId == -2) {
+              console.warn("error al asignar repartidor");
+              await borrarAsignacionesRechazadas();
+              await borrarAsignacionesCaducadas();
+            } else if (repartidorid.repartidoreId == -1) {
+              console.warn("no hay repartidores disponibles");
+              await borrarAsignacionesRechazadas();
+              await borrarAsignacionesCaducadas();
+            } else {
+              if (repartidorid.repartidoreId) {
+                console.warn("hay repartidores disponibles");
+                await asignacionService.create('Pendiente', pedido.id, repartidorid.repartidoreId);
+              }
             }
           }
         }
-      }
-
-      const pedidosActualizar = await obtenerPedidosParaActualizar();
-
-      for (const pedido of pedidosActualizar) {
-        const existeAsignacion = await verificarAsignacionPorPedido(pedido.id);
-
-        if (existeAsignacion) {
-          const repartidoridN = await obtenerRepartidorAsignado(pedido.id);
-          const idPE = await puntoEncuentroService.getAllInEvent(pedido.eventoId);
-          await pedidoService.setDatosExtraPedido(pedido.id, repartidoridN, generateCode(), idPE[0]);
+  
+        const pedidosActualizar = await obtenerPedidosParaActualizar();
+  
+        for (const pedido of pedidosActualizar) {
+          const existeAsignacion = await verificarAsignacionPorPedido(pedido.id);
+  
+          if (existeAsignacion) {
+            const repartidoridN = await obtenerRepartidorAsignado(pedido.id);
+            const idPE = await puntoEncuentroService.getAllInEvent(pedido.eventoId);
+            await pedidoService.setDatosExtraPedido(pedido.id, repartidoridN, generateCode(), idPE[0]);
+          }
         }
+      } catch (error) {
+        console.error('Error al actualizar pedidos:', error);
       }
-    } catch (error) {
-      console.error('Error al actualizar pedidos:', error);
-    }
-  });
-}
+    }, 10000); // Intervalo de 10 segundos (10,000 ms)
+  }
+  
 
 function generateCode() {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
