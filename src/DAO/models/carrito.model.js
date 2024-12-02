@@ -20,6 +20,10 @@ export const ItemCarrito = sequelize.define('ItemCarrito', {
     type: DataTypes.DATE,
     allowNull: true,
   },
+  eventoId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
 });
 
 Carrito.belongsToMany(Producto, { through: ItemCarrito });
@@ -28,7 +32,7 @@ Producto.belongsToMany(Carrito, { through: ItemCarrito });
 ItemCarrito.belongsTo(Carrito);
 ItemCarrito.belongsTo(Producto);
 
-Carrito.prototype.agregarProducto = async function (productoId, cantidad = 1, fecha = null) {
+Carrito.prototype.agregarProducto = async function (productoId, cantidad = 1, fecha = null,eventoId) {
   const producto = await Producto.findByPk(productoId);
   if (producto) {
     // Buscar el producto en el carrito, filtrando también por fecha (o su ausencia)
@@ -42,10 +46,10 @@ Carrito.prototype.agregarProducto = async function (productoId, cantidad = 1, fe
     if (itemCarrito && itemCarrito.length > 0) {
       // Si el producto ya existe con la misma fecha (incluido null), actualizamos la cantidad
       const nuevaCantidad = itemCarrito[0].ItemCarrito.cantidad + cantidad;
-      await this.addProducto(producto, { through: { cantidad: nuevaCantidad, fecha } });
+      await this.addProducto(producto, { through: { cantidad: nuevaCantidad, fecha,eventoId } });
     } else {
       // Si no existe, lo agregamos con la cantidad inicial y la fecha proporcionada
-      await this.addProducto(producto, { through: { cantidad, fecha } });
+      await this.addProducto(producto, { through: { cantidad, fecha , eventoId} });
     }
   }
 };

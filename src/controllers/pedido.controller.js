@@ -1,5 +1,6 @@
 import { estadosPedido } from '../estados/estados/estadosPedido.js';
 import { pedidoService } from '../services/pedido.service.js';
+import { puestoService } from '../services/puesto.service.js';
 
 class PedidoController {
   async getAllController(req, res) {
@@ -112,13 +113,15 @@ class PedidoController {
 
   async createOneController(req, res) {
     try {
-      const { detalles, consumidorId, total, puestoId,fecha,precompra } = req.body;
+      const { detalles, consumidorId, total, puestoId,fecha,precompra,eventoId } = req.body;
+      const puesto = puestoService.getOne(puestoId);
       var nuevoPedido = {
         fecha: Date.now(),
         consumidorId: consumidorId,
         total: total,
         estado: 'Pendiente',
         puestoId: puestoId,
+        eventoId: eventoId,
         fechaPreCompra: !isNaN(new Date(fecha).getTime()) ? new Date(fecha) : null
       };
       if(precompra){

@@ -64,8 +64,9 @@ class CarritoController {
       const consumidorId = req.headers['consumidorid'];
       const productoId = req.params.productoId;
       const fecha = req.body.fecha;
+      const eventoId = req.body.eventoId;
       console.log(req.body);
-      const carrito = await carritoService.addToCart(consumidorId, productoId,fecha);
+      const carrito = await carritoService.addToCart(consumidorId, productoId,fecha,eventoId);
 
       return res.status(200).json({
         status: 'success',
