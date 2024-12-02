@@ -68,42 +68,46 @@ INSERT INTO public.eventos
 )
 VALUES
 (
-    'Evento Musical', 'Concierto de música en vivo', 'Concierto', 'Pago en Efectivo', 
+    'Festival de la Manzana', 'Concierto de música y la manzana', 'Concierto', 'Pago en Efectivo', 
     10, true, true, false, 
     'https://infoe.com/evento1', 'Plaza Central', true, 
-    'Villa María', 'Córdoba', NULL, 'EnCurso', 
+    'Villa María', 'Córdoba', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSPE80V2V0eGl6j61irCVaWTQQl-wBef67UQ&s
+', 'EnCurso', 
     NOW(), NOW(), 1
 ),
 -- Evento 2
 (
-    'Feria Artesanal', 'Exposición y venta de artesanías locales', 'Feria', 'Pago con Tarjeta', 
+    'Festival de la Vendimia', 'Festival de la Vendimia y artesanías locales', 'Feria', 'Pago con Tarjeta', 
     20, true, true, true, 
     'https://infoe.com/evento2', 'Parque Central', true, 
-    'Icaño', 'Catamarca', NULL, 'EnCurso', 
+    'Icaño', 'Catamarca', 'https://vendimia.mendoza.gov.ar/wp-content/uploads/2024/02/logo_tipografico2.png
+', 'EnCurso', 
     NOW(), NOW(), 1
 ),
 -- Evento 3
 (
-    'Teatro al Aire Libre', 'Obra de teatro en espacio abierto', 'Teatro', 'Pago en Efectivo', 
+    'Santa Fest', 'Obra de teatro en espacio abierto', 'Teatro', 'Pago en Efectivo', 
     15, true, true, true, 
     'https://infoe.com/evento3', 'Anfiteatro', true, 
-    'Villa María', 'Córdoba', NULL, 'Confirmado', 
+    'Villa María', 'Córdoba', 'https://www.prensaplus.com.ar/wp-content/uploads/2023/07/93.png 
+', 'Confirmado', 
     NOW(), NOW(), 1
 ),
 -- Evento 4
 (
-    'Festival Gastronómico', 'Muestra y venta de comidas típicas', 'Festival', 'Pago con Tarjeta', 
+    'Fiesta Nacional del Trigo', 'Muestra y venta de comidas típicas', 'Festival', 'Pago con Tarjeta', 
     25, true, true, false,
     'https://infoe.com/evento4', 'Quality Espacio', true, 
-    'Ciudad de Córdoba', 'Córdoba', NULL, 'Confirmado', 
+    'Ciudad de Córdoba', 'Córdoba', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0HogJfW578sArIJBeQZJT3Uq1tUMv0sDJYQ&s
+', 'Confirmado', 
     NOW(), NOW(), 1
 ),
 -- Evento 5
 (
-    'Carrera de Maratón', 'Competencia de maratón en la ciudad', 'Deportivo', 'Pago en Efectivo', 
+    'Fiesta Nacional de la Pelota de Futbol', 'Futbol 5 en la ciudad', 'Deportivo', 'Pago en Efectivo', 
     5, true, true, true, 
     'https://infoe.com/evento5', 'Ciudad Completa', true, 
-    'Catamarca', 'Catamarca', NULL, 'EnPreparacion', 
+    'Catamarca', 'Catamarca', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeJ2xrmNjSWqJgPtqSL1v_pPhx8MkAP_jzMQ&s ', 'EnPreparacion', 
     NOW(), NOW(), 1
 );
 
@@ -192,11 +196,11 @@ VALUES
 --set puntos de encuento a evento 1
 INSERT INTO public."puntoEncuentros" (nombre, longitud, latitud, habilitado, "createdAt", "updatedAt", "eventoId")
 VALUES 
-('Punto de Encuentro 1', '-58.381592', '-34.603722', true, NOW(), NOW(), 1),
-('Punto de Encuentro 2', '-58.381692', '-34.603822', true, NOW(), NOW(), 1),
-('Punto de Encuentro 3', '-58.381792', '-34.603922', true, NOW(), NOW(), 1),
-('Punto de Encuentro 4', '-58.381892', '-34.604022', true, NOW(), NOW(), 1),
-('Punto de Encuentro 5', '-58.381992', '-34.604122', true, NOW(), NOW(), 1);
+('Punto de Encuentro 1', '-63.260492', '-32.416122', true, NOW(), NOW(), 1),
+('Punto de Encuentro 2', '-63.265492', '-32.426122', true, NOW(), NOW(), 1),
+('Punto de Encuentro 3', '-63.250492', '-32.410122', true, NOW(), NOW(), 1),
+('Punto de Encuentro 4', '-63.255492', '-32.420122', true, NOW(), NOW(), 1),
+('Punto de Encuentro 5', '-63.240492', '-32.406122', true, NOW(), NOW(), 1);
 
 --set 3 puestos
 -- Insertar 3 registros en la tabla public.puestos, todos asociados al encargado con id 1
@@ -213,11 +217,11 @@ INSERT INTO public.puestos (
     "updatedAt", 
     "encargadoId"
 ) VALUES
-    ('Gourmet Green Food', 201, 'Comida Vegana', '', '', '5551234567', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Parrilla Miguelito', 202, 'Carnes Asadas', '', '', '5559876543', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Taco Fiesta', 203, 'Comida Mexicana', '', '', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Healty Food Truck', 204, 'Comida Sin Gluten', '', '', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Indian Food Truck', 205, 'Comida India', '', '', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
+    ('Gourmet Green Food', 201, 'Comida Vegana', '', 'https://fullcarros.cl/wp-content/uploads/2022/04/LOGO_2-removebg-preview.png', '5551234567', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Parrilla Miguelito', 202, 'Carnes Asadas', '', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpH_sLltuI2T6VRfjfhq6wBE9Qhq5r-f-jmengHs4i29i8o0KW1quzokYPzkRvSfPUrKU&usqp=CAU', '5559876543', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Taco Fiesta', 203, 'Comida Mexicana', '', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmt81gsbTC7LF0TSCB6p67jY7P-rabDKrb3ABy33kJe8HvBTQillyc9uOoFkDZJkchm38&usqp=CAU', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Healty Food Truck', 204, 'Comida Sin Gluten', '', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzOeZT0GSBOYHed3cPlS5k9Xd71cKXcqmVe2CtYsOqEzrMVMs9v4VfVxPrbpP2lKtBRFw&usqp=CAU', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Indian Food Truck', 205, 'Comida India', '', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRshbh5R0SRK3y2oV5Gb23RMcZsv8EzE8e4oB4vLkZg_kTCCgDaRGTNlZfaxBWb_h8kOlM&usqp=CAU', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
 
 --set asociacion repartidor a evento 1
 INSERT INTO public."Asociacions" (
@@ -313,9 +317,9 @@ INSERT INTO public.productos (
     "updatedAt", 
     "puestoId"
 ) VALUES
-    ('Producto 1 - Puesto 1', 'Descripción del producto 1', 'Aderezo 1', '', 10.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Producto 2 - Puesto 1', 'Descripción del producto 2', 'Aderezo 2', '', 12.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Producto 3 - Puesto 1', 'Descripción del producto 3', 'Aderezo 3', '', 8.75, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
+    ('Hamburgesa', 'Hamburgesa', 'Aderezo 1', 'https://pedidosya.dhmedia.io/image/pedidosya/only-home-squad/new-redirect/primary/restaurantes-primary.png', 10.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Nuggets', 'Nuggets', 'Aderezo 2', 'https://pedidosya.dhmedia.io/image/pedidosya/only-home-squad/new-redirect/primary/pollo-primary-v2.png', 12.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Pizza', 'Pizza', 'Aderezo 3', 'https://newbarmdp.com/wp-content/uploads/unnamedty.png', 8.75, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
 
 
 INSERT INTO public.productos (
@@ -329,9 +333,9 @@ INSERT INTO public.productos (
     "updatedAt", 
     "puestoId"
 ) VALUES
-    ('Producto 1 - Puesto 2', 'Descripción del producto 1', 'Aderezo 1', '', 15.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2),
-    ('Producto 2 - Puesto 2', 'Descripción del producto 2', 'Aderezo 2', '', 18.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2),
-    ('Producto 3 - Puesto 2', 'Descripción del producto 3', 'Aderezo 3', '', 11.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2);
+    ('Chori', 'Chori', 'Aderezo 1', 'https://iloveburgerjoint.com/cdn/shop/files/chori-burger-web.png?v=1684920612', 15.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2),
+    ('Lomito', 'Lomito', 'Aderezo 2', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8lHVwyj6cWv5YC2ZsGMNl8JDyJ6GKrB4Gwg&s', 18.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2),
+    ('Nuggets', 'Nuggets', 'Aderezo 3', 'https://pedidosya.dhmedia.io/image/pedidosya/only-home-squad/new-redirect/primary/pollo-primary-v2.png', 11.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2);
 
 INSERT INTO public.productos (
     nombre, 
@@ -344,9 +348,9 @@ INSERT INTO public.productos (
     "updatedAt", 
     "puestoId"
 ) VALUES
-    ('Producto 1 - Puesto 3', 'Descripción del producto 1', 'Aderezo 1', '', 9.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3),
-    ('Producto 2 - Puesto 3', 'Descripción del producto 2', 'Aderezo 2', '', 14.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3),
-    ('Producto 3 - Puesto 3', 'Descripción del producto 3', 'Aderezo 3', '', 7.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3);
+    ('Hamburgesa', 'Hamburgesa', 'Aderezo 1', 'https://pedidosya.dhmedia.io/image/pedidosya/only-home-squad/new-redirect/primary/restaurantes-primary.png', 9.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3),
+    ('Pizza', 'Pizza', 'Aderezo 2', 'https://newbarmdp.com/wp-content/uploads/unnamedty.png', 14.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3),
+    ('Lomito', 'Lomito', 'Aderezo 3', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8lHVwyj6cWv5YC2ZsGMNl8JDyJ6GKrB4Gwg&s', 7.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3);
 
 -- Insertar 5 pedidos
 
