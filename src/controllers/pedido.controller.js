@@ -122,7 +122,7 @@ class PedidoController {
         estado: 'Pendiente',
         puestoId: puestoId,
         eventoId: eventoId,
-        fechaPreCompra: !isNaN(new Date(fecha).getTime()) ? new Date(fecha) : null
+        fechaPreCompra: !isNaN(new Date(precompra).getTime()) ? new Date(precompra) : null
       };
       if(precompra){
         nuevoPedido.estado="Precomprado"
