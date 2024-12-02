@@ -5,6 +5,7 @@ export const RouterPedido = express.Router();
 RouterPedido.get('/', pedidoController.getAllController);
 
 RouterPedido.get('/puesto', pedidoController.getAllPuestoController);
+RouterPedido.get('/puesto/:id', pedidoController.getAllPedidosOnePuestoController);
 
 RouterPedido.get('/repartidor', pedidoController.getAllRepartidorController);
 

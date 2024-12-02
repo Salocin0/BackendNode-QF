@@ -6,6 +6,7 @@ import { entregado } from '../estadosConcretoPedido/entregadoPedido.state.js';
 import { listo } from '../estadosConcretoPedido/listoPedido.state.js';
 import { pendiente } from '../estadosConcretoPedido/pendientePedido.state.js';
 import { valorar } from '../estadosConcretoPedido/valorarPedido.state.js';
+import { precomprado } from '../estadosConcretoPedido/precompradoPedido.state.js';
 
 export const estadosPedido = {
   Pendiente: {
@@ -41,7 +42,39 @@ export const estadosPedido = {
       return pendiente.valorar(pedido);
     },
   },
+  Precomprado: {
+    crearPedido: async (pedido) => {
+      return precomprado.crearPedido(pedido);
+    },
 
+    aceptar: async (pedido) => {
+      return precomprado.aceptar(pedido);
+    },
+
+    cancelar: async (pedido) => {
+      return precomprado.cancelar(pedido);
+    },
+
+    preparar: async (pedido) => {
+      return precomprado.preparar(pedido);
+    },
+
+    pedidoPreparado: async (pedido) => {
+      return precomprado.pedidoPreparado(pedido);
+    },
+
+    pedidoEntregado: async (pedido) => {
+      return precomprado.pedidoEntregado(pedido);
+    },
+
+    asignar: async (pedido) => {
+      return precomprado.asignar(pedido);
+    },
+
+    valorar: async (pedido) => {
+      return precomprado.valorar(pedido);
+    },
+  },
   Aceptado: {
     crearPedido: async (pedido) => {
       return aceptado.crearPedido(pedido);

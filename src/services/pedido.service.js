@@ -99,6 +99,31 @@ class PedidoService {
     console.log('Pedidos obtenidos:', pedidos);
     return pedidos;
   }
+
+  async getAllPedidosOnePuesto(idPuesto) {
+    const pedidos = await Pedido.findAll({
+      where: {
+        puestoId: idPuesto,
+      },
+      include: [
+        {
+          model: DetallePedido,
+          as: 'detalles',
+          include: [
+            {
+              model: Producto,
+              as: 'producto',
+            },
+          ],
+        },
+        { model: Puesto },
+      ],
+    });
+
+    console.log('Pedidos obtenidos:', pedidos);
+    return pedidos;
+  }
+  
   
   async getAllRepartidor(consumidorId) {
     const consumidor = await Consumidor.findOne({

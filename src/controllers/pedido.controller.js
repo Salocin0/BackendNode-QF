@@ -30,6 +30,34 @@ class PedidoController {
     }
   }
 
+  async getAllPedidosOnePuestoController(req, res) {
+    try {
+      const consumidorId = req.headers['consumidorid'];
+      const idPuesto = req.params.id;
+      const pedidos = await pedidoService.getAllPedidosOnePuesto(idPuesto);
+      if (pedidos) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found all pedidos',
+          data: pedidos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'pedidos not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
   async getAllPuestoController(req, res) {
     try {
       const consumidorId = req.headers['consumidorid'];
