@@ -217,11 +217,11 @@ INSERT INTO public.puestos (
     "updatedAt", 
     "encargadoId"
 ) VALUES
-    ('Gourmet Green Food', 201, 'Comida Vegana', '', 'https://fullcarros.cl/wp-content/uploads/2022/04/LOGO_2-removebg-preview.png', '5551234567', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Parrilla Miguelito', 202, 'Carnes Asadas', '', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpH_sLltuI2T6VRfjfhq6wBE9Qhq5r-f-jmengHs4i29i8o0KW1quzokYPzkRvSfPUrKU&usqp=CAU', '5559876543', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Taco Fiesta', 203, 'Comida Mexicana', '', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmt81gsbTC7LF0TSCB6p67jY7P-rabDKrb3ABy33kJe8HvBTQillyc9uOoFkDZJkchm38&usqp=CAU', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Healty Food Truck', 204, 'Comida Sin Gluten', '', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzOeZT0GSBOYHed3cPlS5k9Xd71cKXcqmVe2CtYsOqEzrMVMs9v4VfVxPrbpP2lKtBRFw&usqp=CAU', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Indian Food Truck', 205, 'Comida India', '', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRshbh5R0SRK3y2oV5Gb23RMcZsv8EzE8e4oB4vLkZg_kTCCgDaRGTNlZfaxBWb_h8kOlM&usqp=CAU', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
+    ('Full Carros Food', 201, 'Comida Vegana', '', 'https://fullcarros.cl/wp-content/uploads/2022/04/LOGO_2-removebg-preview.png', '5551234567', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Entre Carros', 202, 'Carnes Asadas', '', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpH_sLltuI2T6VRfjfhq6wBE9Qhq5r-f-jmengHs4i29i8o0KW1quzokYPzkRvSfPUrKU&usqp=CAU', '5559876543', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('El Carrito Chef', 203, 'Comida Mexicana', '', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmt81gsbTC7LF0TSCB6p67jY7P-rabDKrb3ABy33kJe8HvBTQillyc9uOoFkDZJkchm38&usqp=CAU', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Que Carrico', 204, 'Comida Sin Gluten', '', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzOeZT0GSBOYHed3cPlS5k9Xd71cKXcqmVe2CtYsOqEzrMVMs9v4VfVxPrbpP2lKtBRFw&usqp=CAU', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Carritos Calderon', 205, 'Comida India', '', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRshbh5R0SRK3y2oV5Gb23RMcZsv8EzE8e4oB4vLkZg_kTCCgDaRGTNlZfaxBWb_h8kOlM&usqp=CAU', '5551122334', 'Creado', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
 
 --set asociacion repartidor a evento 1
 INSERT INTO public."Asociacions" (
