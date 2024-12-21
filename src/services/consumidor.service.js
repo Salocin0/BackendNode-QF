@@ -86,12 +86,12 @@ class ConsumidorService {
       if (!consumidor) {
         return null;
       } else {
-        consumidor.nombre = newData.nombreC;
-        consumidor.apellido = newData.apellidoC;
-        consumidor.provincia = newData.provinciaC;
+        consumidor.nombre = newData.nombre;
+        consumidor.apellido = newData.apellido;
+        consumidor.provincia = newData.provincia;
         consumidor.localidad = newData.localidad;
         consumidor.telefono = newData.telefono;
-        consumidor.dni = newData.dniC;
+        consumidor.dni = newData.dni;
       }
       await consumidor.save();
       return consumidor;

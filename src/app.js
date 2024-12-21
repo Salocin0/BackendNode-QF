@@ -121,7 +121,7 @@ async function connectDB() {
     DatosIniciales() //COMENTAR SI FORCE SE COLOCA EN FALSE
     //generateAllData() //COMENTAR SI FORCE SE COLOCA EN FALSE
     procesosAutomaticos();
-
+    
   } catch (error) {
     console.error('Error al conectar con la base de datos:', error);
   }

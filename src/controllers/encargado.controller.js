@@ -59,8 +59,8 @@ class EncargadoController {
     try {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
-      const { razonSocialEPC, cuitEPC, condicionIva } = req.body;
-      const result = await encargadoService.updateOne(consumidor.encargadoId, { razonSocialEPC, cuitEPC, condicionIva });
+      const { razonSocialEPC, cuitEPC, condicionEPC } = req.body;
+      const result = await encargadoService.updateOne(consumidor.encargadoId, { razonSocialEPC, cuitEPC, condicionEPC });
       return res.status(200).json({
         status: 'success',
         msg: 'Encargado actualizado correctamente',
@@ -82,8 +82,7 @@ class EncargadoController {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
       const idEncargado = consumidor.encargadoId;
-      const idUser = consumidor.usuarioId;
-      const result = await encargadoService.updateOneHabilitacion(idEncargado, idUser);
+      const result = await encargadoService.updateOneHabilitacion(idEncargado, id);
       if (result) {
         return res.status(200).json({
           status: 'success',
@@ -112,7 +111,7 @@ class EncargadoController {
     try {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
-      const result = await encargadoService.deleteOne(consumidor.encargadoId, consumidor.usuarioId);
+      const result = await encargadoService.deleteOne(consumidor.encargadoId,id);
       return res.status(200).json({
         status: 'success',
         msg: 'Encargado eliminado correctamente',

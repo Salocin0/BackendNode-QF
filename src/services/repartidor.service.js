@@ -12,9 +12,13 @@ class RepartidorService {
     return repartidor;
   }
 
-  async updateOne(idRepartidor, idUser) {
+  async updateOne(idRepartidor, consumidorId) {
     const repartidor = await Repartidor.findByPk(idRepartidor);
-    const usuario = await Usuario.findByPk(idUser);
+    const usuario = await Usuario.findOne({
+      where: {
+        consumidorId: consumidorId,
+      },
+    })
     if (repartidor) {
       repartidor.habilitado = true;
       await repartidor.save();
@@ -31,10 +35,14 @@ class RepartidorService {
     return repartidorCreado;
   }
 
-  async deleteOne(idRepartidor, idUser) {
+  async deleteOne(idRepartidor, idconsumidor) {
     try {
       const repartidor = await Repartidor.findByPk(idRepartidor);
-      const usuario = await Usuario.findByPk(idUser);
+      const usuario = await Usuario.findOne({
+        where: {
+          consumidorId: idconsumidor,
+        },
+      })
       if (!repartidor) {
         return null;
       }

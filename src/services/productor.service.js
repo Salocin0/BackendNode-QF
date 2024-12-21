@@ -63,7 +63,11 @@ class ProductorService {
 
 
     const productor = await Productor.findByPk(idProductor);
-    const usuario = await Usuario.findByPk(idUser);
+    const usuario = await Usuario.findOne({
+      where: {
+        consumidorId: idUser,
+      },
+    });
 
     console.log(productor);
     if (productor) {
@@ -95,10 +99,14 @@ class ProductorService {
     }
   }
 
-  async deleteOne(idProductor, idUser) {
+  async deleteOne(idProductor, consumidorid) {
     try {
       const productor = await Productor.findByPk(idProductor);
-      const usuario = await Usuario.findByPk(idUser);
+      const usuario = await Usuario.findOne({
+        where: {
+          consumidorId: consumidorid,
+        },
+      });
 
       if (!productor) {
         return null;

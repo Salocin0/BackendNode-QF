@@ -57,8 +57,7 @@ class RepartidorController {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
       const idRepartidor = consumidor.repartidorId;
-      const idUser = consumidor.usuarioId;
-      const result = await repartidorService.updateOne(idRepartidor, idUser);
+      const result = await repartidorService.updateOne(idRepartidor, id);
       if (result) {
         return res.status(200).json({
           status: 'success',
@@ -74,6 +73,7 @@ class RepartidorController {
         });
       }
     } catch (e) {
+      console.log(e)
       return res.status(500).json({
         status: 'error',
         msg: 'Something went wrong :(',
@@ -118,7 +118,7 @@ class RepartidorController {
     try {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
-      const result = await repartidorService.deleteOne(consumidor.repartidorId, consumidor.usuarioId);
+      const result = await repartidorService.deleteOne(consumidor.repartidorId, id);
       return res.status(200).json({
         status: 'success',
         msg: 'Repartidor eliminado correctamente',
@@ -126,6 +126,7 @@ class RepartidorController {
         data: result,
       });
     } catch (e) {
+      console.error(e);
       return res.status(500).json({
         status: 'error',
         msg: 'Ocurrió un error al eliminar el repartidor :(',

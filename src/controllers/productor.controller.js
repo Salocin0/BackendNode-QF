@@ -87,8 +87,7 @@ class ProductorController {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
       const idProductor = consumidor.productorId;
-      const idUser = consumidor.usuarioId;
-      const result = await productorService.updateOneHabilitacion(idProductor, idUser);
+      const result = await productorService.updateOneHabilitacion(idProductor, id);
       if (result) {
         return res.status(200).json({
           status: 'success',
@@ -154,7 +153,7 @@ class ProductorController {
 
       console.log('Este  es el ID: ' + consumidor.productorId);
 
-      const result = await productorService.deleteOne(consumidor.productorId, consumidor.usuarioId);
+      const result = await productorService.deleteOne(consumidor.productorId, id);
 
       return res.status(200).json({
         status: 'success',

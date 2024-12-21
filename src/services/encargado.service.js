@@ -41,20 +41,15 @@ class EncargadoService {
   }
 
   async updateOne(id, newData) {
-    console.log('New data' + newData.razonSocialEPC);
-    console.log('New data' + newData.cuitEPC);
-
     try {
       const encargado = await Encargado.findByPk(id);
-      console.log(encargado.cuit);
-      console.log(encargado.razonSocial);
 
       if (!encargado) {
         return null;
       } else {
         encargado.razonSocial = newData.razonSocialEPC;
         encargado.cuit = newData.cuitEPC;
-        encargado.condicionIva = newData.condicionIva;
+        encargado.condicionIva = newData.condicionEPC;
       }
 
       await encargado.save();
@@ -67,9 +62,13 @@ class EncargadoService {
     }
   }
 
-  async updateOneHabilitacion(idEncargado, idUser) {
+  async updateOneHabilitacion(idEncargado, idconsumidor) {
     const encargado = await Encargado.findByPk(idEncargado);
-    const usuario = await Usuario.findByPk(idUser);
+    const usuario = await Usuario.findOne({
+      where: {
+        consumidorId: idconsumidor,
+      },
+    })
 
     console.log(encargado);
     if (encargado) {
@@ -85,12 +84,16 @@ class EncargadoService {
     }
   }
 
-  async deleteOne(idEncargado, idUser) {
+  async deleteOne(idEncargado, consumidorid) {
     try {
       const encargado = await Encargado.findByPk(idEncargado);
-      const usuario = await Usuario.findByPk(idUser);
+      const usuario = await Usuario.findOne({
+        where: {
+          consumidorId: consumidorid,
+        },
+      })
 
-      if (!encargado) {
+      if (!encargado || !usuario) {
         return null;
       }
 
