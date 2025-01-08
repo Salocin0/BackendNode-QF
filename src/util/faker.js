@@ -55,13 +55,30 @@ export async function generateUsers(count = 100) {
       for (let j = 0; j < 15; j++) {
         // Fetch a random "puesto" (shop)
         const puesto = await Puesto.findOne({ order: Sequelize.literal('random()') });
-        
+
         // Random event ID from [6, 7, 8]
         const eventoId = faker.helpers.arrayElement([6, 7, 8]);
 
+        // Fetch event days for the selected event
+        const diasEvento = await DiaEvento.findAll({ where: { eventoId } });
+        if (diasEvento.length === 0) {
+          console.warn(`No se encontraron días para el evento ${eventoId}.`);
+          continue; // Saltar al siguiente pedido si no hay días para el evento
+        }
+
+        // Choose a random day from the event days
+        const diaEvento = faker.helpers.arrayElement(diasEvento);
+
+        // Generate a random date and time within the day
+        const fechaInicio = new Date(diaEvento.fechaHoraInicioDiaEvento);
+        const fechaFin = new Date(diaEvento.fechaHoraFinDiaEvento);
+        const fechaPedido = new Date(
+          faker.date.between({ from: fechaInicio, to: fechaFin })
+        );
+
         // Create the order with estado "Entregado"
         const pedido = await Pedido.create({
-          fecha: new Date(),
+          fecha: fechaPedido,
           consumidorId: consumidor.id,
           puestoId: puesto.id,
           eventoId: eventoId,
@@ -69,8 +86,6 @@ export async function generateUsers(count = 100) {
           total: 0, // Placeholder for now
           createdAt: new Date(),
           updatedAt: new Date(),
-          //fecha de entrega al repartidor (entre 5 y 20 min)
-          //fecha de entrega al consumidor (entre 7 a 15 min)
         });
 
         let total = 0;
@@ -100,7 +115,7 @@ export async function generateUsers(count = 100) {
         // Update the total amount for the order
         await pedido.update({ total });
 
-        console.log(`Pedido ${j + 1} for Consumidor ${consumidor.id} created successfully with total ${total}.`);
+        console.log(`Pedido ${j + 1} para Consumidor ${consumidor.id} creado exitosamente con total ${total}.`);
       }
 
       console.log(`Usuario ${i + 1} y Consumidor ${consumidor.id} creados exitosamente.`);
@@ -109,8 +124,6 @@ export async function generateUsers(count = 100) {
     }
   }
 }
-
-
 
 export async function generateEncargado(count) {
   for (let i = 0; i < count; i++) {
@@ -168,20 +181,20 @@ export async function generateEncargado(count) {
             puesto: puesto.id,
           });
         }
-        Asociacion.create({
+        const a1 = await Asociacion.create({
           estado: 'Aceptada',
           eventoId: 6,
-          puesto: puesto.id,
+          puestoId: puesto.id,
         });
-        Asociacion.create({
+        const a2 = await Asociacion.create({
           estado: 'Aceptada',
           eventoId: 7,
-          puesto: puesto.id,
+          puestoId: puesto.id,
         });
-        Asociacion.create({
+        const a3 = await Asociacion.create({
           estado: 'Aceptada',
           eventoId: 8,
-          puesto: puesto.id,
+          puestoId: puesto.id,
         });
       }
       console.log(`puestos productos creados`);
@@ -227,32 +240,32 @@ export async function generateRepartidor(count) {
       Asociacion.create({
         estado: 'Aceptada',
         eventoId: 6,
-        puesto: repartidor.id,
+        repartidoreId: repartidor.id,
       });
       Asociacion.create({
         estado: 'Aceptada',
         eventoId: 7,
-        puesto: repartidor.id,
+        repartidoreId: repartidor.id,
       });
       Asociacion.create({
         estado: 'Aceptada',
         eventoId: 8,
-        puesto: repartidor.id,
+        repartidoreId: repartidor.id,
       });
       Asociacion.create({
         estado: 'Aceptada',
         eventoId: 6,
-        puesto: 1,
+        repartidoreId: 1,
       });
       Asociacion.create({
         estado: 'Aceptada',
         eventoId: 7,
-        puesto: 1,
+        repartidoreId: 1,
       });
       Asociacion.create({
         estado: 'Aceptada',
         eventoId: 8,
-        puesto: 1,
+        repartidoreId: 1,
       });
 
       console.log(`puestos productos creados`);
@@ -276,7 +289,7 @@ export async function generateEvents(count) {
       const descripcion = descripciones[i % descripciones.length];
       const tipoEvento = tiposEvento[i % tiposEvento.length];
       const tipoPago = tiposPago[i % tiposPago.length];
-      const productor = Productor.findOne({ where: { id: 1 } });
+      const productor = await Productor.findOne({ where: { id: 1 } });
       // Crear el evento
       const evento = await Evento.create({
         nombre: nombre,
@@ -300,7 +313,7 @@ export async function generateEvents(count) {
         cantidadDiasEvento: 3,
         createdAt: new Date(),
         updatedAt: new Date(),
-        productorId: productor.id,
+        productorId: productor.id || 1,
       });
 
       // Crear días de evento
@@ -342,6 +355,6 @@ export async function generateAllData() {
   await generateEncargado(1); //crear un encargado de puesto //crear 6 puestos para distintos 3 para el EP 1 y 3 para el EP 2 //crear 10 productos (comida/bebida) para cada puesto con la tematica correspondiente  //crear 6 asociaciones para los puestos a los eventos
   await generateRepartidor(1); //crear un repartidor //crear 2 asociaciones para el repartidor 1 y 2 a los 3 eventos
 
-  await generateUsers(100); //crear 100 consumidores distintos
+  await generateUsers(20); //crear 100 consumidores distintos
   //crear 5 compras por consumidor a puestos distintos, horas distintas, a lo largo del evento y con cantidades distintas //crear para los pedidos que aproximadamente 1 de cada 5 se califiquen
 }

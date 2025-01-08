@@ -33,7 +33,7 @@ import { RouterRepartidor } from './routes/repartidor.router.js';
 import { RouterRestriccion } from './routes/restriccion.router.js';
 import { RouterUser } from './routes/user.router.js';
 import { RouterValoracion } from './routes/valoracion.router.js';
-
+import { RouterEstadisticas } from './routes/estadisticas.router.js';
 import  RouterChatbot  from './routes/chatbot.router.js'
 import dotenv from 'dotenv';
 import express from 'express';
@@ -114,12 +114,13 @@ app.use('/asignaciones',RouterAsignaciones);
 app.use('/notificaciones', RouterNotificacion);
 app.use('/payment-sheet', PaymentRouter);
 app.use('/chatbot', RouterChatbot)
+app.use('/estadisticas', RouterEstadisticas)
 
 async function connectDB() {
   try {
     await sequelize.sync({ force: true }); // false no modifica la base de datos
-    DatosIniciales() //COMENTAR SI FORCE SE COLOCA EN FALSE
-    generateAllData() //COMENTAR SI FORCE SE COLOCA EN FALSE
+    await DatosIniciales() //COMENTAR SI FORCE SE COLOCA EN FALSE
+    await generateAllData() //COMENTAR SI FORCE SE COLOCA EN FALSE
     procesosAutomaticos();
     
   } catch (error) {
