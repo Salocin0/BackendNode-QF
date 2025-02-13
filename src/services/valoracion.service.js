@@ -39,6 +39,7 @@ class ValoracionService {
           puntuacion: valoracionPuesto,
           opinion: opinion,
           puestoId: idPuestoAsociado,
+          pedidoId: idPedido,
         });
       }
       if (idRepartidor!=null) {
@@ -46,6 +47,7 @@ class ValoracionService {
           puntuacion: valoracionRepartidor,
           opinion: opinion,
           repartidorId: idRepartidor,
+          pedidoId: idPedido,
         });
       }
 

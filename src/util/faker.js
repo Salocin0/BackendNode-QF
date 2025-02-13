@@ -13,6 +13,7 @@ import { Pedido } from '../DAO/models/pedido.model.js';
 import { DetallePedido } from '../DAO/models/detallePedido.model.js';
 import { Sequelize } from 'sequelize';
 import { Productor } from '../DAO/models/Productor.model.js';
+import { ValoracionPuesto } from '../DAO/models/valoracionCarrito.model.js';
 
 const provincias = ['Buenos Aires', 'Córdoba', 'Santa Fe', 'Mendoza', 'Tucumán', 'Salta', 'Chaco', 'Entre Ríos', 'Misiones', 'San Juan'];
 const localidades = ['La Plata', 'Córdoba', 'Rosario', 'Mendoza', 'San Miguel de Tucumán', 'Salta', 'Resistencia', 'Paraná', 'Posadas', 'San Juan'];
@@ -26,8 +27,8 @@ export async function generateUsers(count = 100) {
   for (let i = 0; i < count; i++) {
     try {
       const consumidor = await Consumidor.create({
-        nombre: faker.name.firstName(),
-        apellido: faker.name.lastName(),
+        nombre: faker.person.fullName(),
+        apellido: faker.person.lastName(),
         fechaNacimiento: faker.date.birthdate(),
         dni: faker.number.bigInt({ min: 10000000, max: 99999999 }),
         localidad: faker.helpers.arrayElement(localidades),
@@ -39,7 +40,7 @@ export async function generateUsers(count = 100) {
       });
 
       const usuario = await Usuario.create({
-        usuario: faker.name.firstName() + faker.name.lastName() + faker.name.middleName(),
+        usuario: faker.person.firstName() + faker.person.lastName() + faker.person.middleName(),
         email: faker.internet.email(),
         emailValidado: true,
         contraseña: '$2b$10$icYmS6HeA3KGP7jP6ZbXZ.PhckTo63o1xSxReMhTl63LVs/5BcA/.', // hashed password
@@ -66,56 +67,85 @@ export async function generateUsers(count = 100) {
           continue; // Saltar al siguiente pedido si no hay días para el evento
         }
 
-        // Choose a random day from the event days
+        // Elegir un día aleatorio de los días del evento
         const diaEvento = faker.helpers.arrayElement(diasEvento);
 
-        // Generate a random date and time within the day
+        // Generar una fecha aleatoria dentro del día
         const fechaInicio = new Date(diaEvento.fechaHoraInicioDiaEvento);
         const fechaFin = new Date(diaEvento.fechaHoraFinDiaEvento);
-        const fechaPedido = new Date(
-          faker.date.between({ from: fechaInicio, to: fechaFin })
-        );
 
-        // Create the order with estado "Entregado"
+        const fechaPedido = new Date(faker.date.between({ from: fechaInicio, to: fechaFin }));
+
+        // Calcular un desplazamiento aleatorio entre 10 y 25 minutos (en milisegundos)
+        const minutosAdicionales = Math.floor(Math.random() * (25 - 10 + 1) + 10); // Aleatorio entre 10 y 25
+        const fechaEntrega = new Date(fechaPedido.getTime() + minutosAdicionales * 60 * 1000);
+
+        // Determinar el estado del pedido
+        const estado = Math.random() < 0.35 ? 'Valorado' : 'Entregado'; // 35% de probabilidad de ser "Valorado"
+
+        // Crear el pedido
         const pedido = await Pedido.create({
           fecha: fechaPedido,
           consumidorId: consumidor.id,
           puestoId: puesto.id,
           eventoId: eventoId,
-          estado: "Entregado",
+          estado,
           total: 0, // Placeholder for now
           createdAt: new Date(),
           updatedAt: new Date(),
+          fechaEntrega: fechaEntrega,
         });
 
         let total = 0;
 
         // Create order details and calculate total
-        for (let k = 0; k < 5; k++) {
+        for (let k = 0; k <= 5; k++) {
           // Fetch a random product
-          const producto = await Producto.findOne({ order: Sequelize.literal('random()') });
-
-          // Random quantity between 1 and 3
-          const cantidad = faker.number.int({ min: 1, max: 3 });
-
-          // Add to total (quantity * price)
-          total += cantidad * producto.precio;
-
-          // Create the detail for the order
-          await DetallePedido.create({
-            cantidad: cantidad,
-            precio: producto.precio,
-            productoId: producto.id,
-            pedidoId: pedido.id,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+          const producto = await Producto.findOne({
+            where: { puestoId: puesto.id }, // Filtra por el puesto específico
+            order: Sequelize.literal('random()'), // Ordena aleatoriamente y obtiene uno
           });
+          console.log(producto);
+          if (producto) {
+            // Random quantity between 1 and 3
+            const cantidad = faker.number.int({ min: 1, max: 3 });
+
+            // Add to total (quantity * price)
+            total += cantidad * producto.precio;
+
+            // Create the detail for the order
+            await DetallePedido.create({
+              cantidad: cantidad,
+              precio: producto.precio,
+              productoId: producto.id,
+              PedidoId: pedido.id,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
+          }
         }
 
         // Update the total amount for the order
         await pedido.update({ total });
 
-        console.log(`Pedido ${j + 1} para Consumidor ${consumidor.id} creado exitosamente con total ${total}.`);
+        // If the order is "Valorado", create a rating
+        if (estado === 'Valorado') {
+          const calificacion = faker.number.int({ min: 1, max: 5 });
+          const comentario = faker.lorem.sentence();
+
+          await ValoracionPuesto.create({
+            puntuacion: calificacion,
+            puestoId: puesto.id,
+            opinion: comentario,
+            pedidoId: pedido.id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+
+          console.log(`Pedido ${j + 1} para Consumidor ${consumidor.id} creado con estado "Valorado" y una valoración de ${calificacion}.`);
+        } else {
+          console.log(`Pedido ${j + 1} para Consumidor ${consumidor.id} creado exitosamente con total ${total}.`);
+        }
       }
 
       console.log(`Usuario ${i + 1} y Consumidor ${consumidor.id} creados exitosamente.`);
@@ -129,7 +159,7 @@ export async function generateEncargado(count) {
   for (let i = 0; i < count; i++) {
     try {
       const encargado = await Encargado.create({
-        razonSocial: 'Puesto´s' + faker.name.firstName(),
+        razonSocial: 'Puesto´s' + faker.person.firstName(),
         cuit: faker.number.bigInt({ min: 10000000000, max: 99999999999 }),
         estaValido: true,
         habilitado: true,
@@ -138,8 +168,8 @@ export async function generateEncargado(count) {
         updatedAt: new Date(),
       });
       const consumidor = await Consumidor.create({
-        nombre: faker.name.firstName(),
-        apellido: faker.name.lastName(),
+        nombre: faker.person.firstName(),
+        apellido: faker.person.lastName(),
         fechaNacimiento: faker.date.birthdate(),
         dni: faker.number.bigInt({ min: 10000000, max: 99999999 }),
         localidad: faker.helpers.arrayElement(localidades),
@@ -151,7 +181,7 @@ export async function generateEncargado(count) {
         encargadoId: encargado.id,
       });
       await Usuario.create({
-        usuario: faker.name.firstName() + faker.name.lastName() + faker.name.middleName(),
+        usuario: faker.person.firstName() + faker.person.lastName() + faker.person.middleName(),
         email: faker.internet.email(),
         emailValidado: true,
         contraseña: '$2b$10$icYmS6HeA3KGP7jP6ZbXZ.PhckTo63o1xSxReMhTl63LVs/5BcA/.',
@@ -162,7 +192,7 @@ export async function generateEncargado(count) {
         updatedAt: new Date(),
         consumidorId: consumidor.id,
       });
-      for (let j = 0; j < 6; j++) {
+      for (let j = 0; j < 0; j++) {
         const puesto = await Puesto.create({
           nombreCarro: faker.lorem.word() + ' ' + faker.commerce.productName(), // Usar lorem.word en lugar de bsAdjective
           numeroCarro: faker.number.bigInt({ min: 1, max: 9999 }),
@@ -212,8 +242,8 @@ export async function generateRepartidor(count) {
         habilitado: true,
       });
       const consumidor = await Consumidor.create({
-        nombre: faker.name.firstName(),
-        apellido: faker.name.lastName(),
+        nombre: faker.person.firstName(),
+        apellido: faker.person.lastName(),
         fechaNacimiento: faker.date.birthdate(),
         dni: faker.number.bigInt({ min: 10000000, max: 99999999 }),
         localidad: faker.helpers.arrayElement(localidades),
@@ -225,7 +255,7 @@ export async function generateRepartidor(count) {
         encargadoId: repartidor.id,
       });
       await Usuario.create({
-        usuario: faker.name.firstName() + faker.name.lastName() + faker.name.middleName(),
+        usuario: faker.person.firstName() + faker.person.lastName() + faker.person.middleName(),
         email: faker.internet.email(),
         emailValidado: true,
         contraseña: '$2b$10$icYmS6HeA3KGP7jP6ZbXZ.PhckTo63o1xSxReMhTl63LVs/5BcA/.',
@@ -355,6 +385,6 @@ export async function generateAllData() {
   await generateEncargado(1); //crear un encargado de puesto //crear 6 puestos para distintos 3 para el EP 1 y 3 para el EP 2 //crear 10 productos (comida/bebida) para cada puesto con la tematica correspondiente  //crear 6 asociaciones para los puestos a los eventos
   await generateRepartidor(1); //crear un repartidor //crear 2 asociaciones para el repartidor 1 y 2 a los 3 eventos
 
-  await generateUsers(20); //crear 100 consumidores distintos
+  await generateUsers(40); //crear 100 consumidores distintos
   //crear 5 compras por consumidor a puestos distintos, horas distintas, a lo largo del evento y con cantidades distintas //crear para los pedidos que aproximadamente 1 de cada 5 se califiquen
 }

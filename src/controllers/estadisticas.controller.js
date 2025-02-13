@@ -53,8 +53,174 @@ class EstadisticasController {
   }
   async getPedidosPorTiempoYCarrito(req, res) {
     try {
+      const idevento = req.params.idevento;
+      const idpuesto = req.params.idpuesto;
+      const datos = await estadisticasService.getPedidosPorTiempoYCarrito(idevento,idpuesto);
+      if (datos!==null) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found data',
+          data: datos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'not found data',
+          data: {},
+        });
+      }
+    } catch (e) {
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+  async getProductosVendidosDiaEvento(req, res) {
+    try {
+      const idevento = req.params.idevento;
+      const idpuesto = req.params.idpuesto;
+      const diaevento = req.params.diaevento;
+      const datos = await estadisticasService.getProductosVendidosDiaEvento(idevento,idpuesto,diaevento);
+      if (datos!==null) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found data',
+          data: datos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'not found data',
+          data: {},
+        });
+      }
+    } catch (e) {
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+  async getPromedioValoracionPuesto(req, res) {
+    try {
       const id = req.params.id;
-      const datos = await estadisticasService.getPedidosPorTiempoYCarrito(id);
+      const datos = await estadisticasService.getPromedioValoracionPuesto(id);
+      if (datos!==null) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found data',
+          data: datos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'not found data',
+          data: {},
+        });
+      }
+    } catch (e) {
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+  async getTotalRecaudadoPuestoEvento(req, res) {
+    try {
+      const idConsumidor = req.params.idConsumidor;
+      const {idPuesto, idEvento} = req.body;
+      console.log(idConsumidor, idPuesto, idEvento)
+      const datos = await estadisticasService.getTotalRecaudadoPuestoEvento(idConsumidor, idPuesto, idEvento);
+      if (datos!==null) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found data',
+          data: datos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'not found data',
+          data: {},
+        });
+      }
+    } catch (e) {
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+  async getPromedioValoracionPuestoEvento(req, res) {
+    try {
+      const idConsumidor = req.params.idConsumidor;
+      const {idPuesto, idEvento} = req.body;
+      console.log(idConsumidor, idPuesto, idEvento)
+      const datos = await estadisticasService.getPromedioValoracionPuestoEvento(idConsumidor, idPuesto, idEvento);
+      if (datos!==null) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found data',
+          data: datos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'not found data',
+          data: {},
+        });
+      }
+    } catch (e) {
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+  async getTiempoPromedioEntrega(req, res) {
+    try {
+      const idConsumidor = req.params.idConsumidor;
+      const {idPuesto, idEvento} = req.body;
+      console.log(idConsumidor, idPuesto, idEvento)
+      const datos = await estadisticasService.getTiempoPromedioEntrega(idConsumidor, idPuesto, idEvento);
+      if (datos!==null) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found data',
+          data: datos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'not found data',
+          data: {},
+        });
+      }
+    } catch (e) {
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+  async getTopProductosPorEventoYpuesto(req, res) {
+    try {
+      const idConsumidor = req.params.idConsumidor;
+      const {idPuesto, idEvento} = req.body;
+      console.log(idConsumidor, idPuesto, idEvento)
+      const datos = await estadisticasService.getTopProductosPorEventoYpuesto(idEvento, idPuesto );
       if (datos!==null) {
         return res.status(200).json({
           status: 'success',

@@ -31,6 +31,10 @@ export const Pedido = sequelize.define('Pedido', {
   fechaPreCompra:{
     type: DataTypes.DATE,
     allowNull: true,
+  },
+  fechaEntrega:{
+    type: DataTypes.DATE,
+    allowNull: true,
   }
 });
 

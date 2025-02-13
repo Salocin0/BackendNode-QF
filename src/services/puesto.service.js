@@ -10,7 +10,7 @@ class PuestoService {
     const puestos = await Puesto.findAll({
       where: {
         encargadoId: consumidor.encargadoId,
-        habilitado: true,
+        estado: 'Creado',
       },
     });
     return puestos;

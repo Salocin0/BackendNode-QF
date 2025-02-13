@@ -317,9 +317,9 @@ INSERT INTO public.productos (
     "updatedAt", 
     "puestoId"
 ) VALUES
-    ('Hamburgesa', 'Hamburgesa', 'Aderezo 1', 'https://pedidosya.dhmedia.io/image/pedidosya/only-home-squad/new-redirect/primary/restaurantes-primary.png', 10.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Nuggets', 'Nuggets', 'Aderezo 2', 'https://pedidosya.dhmedia.io/image/pedidosya/only-home-squad/new-redirect/primary/pollo-primary-v2.png', 12.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
-    ('Pizza', 'Pizza', 'Aderezo 3', 'https://newbarmdp.com/wp-content/uploads/unnamedty.png', 8.75, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
+    ('Hamburgesa Premium', 'Hamburgesa Premium', 'Aderezo 1', 'https://pedidosya.dhmedia.io/image/pedidosya/only-home-squad/new-redirect/primary/restaurantes-primary.png', 10.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Nuggets Premium', 'Nuggets Premium', 'Aderezo 2', 'https://pedidosya.dhmedia.io/image/pedidosya/only-home-squad/new-redirect/primary/pollo-primary-v2.png', 12.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1),
+    ('Pizza Premium', 'Pizza Premium', 'Aderezo 3', 'https://newbarmdp.com/wp-content/uploads/unnamedty.png', 8.75, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1);
 
 
 INSERT INTO public.productos (
@@ -348,10 +348,39 @@ INSERT INTO public.productos (
     "updatedAt", 
     "puestoId"
 ) VALUES
-    ('Hamburgesa', 'Hamburgesa', 'Aderezo 1', 'https://pedidosya.dhmedia.io/image/pedidosya/only-home-squad/new-redirect/primary/restaurantes-primary.png', 9.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3),
-    ('Pizza', 'Pizza', 'Aderezo 2', 'https://newbarmdp.com/wp-content/uploads/unnamedty.png', 14.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3),
-    ('Lomito', 'Lomito', 'Aderezo 3', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8lHVwyj6cWv5YC2ZsGMNl8JDyJ6GKrB4Gwg&s', 7.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3);
+    ('Hamburgesa Especial', 'Hamburgesa Especial', 'Aderezo 1', 'https://pedidosya.dhmedia.io/image/pedidosya/only-home-squad/new-redirect/primary/restaurantes-primary.png', 9.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3),
+    ('Pizza Especial', 'Pizza Especial', 'Aderezo 2', 'https://newbarmdp.com/wp-content/uploads/unnamedty.png', 14.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3),
+    ('Lomito Especial', 'Lomito Especial', 'Aderezo 3', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8lHVwyj6cWv5YC2ZsGMNl8JDyJ6GKrB4Gwg&s', 7.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3);
 
+INSERT INTO public.productos (
+    nombre, 
+    descripcion, 
+    aderezos, 
+    img, 
+    precio, 
+    estado, 
+    "createdAt", 
+    "updatedAt", 
+    "puestoId"
+) VALUES
+    ('Hamburgesa Especial 2', 'Hamburgesa Especial 2', 'Aderezo 1', 'https://pedidosya.dhmedia.io/image/pedidosya/only-home-squad/new-redirect/primary/restaurantes-primary.png', 9.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4),
+    ('Pizza Especial 2', 'Pizza Especial 2', 'Aderezo 2', 'https://newbarmdp.com/wp-content/uploads/unnamedty.png', 14.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4),
+    ('Lomito Especial 2', 'Lomito Especial 2', 'Aderezo 3', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8lHVwyj6cWv5YC2ZsGMNl8JDyJ6GKrB4Gwg&s', 7.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 4);
+
+INSERT INTO public.productos (
+    nombre, 
+    descripcion, 
+    aderezos, 
+    img, 
+    precio, 
+    estado, 
+    "createdAt", 
+    "updatedAt", 
+    "puestoId"
+) VALUES
+    ('Hamburgesa 2', 'Hamburgesa 2', 'Aderezo 1', 'https://pedidosya.dhmedia.io/image/pedidosya/only-home-squad/new-redirect/primary/restaurantes-primary.png', 9.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 5),
+    ('Pizza 2', 'Pizza 2', 'Aderezo 2', 'https://newbarmdp.com/wp-content/uploads/unnamedty.png', 14.00, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 5),
+    ('Lomito 2', 'Lomito 2', 'Aderezo 3', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8lHVwyj6cWv5YC2ZsGMNl8JDyJ6GKrB4Gwg&s', 7.50, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 5);
 -- Insertar 5 pedidos
 
 INSERT INTO public."Pedidos" (

@@ -19,7 +19,11 @@ export const ValoracionRepartidor = sequelize.define('valoracionRepartidor', {
   opinion:{
     type: DataTypes.STRING,
     allowNull: true,
-  }
+  },
+  pedidoId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
 });
 
 ValoracionRepartidor.belongsTo(Repartidor, {
