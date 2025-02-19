@@ -12,3 +12,5 @@ RouterEstadisticas.post('/total-recaudado-puesto-evento/:idConsumidor', estadist
 RouterEstadisticas.post('/promedio-valoracion-puesto-evento/:idConsumidor', estadisticasController.getPromedioValoracionPuestoEvento);
 RouterEstadisticas.post('/promedio-tiempo-entrega-puesto-evento/:idConsumidor', estadisticasController.getTiempoPromedioEntrega);
 RouterEstadisticas.post('/top-productos-puesto-evento/:idConsumidor', estadisticasController.getTopProductosPorEventoYpuesto);
+RouterEstadisticas.get('/consumidor/:idConsumidor', estadisticasController.getEstadisticasConsumidor);
+RouterEstadisticas.get('/repartidor/:idConsumidor', estadisticasController.getEstadisticasRepartidor);

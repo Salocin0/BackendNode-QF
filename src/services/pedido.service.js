@@ -205,14 +205,94 @@ class PedidoService {
     return pedido.repartidorId;
   }
 
-  async sendNotificacionesWeb(puestoId){
-    const tituloNotificacion = notificationTexts.consumidor.titulo;
-    const descripcionNotificacion = notificationTexts.consumidor.descripcion;
+  async getAllEvento(idEvento) {
+    const pedidos = await Pedido.findAll({
+      where: {
+        eventoId: idEvento,
+      },
+      include: [
+        {
+          model: DetallePedido,
+          as: 'detalles',
+          include: [
+            {
+              model: Producto,
+              as: 'producto',
+            },
+          ],
+        },
+        { model: Puesto },
+      ],
+    });
 
-    console.log(tituloNotificacion, descripcionNotificacion, "dsfasfdasdfasdfdasf");
+    console.log('Pedidos obtenidos:', pedidos);
+    return pedidos;
+  }
 
+  async sendNotificacionesPedidoCreado(puestoId,consumidorId){
+    //notificacion al encargado
+    const tituloNotificacion = notificationTexts.encargado.tituloNuevoPedido;
+    const descripcionNotificacion = notificationTexts.encargado.descripcionNuevoPedido;
     const resultadoNotificacion = await notificacionesService.enviarNotificacionesAPuesto(puestoId, tituloNotificacion, descripcionNotificacion);
+    //notificacion al consumidor
+    const tituloNotificacionConsumidor = notificationTexts.consumidor.tituloPedidoCreado;
+    const descripcionNotificacionConsumidor = notificationTexts.consumidor.descripcionPedidoCreado;
+    const user = await Usuario.findOne({where: {id: consumidorId}});
+    const resultadoNotificacionConsumidor = await notificacionesService.enviarNotificacionesAUsuario(user.id, tituloNotificacionConsumidor, descripcionNotificacionConsumidor,user.tokenMobile, user.tokenWeb);
+    
+    return resultadoNotificacion;
+  }
 
+  async sendNotificacionesPedidoAceptado(consumidorId){
+    const tituloNotificacion = notificationTexts.consumidor.tituloPedidoAceptado;
+    const descripcionNotificacion = notificationTexts.consumidor.descripcionPedidoAceptado;
+    const user = await Usuario.findOne({where: {id: consumidorId}});
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAUsuario(user.id, tituloNotificacion, descripcionNotificacion,user.tokenMobile, user.tokenWeb);
+    return resultadoNotificacion;
+  }
+
+  async sendNotificacionesPedidoCancelado(puestoId,consumidorId){
+    const tituloNotificacion = notificationTexts.encargado.tituloPedidoCancelado;
+    const descripcionNotificacion = notificationTexts.encargado.descripcionPedidoCancelado;
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAPuesto(puestoId, tituloNotificacion, descripcionNotificacion);
+    tituloNotificacion = notificationTexts.consumidor.tituloPedidoCancelado;
+    descripcionNotificacion = notificationTexts.consumidor.descripcionPedidoCancelado;
+    const user = await Usuario.findOne({where: {id: consumidorId}});
+    const resultadoNotificacion2 = await notificacionesService.enviarNotificacionesAUsuario(user.id, tituloNotificacion, descripcionNotificacion,user.tokenMobile, user.tokenWeb);
+    return resultadoNotificacion;
+  }
+
+  async sendNotificacionesPedidoEnCamino(consumidorId){
+    const tituloNotificacion = notificationTexts.consumidor.tituloPedidoEnCamino;
+    const descripcionNotificacion = notificationTexts.consumidor.descripcionPedidoEnCamino;
+    const user = await Usuario.findOne({where: {id: consumidorId}});
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAUsuario(user.id, tituloNotificacion, descripcionNotificacion,user.tokenMobile, user.tokenWeb);
+    return resultadoNotificacion;
+  }
+
+  async sendNotificacionesPedidoEntregado(consumidorId){
+    const tituloNotificacion = notificationTexts.consumidor.tituloPedidoEntregado;
+    const descripcionNotificacion = notificationTexts.consumidor.descripcionPedidoEntregado;
+    const user = await Usuario.findOne({where: {id: consumidorId}});
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAUsuario(user.id, tituloNotificacion, descripcionNotificacion,user.tokenMobile, user.tokenWeb);
+    return resultadoNotificacion;
+  }
+
+  async sendNotificacionesPedidoPreparado(consumidorId){
+    const tituloNotificacion = notificationTexts.consumidor.tituloPedidoPreparando;
+    const descripcionNotificacion = notificationTexts.consumidor.descripcionPedidoPreparando;
+    const user = await Usuario.findOne({where: {id: consumidorId}});
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAUsuario(user.id, tituloNotificacion, descripcionNotificacion,user.tokenMobile, user.tokenWeb);
+    return resultadoNotificacion;
+  }
+
+  async sendNotificacionesPedidoValorado(consumidorId){
+    const tituloNotificacionEncargado = notificationTexts.encargado.tituloPedidoValorado;
+    const descripcionNotificacionEncargado = notificationTexts.encargado.descripcionPedidoValorado;
+    const tituloNotificacionRepartidor = notificationTexts.repartidor.tituloPedidoValorado;
+    const descripcionNotificacionRepartidor = notificationTexts.repartidor.descripcionPedidoValorado;
+    const user = await Usuario.findOne({where: {id: consumidorId}});
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAUsuario(user.id, tituloNotificacion, descripcionNotificacion,user.tokenMobile, user.tokenWeb);
     return resultadoNotificacion;
   }
 
@@ -257,11 +337,32 @@ class PedidoService {
       const pedido = await this.getOne(pedidoId); 
       const estadoActual = pedido.estado;
 
-      console.log(estadoActual);
-      console.log(accion);
-
       if (estadosPedido[estadoActual] && estadosPedido[estadoActual][accion]) {
         await estadosPedido[estadoActual][accion](pedido);
+        if(accion === 'aceptar'){
+          const puestoId = pedido.puestoId;
+          const pedidoNotificaciones = await this.sendNotificacionesPedidoAceptado(puestoId);
+        }
+        if(accion === 'preparar'){
+          const puestoId = pedido.puestoId;
+          const pedidoNotificaciones = await this.sendNotificacionesPedidoPreparado(puestoId);
+        }
+        if(accion === 'enCamino'){
+          const puestoId = pedido.puestoId;
+          const pedidoNotificaciones = await this.sendNotificacionesPedidoEnCamino(puestoId);
+        }
+        if(accion === 'cancelar'){
+          const puestoId = pedido.puestoId;
+          const pedidoNotificaciones = await this.sendNotificacionesPedidoCancelado(puestoId);
+        }
+        if(accion === 'finalizar'){
+          const puestoId = pedido.puestoId;
+          const pedidoNotificaciones = await this.sendNotificacionesPedidoEntregado(puestoId);
+        }
+        if(accion === "valorar"){
+          const id = pedido.id;
+          const pedidoNotificaciones = await pedidoService.sendNotificacionesPedidoValorado(id);
+        }
         return { success: true, message: 'Estado del pedido actualizado.' };
       } else {
         return { success: false, message: 'No se encontró la acción para el estado actual.' };

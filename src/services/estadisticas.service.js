@@ -1,6 +1,9 @@
+import { Consumidor } from '../DAO/models/consumidor.model.js';
+import { Repartidor } from '../DAO/models/repartidor.model.js';
 import { sequelize } from '../util/connections.js';
 import { consumidorService } from './consumidor.service.js';
 import { encargadoService } from './encargado.service.js';
+import { repartidorService } from './repartidor.service.js';
 import { userService } from './users.service.js';
 
 class EstadisticasService {
@@ -666,6 +669,75 @@ class EstadisticasService {
       throw new Error('Error al obtener las ventas agrupadas');
     }
   }
+
+  async getEstadisticasConsumidor(consumidorid) {
+    try {
+      let query = `
+        SELECT 
+            (SELECT COUNT(DISTINCT "eventoId") 
+             FROM "Pedidos" 
+             WHERE "consumidorId" = :consumidorid) AS total_eventos,
+  
+            (SELECT COUNT(*) 
+             FROM "Pedidos" 
+             WHERE "consumidorId" = :consumidorid) AS total_pedidos,
+  
+            (SELECT COALESCE(SUM(dp."cantidad" * pr."precio"), 0) 
+             FROM "Pedidos" p
+             JOIN "DetallePedidos" dp ON p."id" = dp."PedidoId"
+             JOIN "productos" pr ON dp."productoId" = pr."id"
+             WHERE p."consumidorId" = :consumidorid) AS total_gastado;
+      `;
+  
+      const results = await sequelize.query(query, {
+        replacements: { consumidorid },
+        type: sequelize.QueryTypes.SELECT,
+      });
+  
+      if (results.length === 0) {
+        return 0;
+      }
+  
+      return results[0]; // Devolver solo el objeto con las estadísticas
+    } catch (error) {
+      console.error('Error obteniendo estadísticas del consumidor:', error);
+      throw new Error('Error al calcular estadísticas del consumidor');
+    }
+  }
+  
+
+  async getEstadisticasRepartidor(consumidorid) {
+    try {
+      const consumidor = await consumidorService.getOne(consumidorid);
+
+      const repartidorid= consumidor.repartidorId;
+      let query = `
+        SELECT 
+            (SELECT COUNT(DISTINCT "eventoId") 
+             FROM "Pedidos" 
+             WHERE "repartidorId" = :repartidorid) AS eventos_participados,
+  
+            (SELECT COUNT(*) 
+             FROM "Pedidos" 
+             WHERE "repartidorId" = :repartidorid AND estado = 'Entregado') AS pedidos_entregados;
+      `;
+  
+      const results = await sequelize.query(query, {
+        replacements: { repartidorid },
+        type: sequelize.QueryTypes.SELECT,
+      });
+  
+      if (results.length === 0) {
+        return 0;
+      }
+  
+      return results[0]; // Devuelve solo el objeto con las estadísticas
+    } catch (error) {
+      console.error('Error obteniendo estadísticas del repartidor:', error);
+      throw new Error('Error al calcular estadísticas del repartidor');
+    }
+  }
+  
   
 }
 

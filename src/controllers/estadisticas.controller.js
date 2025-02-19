@@ -242,6 +242,60 @@ class EstadisticasController {
       });
     }
   }
+
+  async getEstadisticasConsumidor(req, res) {
+    try {
+      const idConsumidor = req.params.idConsumidor;
+      const datos = await estadisticasService.getEstadisticasConsumidor(idConsumidor);
+      if (datos!==null) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found data',
+          data: datos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'not found data',
+          data: {},
+        });
+      }
+    } catch (e) {
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+  async getEstadisticasRepartidor(req, res) {
+    try {
+      const idConsumidor = req.params.idConsumidor;
+      const datos = await estadisticasService.getEstadisticasRepartidor(idConsumidor);
+      if (datos!==null) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found data',
+          data: datos,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'not found data',
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e)
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
 }
 
 export const estadisticasController = new EstadisticasController();

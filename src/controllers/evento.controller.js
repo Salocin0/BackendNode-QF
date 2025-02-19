@@ -1,6 +1,7 @@
 import { DiaEvento } from '../DAO/models/diaEvento.model.js';
 import { estadosEvento } from '../estados/estados/estadosEvento.js';
 import { eventoService } from '../services/evento.service.js';
+import { notificacionesService } from '../services/notificaciones.service.js';
 
 class EventoController {
   async getAllController(req, res) {
@@ -407,6 +408,9 @@ class EventoController {
 
       if (estadosEvento[estadoActual] && estadosEvento[estadoActual][accion]) {
         await estadosEvento[estadoActual][accion](evento);
+        if(accion === 'iniciarEvento'){
+          notificacionesService.enviarNotificacionesPrecompra(eventoId);
+        }
         res.status(200).json({ message: 'Estado del evento actualizado.',data: {message:"Estado del evento actualizado."} });
       } else {
         res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });

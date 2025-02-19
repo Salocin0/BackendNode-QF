@@ -12,10 +12,20 @@ class NotificacionController {
     }
   };
 
-  getNotificaciones = async (req, res) => {
+  getNotificacionesweb = async (req, res) => {
     try {
       const consumidorId = req.headers['consumidorid'];
-      const notificaciones = await notificacionesService.getNotificaciones(consumidorId);
+      const notificaciones = await notificacionesService.getNotificaciones(consumidorId,"web");
+      res.status(200).json({ mensaje: 'Notificaciones obtenidas correctamente.', notificaciones });
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: 'Error al obtener las notificaciones.' });
+    }
+  };
+  getNotificacionesmobile = async (req, res) => {
+    try {
+      const consumidorId = req.headers['consumidorid'];
+      const notificaciones = await notificacionesService.getNotificaciones(consumidorId,"mobile");
       res.status(200).json({ mensaje: 'Notificaciones obtenidas correctamente.', notificaciones });
     } catch (error) {
       console.log(error)

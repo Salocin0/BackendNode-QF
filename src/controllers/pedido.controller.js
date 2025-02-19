@@ -166,7 +166,7 @@ class PedidoController {
         });
       } else {
         //llamar al pedidoService(puestoId) (SERVICE CON SERVICE)
-        const pedidoNotificaciones = await pedidoService.sendNotificacionesWeb(puestoId);
+        const pedidoNotificaciones = await pedidoService.sendNotificacionesPedidoCreado(puestoId,consumidorId);
 
 
 
@@ -220,6 +220,27 @@ class PedidoController {
       // Verificar si el estado y la acción existen en 'estadosPedido'
       if (estadosPedido[estadoActual] && estadosPedido[estadoActual][accion]) {
         await estadosPedido[estadoActual][accion](pedido);
+        const id = pedido.consumidorId;
+        if(accion === 'aceptar'){
+          const pedidoNotificaciones = await pedidoService.sendNotificacionesPedidoAceptado(id);
+        }
+        if(accion === 'preparar'){
+          const pedidoNotificaciones = await pedidoService.sendNotificacionesPedidoPreparado(id);
+        }
+        if(accion === 'enCamino'){
+          const pedidoNotificaciones = await pedidoService.sendNotificacionesPedidoEnCamino(id);
+        }
+        if(accion === 'cancelar'){
+          const pedidoNotificaciones = await pedidoService.sendNotificacionesPedidoCancelado(pedido.puestoId,id);
+        }
+        if(accion === 'finalizar'){
+          const pedidoNotificaciones = await pedidoService.sendNotificacionesPedidoEntregado(id);
+          pedido.fechaEntrega = Date.now();
+          pedido.save();
+        }
+        if(accion === "valorar"){
+          const pedidoNotificaciones = await pedidoService.sendNotificacionesPedidoValorado(id);
+        }
         res.status(200).json({ message: 'Estado del evento actualizado.' });
 
         // Aquí debes asegurarte de que 'userid' esté definido y se pase correctamente

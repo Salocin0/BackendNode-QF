@@ -1,27 +1,52 @@
 // notificationTexts.js
 export const notificationTexts = {
     consumidor: {
-      titulo: 'Nuevo evento para consumidores',
-      descripcion: '¡Hola! Tenemos un nuevo evento especialmente para ti.',
+      tituloPedidoCreado: 'Tu pedido ha sido creado',
+      descripcionPedidoCreado: 'Se ha creado tu nuevo pedido con exito',
+      tituloPedidoAceptado: 'Tu pedido ha sido aceptado',
+      descripcionPedidoAceptado: 'El puesto ha aceptado tu pedido',
+      tituloPedidoCancelado: 'Tu pedido ha sido cancelado',
+      descripcionPedidoCancelado: 'El puesto ha cancelado tu pedido',
+      tituloPedidoEnCamino: 'Tu pedido esta en camino',
+      descripcionPedidoEnCamino: 'El puesto entrego tu pedido al repartidor',
+      tituloPedidoEntregado: 'Tu pedido ha sido entregado',
+      descripcionPedidoEntregado: 'Podes valorarlo para ayudarnos a mejorar',
+      tituloPedidoPreparando: 'Tu pedido se esta preparando',
+      descripcionPedidoPreparando: 'El puesto esta preparando tu pedido',
+      tituloEventoIniciado: 'El evento donde precompraste ha iniciado',
+      descripcionEventoIniciado: 'Ya podes pasar a retirar tu pedido',
     },
     encargado: {
+      solicitudAceptada: 'Solicitud aceptada',
+      descripcionAceptada: 'Te aceptaron una solicitud',
+      solicitudRechazada: 'Solicitud rechazada',
+      descripcionRechazada: 'Te rechazaron una solicitud',
       titulo: 'Actualización para encargados',
       descripcion: 'Hay una nueva actualización para los encargados.',
+      tituloPedidoValorado: 'Tu pedido ha sido valorado',
+      descripcionPedidoValorado: 'El consumidor ha valorado tu pedido',
+      tituloNuevoPedido: 'Nuevo pedido',
+      descripcionNuevoPedido: 'Tienes un nuevo pedido para tu puesto',
+      tituloPedidoCancelado: 'Pedido cancelado',
+      descripcionPedidoCancelado: 'se cancelo un pedido',
     },
     productor: {
       titulo: 'Notificación para productores',
       tituloAsociacion: 'Recibiste una asociación a tu evento',
       descripcion: 'Nuevo evento para los productores.',
-      descripcionAsociacionRepartidor: 'Tienes una nueva solicitud de repartidor a tu evento',
-      descripcionAsociacionPuesto: 'Tienes una nueva solicitud de puesto a tu evento',
-
+      descripcionAsociacion: 'Tienes una nueva solicitud para tu evento',
+      tituloAsociacionRechazada: 'Asociación rechazada',
+      descripcionAsociacionRechazada: 'se rechazo una asociación a uno de tus evento',
     },
     repartidor: {
+      solicitudAceptada: 'Solicitud aceptada',
+      solicitudRechazada: 'Solicitud rechazada',
       titulo: 'Información para repartidores',
       descripcion: 'Hay una nueva tarea disponible para los repartidores.',
       descripcionAceptada: 'Te aceptaron una solicitud',
       descripcionRechazada: 'Te rechazaron una solicitud',
-
+      tituloPedidoValorado: 'Tu pedido ha sido valorado',
+      descripcionPedidoValorado: 'El consumidor ha valorado tu pedido',
     },
   };
   

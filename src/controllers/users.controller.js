@@ -182,6 +182,8 @@ class UserController {
     }
   }
 
+  
+
   async getTokenByProductorId(productorId) {
     try {
       const consumidor = await Consumidor.findOne({
@@ -192,18 +194,8 @@ class UserController {
         throw new Error(`No se encontró el consumidor con productorId ${productorId}`);
       }
 
-      const usuarioId = consumidor.usuarioId;
-
-
-
-      // El usuario asociado debería estar disponible a través de la relación definida en Consumidor
-
-      if (!usuarioId) {
-        throw new Error(`No se encontró el usuario asociado al usuarioId  ${usuarioId}`);
-      }
-
       const usuario = await Usuario.findOne({
-        where: { id: usuarioId },
+        where: { consumidorId: consumidor.id },
       });
 
       const tokenUsuarioWeb = usuario.tokenWeb;

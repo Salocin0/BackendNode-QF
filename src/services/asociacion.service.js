@@ -21,53 +21,50 @@ class AsociacionService {
         },
       ],
     });
-  
+
     return asociaciones;
   }
-  
 
   async getAllByPuesto(estado, consumidorId) {
     try {
-      const eventos = await eventoService.getAllInState(estado)
+      const eventos = await eventoService.getAllInState(estado);
       const puestos = await puestoService.getAllByEncargado(consumidorId);
-      if(eventos.length==0|| puestos.length==0){
+      if (eventos.length == 0 || puestos.length == 0) {
         return null;
       }
-      const eventoIds = eventos.map(evento => evento.id);
-      const puestoIds = puestos.map(puesto => puesto.id);
+      const eventoIds = eventos.map((evento) => evento.id);
+      const puestoIds = puestos.map((puesto) => puesto.id);
       const asociaciones = await Asociacion.findAll({
         where: {
           puestoId: puestoIds,
           eventoId: eventoIds,
           estado: {
-            [Op.not]: 'Cancelada'
-          }
+            [Op.not]: 'Cancelada',
+          },
         },
       });
-  
+
       return asociaciones;
     } catch (error) {
       console.error('Error al obtener asociaciones por puesto:', error);
       throw error;
     }
   }
-  
 
   async getAllByEncargado(consumidorId) {
     const puestos = await puestoService.getAllByEncargado(consumidorId);
-    const puestoIds = puestos.map(puesto => puesto.id);
+    const puestoIds = puestos.map((puesto) => puesto.id);
     const asociaciones = await Asociacion.findAll({
       where: {
         puestoId: puestoIds,
         estado: {
-          [Op.not]: 'Cancelada'
-        }
+          [Op.not]: 'Cancelada',
+        },
       },
     });
-    
+
     return asociaciones;
   }
-  
 
   async getAllInEvent(id) {
     const asociaciones = await Asociacion.findAll({
@@ -105,7 +102,15 @@ class AsociacionService {
         })
       );
     }
+    this.sendNotificacionesAsociacionCreada(asociacionCreada);
     return asociacionCreada;
+  }
+
+  async sendNotificacionesAsociacionCreada(asociacion) {
+    const tituloNotificacion = notificationTexts.productor.tituloAsociacion;
+    const descripcionNotificacion = notificationTexts.productor.descripcionAsociacion;
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacion(asociacion.eventoId, tituloNotificacion, descripcionNotificacion);
+    return resultadoNotificacion;
   }
 
   async getByEventoPuesto(eventoId, puestoId) {
@@ -131,71 +136,109 @@ class AsociacionService {
     return asociacion;
   }
 
-  async rechazar(id,motivo) {
+  async rechazar(id, motivo) {
     const asociacion = await this.getOne(id);
     asociacion.estado = EstadosAsociaciones.Rechazada;
-    asociacion.motivo = motivo
+    asociacion.motivo = motivo;
     await asociacion.save();
+    this.sendNotificacionesRechazarAsociacion(asociacion);
     return asociacion;
   }
 
-  async cancelar(id,motivo) {
+  async sendNotificacionesRechazarAsociacion(asociacion) {
+    if (asociacion.repartidoreId) {
+      this.sendNotificacionesRechazarAsociacionRepartido(asociacion.id);
+    } else {
+      this.sendNotificacionesRechazarAsociacionPuesto(asociacion.id);
+    }
+    this.sendNotificacionesRechazarAsociacionProductor(asociacion.eventoId);
+  }
+
+  async sendNotificacionesRechazarAsociacionRepartido(Id) {
+    const tituloNotificacion = notificationTexts.repartidor.solicitudRechazada;
+    const descripcionNotificacion = notificationTexts.repartidor.descripcionRechazada;
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAPartirAsociacion(Id, tituloNotificacion, descripcionNotificacion);
+    return resultadoNotificacion;
+  }
+
+  async sendNotificacionesRechazarAsociacionProductor(eventoid) {
+    const tituloNotificacion = notificationTexts.productor.tituloAsociacionRechazada;
+    const descripcionNotificacion = notificationTexts.productor.descripcionAsociacionRechazada;
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesProductorEvento(eventoid, tituloNotificacion, descripcionNotificacion);
+    return resultadoNotificacion;
+  }
+
+  async sendNotificacionesRechazarAsociacionPuesto(Id) {
+    const tituloNotificacion = notificationTexts.encargado.solicitudRechazada;
+    const descripcionNotificacion = notificationTexts.encargado.descripcionRechazada;
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAPartirAsociacion(Id, tituloNotificacion, descripcionNotificacion);
+    return resultadoNotificacion;
+  }
+
+  async cancelar(id, motivo) {
     const asociacion = await this.getOne(id);
     asociacion.estado = EstadosAsociaciones.Cancelada;
-    asociacion.motivo = motivo
+    asociacion.motivo = motivo;
     await asociacion.save();
     return asociacion;
   }
 
-  async aceptar(id,motivo) {
+  async aceptar(id, motivo) {
     const asociacion = await this.getOne(id);
     asociacion.estado = EstadosAsociaciones.Aceptada;
-    asociacion.motivo = motivo
+    asociacion.motivo = motivo;
     await asociacion.save();
+    this.sendNotificacionesAceptarAsociacion(asociacion);
     return asociacion;
   }
 
-  async sendNotificacionesWebRepartidorAsociacion(eventoid){
-    const tituloNotificacion = notificationTexts.productor.tituloAsociacion;
-    const descripcionNotificacion = notificationTexts.productor.descripcionAsociacionPuesto;
+  async sendNotificacionesAceptarAsociacion(asociacion) {
+    if (asociacion.repartidoreId) {
+      this.sendNotificacionesAceptarAsociacionRepartido(asociacion.id);
+    } else {
+      this.sendNotificacionesAceptarAsociacionPuesto(asociacion.id);
+    }
+  }
 
-
-    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacion(eventoid, tituloNotificacion,descripcionNotificacion);
-
+  async sendNotificacionesAceptarAsociacionRepartido(Id) {
+    const tituloNotificacion = notificationTexts.repartidor.solicitudAceptada;
+    const descripcionNotificacion = notificationTexts.repartidor.descripcionAceptada;
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAPartirAsociacion(Id, tituloNotificacion, descripcionNotificacion);
     return resultadoNotificacion;
   }
 
-
-  async sendNotificacionesWebEventoAsociacion(eventoid){
-    const tituloNotificacion = notificationTexts.productor.tituloAsociacion;
-    const descripcionNotificacion = notificationTexts.productor.descripcionAsociacionPuesto;
-
-    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacion(eventoid, tituloNotificacion,descripcionNotificacion);
-
+  async sendNotificacionesAceptarAsociacionPuesto(Id) {
+    const tituloNotificacion = notificationTexts.encargado.solicitudAceptada;
+    const descripcionNotificacion = notificationTexts.encargado.descripcionAceptada;
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAPartirAsociacion(Id, tituloNotificacion, descripcionNotificacion);
     return resultadoNotificacion;
   }
 
-  async sendNotificacionesWebAceptarAsociacionRepartido(Id){
-    const tituloNotificacion = notificationTexts.repartidor.titulo;
+  async sendNotificacionesWebRepartidorAsociacion(eventoid) {
+    const tituloNotificacion = notificationTexts.repartidor.solicitudAceptada;
     const descripcionNotificacion = notificationTexts.repartidor.descripcionAceptada;
 
-    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAceptaradaRepartidorAPartirAsociacion(Id, tituloNotificacion,descripcionNotificacion);
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacion(eventoid, tituloNotificacion, descripcionNotificacion);
 
     return resultadoNotificacion;
   }
 
-  async sendNotificacionesWebRechazarAsociacionRepartido(Id){
+  async sendNotificacionesWebEventoAsociacion(eventoid) {
+    const tituloNotificacion = notificationTexts.productor.tituloAsociacion;
+    const descripcionNotificacion = notificationTexts.productor.descripcionAsociacion;
+
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacion(eventoid, tituloNotificacion, descripcionNotificacion);
+
+    return resultadoNotificacion;
+  }
+
+  async sendNotificacionesWebRechazarAsociacionRepartido(Id) {
     const tituloNotificacion = notificationTexts.repartidor.titulo;
     const descripcionNotificacion = notificationTexts.repartidor.descripcionRechazada;
-    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAceptaradaRepartidorAPartirAsociacion(Id, tituloNotificacion,descripcionNotificacion);
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAsociacionAceptaradaRepartidor(Id, tituloNotificacion, descripcionNotificacion);
 
     return resultadoNotificacion;
   }
-
-
-
-
-
 }
 
 export const asociacionService = new AsociacionService();

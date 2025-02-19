@@ -9,13 +9,13 @@ export const PendienteDeAceptacion = {
   aceptar: async (asociacion,asociacionId) => {
     asociacion.estado = 'Aceptada';
     await asociacion.save();
-    const asociacionNotificaciones = await asociacionService.sendNotificacionesWebAceptarAsociacionRepartido(asociacionId);
+    await asociacionService.sendNotificacionesAceptarAsociacion(asociacion);
     return asociacion;
   },
 
   rechazada: async (asociacion,asociacionId) => {
     asociacion.estado = 'Rechazada';
-    const asociacionNotificaciones = await asociacionService.sendNotificacionesWebRechazarAsociacionRepartido(asociacionId);
+    await asociacionService.sendNotificacionesRechazarAsociacion(asociacion);
 
     await asociacion.save();
     return asociacion;

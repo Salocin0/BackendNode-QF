@@ -7,7 +7,9 @@ export const RouterNotificacion = express.Router();
 
 RouterNotificacion.post('/', notificacionController.enviarNotificacion);
 
-RouterNotificacion.get('/', notificacionController.getNotificaciones);
+RouterNotificacion.get('/web', notificacionController.getNotificacionesweb);
+
+RouterNotificacion.get('/mobile', notificacionController.getNotificacionesmobile);
 
 RouterNotificacion.put('/:id', notificacionController.CambiarNotificacionAVista);
 
