@@ -4,26 +4,7 @@ class CarritoController {
   async getController(req, res) {
     try {
       const consumidorId = req.headers['consumidorid'];
-      const carrito = await carritoService.getOne(consumidorId);
-      return res.status(200).json({
-        status: 'sucess',
-        msg: 'Productor found',
-        data: carrito,
-      });
-    } catch (e) {
-      console.log(e);
-      return res.status(500).json({
-        status: 'error',
-        msg: 'something went wrong :(',
-        data: {},
-      });
-    }
-  }
-
-  async getEstructuraController(req, res) {
-    try {
-      const consumidorId = req.headers['consumidorid'];
-      const carrito = await carritoService.getEstructura(consumidorId);
+      const carrito = await carritoService.getOneByConsumidorId(consumidorId);
       return res.status(200).json({
         status: 'sucess',
         msg: 'Productor found',
@@ -62,17 +43,24 @@ class CarritoController {
   async addToCartController(req, res) {
     try {
       const consumidorId = req.headers['consumidorid'];
+      const carrito = await carritoService.getOneByConsumidorId(consumidorId);
+      console.log(req.body)
       const productoId = req.params.productoId;
       const fecha = req.body.fecha;
       const eventoId = req.body.eventoId;
-      console.log(req.body);
-      const carrito = await carritoService.addToCart(consumidorId, productoId,fecha,eventoId);
+      let cantidad = req.body.cantidad;
+      if(!cantidad){
+        cantidad = 1;
+      }
+      await carritoService.addProductToCart(carrito.id, productoId, eventoId,cantidad,fecha);
+
+      const data = await carritoService.getOneByConsumidorId(consumidorId);
 
       return res.status(200).json({
         status: 'success',
         msg: 'producto agregado al carrito',
         code: 200,
-        data: carrito,
+        data: data,
       });
     } catch (e) {
       console.error(e);
@@ -88,13 +76,21 @@ class CarritoController {
     try {
       const consumidorId = req.headers['consumidorid'];
       const productoId = req.params.productoId;
-      const carrito = await carritoService.removeToCart(consumidorId, productoId);
+      const carrito = await carritoService.getOneByConsumidorId(consumidorId);
+      const carritoId = carrito.id;
+      const fecha = req.body.fecha;
+      const eventoId = req.body.eventoId;
+      let cantidad = req.body.cantidad;
+      if(!cantidad){
+        cantidad=1
+      }
+      const data = await carritoService.removeProductFromCart(carritoId, productoId, cantidad, eventoId,fecha);
 
       return res.status(200).json({
         status: 'success',
         msg: 'producto eliminado del carrito',
         code: 200,
-        data: carrito,
+        data: data,
       });
     } catch (e) {
       console.error(e);
@@ -110,13 +106,17 @@ class CarritoController {
     try {
       const consumidorId = req.headers['consumidorid'];
       const productoId = req.params.productoId;
-      const carrito = await carritoService.deletoToCart(consumidorId, productoId);
+      const carrito = await carritoService.getOneByConsumidorId(consumidorId);
+      const carritoId = carrito.id;
+      const fecha = req.body.fecha;
+      const eventoId = req.body.eventoId;
+      const data = await carritoService.revomeAllProductFromCart(carritoId, productoId, eventoId,fecha);
 
       return res.status(200).json({
         status: 'success',
         msg: 'todas las unidades del producto eliminadas del carrito',
         code: 200,
-        data: carrito,
+        data: data,
       });
     } catch (e) {
       console.error(e);
@@ -132,13 +132,17 @@ class CarritoController {
     try {
       const consumidorId = req.headers['consumidorid'];
       const puestoId = req.params.puestoId;
-      const carrito = await carritoService.deletoProductsToCart(consumidorId, puestoId);
+      console.log(req.body)
+      const fecha = req.body.fecha;
+      const carrito = await carritoService.getOneByConsumidorId(consumidorId);
+      const carritoId = carrito.id;
+      const data = await carritoService.deleteByPuesto(carritoId,puestoId,fecha);
 
       return res.status(200).json({
         status: 'success',
         msg: 'todas las unidades del producto eliminadas del carrito',
         code: 200,
-        data: carrito,
+        data: data,
       });
     } catch (e) {
       console.error(e);

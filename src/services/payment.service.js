@@ -11,7 +11,7 @@ export const createPaymentSheet = async (amount) => {
   );
 
   const paymentIntent = await stripe.paymentIntents.create({
-    amount,
+    amount:Math.round(amount),
     currency: 'usd',
     customer: customer.id,
   });

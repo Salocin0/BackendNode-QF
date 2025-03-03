@@ -142,7 +142,6 @@ class PedidoController {
   async createOneController(req, res) {
     try {
       const { detalles, consumidorId, total, puestoId,fecha,precompra,eventoId } = req.body;
-      const puesto = puestoService.getOne(puestoId);
       var nuevoPedido = {
         fecha: Date.now(),
         consumidorId: consumidorId,
@@ -233,7 +232,7 @@ class PedidoController {
         if(accion === 'cancelar'){
           const pedidoNotificaciones = await pedidoService.sendNotificacionesPedidoCancelado(pedido.puestoId,id);
         }
-        if(accion === 'finalizar'){
+        if(accion === 'pedidoEntregado'){
           const pedidoNotificaciones = await pedidoService.sendNotificacionesPedidoEntregado(id);
           pedido.fechaEntrega = Date.now();
           pedido.save();

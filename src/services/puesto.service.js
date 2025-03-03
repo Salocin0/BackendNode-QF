@@ -3,6 +3,7 @@ import { EstadosAsociaciones } from '../enums/Estados.enums.js';
 import { estadosPuestoDeComida } from '../estados/estados/estadosPuestosDeComida.js';
 import { asociacionService } from './asociacion.service.js';
 import { consumidorService } from './consumidor.service.js';
+import { sequelize } from '../util/connections.js';
 
 class PuestoService {
   async getAll(consumidorId) {
@@ -140,6 +141,54 @@ class PuestoService {
       throw error;
     }
   }
+
+  async getEstadisticas(puestoId) {
+    try {
+      const query = `
+        SELECT 
+            ROUND(AVG(vp.puntuacion) ,2) AS promedio_valoracion_puesto
+          FROM 
+            public."Pedidos" p
+          JOIN 
+            public."valoracionPuestos" v ON v."pedidoId" = p.id
+          JOIN 
+            public."valoracionPuestos" vp ON vp."puestoId" = p."puestoId"
+          WHERE 
+            p.estado = 'Valorado'
+            AND p."puestoId" = :puestoId
+      `;
+  
+      const [result] = await sequelize.query(query, {
+        replacements: { puestoId },
+        type: sequelize.QueryTypes.SELECT,
+      });
+
+      const query2 = `
+        SELECT 
+            ROUND(AVG(EXTRACT(EPOCH FROM (p."fechaEntrega" - p."fecha"))) / 60, 2) AS tiempo_promedio_entrega_minutos
+          FROM 
+            public."Pedidos" p
+          WHERE 
+            (p.estado = 'Valorado' OR p.estado = 'Entregado')
+            AND p."puestoId" = :puestoId
+            AND p."fechaEntrega" IS NOT NULL;
+      `;
+  
+      const [result2] = await sequelize.query(query2, {
+        replacements: { puestoId },
+        type: sequelize.QueryTypes.SELECT,
+      });
+  
+      return {
+        estrellas: result.promedio_valoracion_puesto,
+        tiempo: result2.tiempo_promedio_entrega_minutos,
+      };
+    } catch (error) {
+      console.error("Error obteniendo estadísticas:", error);
+      throw new Error("No se pudieron obtener los detalles del puesto");
+    }
+  }
+  
 
 }
 

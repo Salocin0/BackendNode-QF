@@ -60,11 +60,11 @@ class ConsumidorController {
 
       console.log('Este  es el ID: ' + consumidor.id);
 
-      const { nombre, apellido, dni, fechaNacimiento, provincia, localidad, telefono } = req.body;
+      const { nombre, apellido, dni, fechaNacimiento, provincia, localidad, telefono,nombreUsuario } = req.body;
 
-      console.log(id, nombre, apellido, dni, fechaNacimiento, provincia, localidad, telefono);
+      console.log(id, nombre, apellido, dni, fechaNacimiento, provincia, localidad, telefono,nombreUsuario);
 
-      const result = await consumidorService.updateOneNew(consumidor.id, { nombre, apellido, dni, fechaNacimiento, provincia, localidad, telefono });
+      const result = await consumidorService.updateOneNew(consumidor.id, { nombre, apellido, dni, fechaNacimiento, provincia, localidad, telefono,nombreUsuario });
 
       return res.status(200).json({
         status: 'success',

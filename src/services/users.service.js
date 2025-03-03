@@ -128,19 +128,19 @@ class UserService {
     if (user) {
       if (rol == 'productor') {
         const productor = await productorService.create(datosRol);
-        const consumidor = await consumidorService.getOne(user.consumidoreId);
+        const consumidor = await consumidorService.getOne(user.consumidorId);
         consumidor.productorId = productor.id;
         consumidor.save();
         user.tipoUsuario = 'productor';
       } else if (rol == 'encargado') {
         const encargado = await encargadoService.create(datosRol);
-        const consumidor = await consumidorService.getOne(user.consumidoreId);
+        const consumidor = await consumidorService.getOne(user.consumidorId);
         consumidor.encargadoId = encargado.id;
         consumidor.save();
         user.tipoUsuario = 'encargado';
       } else if (rol == 'repartidor') {
         const repartidor = await repartidorService.create();
-        const consumidor = await consumidorService.getOne(user.consumidoreId);
+        const consumidor = await consumidorService.getOne(user.consumidorId);
         console.log(repartidor, consumidor);
         consumidor.repartidorId = repartidor.id;
         consumidor.save();

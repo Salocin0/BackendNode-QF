@@ -29,6 +29,34 @@ class PuestoController {
     }
   }
 
+  async getEstadisticas(req, res) {
+    try {
+      const puestoId = req.params.idpuesto;
+      const estadisticas = await puestoService.getEstadisticas(puestoId);
+      if (estadisticas) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'Found estadisticas puesto ' + puestoId,
+          data: estadisticas,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'Error',
+          msg: 'puestos not found',
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e)
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+
   async getAllInEventController(req, res) {
     try {
       console.log("llega")

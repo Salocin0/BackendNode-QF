@@ -252,8 +252,8 @@ class PedidoService {
   }
 
   async sendNotificacionesPedidoCancelado(puestoId,consumidorId){
-    const tituloNotificacion = notificationTexts.encargado.tituloPedidoCancelado;
-    const descripcionNotificacion = notificationTexts.encargado.descripcionPedidoCancelado;
+    let tituloNotificacion = notificationTexts.encargado.tituloPedidoCancelado;
+    let descripcionNotificacion = notificationTexts.encargado.descripcionPedidoCancelado;
     const resultadoNotificacion = await notificacionesService.enviarNotificacionesAPuesto(puestoId, tituloNotificacion, descripcionNotificacion);
     tituloNotificacion = notificationTexts.consumidor.tituloPedidoCancelado;
     descripcionNotificacion = notificationTexts.consumidor.descripcionPedidoCancelado;
@@ -292,7 +292,7 @@ class PedidoService {
     const tituloNotificacionRepartidor = notificationTexts.repartidor.tituloPedidoValorado;
     const descripcionNotificacionRepartidor = notificationTexts.repartidor.descripcionPedidoValorado;
     const user = await Usuario.findOne({where: {id: consumidorId}});
-    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAUsuario(user.id, tituloNotificacion, descripcionNotificacion,user.tokenMobile, user.tokenWeb);
+    const resultadoNotificacion = await notificacionesService.enviarNotificacionesAUsuario(user.id, tituloNotificacionRepartidor, descripcionNotificacionRepartidor,user.tokenMobile, user.tokenWeb);
     return resultadoNotificacion;
   }
 
@@ -355,9 +355,11 @@ class PedidoService {
           const puestoId = pedido.puestoId;
           const pedidoNotificaciones = await this.sendNotificacionesPedidoCancelado(puestoId);
         }
-        if(accion === 'finalizar'){
+        if(accion === 'pedidoEntregado'){
           const puestoId = pedido.puestoId;
           const pedidoNotificaciones = await this.sendNotificacionesPedidoEntregado(puestoId);
+          pedido.fechaEntrega = Date.now();
+          pedido.save();
         }
         if(accion === "valorar"){
           const id = pedido.id;

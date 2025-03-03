@@ -3,6 +3,7 @@ import { puestoController } from '../controllers/puesto.controller.js';
 export const RouterPuesto = express.Router();
 
 RouterPuesto.get('/', puestoController.getAllController);
+RouterPuesto.get('/getEstadisticas/:idpuesto', puestoController.getEstadisticas);
 
 RouterPuesto.get('/consultar/:id', puestoController.getOneController);
 

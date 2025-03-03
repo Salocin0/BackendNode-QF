@@ -2,9 +2,11 @@ import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Encargado } from '../DAO/models/encargado.model.js';
 import { Productor } from '../DAO/models/Productor.model.js';
 import { Repartidor } from '../DAO/models/repartidor.model.js';
+import { Usuario } from '../DAO/models/users.model.js';
 import { encargadoService } from './encargado.service.js';
 import { productorService } from './productor.service.js';
 import { repartidorService } from './repartidor.service.js';
+import { userService } from './users.service.js';
 
 class ConsumidorService {
   async getAll() {
@@ -83,6 +85,7 @@ class ConsumidorService {
   async updateOneNew(id, newData) {
     try {
       const consumidor = await Consumidor.findByPk(id);
+      const usuario = await userService.getOneByConsumidorId(id);
       if (!consumidor) {
         return null;
       } else {
@@ -92,8 +95,11 @@ class ConsumidorService {
         consumidor.localidad = newData.localidad;
         consumidor.telefono = newData.telefono;
         consumidor.dni = newData.dni;
+        consumidor.fechaNacimiento = newData.fechaNacimiento;
+        usuario.usuario = newData.nombreUsuario;
       }
       await consumidor.save();
+      await usuario.save();
       return consumidor;
     } catch (error) {
       throw error;
