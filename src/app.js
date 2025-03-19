@@ -66,10 +66,23 @@ const stripe = Stripe('sk_test_51PnpcMRoRlWr6LoNVHnAJMDXVOFLMlAAeTxMZUvUuWmPt4qM
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 // Middlewares
-app.use(cors({
-  origin: '*', // Aceptar solicitudes de cualquier origen
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-}));
+app.use(
+  cors({
+    origin: "*", // Permitir cualquier origen
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Asegurar que OPTIONS está permitido
+    allowedHeaders: ["Content-Type", "Authorization"], // Permitir encabezados adicionales
+    credentials: true, // Permitir envío de credenciales si es necesario
+  })
+);
+
+// Manejo de solicitudes OPTIONS manualmente
+app.options("*", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.sendStatus(204);
+});
+
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
