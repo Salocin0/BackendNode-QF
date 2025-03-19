@@ -133,7 +133,7 @@ async function connectDB() {
   try {
     await sequelize.sync({ force: true }); // false no modifica la base de datos
     await DatosIniciales() //COMENTAR SI FORCE SE COLOCA EN FALSE
-    await generateAllData() //COMENTAR SI FORCE SE COLOCA EN FALSE
+    //await generateAllData() //COMENTAR SI FORCE SE COLOCA EN FALSE
     procesosAutomaticos();
     
   } catch (error) {
