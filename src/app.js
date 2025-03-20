@@ -131,13 +131,25 @@ app.use('/estadisticas', RouterEstadisticas)
 
 async function connectDB() {
   try {
-    await sequelize.sync({ force: true }); // false no modifica la base de datos
-    await DatosIniciales() //COMENTAR SI FORCE SE COLOCA EN FALSE
-    //await generateAllData() //COMENTAR SI FORCE SE COLOCA EN FALSE
+    await dropViewIfExists("chatbotdata");
+    await sequelize.sync({ force: process.env.FORCE_DB }); // false no modifica la base de datos
+    if(process.env.FORCE_DB === 'true'){
+      await DatosIniciales()
+    }
+    await generateAllData() //COMENTAR SI FORCE SE COLOCA EN FALSE
     procesosAutomaticos();
     
   } catch (error) {
     console.error('Error al conectar con la base de datos:', error);
+  }
+}
+
+export async function dropViewIfExists(viewName) {
+  try {
+    await sequelize.query(`DROP VIEW IF EXISTS ${viewName} CASCADE;`);
+    console.log(`Vista ${viewName} eliminada correctamente.`);
+  } catch (error) {
+    console.error(`Error al eliminar la vista ${viewName}:`, error);
   }
 }
 

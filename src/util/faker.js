@@ -381,10 +381,23 @@ export async function generateEvents(count) {
 
 // Función principal para generar diferentes tipos de datos (solo usuarios por ahora)
 export async function generateAllData() {
-  await generateEvents(3); //crear 3 eventos para el producto 1 de tematica distinta //crear 3 dias de evento para cada uno con duracion de 6 horas
-  await generateEncargado(1); //crear un encargado de puesto //crear 6 puestos para distintos 3 para el EP 1 y 3 para el EP 2 //crear 10 productos (comida/bebida) para cada puesto con la tematica correspondiente  //crear 6 asociaciones para los puestos a los eventos
-  await generateRepartidor(1); //crear un repartidor //crear 2 asociaciones para el repartidor 1 y 2 a los 3 eventos
+  try {
+    const userCount = await Usuario.count(); // Contar registros en la tabla Usuarios
 
-  await generateUsers(40); //crear 100 consumidores distintos
-  //crear 5 compras por consumidor a puestos distintos, horas distintas, a lo largo del evento y con cantidades distintas //crear para los pedidos que aproximadamente 1 de cada 5 se califiquen
+    if (userCount > 4) {
+      console.log("❌ No se ejecutará la generación de datos porque hay más de 4 usuarios en la base de datos.");
+      return;
+    }
+
+    console.log("✅ Generando datos de prueba...");
+    await generateEvents(3);
+    await generateEncargado(1);
+    await generateRepartidor(1);
+    await generateUsers(40);
+
+    console.log("🎉 Datos generados exitosamente.");
+    console.log("👤 Cantidad de usuarios en la base de datos:", await Usuario.count())
+  } catch (error) {
+    console.error("⚠️ Error al verificar usuarios o generar datos:", error);
+  }
 }
