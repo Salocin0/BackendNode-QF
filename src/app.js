@@ -68,18 +68,19 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 // Middlewares
 app.use(
   cors({
-    origin: "*", // Permitir cualquier origen
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Asegurar que OPTIONS está permitido
-    allowedHeaders: ["Content-Type", "Authorization"], // Permitir encabezados adicionales
-    credentials: true, // Permitir envío de credenciales si es necesario
+    origin: "*", // Permite cualquier origen
+    methods: "*", // Permite todos los métodos
+    allowedHeaders: "*", // Permite todos los headers
+    credentials: true, // Permite credenciales
   })
 );
 
-// Manejo de solicitudes OPTIONS manualmente
+// Manejo de solicitudes OPTIONS manualmente (100% abierto)
 app.options("*", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Methods", "*"); // Permite todos los métodos
+  res.header("Access-Control-Allow-Headers", "*"); // Permite todos los headers
+  res.header("Access-Control-Allow-Credentials", "true");
   res.sendStatus(204);
 });
 
