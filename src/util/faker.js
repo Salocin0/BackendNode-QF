@@ -43,7 +43,7 @@ export async function generateUsers(count = 100) {
         usuario: faker.person.firstName() + faker.person.lastName() + faker.person.middleName(),
         email: faker.internet.email(),
         emailValidado: true,
-        contraseña: '$2b$10$icYmS6HeA3KGP7jP6ZbXZ.PhckTo63o1xSxReMhTl63LVs/5BcA/.', // hashed password
+        contraseña: '$2b$10$r0eqwWy3mo9xWFo9t4NVFetBAt88AT5GbK2vMkcJWEHoYL.TPvjLK', // hashed password
         fechaAlta: new Date(),
         habilitado: true,
         tipoUsuario: 'consumidor',
@@ -184,7 +184,7 @@ export async function generateEncargado(count) {
         usuario: faker.person.firstName() + faker.person.lastName() + faker.person.middleName(),
         email: faker.internet.email(),
         emailValidado: true,
-        contraseña: '$2b$10$icYmS6HeA3KGP7jP6ZbXZ.PhckTo63o1xSxReMhTl63LVs/5BcA/.',
+        contraseña: '$2b$10$r0eqwWy3mo9xWFo9t4NVFetBAt88AT5GbK2vMkcJWEHoYL.TPvjLK',
         fechaAlta: new Date(),
         habilitado: true,
         tipoUsuario: 'consumidor',
@@ -258,7 +258,7 @@ export async function generateRepartidor(count) {
         usuario: faker.person.firstName() + faker.person.lastName() + faker.person.middleName(),
         email: faker.internet.email(),
         emailValidado: true,
-        contraseña: '$2b$10$icYmS6HeA3KGP7jP6ZbXZ.PhckTo63o1xSxReMhTl63LVs/5BcA/.',
+        contraseña: '$2b$10$r0eqwWy3mo9xWFo9t4NVFetBAt88AT5GbK2vMkcJWEHoYL.TPvjLK',
         fechaAlta: new Date(),
         habilitado: true,
         tipoUsuario: 'consumidor',
@@ -319,7 +319,18 @@ export async function generateEvents(count) {
       const descripcion = descripciones[i % descripciones.length];
       const tipoEvento = tiposEvento[i % tiposEvento.length];
       const tipoPago = tiposPago[i % tiposPago.length];
-      const productor = await Productor.findOne({ where: { id: 1 } });
+      let productor = await Productor.findOne({ where: { id: 1 } });
+      if (!productor) {
+        productor = await Productor.create({
+          cuit: faker.number.bigInt({ min: 10000000000, max: 99999999999 }),
+          razonSocial: 'Productor Default',
+          estaValido: true,
+          habilitado: true,
+          condicionIva: 'Monotributista',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      }
       // Crear el evento
       const evento = await Evento.create({
         nombre: nombre,
@@ -384,10 +395,6 @@ export async function generateAllData() {
   try {
     const userCount = await Usuario.count(); // Contar registros en la tabla Usuarios
 
-    if (userCount > 4) {
-      console.log("❌ No se ejecutará la generación de datos porque hay más de 4 usuarios en la base de datos.");
-      return;
-    }
 
     console.log("✅ Generando datos de prueba...");
     await generateEvents(3);

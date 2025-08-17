@@ -133,8 +133,8 @@ app.use('/estadisticas', RouterEstadisticas)
 async function connectDB() {
   try {
     await dropViewIfExists("chatbotdata");
-    await sequelize.sync({ force: process.env.FORCE_DB }); // false no modifica la base de datos
-    if(process.env.FORCE_DB === 'true'){
+    await sequelize.sync({ force: process.env.DB_FORCE }); // false no modifica la base de datos
+    if(process.env.DB_FORCE === 'true'){
       await DatosIniciales()
     }
     await generateAllData() //COMENTAR SI FORCE SE COLOCA EN FALSE
