@@ -130,6 +130,14 @@ app.use('/payment-sheet', PaymentRouter);
 app.use('/chatbot', RouterChatbot)
 app.use('/estadisticas', RouterEstadisticas)
 
+app.get("/info", (req, res) => {
+  res.json({
+    message: "Información del servidor",
+    uptime: process.uptime(),
+    timestamp: Date.now()
+  });
+});
+
 async function connectDB() {
   try {
     await dropViewIfExists("chatbotdata");
