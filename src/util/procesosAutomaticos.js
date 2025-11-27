@@ -16,14 +16,43 @@ const PROCESOS_INTERVAL_MS = process.env.PROCESOS_INTERVAL_MS ? parseInt(process
 const DEFAULT_WINDOW_SECONDS = IS_PROD ? 300 : 45; // prod: 5min, dev: 45s
 const ASIGNACION_WINDOW_SECONDS = process.env.ASIGNACION_WINDOW_SECONDS ? parseInt(process.env.ASIGNACION_WINDOW_SECONDS, 10) : DEFAULT_WINDOW_SECONDS;
 
+// Control de ejecuciones vacías para optimizar costos
+let ejecucionesVacias = 0;
+let procesoActivo = true;
+let intervalId = null;
+const MAX_EJECUCIONES_VACIAS = 3;
+
+// Función para reactivar los procesos automáticos
+export function reactivarProcesosAutomaticos() {
+  if (!procesoActivo) {
+    console.log('🔄 Reactivando procesos automáticos por nueva actividad');
+    ejecucionesVacias = 0;
+    procesoActivo = true;
+  }
+}
+
 export function procesosAutomaticos() {
-    setInterval(async () => {
+    intervalId = setInterval(async () => {
       try {
+        // Si el proceso está deshabilitado, no ejecutar
+        if (!procesoActivo) {
+          console.log('⏸️  Procesos automáticos pausados (sin actividad)');
+          return;
+        }
+
         console.warn('procesosAutomaticos');
+        
+        // Contador de trabajo realizado en esta ejecución
+        let trabajoRealizado = false;
+        
         await caducarAsignaciones();
         const pedidos = await obtenerPedidosParaAsignacion();
         console.warn('pedidos pendientes de asignar', pedidos);
   
+        if (pedidos.length > 0) {
+          trabajoRealizado = true;
+        }
+
         for (const pedido of pedidos) {
           const existeAsignacion = await verificarAsignacionPorPedidoCompleto(pedido.id);
           console.warn('existeAsignacion', existeAsignacion);
@@ -49,6 +78,10 @@ export function procesosAutomaticos() {
   
         const pedidosActualizar = await obtenerPedidosParaActualizar();
   
+        if (pedidosActualizar.length > 0) {
+          trabajoRealizado = true;
+        }
+
         for (const pedido of pedidosActualizar) {
           const existeAsignacion = await verificarAsignacionPorPedido(pedido.id);
   
@@ -58,8 +91,28 @@ export function procesosAutomaticos() {
             await pedidoService.setDatosExtraPedido(pedido.id, repartidoridN, generateCode(), idPE[0]);
           }
         }
+
+        // Control de ejecuciones vacías
+        if (trabajoRealizado) {
+          // Si hubo trabajo, resetear el contador
+          ejecucionesVacias = 0;
+          console.log('✅ Proceso completado con trabajo realizado');
+        } else {
+          // Si no hubo trabajo, incrementar contador
+          ejecucionesVacias++;
+          console.log(`⚠️  Ejecución vacía ${ejecucionesVacias}/${MAX_EJECUCIONES_VACIAS}`);
+          
+          // Si alcanzamos el límite, deshabilitar el proceso
+          if (ejecucionesVacias >= MAX_EJECUCIONES_VACIAS) {
+            procesoActivo = false;
+            console.log('💤 Procesos automáticos deshabilitados por inactividad (ahorro de costos)');
+            console.log('   Se reactivarán automáticamente con la próxima petición');
+          }
+        }
       } catch (error) {
         console.error('Error al actualizar pedidos:', error);
+        // En caso de error, no contar como ejecución vacía
+        ejecucionesVacias = 0;
       }
     }, PROCESOS_INTERVAL_MS); // Intervalo configurable
   }

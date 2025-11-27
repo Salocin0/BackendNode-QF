@@ -167,8 +167,6 @@ class PedidoController {
         //llamar al pedidoService(puestoId) (SERVICE CON SERVICE)
         const pedidoNotificaciones = await pedidoService.sendNotificacionesPedidoCreado(puestoId,consumidorId);
 
-
-
         return res.status(200).json({
           status: 'success',
           msg: 'Producto created',

@@ -41,6 +41,7 @@ import { sequelize } from './util/connections.js';
 import SequelizeStoreInit from 'connect-session-sequelize';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
 import { generateAllData } from './util/faker.js';
+import { middlewareReactivarProcesos } from './middlewares/reactivarProcesos.js';
 dotenv.config();
 //definicion de server de express
 const app = express();
@@ -106,6 +107,10 @@ app.use((req, res, next) => {
 // parse application/json
 app.use(bodyParser.json());
 app.use(flash());
+
+// Middleware global: reactivar procesos automáticos con cualquier petición
+app.use(middlewareReactivarProcesos);
+
 // URLs
 app.use(express.static(__dirname + '/public'));
 
