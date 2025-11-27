@@ -23,6 +23,67 @@ const tiposEvento = ['Música', 'Ciencia', 'Gastronomía'];
 const tiposPago = ['Tarjeta', 'Tarjeta', 'Tarjeta'];
 const tipoCocina = ['Comida Rápida', 'Cafetería', 'Restaurante Familiar', 'Food Truck', 'Pizzeria', 'Taco Stand', 'Pastelería', 'Heladería'];
 // Función para generar usuarios y consumidores uno por uno
+
+// Helper: devolver un evento existente aleatorio o crear uno mínimo si no existen
+async function pickRandomEventoIdOrCreate() {
+  const eventos = await Evento.findAll({ attributes: ['id'] });
+  if (eventos && eventos.length > 0) {
+    return faker.helpers.arrayElement(eventos.map(e => e.id));
+  }
+
+  // No hay eventos: crear productor mínimo si hace falta
+  let productor = await Productor.findOne({ where: { id: 1 } });
+  if (!productor) {
+    productor = await Productor.create({
+      cuit: faker.number.bigInt({ min: 10000000000, max: 99999999999 }),
+      razonSocial: 'Productor Auto',
+      estaValido: true,
+      habilitado: true,
+      condicionIva: 'Monotributista',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+  }
+
+  const ev = await Evento.create({
+    nombre: 'Evento Seed Auto',
+    descripcion: 'Evento creado automáticamente por el seeder',
+    tipoEvento: 'Gastronomía',
+    tipoPago: 'Tarjeta',
+    cantidadPuestos: 3,
+    conButaca: false,
+    conRepartidor: true,
+    tienePreventa: false,
+    linkVentaEntradas: '',
+    ubicacion: '',
+    habilitado: true,
+    localidad: faker.helpers.arrayElement(localidades),
+    provincia: faker.helpers.arrayElement(provincias),
+    img: '',
+    estado: 'Finalizado',
+    longitud: faker.address.longitude(),
+    latitud: faker.address.latitude(),
+    cantidadDiasEvento: 1,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    productorId: productor.id,
+  });
+
+  // Crear al menos un día de evento para que otros seeders lo consuman
+  await DiaEvento.create({
+    nombre: 'Día automático',
+    descripcion: 'Día creado automáticamente',
+    fechaHoraInicioDiaEvento: new Date(),
+    fechaHoraFinDiaEvento: new Date(Date.now() + 1000 * 60 * 60 * 3),
+    tienePreventa: false,
+    eventoId: ev.id,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
+
+  return ev.id;
+}
+
 export async function generateUsers(count = 100) {
   for (let i = 0; i < count; i++) {
     try {
@@ -56,9 +117,13 @@ export async function generateUsers(count = 100) {
       for (let j = 0; j < 15; j++) {
         // Fetch a random "puesto" (shop)
         const puesto = await Puesto.findOne({ order: Sequelize.literal('random()') });
+        if (!puesto) {
+          console.warn('No se encontró un puesto aleatorio, se omite este pedido');
+          continue;
+        }
 
-        // Random event ID from [6, 7, 8]
-        const eventoId = faker.helpers.arrayElement([6, 7, 8]);
+        // Obtener un evento válido (si no existen, se crea uno mínimo)
+        const eventoId = await pickRandomEventoIdOrCreate();
 
         // Fetch event days for the selected event
         const diasEvento = await DiaEvento.findAll({ where: { eventoId } });
@@ -211,21 +276,13 @@ export async function generateEncargado(count) {
             puesto: puesto.id,
           });
         }
-        const a1 = await Asociacion.create({
-          estado: 'Aceptada',
-          eventoId: 6,
-          puestoId: puesto.id,
-        });
-        const a2 = await Asociacion.create({
-          estado: 'Aceptada',
-          eventoId: 7,
-          puestoId: puesto.id,
-        });
-        const a3 = await Asociacion.create({
-          estado: 'Aceptada',
-          eventoId: 8,
-          puestoId: puesto.id,
-        });
+        // Asociaciones: usar eventos válidos
+        const ev1 = await pickRandomEventoIdOrCreate();
+        if (ev1) await Asociacion.create({ estado: 'Aceptada', eventoId: ev1, puestoId: puesto.id });
+        const ev2 = await pickRandomEventoIdOrCreate();
+        if (ev2) await Asociacion.create({ estado: 'Aceptada', eventoId: ev2, puestoId: puesto.id });
+        const ev3 = await pickRandomEventoIdOrCreate();
+        if (ev3) await Asociacion.create({ estado: 'Aceptada', eventoId: ev3, puestoId: puesto.id });
       }
       console.log(`puestos productos creados`);
     } catch (error) {
@@ -267,36 +324,20 @@ export async function generateRepartidor(count) {
         consumidorId: consumidor.id,
       });
 
-      Asociacion.create({
-        estado: 'Aceptada',
-        eventoId: 6,
-        repartidoreId: repartidor.id,
-      });
-      Asociacion.create({
-        estado: 'Aceptada',
-        eventoId: 7,
-        repartidoreId: repartidor.id,
-      });
-      Asociacion.create({
-        estado: 'Aceptada',
-        eventoId: 8,
-        repartidoreId: repartidor.id,
-      });
-      Asociacion.create({
-        estado: 'Aceptada',
-        eventoId: 6,
-        repartidoreId: 1,
-      });
-      Asociacion.create({
-        estado: 'Aceptada',
-        eventoId: 7,
-        repartidoreId: 1,
-      });
-      Asociacion.create({
-        estado: 'Aceptada',
-        eventoId: 8,
-        repartidoreId: 1,
-      });
+      // Crear asociaciones solo con eventos válidos
+      const evA = await pickRandomEventoIdOrCreate();
+      if (evA) await Asociacion.create({ estado: 'Aceptada', eventoId: evA, repartidoreId: repartidor.id });
+      const evB = await pickRandomEventoIdOrCreate();
+      if (evB) await Asociacion.create({ estado: 'Aceptada', eventoId: evB, repartidoreId: repartidor.id });
+      const evC = await pickRandomEventoIdOrCreate();
+      if (evC) await Asociacion.create({ estado: 'Aceptada', eventoId: evC, repartidoreId: repartidor.id });
+      // Asociaciones adicionales para el repartidor por defecto (id 1) si existe
+      const evD = await pickRandomEventoIdOrCreate();
+      if (evD) await Asociacion.create({ estado: 'Aceptada', eventoId: evD, repartidoreId: 1 });
+      const evE = await pickRandomEventoIdOrCreate();
+      if (evE) await Asociacion.create({ estado: 'Aceptada', eventoId: evE, repartidoreId: 1 });
+      const evF = await pickRandomEventoIdOrCreate();
+      if (evF) await Asociacion.create({ estado: 'Aceptada', eventoId: evF, repartidoreId: 1 });
 
       console.log(`puestos productos creados`);
     } catch (error) {

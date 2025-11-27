@@ -140,12 +140,24 @@ app.get("/info", (req, res) => {
 
 async function connectDB() {
   try {
-    await dropViewIfExists("chatbotdata");
-    await sequelize.sync({ force: process.env.DB_FORCE }); // false no modifica la base de datos
-    if(process.env.DB_FORCE === 'true'){
-      await DatosIniciales()
+    const nodeEnv = process.env.NODE_ENV || 'development';
+    const isProd = nodeEnv === 'production' || nodeEnv === 'prod';
+
+    if (!isProd) {
+      // Modo desarrollo: permitir drop, sync con force y seed de datos
+      await dropViewIfExists('chatbotdata');
+      await sequelize.sync({ force: process.env.DB_FORCE === 'true' }); // false no modifica la base de datos
+      if (process.env.DB_FORCE === 'true') {
+        await DatosIniciales();
+      }
+      await generateAllData(); // Solo en desarrollo
+    } else {
+      // Modo producción: no borrar ni preinicializar datos. Sin force.
+      await sequelize.sync({ force: false });
+      console.log('Modo producción detectado: no se preinicializan datos ni se borra la base de datos.');
     }
-    await generateAllData() //COMENTAR SI FORCE SE COLOCA EN FALSE
+
+    // Ejecutar procesos automáticos en cualquier entorno
     procesosAutomaticos();
     
   } catch (error) {
