@@ -4,6 +4,18 @@ import { sequelize } from './connections.js';
 import { pedidoService } from '../services/pedido.service.js';
 import { puntoEncuentroService } from '../services/puntoEncuentro.service.js';
 
+// Configuración de intervalos (ms y segundos) configurable por env
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const IS_PROD = NODE_ENV === 'production' || NODE_ENV === 'prod';
+
+// Intervalo entre ejecuciones del proceso principal (en ms)
+const DEFAULT_INTERVAL_MS = IS_PROD ? 5 * 60 * 1000 : 10 * 1000; // prod: 5min, dev: 10s
+const PROCESOS_INTERVAL_MS = process.env.PROCESOS_INTERVAL_MS ? parseInt(process.env.PROCESOS_INTERVAL_MS, 10) : DEFAULT_INTERVAL_MS;
+
+// Ventana en segundos usada para determinar si una asignación es reciente/caducable
+const DEFAULT_WINDOW_SECONDS = IS_PROD ? 300 : 45; // prod: 5min, dev: 45s
+const ASIGNACION_WINDOW_SECONDS = process.env.ASIGNACION_WINDOW_SECONDS ? parseInt(process.env.ASIGNACION_WINDOW_SECONDS, 10) : DEFAULT_WINDOW_SECONDS;
+
 export function procesosAutomaticos() {
     setInterval(async () => {
       try {
@@ -49,7 +61,7 @@ export function procesosAutomaticos() {
       } catch (error) {
         console.error('Error al actualizar pedidos:', error);
       }
-    }, 10000); // Intervalo de 10 segundos (10,000 ms)
+    }, PROCESOS_INTERVAL_MS); // Intervalo configurable
   }
   
 
@@ -140,7 +152,7 @@ export async function obtenerRepartidorAsignado(pedidoId) {
 
 // Obtener pedidos que necesitan asignación
 export async function obtenerPedidosParaAsignacion() {
-  const pedidos = await sequelize.query(
+    const pedidos = await sequelize.query(
     `
         SELECT id, "eventoId"
         FROM "Pedidos" p
@@ -150,7 +162,7 @@ export async function obtenerPedidosParaAsignacion() {
               FROM "Asignacions" arp
               WHERE arp."PedidoId" = p.id
                 AND arp.estado = 'Pendiente'
-                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'
+                AND arp."createdAt" >= NOW() - INTERVAL '${ASIGNACION_WINDOW_SECONDS} seconds'
           );
     `,
     { type: sequelize.QueryTypes.SELECT, logging: false }
@@ -161,7 +173,7 @@ export async function obtenerPedidosParaAsignacion() {
 
 // Obtener pedidos que necesitan asignación
 export async function obtenerPedidosParaActualizar() {
-  const pedidos = await sequelize.query(
+    const pedidos = await sequelize.query(
     `
         SELECT id, "eventoId"
         FROM "Pedidos" p
@@ -171,7 +183,7 @@ export async function obtenerPedidosParaActualizar() {
               FROM "Asignacions" arp
               WHERE arp."PedidoId" = p.id
                 AND arp.estado = 'Aceptado'
-                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'
+                AND arp."createdAt" >= NOW() - INTERVAL '${ASIGNACION_WINDOW_SECONDS} seconds'
           );
     `,
     { type: sequelize.QueryTypes.SELECT, logging: false }
@@ -221,7 +233,7 @@ export async function borrarAsignacionesPendienteViejas() {
       `
             DELETE FROM "Asignacions"
             WHERE estado = 'Pendiente'
-              AND "createdAt" < NOW() - INTERVAL '45 seconds'
+              AND "createdAt" < NOW() - INTERVAL '${ASIGNACION_WINDOW_SECONDS} seconds'
             RETURNING *;
         `,
       { type: sequelize.QueryTypes.DELETE, logging: false }
@@ -274,7 +286,7 @@ export async function caducarAsignaciones() {
       UPDATE "Asignacions"
       SET estado = 'Caducado'
       WHERE estado = 'Pendiente'
-        AND "createdAt" < NOW() - INTERVAL '45 seconds'
+        AND "createdAt" < NOW() - INTERVAL '${ASIGNACION_WINDOW_SECONDS} seconds'
       RETURNING *;
     `,
       { type: sequelize.QueryTypes.UPDATE, logging: false }
