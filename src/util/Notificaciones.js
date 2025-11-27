@@ -1,12 +1,19 @@
 import admin from 'firebase-admin'; // Ajusta la importación según tu configuración de Firebase Admin
-import serviceAccount from "../../serviceAccountKey.json" with { type: "json" };
-// Inicializar Firebase Admin SDK con tu configuración
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+import getServiceAccount from './serviceAccountBuilder.js';
+
+// Inicializar Firebase Admin SDK bajo demanda (cuando se necesite)
+function ensureFirebaseInitialized() {
+  if (!admin.apps || admin.apps.length === 0) {
+    const serviceAccount = getServiceAccount();
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+  }
+}
 
 export async function sendNotificacionesWeb(token, titulo, descripcion) {
   try {
+    ensureFirebaseInitialized();
     const Message = {
       notification: {
         title: titulo,
