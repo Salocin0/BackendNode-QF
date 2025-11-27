@@ -9,11 +9,11 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 const IS_PROD = NODE_ENV === 'production' || NODE_ENV === 'prod';
 
 // Intervalo entre ejecuciones del proceso principal (en ms)
-const DEFAULT_INTERVAL_MS = IS_PROD ? 5 * 60 * 1000 : 10 * 1000; // prod: 5min, dev: 10s
+const DEFAULT_INTERVAL_MS = 15 * 1000; // 15 segundos para todos los ambientes
 const PROCESOS_INTERVAL_MS = process.env.PROCESOS_INTERVAL_MS ? parseInt(process.env.PROCESOS_INTERVAL_MS, 10) : DEFAULT_INTERVAL_MS;
 
 // Ventana en segundos usada para determinar si una asignación es reciente/caducable
-const DEFAULT_WINDOW_SECONDS = IS_PROD ? 300 : 45; // prod: 5min, dev: 45s
+const DEFAULT_WINDOW_SECONDS = IS_PROD ? 45 : 45; // prod: 5min, dev: 45s
 const ASIGNACION_WINDOW_SECONDS = process.env.ASIGNACION_WINDOW_SECONDS ? parseInt(process.env.ASIGNACION_WINDOW_SECONDS, 10) : DEFAULT_WINDOW_SECONDS;
 
 // Control de ejecuciones vacías para optimizar costos
