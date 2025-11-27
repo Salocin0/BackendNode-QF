@@ -18,7 +18,7 @@ const ASIGNACION_WINDOW_SECONDS = process.env.ASIGNACION_WINDOW_SECONDS ? parseI
 
 // Control de ejecuciones vacías para optimizar costos
 let ejecucionesVacias = 0;
-let procesoActivo = true;
+let procesoActivo = false;
 let intervalId = null;
 const MAX_EJECUCIONES_VACIAS = 3;
 
@@ -28,94 +28,112 @@ export function reactivarProcesosAutomaticos() {
     console.log('🔄 Reactivando procesos automáticos por nueva actividad');
     ejecucionesVacias = 0;
     procesoActivo = true;
+    // Reiniciar el intervalo
+    iniciarProcesosAutomaticos();
   }
 }
 
-export function procesosAutomaticos() {
-    intervalId = setInterval(async () => {
-      try {
-        // Si el proceso está deshabilitado, no ejecutar
-        if (!procesoActivo) {
-          console.log('⏸️  Procesos automáticos pausados (sin actividad)');
-          return;
-        }
+// Función para detener completamente los procesos
+function detenerProcesosAutomaticos() {
+  if (intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+    procesoActivo = false;
+    console.log('💤 Procesos automáticos completamente detenidos (ahorro de costos)');
+    console.log('   Se reactivarán automáticamente con la próxima petición HTTP');
+  }
+}
 
-        console.warn('procesosAutomaticos');
-        
-        // Contador de trabajo realizado en esta ejecución
-        let trabajoRealizado = false;
-        
-        await caducarAsignaciones();
-        const pedidos = await obtenerPedidosParaAsignacion();
-        console.warn('pedidos pendientes de asignar', pedidos);
-  
-        if (pedidos.length > 0) {
-          trabajoRealizado = true;
-        }
+// Función interna que contiene la lógica del intervalo
+function iniciarProcesosAutomaticos() {
+  // Si ya hay un intervalo activo, no crear otro
+  if (intervalId) {
+    return;
+  }
 
-        for (const pedido of pedidos) {
-          const existeAsignacion = await verificarAsignacionPorPedidoCompleto(pedido.id);
-          console.warn('existeAsignacion', existeAsignacion);
-  
-          if (!existeAsignacion) {
-            const repartidorid = await obtenerRepartidor(pedido.eventoId, pedido.id);
-            if (repartidorid.repartidoreId == -2) {
-              console.warn("error al asignar repartidor");
-              await borrarAsignacionesRechazadas();
-              await borrarAsignacionesCaducadas();
-            } else if (repartidorid.repartidoreId == -1) {
-              console.warn("no hay repartidores disponibles");
-              await borrarAsignacionesRechazadas();
-              await borrarAsignacionesCaducadas();
-            } else {
-              if (repartidorid.repartidoreId) {
-                console.warn("hay repartidores disponibles");
-                await asignacionService.create('Pendiente', pedido.id, repartidorid.repartidoreId);
-              }
+  intervalId = setInterval(async () => {
+    try {
+      console.warn('procesosAutomaticos');
+      
+      // Contador de trabajo realizado en esta ejecución
+      let trabajoRealizado = false;
+      
+      await caducarAsignaciones();
+      const pedidos = await obtenerPedidosParaAsignacion();
+      console.warn('pedidos pendientes de asignar', pedidos);
+
+      if (pedidos.length > 0) {
+        trabajoRealizado = true;
+      }
+
+      for (const pedido of pedidos) {
+        const existeAsignacion = await verificarAsignacionPorPedidoCompleto(pedido.id);
+        console.warn('existeAsignacion', existeAsignacion);
+
+        if (!existeAsignacion) {
+          const repartidorid = await obtenerRepartidor(pedido.eventoId, pedido.id);
+          if (repartidorid.repartidoreId == -2) {
+            console.warn("error al asignar repartidor");
+            await borrarAsignacionesRechazadas();
+            await borrarAsignacionesCaducadas();
+          } else if (repartidorid.repartidoreId == -1) {
+            console.warn("no hay repartidores disponibles");
+            await borrarAsignacionesRechazadas();
+            await borrarAsignacionesCaducadas();
+          } else {
+            if (repartidorid.repartidoreId) {
+              console.warn("hay repartidores disponibles");
+              await asignacionService.create('Pendiente', pedido.id, repartidorid.repartidoreId);
             }
           }
         }
-  
-        const pedidosActualizar = await obtenerPedidosParaActualizar();
-  
-        if (pedidosActualizar.length > 0) {
-          trabajoRealizado = true;
-        }
-
-        for (const pedido of pedidosActualizar) {
-          const existeAsignacion = await verificarAsignacionPorPedido(pedido.id);
-  
-          if (existeAsignacion) {
-            const repartidoridN = await obtenerRepartidorAsignado(pedido.id);
-            const idPE = await puntoEncuentroService.getAllInEvent(pedido.eventoId);
-            await pedidoService.setDatosExtraPedido(pedido.id, repartidoridN, generateCode(), idPE[0]);
-          }
-        }
-
-        // Control de ejecuciones vacías
-        if (trabajoRealizado) {
-          // Si hubo trabajo, resetear el contador
-          ejecucionesVacias = 0;
-          console.log('✅ Proceso completado con trabajo realizado');
-        } else {
-          // Si no hubo trabajo, incrementar contador
-          ejecucionesVacias++;
-          console.log(`⚠️  Ejecución vacía ${ejecucionesVacias}/${MAX_EJECUCIONES_VACIAS}`);
-          
-          // Si alcanzamos el límite, deshabilitar el proceso
-          if (ejecucionesVacias >= MAX_EJECUCIONES_VACIAS) {
-            procesoActivo = false;
-            console.log('💤 Procesos automáticos deshabilitados por inactividad (ahorro de costos)');
-            console.log('   Se reactivarán automáticamente con la próxima petición');
-          }
-        }
-      } catch (error) {
-        console.error('Error al actualizar pedidos:', error);
-        // En caso de error, no contar como ejecución vacía
-        ejecucionesVacias = 0;
       }
-    }, PROCESOS_INTERVAL_MS); // Intervalo configurable
-  }
+
+      const pedidosActualizar = await obtenerPedidosParaActualizar();
+
+      if (pedidosActualizar.length > 0) {
+        trabajoRealizado = true;
+      }
+
+      for (const pedido of pedidosActualizar) {
+        const existeAsignacion = await verificarAsignacionPorPedido(pedido.id);
+
+        if (existeAsignacion) {
+          const repartidoridN = await obtenerRepartidorAsignado(pedido.id);
+          const idPE = await puntoEncuentroService.getAllInEvent(pedido.eventoId);
+          await pedidoService.setDatosExtraPedido(pedido.id, repartidoridN, generateCode(), idPE[0]);
+        }
+      }
+
+      // Control de ejecuciones vacías
+      if (trabajoRealizado) {
+        // Si hubo trabajo, resetear el contador
+        ejecucionesVacias = 0;
+        console.log('✅ Proceso completado con trabajo realizado');
+      } else {
+        // Si no hubo trabajo, incrementar contador
+        ejecucionesVacias++;
+        console.log(`⚠️  Ejecución vacía ${ejecucionesVacias}/${MAX_EJECUCIONES_VACIAS}`);
+        
+        // Si alcanzamos el límite, detener completamente el proceso
+        if (ejecucionesVacias >= MAX_EJECUCIONES_VACIAS) {
+          detenerProcesosAutomaticos();
+        }
+      }
+    } catch (error) {
+      console.error('Error al actualizar pedidos:', error);
+      // En caso de error, no contar como ejecución vacía
+      ejecucionesVacias = 0;
+    }
+  }, PROCESOS_INTERVAL_MS);
+}
+
+// Función principal que se llama al iniciar el servidor
+export function procesosAutomaticos() {
+  console.log('📋 Sistema de procesos automáticos inicializado');
+  console.log('   Los procesos se activarán con la primera petición HTTP');
+  // No iniciamos los procesos automáticamente, esperamos la primera petición
+}
   
 
 function generateCode() {
