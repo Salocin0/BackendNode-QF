@@ -105,21 +105,26 @@ class UserService {
     let enca = null;
     let repa = null;
     user.consumidorId = consu.id;
-    user.save();
+    await user.save();
     if (user.tipoUsuario == 'productor') {
       prod = await productorService.create(productor);
       consu.productorId = prod.id;
-      consu.save();
+      await consu.save();
     } else if (user.tipoUsuario == 'encargado') {
       enca = await encargadoService.create(encargado);
       consu.encargadoId = enca.id;
-      consu.save();
+      await consu.save();
     } else if (user.tipoUsuario == 'repartidor') {
       repa = await repartidorService.create();
       consu.repartidorId = repa.id;
-      consu.save();
+      await consu.save();
     }
-    this.enviarEmailValidarEmail(user.id, user.email);
+    
+    // Enviar email de forma asíncrona sin bloquear la respuesta
+    this.enviarEmailValidarEmail(user.id, user.email).catch(err => {
+      console.error('Error al enviar email de validación:', err);
+    });
+    
     return { user, consu, prod, enca, repa };
   }
 

@@ -39,25 +39,35 @@ class UserController {
     try {
       //validacion 
       const usuario = req.body.usuario;
-      console.log(usuario);
+      console.log('Iniciando registro de usuario:', usuario?.nombreDeUsuario);
       const consumidor = req.body.consumidor;
       const productor = req.body.productor;
       const encargado = req.body.encargado;
       const repartidor = req.body.repartidor;
+      
       const usuariocreado = await userService.register(usuario, consumidor, productor, encargado, repartidor);
+      
       //verificar
       if (usuariocreado) {
+        console.log('Usuario registrado exitosamente:', usuariocreado.user.id);
         return res.status(200).json({
-          status: 'sucess',
+          status: 'success',
           msg: 'user created',
           data: usuariocreado,
         });
+      } else {
+        console.error('Error: No se pudo crear el usuario');
+        return res.status(400).json({
+          status: 'error',
+          msg: 'No se pudo crear el usuario',
+          data: {},
+        });
       }
     } catch (e) {
-      console.log(e)
+      console.error('Error en RegisterController:', e);
       return res.status(500).json({
         status: 'error',
-        msg: 'something went wrong :(',
+        msg: 'Error al registrar usuario: ' + (e.message || 'Error desconocido'),
         data: {},
       });
     }
