@@ -42,6 +42,8 @@ import SequelizeStoreInit from 'connect-session-sequelize';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
 import { generateAllData } from './util/faker.js';
 import { middlewareReactivarProcesos } from './middlewares/reactivarProcesos.js';
+import { createHashPW } from './util/bcrypt.js';
+import { Usuario } from './DAO/models/users.model.js';
 dotenv.config();
 //definicion de server de express
 const app = express();
@@ -164,6 +166,38 @@ app.get('/health', (req, res) => {
     timestamp: now.getTime(),
     date: now.toISOString()
   });
+});
+
+// Endpoint protegido para resetear la base de datos y volver a sembrar datos
+// Requiere enviar { key: process.env.DB_RESET_KEY } en el body (POST)
+app.post('/admin/reset-db', async (req, res) => {
+  try {
+    const providedKey = req.body?.key || req.headers['x-reset-key'];
+    const secretKey = process.env.DB_RESET_KEY || 'dev-reset-key';
+    if (providedKey !== secretKey) {
+      return res.status(403).json({ status: 'error', msg: 'Invalid reset key' });
+    }
+
+    console.log('Iniciando reset de base de datos (force sync)...');
+    // Forzar recreación de tablas
+    await sequelize.sync({ force: true });
+
+    // Ejecutar inserts desde Datos_DB.sql
+    await DatosIniciales();
+
+    // Ejecutar faker para generar datos adicionales
+    await generateAllData();
+
+    // Atualizar todas las contraseñas de usuarios a '123123123' (encriptada)
+    const hashed = createHashPW('123123123');
+    await Usuario.update({ contraseña: hashed }, { where: {} });
+
+    console.log('Reset y seed completados.');
+    return res.status(200).json({ status: 'success', msg: 'Database reset and seeded' });
+  } catch (error) {
+    console.error('Error en reset DB:', error);
+    return res.status(500).json({ status: 'error', msg: 'Error resetting database', error: error.message });
+  }
 });
 
 async function connectDB() {
