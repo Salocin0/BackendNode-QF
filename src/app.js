@@ -143,6 +143,16 @@ app.get("/info", (req, res) => {
   });
 });
 
+// Endpoint de salud: devuelve la fecha/hora actual (útil para checks de uptime)
+app.get('/health', (req, res) => {
+  const now = new Date();
+  return res.status(200).json({
+    status: 'ok',
+    timestamp: now.getTime(),
+    date: now.toISOString()
+  });
+});
+
 async function connectDB() {
   try {
     const nodeEnv = process.env.NODE_ENV || 'development';
