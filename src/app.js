@@ -69,23 +69,18 @@ const stripe = Stripe('sk_test_51PnpcMRoRlWr6LoNVHnAJMDXVOFLMlAAeTxMZUvUuWmPt4qM
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 // Middlewares
+// CORS: permitir orígenes dinámicos (reflejar Origin) para poder usar credentials
 app.use(
   cors({
-    origin: "*", // Permite cualquier origen
-    methods: "*", // Permite todos los métodos
-    allowedHeaders: "*", // Permite todos los headers
-    credentials: true, // Permite credenciales
+    origin: true, // refleja el Origin de la petición en Access-Control-Allow-Origin
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept'],
+    credentials: true,
   })
 );
 
 // Manejo de solicitudes OPTIONS manualmente (100% abierto)
-app.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "*"); // Permite todos los métodos
-  res.header("Access-Control-Allow-Headers", "*"); // Permite todos los headers
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.sendStatus(204);
-});
+app.options("*", cors());
 
 // Fallback CORS middleware: asegura cabeceras en TODAS las respuestas (incluyendo errores)
 // Esto protege contra proxies/hosting que puedan eliminar cabeceras en respuestas de error.
