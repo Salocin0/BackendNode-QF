@@ -17,11 +17,11 @@ const sequelize = connectionString
       },
     })
   : new Sequelize({
-      database: process.env.DB_NAME,
-      username: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      port: process.env.DB_PORT,
-      host: process.env.DB_HOST,
+      database: process.env.DB_NAME ? String(process.env.DB_NAME) : undefined,
+      username: process.env.DB_USER ? String(process.env.DB_USER) : undefined,
+      password: process.env.DB_PASSWORD != null ? String(process.env.DB_PASSWORD) : undefined,
+      port: process.env.DB_PORT ? Number(process.env.DB_PORT) : undefined,
+      host: process.env.DB_HOST ? String(process.env.DB_HOST) : undefined,
       dialect: process.env.DB_DIALECT || 'postgres',
       dialectOptions: {
         ssl: sslOption,
