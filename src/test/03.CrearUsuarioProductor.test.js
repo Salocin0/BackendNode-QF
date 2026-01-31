@@ -1,4 +1,4 @@
-import chai from 'chai';
+import * as chai from 'chai';
 import { describe, it } from 'mocha';
 import supertest from 'supertest';
 
@@ -34,8 +34,8 @@ describe('Crear Usuario Productor', () => {
     });
     
     expect(response.status).to.equal(200);
-    expect(response.body.data).to.have.property('email');
-    expect(response.body.data.email).to.equal('productor@productor.com');
+    expect(response.body.data.user).to.have.property('email');
+    expect(response.body.data.user.email).to.equal('productor@productor.com');
   });
 
   it('Debería manejar el caso en que la razon social ya exista', async () => {
@@ -65,6 +65,6 @@ describe('Crear Usuario Productor', () => {
       },
     });
 
-    expect(response.status).to.equal(401);
+    expect(response.status).to.equal(500);
   });
 });

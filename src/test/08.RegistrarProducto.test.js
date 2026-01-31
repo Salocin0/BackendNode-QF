@@ -1,4 +1,4 @@
-import chai from 'chai';
+import * as chai from 'chai';
 import { it } from 'mocha';
 import supertest from 'supertest';
 

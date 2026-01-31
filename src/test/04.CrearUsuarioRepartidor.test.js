@@ -1,4 +1,4 @@
-import chai from 'chai';
+import * as chai from 'chai';
 import { describe, it } from 'mocha';
 import supertest from 'supertest';
 
@@ -30,8 +30,8 @@ describe('Crear Usuario Repartidor', () => {
     });
 
     expect(response.status).to.equal(200);
-    expect(response.body.data).to.have.property('email');
-    expect(response.body.data.email).to.equal('repartidor@repartidor.com');
+    expect(response.body.data.user).to.have.property('email');
+    expect(response.body.data.user.email).to.equal('repartidor@repartidor.com');
   });
 
 });

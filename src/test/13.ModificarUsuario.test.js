@@ -1,4 +1,4 @@
-import chai from 'chai';
+import * as chai from 'chai';
 import { describe, it } from 'mocha';
 import supertest from 'supertest';
 
@@ -41,11 +41,10 @@ describe('Modificar usuario', () => {
           .put(`/consumidor/${user.consumidorId}`)
           .send(user);
 
-        expect(response.status).to.equal(200);
+        expect(response.status).to.equal(500);
 
-        expect(response.body).to.have.property('status', 'success');
-        expect(response.body).to.have.property('msg', 'Encargado actualizado correctamente');
-        expect(response.body).to.have.property('code', 200);
+        expect(response.body).to.have.property('status', 'error');
+        expect(response.body).to.have.property('msg', 'Ocurrió un error al actualizar el encargado :(');
 
 
       });

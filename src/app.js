@@ -215,7 +215,9 @@ async function connectDB() {
     }
 
     // Ejecutar procesos automáticos en cualquier entorno
-    procesosAutomaticos();
+    if (process.env.NODE_ENV !== 'test') {
+      procesosAutomaticos();
+    }
     
   } catch (error) {
     console.error('Error al conectar con la base de datos:', error);

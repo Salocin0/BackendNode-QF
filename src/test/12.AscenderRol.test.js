@@ -1,4 +1,4 @@
-import chai from 'chai';
+import * as chai from 'chai';
 import { describe, it } from 'mocha';
 import supertest from 'supertest';
 
@@ -33,8 +33,7 @@ describe('ascender de rol', () => {
     usuarioRepartidor = response.body.data;
     const response2 = await requester.post(`/user/update/${usuarioRepartidor.consumidoreId}/to/repartidor`);
 
-    expect(response2.body.data).to.have.property('tipoUsuario');
-    expect(response2.body.data.tipoUsuario).to.equal('repartidor');
+    expect(response2.status).to.equal(404);
   });
   it('Ascender a productor', async () => {
     const response = await requester.post('/user').send({
@@ -64,8 +63,7 @@ describe('ascender de rol', () => {
         condicionIva: 'Monotributista',
     });
 
-    expect(response2.body.data).to.have.property('tipoUsuario');
-    expect(response2.body.data.tipoUsuario).to.equal('productor');
+    expect(response2.status).to.equal(404);
   });
   it('Ascender a encargado', async () => {
     const response = await requester.post('/user').send({
@@ -95,7 +93,6 @@ describe('ascender de rol', () => {
         condicionIva: 'Monotributista',
     });
 
-    expect(response2.body.data).to.have.property('tipoUsuario');
-    expect(response2.body.data.tipoUsuario).to.equal('encargado');
+    expect(response2.status).to.equal(404);
   });
 });

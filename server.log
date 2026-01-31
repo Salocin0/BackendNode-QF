@@ -1,0 +1,1778 @@
+Servidor escuchando en el puerto 8000
+Error al eliminar la vista chatbotdata: Error
+    at Database.<anonymous> [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:185:27[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:12[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\sequelize.js:315:28
+    at async dropViewIfExists [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/app.js:229:5[90m)[39m
+    at async connectDB [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/app.js:205:7[90m)[39m {
+  name: [32m'SequelizeDatabaseError'[39m,
+  parent: [Error: SQLITE_ERROR: near "CASCADE": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'DROP VIEW IF EXISTS chatbotdata CASCADE;'[39m
+  },
+  original: [Error: SQLITE_ERROR: near "CASCADE": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'DROP VIEW IF EXISTS chatbotdata CASCADE;'[39m
+  },
+  sql: [32m'DROP VIEW IF EXISTS chatbotdata CASCADE;'[39m,
+  parameters: {}
+}
+(sequelize) Warning: SQLite does not support TEXT with options. Plain `TEXT` will be used instead. 
+>> Check: https://www.sqlite.org/datatype3.html
+✅ Generando datos de prueba...
+[@faker-js/faker]: faker.address is deprecated since v8.0 and will be removed in v10.0. Please use faker.location instead.
+[@faker-js/faker]: faker.address is deprecated since v8.0 and will be removed in v10.0. Please use faker.location instead.
+Día Evento 1 para 1 creado exitosamente.
+Día Evento 2 para 1 creado exitosamente.
+Día Evento 3 para 1 creado exitosamente.
+Evento 1 creado exitosamente.
+[@faker-js/faker]: faker.address is deprecated since v8.0 and will be removed in v10.0. Please use faker.location instead.
+[@faker-js/faker]: faker.address is deprecated since v8.0 and will be removed in v10.0. Please use faker.location instead.
+Día Evento 1 para 2 creado exitosamente.
+Día Evento 2 para 2 creado exitosamente.
+Día Evento 3 para 2 creado exitosamente.
+Evento 2 creado exitosamente.
+[@faker-js/faker]: faker.address is deprecated since v8.0 and will be removed in v10.0. Please use faker.location instead.
+[@faker-js/faker]: faker.address is deprecated since v8.0 and will be removed in v10.0. Please use faker.location instead.
+Día Evento 1 para 3 creado exitosamente.
+Día Evento 2 para 3 creado exitosamente.
+Día Evento 3 para 3 creado exitosamente.
+Evento 3 creado exitosamente.
+puestos productos creados
+puestos productos creados
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 1 y Consumidor 3 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 2 y Consumidor 4 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 3 y Consumidor 5 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 4 y Consumidor 6 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 5 y Consumidor 7 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 6 y Consumidor 8 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 7 y Consumidor 9 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 8 y Consumidor 10 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 9 y Consumidor 11 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 10 y Consumidor 12 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 11 y Consumidor 13 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 12 y Consumidor 14 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 13 y Consumidor 15 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 14 y Consumidor 16 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 15 y Consumidor 17 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 16 y Consumidor 18 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 17 y Consumidor 19 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+🔄 Reactivando procesos automáticos por nueva actividad
+[0mHEAD / [33m404[0m 2.766 ms - 140[0m
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 18 y Consumidor 20 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 19 y Consumidor 21 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 20 y Consumidor 22 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 21 y Consumidor 23 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 22 y Consumidor 24 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 23 y Consumidor 25 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 24 y Consumidor 26 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 25 y Consumidor 27 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 26 y Consumidor 28 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 27 y Consumidor 29 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 28 y Consumidor 30 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 29 y Consumidor 31 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 30 y Consumidor 32 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 31 y Consumidor 33 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 32 y Consumidor 34 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 33 y Consumidor 35 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 34 y Consumidor 36 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 35 y Consumidor 37 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 36 y Consumidor 38 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 37 y Consumidor 39 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 38 y Consumidor 40 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 39 y Consumidor 41 creados exitosamente.
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+No se encontró un puesto aleatorio, se omite este pedido
+Usuario 40 y Consumidor 42 creados exitosamente.
+🎉 Datos generados exitosamente.
+👤 Cantidad de usuarios en la base de datos: [33m42[39m
+📋 Sistema de procesos automáticos inicializado
+   Los procesos se activarán con la primera petición HTTP
+[0mHEAD / [33m404[0m 1.083 ms - 140[0m
+[0mHEAD / [33m404[0m 0.734 ms - 140[0m
+[0mHEAD / [33m404[0m 0.507 ms - 140[0m
+[0mHEAD / [33m404[0m 0.854 ms - 140[0m
+[0mHEAD / [33m404[0m 1.071 ms - 140[0m
+[0mHEAD / [33m404[0m 0.651 ms - 140[0m
+[0mHEAD / [33m404[0m 0.932 ms - 140[0m
+[0mHEAD / [33m404[0m 0.772 ms - 140[0m
+[0mHEAD / [33m404[0m 0.619 ms - 140[0m
+[0mHEAD / [33m404[0m 0.734 ms - 140[0m
+[0mHEAD / [33m404[0m 0.458 ms - 140[0m
+[0mHEAD / [33m404[0m 0.608 ms - 140[0m
+[0mHEAD / [33m404[0m 0.581 ms - 140[0m
+[0mHEAD / [33m404[0m 0.472 ms - 140[0m
+[0mHEAD / [33m404[0m 0.762 ms - 140[0m
+[0mHEAD / [33m404[0m 0.474 ms - 140[0m
+[0mHEAD / [33m404[0m 0.665 ms - 140[0m
+[0mHEAD / [33m404[0m 0.682 ms - 140[0m
+[0mHEAD / [33m404[0m 0.637 ms - 140[0m
+[0mHEAD / [33m404[0m 0.713 ms - 140[0m
+[0mHEAD / [33m404[0m 0.652 ms - 140[0m
+[0mHEAD / [33m404[0m 0.679 ms - 140[0m
+[0mHEAD / [33m404[0m 0.608 ms - 140[0m
+[0mHEAD / [33m404[0m 0.560 ms - 140[0m
+[0mHEAD / [33m404[0m 0.851 ms - 140[0m
+[0mHEAD / [33m404[0m 0.531 ms - 140[0m
+[0mHEAD / [33m404[0m 0.862 ms - 140[0m
+[0mHEAD / [33m404[0m 0.477 ms - 140[0m
+[0mHEAD / [33m404[0m 0.481 ms - 140[0m
+[0mHEAD / [33m404[0m 0.697 ms - 140[0m
+[0mHEAD / [33m404[0m 0.559 ms - 140[0m
+[0mHEAD / [33m404[0m 0.726 ms - 140[0m
+[0mHEAD / [33m404[0m 0.923 ms - 140[0m
+[0mHEAD / [33m404[0m 0.937 ms - 140[0m
+[0mHEAD / [33m404[0m 0.729 ms - 140[0m
+[0mHEAD / [33m404[0m 0.739 ms - 140[0m
+[0mHEAD / [33m404[0m 0.530 ms - 140[0m
+[0mHEAD / [33m404[0m 1.046 ms - 140[0m
+[0mHEAD / [33m404[0m 0.587 ms - 140[0m
+[0mHEAD / [33m404[0m 0.406 ms - 140[0m
+[0mHEAD / [33m404[0m 0.666 ms - 140[0m
+[0mHEAD / [33m404[0m 0.500 ms - 140[0m
+[0mHEAD / [33m404[0m 1.089 ms - 140[0m
+[0mHEAD / [33m404[0m 0.846 ms - 140[0m
+[0mHEAD / [33m404[0m 0.654 ms - 140[0m
+[0mHEAD / [33m404[0m 0.657 ms - 140[0m
+[0mHEAD / [33m404[0m 0.662 ms - 140[0m
+[0mHEAD / [33m404[0m 1.484 ms - 140[0m
+[0mHEAD / [33m404[0m 0.769 ms - 140[0m
+[0mHEAD / [33m404[0m 0.520 ms - 140[0m
+[0mHEAD / [33m404[0m 0.468 ms - 140[0m
+[0mHEAD / [33m404[0m 0.461 ms - 140[0m
+[0mHEAD / [33m404[0m 0.844 ms - 140[0m
+[0mHEAD / [33m404[0m 0.646 ms - 140[0m
+[0mHEAD / [33m404[0m 0.436 ms - 140[0m
+[0mHEAD / [33m404[0m 0.566 ms - 140[0m
+[0mHEAD / [33m404[0m 0.520 ms - 140[0m
+procesosAutomaticos
+Error al actualizar pedidos: Error
+    at Database.<anonymous> [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:185:27[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:12[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\sequelize.js:315:28
+    at async obtenerPedidosParaAsignacion [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:226:21[90m)[39m
+    at async Timeout._onTimeout [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:62:23[90m)[39m {
+  name: [32m'SequelizeDatabaseError'[39m,
+  parent: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  original: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  sql: [32m'SELECT id, "eventoId"\n'[39m +
+    [32m'        FROM "Pedidos" p\n'[39m +
+    [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+    [32m'          AND NOT EXISTS (\n'[39m +
+    [32m'              SELECT 1\n'[39m +
+    [32m'              FROM "Asignacions" arp\n'[39m +
+    [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+    [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+    [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+    [32m'          );'[39m,
+  parameters: {}
+}
+[0mHEAD / [33m404[0m 0.505 ms - 140[0m
+[0mHEAD / [33m404[0m 0.629 ms - 140[0m
+[0mHEAD / [33m404[0m 0.496 ms - 140[0m
+[0mHEAD / [33m404[0m 0.477 ms - 140[0m
+[0mHEAD / [33m404[0m 0.603 ms - 140[0m
+[0mHEAD / [33m404[0m 2.137 ms - 140[0m
+[0mHEAD / [33m404[0m 0.695 ms - 140[0m
+[0mHEAD / [33m404[0m 0.473 ms - 140[0m
+[0mHEAD / [33m404[0m 0.515 ms - 140[0m
+[0mHEAD / [33m404[0m 0.714 ms - 140[0m
+[0mHEAD / [33m404[0m 0.977 ms - 140[0m
+[0mHEAD / [33m404[0m 0.704 ms - 140[0m
+[0mHEAD / [33m404[0m 0.745 ms - 140[0m
+[0mHEAD / [33m404[0m 0.596 ms - 140[0m
+[0mHEAD / [33m404[0m 0.521 ms - 140[0m
+[0mHEAD / [33m404[0m 0.978 ms - 140[0m
+[0mHEAD / [33m404[0m 0.373 ms - 140[0m
+[0mHEAD / [33m404[0m 0.740 ms - 140[0m
+[0mHEAD / [33m404[0m 0.413 ms - 140[0m
+[0mHEAD / [33m404[0m 0.643 ms - 140[0m
+[0mHEAD / [33m404[0m 0.687 ms - 140[0m
+[0mHEAD / [33m404[0m 0.643 ms - 140[0m
+[0mHEAD / [33m404[0m 0.476 ms - 140[0m
+[0mHEAD / [33m404[0m 0.515 ms - 140[0m
+[0mHEAD / [33m404[0m 0.510 ms - 140[0m
+[0mHEAD / [33m404[0m 2.537 ms - 140[0m
+[0mHEAD / [33m404[0m 0.625 ms - 140[0m
+[0mHEAD / [33m404[0m 0.556 ms - 140[0m
+[0mHEAD / [33m404[0m 0.593 ms - 140[0m
+[0mHEAD / [33m404[0m 0.506 ms - 140[0m
+[0mHEAD / [33m404[0m 1.074 ms - 140[0m
+[0mHEAD / [33m404[0m 0.440 ms - 140[0m
+[0mHEAD / [33m404[0m 0.460 ms - 140[0m
+[0mHEAD / [33m404[0m 1.350 ms - 140[0m
+[0mHEAD / [33m404[0m 0.636 ms - 140[0m
+[0mHEAD / [33m404[0m 0.775 ms - 140[0m
+[0mHEAD / [33m404[0m 0.524 ms - 140[0m
+[0mHEAD / [33m404[0m 0.641 ms - 140[0m
+[0mHEAD / [33m404[0m 0.632 ms - 140[0m
+[0mHEAD / [33m404[0m 0.393 ms - 140[0m
+[0mHEAD / [33m404[0m 0.496 ms - 140[0m
+[0mHEAD / [33m404[0m 0.434 ms - 140[0m
+[0mHEAD / [33m404[0m 0.457 ms - 140[0m
+[0mHEAD / [33m404[0m 0.423 ms - 140[0m
+[0mHEAD / [33m404[0m 0.653 ms - 140[0m
+[0mHEAD / [33m404[0m 0.547 ms - 140[0m
+[0mHEAD / [33m404[0m 0.446 ms - 140[0m
+[0mHEAD / [33m404[0m 0.706 ms - 140[0m
+[0mHEAD / [33m404[0m 0.656 ms - 140[0m
+[0mHEAD / [33m404[0m 0.493 ms - 140[0m
+[0mHEAD / [33m404[0m 0.488 ms - 140[0m
+[0mHEAD / [33m404[0m 0.668 ms - 140[0m
+[0mHEAD / [33m404[0m 0.698 ms - 140[0m
+[0mHEAD / [33m404[0m 0.649 ms - 140[0m
+[0mHEAD / [33m404[0m 0.521 ms - 140[0m
+[0mHEAD / [33m404[0m 0.483 ms - 140[0m
+[0mHEAD / [33m404[0m 0.675 ms - 140[0m
+procesosAutomaticos
+Error al actualizar pedidos: Error
+    at Database.<anonymous> [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:185:27[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:12[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\sequelize.js:315:28
+    at async obtenerPedidosParaAsignacion [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:226:21[90m)[39m
+    at async Timeout._onTimeout [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:62:23[90m)[39m {
+  name: [32m'SequelizeDatabaseError'[39m,
+  parent: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  original: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  sql: [32m'SELECT id, "eventoId"\n'[39m +
+    [32m'        FROM "Pedidos" p\n'[39m +
+    [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+    [32m'          AND NOT EXISTS (\n'[39m +
+    [32m'              SELECT 1\n'[39m +
+    [32m'              FROM "Asignacions" arp\n'[39m +
+    [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+    [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+    [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+    [32m'          );'[39m,
+  parameters: {}
+}
+[0mHEAD / [33m404[0m 0.533 ms - 140[0m
+[0mHEAD / [33m404[0m 0.462 ms - 140[0m
+[0mHEAD / [33m404[0m 0.624 ms - 140[0m
+[0mHEAD / [33m404[0m 0.864 ms - 140[0m
+[0mHEAD / [33m404[0m 0.603 ms - 140[0m
+[0mHEAD / [33m404[0m 0.500 ms - 140[0m
+[0mHEAD / [33m404[0m 0.746 ms - 140[0m
+[0mHEAD / [33m404[0m 0.661 ms - 140[0m
+[0mHEAD / [33m404[0m 0.549 ms - 140[0m
+[0mHEAD / [33m404[0m 0.651 ms - 140[0m
+[0mHEAD / [33m404[0m 0.616 ms - 140[0m
+[0mHEAD / [33m404[0m 0.474 ms - 140[0m
+[0mHEAD / [33m404[0m 0.452 ms - 140[0m
+[0mHEAD / [33m404[0m 1.131 ms - 140[0m
+[0mHEAD / [33m404[0m 0.767 ms - 140[0m
+[0mHEAD / [33m404[0m 0.536 ms - 140[0m
+[0mHEAD / [33m404[0m 0.496 ms - 140[0m
+[0mHEAD / [33m404[0m 0.418 ms - 140[0m
+[0mHEAD / [33m404[0m 0.601 ms - 140[0m
+[0mHEAD / [33m404[0m 1.318 ms - 140[0m
+[0mHEAD / [33m404[0m 0.644 ms - 140[0m
+[0mHEAD / [33m404[0m 1.925 ms - 140[0m
+[0mHEAD / [33m404[0m 0.479 ms - 140[0m
+[0mHEAD / [33m404[0m 0.577 ms - 140[0m
+[0mHEAD / [33m404[0m 1.069 ms - 140[0m
+[0mHEAD / [33m404[0m 0.390 ms - 140[0m
+[0mHEAD / [33m404[0m 0.657 ms - 140[0m
+[0mHEAD / [33m404[0m 0.511 ms - 140[0m
+[0mHEAD / [33m404[0m 0.677 ms - 140[0m
+[0mHEAD / [33m404[0m 0.904 ms - 140[0m
+[0mHEAD / [33m404[0m 2.231 ms - 140[0m
+[0mHEAD / [33m404[0m 2.166 ms - 140[0m
+[0mHEAD / [33m404[0m 1.128 ms - 140[0m
+[0mHEAD / [33m404[0m 1.431 ms - 140[0m
+[0mHEAD / [33m404[0m 0.564 ms - 140[0m
+[0mHEAD / [33m404[0m 0.503 ms - 140[0m
+[0mHEAD / [33m404[0m 0.688 ms - 140[0m
+[0mHEAD / [33m404[0m 1.218 ms - 140[0m
+[0mHEAD / [33m404[0m 0.455 ms - 140[0m
+[0mHEAD / [33m404[0m 0.499 ms - 140[0m
+[0mHEAD / [33m404[0m 0.463 ms - 140[0m
+[0mHEAD / [33m404[0m 0.622 ms - 140[0m
+[0mHEAD / [33m404[0m 0.633 ms - 140[0m
+[0mHEAD / [33m404[0m 0.565 ms - 140[0m
+[0mHEAD / [33m404[0m 0.573 ms - 140[0m
+[0mHEAD / [33m404[0m 0.742 ms - 140[0m
+[0mHEAD / [33m404[0m 0.494 ms - 140[0m
+[0mHEAD / [33m404[0m 0.542 ms - 140[0m
+[0mHEAD / [33m404[0m 0.624 ms - 140[0m
+[0mHEAD / [33m404[0m 0.632 ms - 140[0m
+[0mHEAD / [33m404[0m 0.808 ms - 140[0m
+[0mHEAD / [33m404[0m 0.387 ms - 140[0m
+[0mHEAD / [33m404[0m 0.697 ms - 140[0m
+[0mHEAD / [33m404[0m 0.576 ms - 140[0m
+[0mHEAD / [33m404[0m 0.577 ms - 140[0m
+[0mHEAD / [33m404[0m 0.563 ms - 140[0m
+[0mHEAD / [33m404[0m 0.474 ms - 140[0m
+[0mHEAD / [33m404[0m 0.422 ms - 140[0m
+procesosAutomaticos
+Error al actualizar pedidos: Error
+    at Database.<anonymous> [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:185:27[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:12[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\sequelize.js:315:28
+    at async obtenerPedidosParaAsignacion [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:226:21[90m)[39m
+    at async Timeout._onTimeout [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:62:23[90m)[39m {
+  name: [32m'SequelizeDatabaseError'[39m,
+  parent: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  original: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  sql: [32m'SELECT id, "eventoId"\n'[39m +
+    [32m'        FROM "Pedidos" p\n'[39m +
+    [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+    [32m'          AND NOT EXISTS (\n'[39m +
+    [32m'              SELECT 1\n'[39m +
+    [32m'              FROM "Asignacions" arp\n'[39m +
+    [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+    [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+    [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+    [32m'          );'[39m,
+  parameters: {}
+}
+[0mHEAD / [33m404[0m 0.494 ms - 140[0m
+[0mHEAD / [33m404[0m 0.571 ms - 140[0m
+[0mHEAD / [33m404[0m 0.866 ms - 140[0m
+[0mHEAD / [33m404[0m 0.558 ms - 140[0m
+[0mHEAD / [33m404[0m 0.578 ms - 140[0m
+[0mHEAD / [33m404[0m 0.698 ms - 140[0m
+[0mHEAD / [33m404[0m 0.664 ms - 140[0m
+[0mHEAD / [33m404[0m 0.680 ms - 140[0m
+[0mHEAD / [33m404[0m 0.653 ms - 140[0m
+[0mHEAD / [33m404[0m 0.420 ms - 140[0m
+[0mHEAD / [33m404[0m 0.468 ms - 140[0m
+[0mHEAD / [33m404[0m 0.524 ms - 140[0m
+[0mHEAD / [33m404[0m 0.735 ms - 140[0m
+[0mHEAD / [33m404[0m 0.882 ms - 140[0m
+[0mHEAD / [33m404[0m 0.551 ms - 140[0m
+[0mHEAD / [33m404[0m 0.652 ms - 140[0m
+[0mHEAD / [33m404[0m 0.620 ms - 140[0m
+[0mHEAD / [33m404[0m 0.479 ms - 140[0m
+[0mHEAD / [33m404[0m 0.387 ms - 140[0m
+[0mHEAD / [33m404[0m 0.573 ms - 140[0m
+[0mHEAD / [33m404[0m 0.595 ms - 140[0m
+[0mHEAD / [33m404[0m 1.419 ms - 140[0m
+[0mHEAD / [33m404[0m 0.536 ms - 140[0m
+[0mHEAD / [33m404[0m 0.686 ms - 140[0m
+[0mHEAD / [33m404[0m 0.679 ms - 140[0m
+[0mHEAD / [33m404[0m 0.610 ms - 140[0m
+[0mHEAD / [33m404[0m 1.239 ms - 140[0m
+[0mHEAD / [33m404[0m 0.633 ms - 140[0m
+[0mHEAD / [33m404[0m 0.645 ms - 140[0m
+[0mHEAD / [33m404[0m 0.573 ms - 140[0m
+[0mHEAD / [33m404[0m 0.509 ms - 140[0m
+[0mHEAD / [33m404[0m 0.400 ms - 140[0m
+[0mHEAD / [33m404[0m 0.612 ms - 140[0m
+[0mHEAD / [33m404[0m 0.597 ms - 140[0m
+[0mHEAD / [33m404[0m 0.485 ms - 140[0m
+[0mHEAD / [33m404[0m 0.769 ms - 140[0m
+[0mHEAD / [33m404[0m 0.762 ms - 140[0m
+[0mHEAD / [33m404[0m 0.906 ms - 140[0m
+[0mHEAD / [33m404[0m 0.649 ms - 140[0m
+[0mHEAD / [33m404[0m 0.520 ms - 140[0m
+[0mHEAD / [33m404[0m 0.710 ms - 140[0m
+[0mHEAD / [33m404[0m 0.602 ms - 140[0m
+[0mHEAD / [33m404[0m 1.356 ms - 140[0m
+[0mHEAD / [33m404[0m 0.475 ms - 140[0m
+[0mHEAD / [33m404[0m 0.596 ms - 140[0m
+[0mHEAD / [33m404[0m 0.649 ms - 140[0m
+[0mHEAD / [33m404[0m 0.419 ms - 140[0m
+[0mHEAD / [33m404[0m 0.521 ms - 140[0m
+[0mHEAD / [33m404[0m 0.661 ms - 140[0m
+[0mHEAD / [33m404[0m 0.518 ms - 140[0m
+[0mHEAD / [33m404[0m 0.581 ms - 140[0m
+[0mHEAD / [33m404[0m 0.381 ms - 140[0m
+[0mHEAD / [33m404[0m 0.615 ms - 140[0m
+[0mHEAD / [33m404[0m 0.642 ms - 140[0m
+[0mHEAD / [33m404[0m 0.521 ms - 140[0m
+[0mHEAD / [33m404[0m 0.513 ms - 140[0m
+[0mHEAD / [33m404[0m 0.454 ms - 140[0m
+procesosAutomaticos
+Error al actualizar pedidos: Error
+    at Database.<anonymous> [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:185:27[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:12[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\sequelize.js:315:28
+    at async obtenerPedidosParaAsignacion [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:226:21[90m)[39m
+    at async Timeout._onTimeout [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:62:23[90m)[39m {
+  name: [32m'SequelizeDatabaseError'[39m,
+  parent: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  original: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  sql: [32m'SELECT id, "eventoId"\n'[39m +
+    [32m'        FROM "Pedidos" p\n'[39m +
+    [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+    [32m'          AND NOT EXISTS (\n'[39m +
+    [32m'              SELECT 1\n'[39m +
+    [32m'              FROM "Asignacions" arp\n'[39m +
+    [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+    [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+    [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+    [32m'          );'[39m,
+  parameters: {}
+}
+[0mHEAD / [33m404[0m 0.392 ms - 140[0m
+[0mHEAD / [33m404[0m 0.562 ms - 140[0m
+[0mHEAD / [33m404[0m 0.515 ms - 140[0m
+[0mHEAD / [33m404[0m 0.680 ms - 140[0m
+[0mHEAD / [33m404[0m 0.458 ms - 140[0m
+[0mHEAD / [33m404[0m 0.401 ms - 140[0m
+[0mHEAD / [33m404[0m 1.200 ms - 140[0m
+[0mHEAD / [33m404[0m 0.515 ms - 140[0m
+[0mHEAD / [33m404[0m 0.638 ms - 140[0m
+[0mHEAD / [33m404[0m 0.667 ms - 140[0m
+[0mHEAD / [33m404[0m 0.581 ms - 140[0m
+[0mHEAD / [33m404[0m 0.736 ms - 140[0m
+[0mHEAD / [33m404[0m 0.415 ms - 140[0m
+[0mHEAD / [33m404[0m 0.625 ms - 140[0m
+[0mHEAD / [33m404[0m 0.604 ms - 140[0m
+[0mHEAD / [33m404[0m 0.663 ms - 140[0m
+[0mHEAD / [33m404[0m 0.382 ms - 140[0m
+[0mHEAD / [33m404[0m 1.080 ms - 140[0m
+[0mHEAD / [33m404[0m 0.645 ms - 140[0m
+[0mHEAD / [33m404[0m 0.487 ms - 140[0m
+[0mHEAD / [33m404[0m 0.424 ms - 140[0m
+[0mHEAD / [33m404[0m 0.516 ms - 140[0m
+[0mHEAD / [33m404[0m 0.746 ms - 140[0m
+[0mHEAD / [33m404[0m 0.503 ms - 140[0m
+[0mHEAD / [33m404[0m 0.469 ms - 140[0m
+[0mHEAD / [33m404[0m 0.514 ms - 140[0m
+[0mHEAD / [33m404[0m 0.450 ms - 140[0m
+[0mHEAD / [33m404[0m 0.644 ms - 140[0m
+[0mHEAD / [33m404[0m 1.050 ms - 140[0m
+[0mHEAD / [33m404[0m 0.688 ms - 140[0m
+[0mHEAD / [33m404[0m 0.538 ms - 140[0m
+[0mHEAD / [33m404[0m 0.448 ms - 140[0m
+[0mHEAD / [33m404[0m 0.638 ms - 140[0m
+[0mHEAD / [33m404[0m 0.851 ms - 140[0m
+[0mHEAD / [33m404[0m 0.556 ms - 140[0m
+[0mHEAD / [33m404[0m 0.626 ms - 140[0m
+[0mHEAD / [33m404[0m 0.586 ms - 140[0m
+[0mHEAD / [33m404[0m 0.496 ms - 140[0m
+[0mHEAD / [33m404[0m 0.569 ms - 140[0m
+[0mHEAD / [33m404[0m 0.796 ms - 140[0m
+[0mHEAD / [33m404[0m 0.588 ms - 140[0m
+[0mHEAD / [33m404[0m 0.660 ms - 140[0m
+[0mHEAD / [33m404[0m 0.735 ms - 140[0m
+[0mHEAD / [33m404[0m 0.460 ms - 140[0m
+[0mHEAD / [33m404[0m 1.080 ms - 140[0m
+[0mHEAD / [33m404[0m 0.688 ms - 140[0m
+[0mHEAD / [33m404[0m 0.434 ms - 140[0m
+[0mHEAD / [33m404[0m 0.478 ms - 140[0m
+[0mHEAD / [33m404[0m 0.625 ms - 140[0m
+[0mHEAD / [33m404[0m 1.429 ms - 140[0m
+[0mHEAD / [33m404[0m 0.779 ms - 140[0m
+[0mHEAD / [33m404[0m 0.521 ms - 140[0m
+[0mHEAD / [33m404[0m 0.426 ms - 140[0m
+[0mHEAD / [33m404[0m 0.624 ms - 140[0m
+[0mHEAD / [33m404[0m 0.398 ms - 140[0m
+[0mHEAD / [33m404[0m 0.625 ms - 140[0m
+[0mHEAD / [33m404[0m 0.494 ms - 140[0m
+procesosAutomaticos
+Error al actualizar pedidos: Error
+    at Database.<anonymous> [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:185:27[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:12[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\sequelize.js:315:28
+    at async obtenerPedidosParaAsignacion [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:226:21[90m)[39m
+    at async Timeout._onTimeout [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:62:23[90m)[39m {
+  name: [32m'SequelizeDatabaseError'[39m,
+  parent: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  original: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  sql: [32m'SELECT id, "eventoId"\n'[39m +
+    [32m'        FROM "Pedidos" p\n'[39m +
+    [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+    [32m'          AND NOT EXISTS (\n'[39m +
+    [32m'              SELECT 1\n'[39m +
+    [32m'              FROM "Asignacions" arp\n'[39m +
+    [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+    [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+    [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+    [32m'          );'[39m,
+  parameters: {}
+}
+[0mHEAD / [33m404[0m 0.577 ms - 140[0m
+[0mHEAD / [33m404[0m 0.521 ms - 140[0m
+[0mHEAD / [33m404[0m 0.524 ms - 140[0m
+[0mHEAD / [33m404[0m 0.775 ms - 140[0m
+[0mHEAD / [33m404[0m 0.566 ms - 140[0m
+[0mHEAD / [33m404[0m 0.424 ms - 140[0m
+[0mHEAD / [33m404[0m 0.569 ms - 140[0m
+[0mHEAD / [33m404[0m 0.565 ms - 140[0m
+[0mHEAD / [33m404[0m 0.535 ms - 140[0m
+[0mHEAD / [33m404[0m 1.492 ms - 140[0m
+[0mHEAD / [33m404[0m 0.489 ms - 140[0m
+[0mHEAD / [33m404[0m 0.483 ms - 140[0m
+[0mHEAD / [33m404[0m 0.442 ms - 140[0m
+[0mHEAD / [33m404[0m 0.637 ms - 140[0m
+[0mHEAD / [33m404[0m 1.381 ms - 140[0m
+[0mHEAD / [33m404[0m 0.616 ms - 140[0m
+[0mHEAD / [33m404[0m 0.447 ms - 140[0m
+[0mHEAD / [33m404[0m 0.696 ms - 140[0m
+[0mHEAD / [33m404[0m 1.863 ms - 140[0m
+[0mHEAD / [33m404[0m 0.701 ms - 140[0m
+[0mHEAD / [33m404[0m 1.060 ms - 140[0m
+[0mHEAD / [33m404[0m 0.639 ms - 140[0m
+[0mHEAD / [33m404[0m 0.423 ms - 140[0m
+[0mHEAD / [33m404[0m 0.750 ms - 140[0m
+[0mHEAD / [33m404[0m 0.660 ms - 140[0m
+[0mHEAD / [33m404[0m 0.764 ms - 140[0m
+[0mHEAD / [33m404[0m 0.480 ms - 140[0m
+[0mHEAD / [33m404[0m 2.222 ms - 140[0m
+[0mHEAD / [33m404[0m 0.473 ms - 140[0m
+[0mHEAD / [33m404[0m 0.654 ms - 140[0m
+[0mHEAD / [33m404[0m 0.477 ms - 140[0m
+[0mHEAD / [33m404[0m 1.357 ms - 140[0m
+[0mHEAD / [33m404[0m 0.747 ms - 140[0m
+[0mHEAD / [33m404[0m 0.494 ms - 140[0m
+[0mHEAD / [33m404[0m 0.451 ms - 140[0m
+[0mHEAD / [33m404[0m 0.619 ms - 140[0m
+[0mHEAD / [33m404[0m 0.779 ms - 140[0m
+[0mHEAD / [33m404[0m 0.565 ms - 140[0m
+[0mHEAD / [33m404[0m 0.513 ms - 140[0m
+[0mHEAD / [33m404[0m 0.671 ms - 140[0m
+[0mHEAD / [33m404[0m 0.635 ms - 140[0m
+[0mHEAD / [33m404[0m 0.461 ms - 140[0m
+[0mHEAD / [33m404[0m 0.670 ms - 140[0m
+[0mHEAD / [33m404[0m 0.482 ms - 140[0m
+[0mHEAD / [33m404[0m 0.585 ms - 140[0m
+[0mHEAD / [33m404[0m 0.503 ms - 140[0m
+[0mHEAD / [33m404[0m 0.651 ms - 140[0m
+[0mHEAD / [33m404[0m 0.997 ms - 140[0m
+[0mHEAD / [33m404[0m 0.563 ms - 140[0m
+[0mHEAD / [33m404[0m 0.462 ms - 140[0m
+[0mHEAD / [33m404[0m 0.345 ms - 140[0m
+[0mHEAD / [33m404[0m 0.673 ms - 140[0m
+[0mHEAD / [33m404[0m 0.496 ms - 140[0m
+[0mHEAD / [33m404[0m 0.950 ms - 140[0m
+[0mHEAD / [33m404[0m 0.557 ms - 140[0m
+[0mHEAD / [33m404[0m 0.676 ms - 140[0m
+[0mHEAD / [33m404[0m 0.828 ms - 140[0m
+[0mHEAD / [33m404[0m 0.599 ms - 140[0m
+procesosAutomaticos
+Error al actualizar pedidos: Error
+    at Database.<anonymous> [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:185:27[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:12[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\sequelize.js:315:28
+    at async obtenerPedidosParaAsignacion [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:226:21[90m)[39m
+    at async Timeout._onTimeout [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:62:23[90m)[39m {
+  name: [32m'SequelizeDatabaseError'[39m,
+  parent: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  original: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  sql: [32m'SELECT id, "eventoId"\n'[39m +
+    [32m'        FROM "Pedidos" p\n'[39m +
+    [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+    [32m'          AND NOT EXISTS (\n'[39m +
+    [32m'              SELECT 1\n'[39m +
+    [32m'              FROM "Asignacions" arp\n'[39m +
+    [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+    [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+    [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+    [32m'          );'[39m,
+  parameters: {}
+}
+[0mHEAD / [33m404[0m 1.074 ms - 140[0m
+[0mHEAD / [33m404[0m 0.671 ms - 140[0m
+[0mHEAD / [33m404[0m 0.660 ms - 140[0m
+[0mHEAD / [33m404[0m 0.619 ms - 140[0m
+[0mHEAD / [33m404[0m 0.431 ms - 140[0m
+[0mHEAD / [33m404[0m 1.007 ms - 140[0m
+[0mHEAD / [33m404[0m 1.406 ms - 140[0m
+[0mHEAD / [33m404[0m 0.680 ms - 140[0m
+[0mHEAD / [33m404[0m 0.430 ms - 140[0m
+[0mHEAD / [33m404[0m 0.618 ms - 140[0m
+[0mHEAD / [33m404[0m 0.647 ms - 140[0m
+[0mHEAD / [33m404[0m 0.642 ms - 140[0m
+[0mHEAD / [33m404[0m 0.482 ms - 140[0m
+[0mHEAD / [33m404[0m 0.822 ms - 140[0m
+[0mHEAD / [33m404[0m 0.416 ms - 140[0m
+[0mHEAD / [33m404[0m 0.559 ms - 140[0m
+[0mHEAD / [33m404[0m 0.589 ms - 140[0m
+[0mHEAD / [33m404[0m 0.825 ms - 140[0m
+[0mHEAD / [33m404[0m 1.042 ms - 140[0m
+[0mHEAD / [33m404[0m 0.499 ms - 140[0m
+[0mHEAD / [33m404[0m 0.633 ms - 140[0m
+[0mHEAD / [33m404[0m 0.485 ms - 140[0m
+[0mHEAD / [33m404[0m 1.559 ms - 140[0m
+[0mHEAD / [33m404[0m 0.796 ms - 140[0m
+[0mHEAD / [33m404[0m 0.666 ms - 140[0m
+[0mHEAD / [33m404[0m 0.660 ms - 140[0m
+[0mHEAD / [33m404[0m 0.397 ms - 140[0m
+[0mHEAD / [33m404[0m 0.612 ms - 140[0m
+[0mHEAD / [33m404[0m 0.875 ms - 140[0m
+[0mHEAD / [33m404[0m 0.477 ms - 140[0m
+[0mHEAD / [33m404[0m 0.633 ms - 140[0m
+[0mHEAD / [33m404[0m 0.471 ms - 140[0m
+[0mHEAD / [33m404[0m 0.540 ms - 140[0m
+[0mHEAD / [33m404[0m 0.421 ms - 140[0m
+[0mHEAD / [33m404[0m 0.430 ms - 140[0m
+[0mHEAD / [33m404[0m 0.676 ms - 140[0m
+[0mHEAD / [33m404[0m 0.832 ms - 140[0m
+[0mHEAD / [33m404[0m 1.081 ms - 140[0m
+[0mHEAD / [33m404[0m 0.480 ms - 140[0m
+[0mHEAD / [33m404[0m 0.790 ms - 140[0m
+[0mHEAD / [33m404[0m 0.458 ms - 140[0m
+[0mHEAD / [33m404[0m 0.651 ms - 140[0m
+[0mHEAD / [33m404[0m 0.476 ms - 140[0m
+[0mHEAD / [33m404[0m 0.565 ms - 140[0m
+[0mHEAD / [33m404[0m 0.479 ms - 140[0m
+[0mHEAD / [33m404[0m 0.581 ms - 140[0m
+[0mHEAD / [33m404[0m 0.675 ms - 140[0m
+[0mHEAD / [33m404[0m 0.551 ms - 140[0m
+[0mHEAD / [33m404[0m 0.507 ms - 140[0m
+[0mHEAD / [33m404[0m 0.537 ms - 140[0m
+[0mHEAD / [33m404[0m 0.803 ms - 140[0m
+[0mHEAD / [33m404[0m 0.601 ms - 140[0m
+[0mHEAD / [33m404[0m 0.689 ms - 140[0m
+[0mHEAD / [33m404[0m 0.860 ms - 140[0m
+[0mHEAD / [33m404[0m 0.567 ms - 140[0m
+[0mHEAD / [33m404[0m 1.343 ms - 140[0m
+[0mHEAD / [33m404[0m 0.814 ms - 140[0m
+procesosAutomaticos
+Error al actualizar pedidos: Error
+    at Database.<anonymous> [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:185:27[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:12[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\sequelize.js:315:28
+    at async obtenerPedidosParaAsignacion [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:226:21[90m)[39m
+    at async Timeout._onTimeout [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:62:23[90m)[39m {
+  name: [32m'SequelizeDatabaseError'[39m,
+  parent: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  original: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  sql: [32m'SELECT id, "eventoId"\n'[39m +
+    [32m'        FROM "Pedidos" p\n'[39m +
+    [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+    [32m'          AND NOT EXISTS (\n'[39m +
+    [32m'              SELECT 1\n'[39m +
+    [32m'              FROM "Asignacions" arp\n'[39m +
+    [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+    [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+    [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+    [32m'          );'[39m,
+  parameters: {}
+}
+[0mHEAD / [33m404[0m 0.731 ms - 140[0m
+[0mHEAD / [33m404[0m 0.541 ms - 140[0m
+[0mHEAD / [33m404[0m 0.652 ms - 140[0m
+[0mHEAD / [33m404[0m 1.130 ms - 140[0m
+[0mHEAD / [33m404[0m 0.534 ms - 140[0m
+[0mHEAD / [33m404[0m 0.411 ms - 140[0m
+[0mHEAD / [33m404[0m 0.560 ms - 140[0m
+[0mHEAD / [33m404[0m 0.579 ms - 140[0m
+[0mHEAD / [33m404[0m 0.579 ms - 140[0m
+[0mHEAD / [33m404[0m 0.800 ms - 140[0m
+[0mHEAD / [33m404[0m 0.516 ms - 140[0m
+[0mHEAD / [33m404[0m 0.442 ms - 140[0m
+[0mHEAD / [33m404[0m 0.618 ms - 140[0m
+[0mHEAD / [33m404[0m 0.511 ms - 140[0m
+[0mHEAD / [33m404[0m 1.212 ms - 140[0m
+[0mHEAD / [33m404[0m 0.466 ms - 140[0m
+[0mHEAD / [33m404[0m 0.531 ms - 140[0m
+[0mHEAD / [33m404[0m 0.416 ms - 140[0m
+[0mHEAD / [33m404[0m 0.677 ms - 140[0m
+[0mHEAD / [33m404[0m 0.519 ms - 140[0m
+[0mHEAD / [33m404[0m 0.659 ms - 140[0m
+[0mHEAD / [33m404[0m 0.545 ms - 140[0m
+[0mHEAD / [33m404[0m 0.502 ms - 140[0m
+[0mHEAD / [33m404[0m 0.512 ms - 140[0m
+[0mHEAD / [33m404[0m 0.417 ms - 140[0m
+[0mHEAD / [33m404[0m 1.043 ms - 140[0m
+[0mHEAD / [33m404[0m 0.709 ms - 140[0m
+[0mHEAD / [33m404[0m 0.715 ms - 140[0m
+[0mHEAD / [33m404[0m 0.585 ms - 140[0m
+[0mHEAD / [33m404[0m 0.664 ms - 140[0m
+[0mHEAD / [33m404[0m 0.490 ms - 140[0m
+[0mHEAD / [33m404[0m 0.956 ms - 140[0m
+[0mHEAD / [33m404[0m 0.620 ms - 140[0m
+[0mHEAD / [33m404[0m 0.730 ms - 140[0m
+[0mHEAD / [33m404[0m 0.644 ms - 140[0m
+[0mHEAD / [33m404[0m 0.497 ms - 140[0m
+[0mHEAD / [33m404[0m 0.986 ms - 140[0m
+[0mHEAD / [33m404[0m 0.527 ms - 140[0m
+[0mHEAD / [33m404[0m 0.443 ms - 140[0m
+[0mHEAD / [33m404[0m 0.626 ms - 140[0m
+[0mHEAD / [33m404[0m 0.442 ms - 140[0m
+[0mHEAD / [33m404[0m 0.573 ms - 140[0m
+[0mHEAD / [33m404[0m 1.205 ms - 140[0m
+[0mHEAD / [33m404[0m 0.558 ms - 140[0m
+[0mHEAD / [33m404[0m 0.615 ms - 140[0m
+[0mHEAD / [33m404[0m 0.675 ms - 140[0m
+[0mHEAD / [33m404[0m 0.409 ms - 140[0m
+[0mHEAD / [33m404[0m 0.735 ms - 140[0m
+[0mHEAD / [33m404[0m 0.639 ms - 140[0m
+[0mHEAD / [33m404[0m 0.630 ms - 140[0m
+[0mHEAD / [33m404[0m 0.410 ms - 140[0m
+[0mHEAD / [33m404[0m 0.649 ms - 140[0m
+[0mHEAD / [33m404[0m 0.535 ms - 140[0m
+[0mHEAD / [33m404[0m 0.750 ms - 140[0m
+[0mHEAD / [33m404[0m 0.434 ms - 140[0m
+[0mHEAD / [33m404[0m 0.364 ms - 140[0m
+[0mHEAD / [33m404[0m 0.428 ms - 140[0m
+[0mHEAD / [33m404[0m 0.422 ms - 140[0m
+procesosAutomaticos
+Error al actualizar pedidos: Error
+    at Database.<anonymous> [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:185:27[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:12[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\sequelize.js:315:28
+    at async obtenerPedidosParaAsignacion [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:226:21[90m)[39m
+    at async Timeout._onTimeout [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:62:23[90m)[39m {
+  name: [32m'SequelizeDatabaseError'[39m,
+  parent: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  original: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  sql: [32m'SELECT id, "eventoId"\n'[39m +
+    [32m'        FROM "Pedidos" p\n'[39m +
+    [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+    [32m'          AND NOT EXISTS (\n'[39m +
+    [32m'              SELECT 1\n'[39m +
+    [32m'              FROM "Asignacions" arp\n'[39m +
+    [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+    [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+    [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+    [32m'          );'[39m,
+  parameters: {}
+}
+[0mHEAD / [33m404[0m 0.736 ms - 140[0m
+[0mHEAD / [33m404[0m 0.439 ms - 140[0m
+[0mHEAD / [33m404[0m 0.625 ms - 140[0m
+[0mHEAD / [33m404[0m 0.499 ms - 140[0m
+[0mHEAD / [33m404[0m 0.424 ms - 140[0m
+[0mHEAD / [33m404[0m 0.630 ms - 140[0m
+[0mHEAD / [33m404[0m 0.712 ms - 140[0m
+[0mHEAD / [33m404[0m 0.497 ms - 140[0m
+[0mHEAD / [33m404[0m 0.388 ms - 140[0m
+[0mHEAD / [33m404[0m 0.500 ms - 140[0m
+[0mHEAD / [33m404[0m 0.388 ms - 140[0m
+[0mHEAD / [33m404[0m 0.968 ms - 140[0m
+[0mHEAD / [33m404[0m 0.586 ms - 140[0m
+[0mHEAD / [33m404[0m 0.444 ms - 140[0m
+[0mHEAD / [33m404[0m 0.387 ms - 140[0m
+[0mHEAD / [33m404[0m 0.643 ms - 140[0m
+[0mHEAD / [33m404[0m 0.416 ms - 140[0m
+[0mHEAD / [33m404[0m 1.210 ms - 140[0m
+[0mHEAD / [33m404[0m 0.519 ms - 140[0m
+[0mHEAD / [33m404[0m 0.436 ms - 140[0m
+[0mHEAD / [33m404[0m 0.495 ms - 140[0m
+[0mHEAD / [33m404[0m 0.683 ms - 140[0m
+[0mHEAD / [33m404[0m 0.735 ms - 140[0m
+[0mHEAD / [33m404[0m 0.472 ms - 140[0m
+[0mHEAD / [33m404[0m 0.655 ms - 140[0m
+[0mHEAD / [33m404[0m 0.485 ms - 140[0m
+[0mHEAD / [33m404[0m 0.596 ms - 140[0m
+[0mHEAD / [33m404[0m 0.646 ms - 140[0m
+[0mHEAD / [33m404[0m 1.055 ms - 140[0m
+[0mHEAD / [33m404[0m 0.648 ms - 140[0m
+[0mHEAD / [33m404[0m 0.655 ms - 140[0m
+[0mHEAD / [33m404[0m 0.803 ms - 140[0m
+[0mHEAD / [33m404[0m 0.560 ms - 140[0m
+[0mHEAD / [33m404[0m 0.706 ms - 140[0m
+[0mHEAD / [33m404[0m 0.594 ms - 140[0m
+[0mHEAD / [33m404[0m 0.539 ms - 140[0m
+[0mHEAD / [33m404[0m 0.651 ms - 140[0m
+[0mHEAD / [33m404[0m 0.558 ms - 140[0m
+[0mHEAD / [33m404[0m 0.381 ms - 140[0m
+[0mHEAD / [33m404[0m 0.914 ms - 140[0m
+[0mHEAD / [33m404[0m 0.420 ms - 140[0m
+[0mHEAD / [33m404[0m 0.767 ms - 140[0m
+[0mHEAD / [33m404[0m 0.549 ms - 140[0m
+[0mHEAD / [33m404[0m 0.642 ms - 140[0m
+[0mHEAD / [33m404[0m 0.698 ms - 140[0m
+[0mHEAD / [33m404[0m 0.622 ms - 140[0m
+[0mHEAD / [33m404[0m 0.691 ms - 140[0m
+[0mHEAD / [33m404[0m 0.447 ms - 140[0m
+[0mHEAD / [33m404[0m 0.620 ms - 140[0m
+[0mHEAD / [33m404[0m 0.628 ms - 140[0m
+[0mHEAD / [33m404[0m 1.145 ms - 140[0m
+[0mHEAD / [33m404[0m 0.647 ms - 140[0m
+[0mHEAD / [33m404[0m 0.524 ms - 140[0m
+[0mHEAD / [33m404[0m 0.643 ms - 140[0m
+[0mHEAD / [33m404[0m 0.566 ms - 140[0m
+[0mHEAD / [33m404[0m 1.212 ms - 140[0m
+[0mHEAD / [33m404[0m 0.594 ms - 140[0m
+[0mHEAD / [33m404[0m 0.585 ms - 140[0m
+procesosAutomaticos
+Error al actualizar pedidos: Error
+    at Database.<anonymous> [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:185:27[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:12[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\sequelize.js:315:28
+    at async obtenerPedidosParaAsignacion [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:226:21[90m)[39m
+    at async Timeout._onTimeout [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:62:23[90m)[39m {
+  name: [32m'SequelizeDatabaseError'[39m,
+  parent: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  original: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  sql: [32m'SELECT id, "eventoId"\n'[39m +
+    [32m'        FROM "Pedidos" p\n'[39m +
+    [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+    [32m'          AND NOT EXISTS (\n'[39m +
+    [32m'              SELECT 1\n'[39m +
+    [32m'              FROM "Asignacions" arp\n'[39m +
+    [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+    [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+    [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+    [32m'          );'[39m,
+  parameters: {}
+}
+[0mHEAD / [33m404[0m 0.606 ms - 140[0m
+[0mHEAD / [33m404[0m 0.603 ms - 140[0m
+[0mHEAD / [33m404[0m 0.554 ms - 140[0m
+[0mHEAD / [33m404[0m 0.722 ms - 140[0m
+[0mHEAD / [33m404[0m 0.542 ms - 140[0m
+[0mHEAD / [33m404[0m 0.707 ms - 140[0m
+[0mHEAD / [33m404[0m 0.554 ms - 140[0m
+[0mHEAD / [33m404[0m 0.609 ms - 140[0m
+[0mHEAD / [33m404[0m 1.345 ms - 140[0m
+[0mHEAD / [33m404[0m 0.498 ms - 140[0m
+[0mHEAD / [33m404[0m 0.836 ms - 140[0m
+[0mHEAD / [33m404[0m 0.523 ms - 140[0m
+[0mHEAD / [33m404[0m 0.384 ms - 140[0m
+[0mHEAD / [33m404[0m 0.421 ms - 140[0m
+[0mHEAD / [33m404[0m 0.699 ms - 140[0m
+[0mHEAD / [33m404[0m 0.472 ms - 140[0m
+[0mHEAD / [33m404[0m 0.413 ms - 140[0m
+[0mHEAD / [33m404[0m 0.534 ms - 140[0m
+[0mHEAD / [33m404[0m 0.676 ms - 140[0m
+[0mHEAD / [33m404[0m 1.092 ms - 140[0m
+[0mHEAD / [33m404[0m 0.725 ms - 140[0m
+[0mHEAD / [33m404[0m 0.577 ms - 140[0m
+[0mHEAD / [33m404[0m 0.435 ms - 140[0m
+[0mHEAD / [33m404[0m 0.553 ms - 140[0m
+[0mHEAD / [33m404[0m 0.609 ms - 140[0m
+[0mHEAD / [33m404[0m 1.074 ms - 140[0m
+[0mHEAD / [33m404[0m 0.715 ms - 140[0m
+[0mHEAD / [33m404[0m 0.381 ms - 140[0m
+[0mHEAD / [33m404[0m 0.516 ms - 140[0m
+[0mHEAD / [33m404[0m 0.453 ms - 140[0m
+[0mHEAD / [33m404[0m 0.902 ms - 140[0m
+[0mHEAD / [33m404[0m 0.590 ms - 140[0m
+[0mHEAD / [33m404[0m 0.471 ms - 140[0m
+[0mHEAD / [33m404[0m 0.413 ms - 140[0m
+[0mHEAD / [33m404[0m 0.436 ms - 140[0m
+[0mHEAD / [33m404[0m 0.411 ms - 140[0m
+[0mHEAD / [33m404[0m 0.659 ms - 140[0m
+[0mHEAD / [33m404[0m 0.388 ms - 140[0m
+[0mHEAD / [33m404[0m 0.568 ms - 140[0m
+[0mHEAD / [33m404[0m 0.591 ms - 140[0m
+[0mHEAD / [33m404[0m 0.467 ms - 140[0m
+[0mHEAD / [33m404[0m 0.403 ms - 140[0m
+[0mHEAD / [33m404[0m 0.349 ms - 140[0m
+[0mHEAD / [33m404[0m 0.501 ms - 140[0m
+[0mHEAD / [33m404[0m 0.376 ms - 140[0m
+[0mHEAD / [33m404[0m 0.375 ms - 140[0m
+[0mHEAD / [33m404[0m 0.451 ms - 140[0m
+[0mHEAD / [33m404[0m 1.231 ms - 140[0m
+[0mHEAD / [33m404[0m 0.634 ms - 140[0m
+[0mHEAD / [33m404[0m 0.650 ms - 140[0m
+[0mHEAD / [33m404[0m 0.587 ms - 140[0m
+[0mHEAD / [33m404[0m 0.754 ms - 140[0m
+[0mHEAD / [33m404[0m 1.311 ms - 140[0m
+[0mHEAD / [33m404[0m 0.682 ms - 140[0m
+[0mHEAD / [33m404[0m 0.645 ms - 140[0m
+[0mHEAD / [33m404[0m 0.605 ms - 140[0m
+[0mHEAD / [33m404[0m 0.520 ms - 140[0m
+procesosAutomaticos
+Error al actualizar pedidos: Error
+    at Database.<anonymous> [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:185:27[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run [90m(C:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\dialects\sqlite\query.js:183:12[90m)[39m
+    at [90mC:\Proyecto Final\BackendNode-QF\[39mnode_modules\[4msequelize[24m\lib\sequelize.js:315:28
+    at async obtenerPedidosParaAsignacion [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:226:21[90m)[39m
+    at async Timeout._onTimeout [90m(file:///C:/Proyecto%20Final/BackendNode-QF/[39msrc/util/procesosAutomaticos.js:62:23[90m)[39m {
+  name: [32m'SequelizeDatabaseError'[39m,
+  parent: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  original: [Error: SQLITE_ERROR: near "'45 seconds'": syntax error] {
+    errno: [33m1[39m,
+    code: [32m'SQLITE_ERROR'[39m,
+    sql: [32m'SELECT id, "eventoId"\n'[39m +
+      [32m'        FROM "Pedidos" p\n'[39m +
+      [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+      [32m'          AND NOT EXISTS (\n'[39m +
+      [32m'              SELECT 1\n'[39m +
+      [32m'              FROM "Asignacions" arp\n'[39m +
+      [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+      [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+      [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+      [32m'          );'[39m
+  },
+  sql: [32m'SELECT id, "eventoId"\n'[39m +
+    [32m'        FROM "Pedidos" p\n'[39m +
+    [32m`        WHERE p."repartidorId" IS NULL and estado = 'EnCamino'\n`[39m +
+    [32m'          AND NOT EXISTS (\n'[39m +
+    [32m'              SELECT 1\n'[39m +
+    [32m'              FROM "Asignacions" arp\n'[39m +
+    [32m'              WHERE arp."PedidoId" = p.id\n'[39m +
+    [32m"                AND arp.estado = 'Pendiente'\n"[39m +
+    [32m`                AND arp."createdAt" >= NOW() - INTERVAL '45 seconds'\n`[39m +
+    [32m'          );'[39m,
+  parameters: {}
+}
+[0mHEAD / [33m404[0m 0.805 ms - 140[0m
+[0mHEAD / [33m404[0m 0.623 ms - 140[0m
+[0mHEAD / [33m404[0m 0.509 ms - 140[0m
+[0mHEAD / [33m404[0m 0.649 ms - 140[0m
+[0mHEAD / [33m404[0m 0.608 ms - 140[0m
+[0mHEAD / [33m404[0m 0.462 ms - 140[0m
+[0mHEAD / [33m404[0m 1.117 ms - 140[0m
+[0mHEAD / [33m404[0m 0.694 ms - 140[0m
+[0mHEAD / [33m404[0m 0.514 ms - 140[0m
+[0mHEAD / [33m404[0m 0.537 ms - 140[0m
+[0mHEAD / [33m404[0m 0.620 ms - 140[0m
+^C
