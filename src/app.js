@@ -344,6 +344,28 @@ app.get('/resetear/db', async (req, res) => {
     // Ejecutar el archivo SQL para reinsertar los datos
     await sequelize.query(sql, { raw: true });
 
+    // Después de ejecutar el SQL de seed, eliminar vistas que el SQL pueda haber creado
+    try {
+      const dialect = sequelize.getDialect ? sequelize.getDialect() : (sequelize.options && sequelize.options.dialect) || 'postgres';
+      if (dialect === 'postgres') {
+        const views = await sequelize.query(
+          "SELECT table_schema, table_name FROM information_schema.views WHERE table_schema = 'public';",
+          { type: sequelize.QueryTypes.SELECT }
+        );
+        for (const v of views) {
+          const name = v.table_name;
+          try {
+            await sequelize.query(`DROP VIEW IF EXISTS \"${name}\" CASCADE;`);
+            console.log('Vista eliminada post-seed:', name);
+          } catch (err) {
+            console.warn('No se pudo eliminar la vista post-seed', name, err.message || err);
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('Error al intentar eliminar vistas post-seed (continuando):', err.message || err);
+    }
+
     console.log('Reset DB completado.');
     return res.status(200).json({ status: 'success', msg: 'Database reset and seeded from Datos_DB.sql', tables });
   } catch (error) {
