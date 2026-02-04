@@ -208,6 +208,29 @@ async function connectDB() {
       console.warn('No se pudo eliminar la vista chatbotdata (continuando):', err.message || err);
     }
 
+    // En Postgres puede haber múltiples vistas creadas por el SQL de seed; eliminarlas todas
+    // para evitar errores al cambiar el esquema de tablas que las vistas referencian.
+    try {
+      const dialect = sequelize.getDialect ? sequelize.getDialect() : (sequelize.options && sequelize.options.dialect) || 'postgres';
+      if (dialect === 'postgres') {
+        const views = await sequelize.query(
+          "SELECT table_schema, table_name FROM information_schema.views WHERE table_schema = 'public';",
+          { type: sequelize.QueryTypes.SELECT }
+        );
+        for (const v of views) {
+          const name = v.table_name;
+          try {
+            await sequelize.query(`DROP VIEW IF EXISTS \"${name}\" CASCADE;`);
+            console.log('Vista eliminada:', name);
+          } catch (err) {
+            console.warn('No se pudo eliminar la vista', name, err.message || err);
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('Error al intentar eliminar vistas del schema public (continuando):', err.message || err);
+    }
+
     if (!isProd) {
       // Modo desarrollo: permitir drop, sync con force y seed de datos
       await sequelize.sync({ force: process.env.DB_FORCE === 'true' }); // false no modifica la base de datos
