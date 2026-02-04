@@ -254,3 +254,70 @@ connectDB();
 app.listen(port, () => {
   console.log('Servidor escuchando en el puerto ' + port);
 });
+
+// Endpoint público (o usado localmente) para resetear la DB según Datos_DB.sql
+// Lee el archivo SQL, elimina los datos de las tablas afectadas y vuelve a insertar.
+app.get('/resetear/db', async (req, res) => {
+  try {
+    const sqlFilePath = path.resolve(__dirname, '../Datos_DB.sql');
+    console.log('Reset DB: leyendo archivo SQL en', sqlFilePath);
+    const sql = readFileSync(sqlFilePath, 'utf-8');
+
+    // Extraer nombres de tablas desde los INSERT INTO del archivo
+    const insertRegex = /INSERT\s+INTO\s+([^\s(]+)/gi;
+    const tablesSet = new Set();
+    let match;
+    while ((match = insertRegex.exec(sql)) !== null) {
+      let raw = match[1];
+      // quitar schema si existe (public.eventos -> eventos)
+      if (raw.includes('.')) raw = raw.split('.').pop();
+      // quitar comillas
+      raw = raw.replace(/"/g, '').replace(/'/g, '');
+      // normalizar
+      tablesSet.add(raw);
+    }
+
+    const tables = Array.from(tablesSet);
+    console.log('Reset DB: tablas encontradas en SQL:', tables);
+
+    const dialect = sequelize.getDialect ? sequelize.getDialect() : (sequelize.options && sequelize.options.dialect) || 'postgres';
+
+    // Borrar datos respetando dialecto
+    if (tables.length > 0) {
+      if (dialect === 'postgres') {
+        const list = tables.map(t => `"${t}"`).join(', ');
+        await sequelize.query(`TRUNCATE TABLE ${list} RESTART IDENTITY CASCADE;`);
+      } else if (dialect === 'sqlite') {
+        await sequelize.query('PRAGMA foreign_keys = OFF;');
+        for (const t of tables) {
+          await sequelize.query(`DELETE FROM "${t}";`);
+          await sequelize.query(`DELETE FROM sqlite_sequence WHERE name='${t}';`).catch(() => {});
+        }
+        await sequelize.query('PRAGMA foreign_keys = ON;');
+      } else {
+        // MySQL/MariaDB
+        if (dialect === 'mysql' || dialect === 'mariadb') {
+          await sequelize.query('SET FOREIGN_KEY_CHECKS = 0;');
+          for (const t of tables) {
+            await sequelize.query(`TRUNCATE TABLE \`${t}\`;`);
+          }
+          await sequelize.query('SET FOREIGN_KEY_CHECKS = 1;');
+        } else {
+          // Fallback: intentar DELETE simple
+          for (const t of tables) {
+            await sequelize.query(`DELETE FROM "${t}";`);
+          }
+        }
+      }
+    }
+
+    // Ejecutar el archivo SQL para reinsertar los datos
+    await sequelize.query(sql, { raw: true });
+
+    console.log('Reset DB completado.');
+    return res.status(200).json({ status: 'success', msg: 'Database reset and seeded from Datos_DB.sql', tables });
+  } catch (error) {
+    console.error('Error al resetear DB:', error);
+    return res.status(500).json({ status: 'error', msg: 'Error resetting DB', error: error.message });
+  }
+});
