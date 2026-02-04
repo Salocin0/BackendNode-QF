@@ -200,9 +200,16 @@ async function connectDB() {
     const nodeEnv = process.env.NODE_ENV || 'development';
     const isProd = nodeEnv === 'production' || nodeEnv === 'prod';
 
+    // Asegurarnos de eliminar vistas dependientes antes de intentar modificar esquemas
+    // Esto evita errores en Postgres cuando una vista depende de columnas que Sequelize intentará alterar.
+    try {
+      await dropViewIfExists('chatbotdata');
+    } catch (err) {
+      console.warn('No se pudo eliminar la vista chatbotdata (continuando):', err.message || err);
+    }
+
     if (!isProd) {
       // Modo desarrollo: permitir drop, sync con force y seed de datos
-      await dropViewIfExists('chatbotdata');
       await sequelize.sync({ force: process.env.DB_FORCE === 'true' }); // false no modifica la base de datos
       if (process.env.DB_FORCE === 'true') {
         await DatosIniciales();
