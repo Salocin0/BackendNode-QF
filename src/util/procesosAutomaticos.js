@@ -221,8 +221,29 @@ export async function obtenerRepartidorAsignado(pedidoId) {
   }
 }
 
+// Devuelve una expresión SQL para 'NOW() - INTERVAL ...' compatible con el dialecto
+function nowMinusSecondsExpr(seconds) {
+  const dialect = sequelize.getDialect ? sequelize.getDialect() : (sequelize.options && sequelize.options.dialect) || 'postgres';
+  if (dialect === 'sqlite' || dialect === 'mssql' || dialect === 'mysql') {
+    // SQLite: datetime('now','-NN seconds')
+    if (dialect === 'sqlite') {
+      return `datetime('now', '-${seconds} seconds')`;
+    }
+    // MySQL and MSSQL alternative using DATE_SUB for MySQL, DATEADD for MSSQL
+    if (dialect === 'mysql') {
+      return `NOW() - INTERVAL ${seconds} SECOND`;
+    }
+    if (dialect === 'mssql') {
+      return `DATEADD(second, -${seconds}, GETUTCDATE())`;
+    }
+  }
+  // Por defecto usar sintaxis Postgres
+  return `NOW() - INTERVAL '${seconds} seconds'`;
+}
+
 // Obtener pedidos que necesitan asignación
 export async function obtenerPedidosParaAsignacion() {
+    const timeExpr = nowMinusSecondsExpr(ASIGNACION_WINDOW_SECONDS);
     const pedidos = await sequelize.query(
     `
         SELECT id, "eventoId"
@@ -233,7 +254,7 @@ export async function obtenerPedidosParaAsignacion() {
               FROM "Asignacions" arp
               WHERE arp."PedidoId" = p.id
                 AND arp.estado = 'Pendiente'
-                AND arp."createdAt" >= NOW() - INTERVAL '${ASIGNACION_WINDOW_SECONDS} seconds'
+                AND arp."createdAt" >= ${timeExpr}
           );
     `,
     { type: sequelize.QueryTypes.SELECT, logging: false }
@@ -244,6 +265,7 @@ export async function obtenerPedidosParaAsignacion() {
 
 // Obtener pedidos que necesitan asignación
 export async function obtenerPedidosParaActualizar() {
+    const timeExpr = nowMinusSecondsExpr(ASIGNACION_WINDOW_SECONDS);
     const pedidos = await sequelize.query(
     `
         SELECT id, "eventoId"
@@ -254,7 +276,7 @@ export async function obtenerPedidosParaActualizar() {
               FROM "Asignacions" arp
               WHERE arp."PedidoId" = p.id
                 AND arp.estado = 'Aceptado'
-                AND arp."createdAt" >= NOW() - INTERVAL '${ASIGNACION_WINDOW_SECONDS} seconds'
+                AND arp."createdAt" >= ${timeExpr}
           );
     `,
     { type: sequelize.QueryTypes.SELECT, logging: false }
@@ -300,11 +322,12 @@ const obtenerRepartidor = async (eventoId, pedidoId) => {
 // Borrar asignaciones pendientes viejas
 export async function borrarAsignacionesPendienteViejas() {
   try {
+    const timeExpr = nowMinusSecondsExpr(ASIGNACION_WINDOW_SECONDS);
     await sequelize.query(
       `
             DELETE FROM "Asignacions"
             WHERE estado = 'Pendiente'
-              AND "createdAt" < NOW() - INTERVAL '${ASIGNACION_WINDOW_SECONDS} seconds'
+              AND "createdAt" < ${timeExpr}
             RETURNING *;
         `,
       { type: sequelize.QueryTypes.DELETE, logging: false }
@@ -352,12 +375,13 @@ export async function borrarAsignacionesRechazadas() {
 
 export async function caducarAsignaciones() {
   try {
+    const timeExpr = nowMinusSecondsExpr(ASIGNACION_WINDOW_SECONDS);
     const [results] = await sequelize.query(
       `
       UPDATE "Asignacions"
       SET estado = 'Caducado'
       WHERE estado = 'Pendiente'
-        AND "createdAt" < NOW() - INTERVAL '${ASIGNACION_WINDOW_SECONDS} seconds'
+        AND "createdAt" < ${timeExpr}
       RETURNING *;
     `,
       { type: sequelize.QueryTypes.UPDATE, logging: false }
