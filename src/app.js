@@ -74,7 +74,7 @@ app.use(
   cors({
     origin: true, // refleja el Origin de la petición en Access-Control-Allow-Origin
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept', 'consumidorid'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept', 'consumidorid', 'ConsumidorId', 'puestoid', 'puestoId'],
     credentials: true,
   })
 );
@@ -83,11 +83,15 @@ app.use(
 app.options("*", cors());
 
 // Fallback CORS middleware: asegura cabeceras en TODAS las respuestas (incluyendo errores)
-// Esto protege contra proxies/hosting que puedan eliminar cabeceras en respuestas de error.
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  const origin = req.headers.origin;
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin);
+  } else {
+    res.header('Access-Control-Allow-Origin', '*');
+  }
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, consumidorid');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, consumidorid, ConsumidorId, puestoid, puestoId');
   res.header('Access-Control-Allow-Credentials', 'true');
   if (req.method === 'OPTIONS') {
     return res.sendStatus(204);
