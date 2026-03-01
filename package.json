@@ -10,7 +10,8 @@
   "scripts": {
     "start": "nodemon ./src/app.js --omit=dev",
     "dev": "nodemon ./src/app.js",
-    "test": "mocha ./src/test/"
+    "test": "mocha ./src/test/",
+    "seed": "node ./src/scripts/seedDatabase.js"
   },
   "repository": {
     "type": "git",

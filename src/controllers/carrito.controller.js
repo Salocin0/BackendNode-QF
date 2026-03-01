@@ -4,14 +4,23 @@ class CarritoController {
   async getController(req, res) {
     try {
       const consumidorId = req.headers['consumidorid'];
+      
+      if (!consumidorId) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'ConsumidorId no proporcionado en headers',
+          data: {},
+        });
+      }
+      
       const carrito = await carritoService.getOneByConsumidorId(consumidorId);
       return res.status(200).json({
-        status: 'sucess',
-        msg: 'Productor found',
+        status: 'success',
+        msg: 'Carrito found',
         data: carrito,
       });
     } catch (e) {
-      console.log(e);
+      console.error('Error en getController:', e);
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',
@@ -23,6 +32,15 @@ class CarritoController {
   async deleteOneController(req, res) {
     try {
       const consumidorId = req.headers['consumidorid'];
+      
+      if (!consumidorId) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'ConsumidorId no proporcionado en headers',
+          data: {},
+        });
+      }
+      
       const carrito = await carritoService.delete(consumidorId);
       return res.status(200).json({
         status: 'success',
@@ -31,10 +49,10 @@ class CarritoController {
         data: carrito,
       });
     } catch (e) {
-      console.error(e);
+      console.error('Error en deleteOneController:', e);
       return res.status(500).json({
         status: 'error',
-        msg: 'Ocurrió un error al eliminar el encargado :(',
+        msg: 'Ocurrió un error al eliminar el carrito :(',
         data: {},
       });
     }
@@ -43,8 +61,24 @@ class CarritoController {
   async addToCartController(req, res) {
     try {
       const consumidorId = req.headers['consumidorid'];
+      
+      if (!consumidorId) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'ConsumidorId no proporcionado en headers',
+          data: {},
+        });
+      }
+      
       const carrito = await carritoService.getOneByConsumidorId(consumidorId);
-      console.log(req.body)
+      if (!carrito) {
+        return res.status(404).json({
+          status: 'error',
+          msg: 'Carrito no encontrado',
+          data: {},
+        });
+      }
+      
       const productoId = req.params.productoId;
       const fecha = req.body.fecha;
       const eventoId = req.body.eventoId;
@@ -63,10 +97,10 @@ class CarritoController {
         data: data,
       });
     } catch (e) {
-      console.error(e);
+      console.error('Error en addToCartController:', e);
       return res.status(500).json({
         status: 'error',
-        msg: 'Ocurrió un error al eliminar el encargado :(',
+        msg: 'Ocurrió un error al agregar producto al carrito :(',
         data: {},
       });
     }

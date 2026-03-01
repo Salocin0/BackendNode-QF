@@ -283,7 +283,26 @@ async function DatosIniciales() {
 connectDB();
 //ejecutar procesos automaticos
 
+// Middleware global de error: captura cualquier error no manejado
+app.use((err, req, res, next) => {
+  console.error('❌ Error global:', err);
+  
+  return res.status(err.status || 500).json({
+    status: 'error',
+    msg: err.message || 'Error interno del servidor',
+    data: {},
+  });
+});
 
+// Middleware para rutas no encontradas (404)
+app.use((req, res) => {
+  return res.status(404).json({
+    status: 'error',
+    msg: 'Ruta no encontrada',
+    path: req.path,
+    method: req.method,
+  });
+});
 
 app.listen(port, () => {
   console.log('Servidor escuchando en el puerto ' + port);

@@ -7,14 +7,36 @@ import { sequelize } from '../util/connections.js';
 
 class PuestoService {
   async getAll(consumidorId) {
-    const consumidor = await consumidorService.getOne(consumidorId);
-    const puestos = await Puesto.findAll({
-      where: {
-        encargadoId: consumidor.encargadoId,
-        estado: 'Creado',
-      },
-    });
-    return puestos;
+    // Validar que consumidorId exista
+    if (!consumidorId) {
+      console.warn('⚠️ consumidorId no proporcionado');
+      return [];
+    }
+    
+    try {
+      const consumidor = await consumidorService.getOne(consumidorId);
+      
+      if (!consumidor) {
+        console.warn(`⚠️ Consumidor no encontrado: ${consumidorId}`);
+        return [];
+      }
+      
+      if (!consumidor.encargadoId) {
+        console.warn(`⚠️ Consumidor sin encargadoId: ${consumidorId}`);
+        return [];
+      }
+      
+      const puestos = await Puesto.findAll({
+        where: {
+          encargadoId: consumidor.encargadoId,
+          estado: 'Creado',
+        },
+      });
+      return puestos;
+    } catch (error) {
+      console.error('Error en getAll:', error);
+      return [];
+    }
   }
 
   async getAllInEvent(eventoId) {
@@ -32,14 +54,28 @@ class PuestoService {
   }
 
   async getAllDeshabilitados(consumidorId) {
-    const consumidor = await consumidorService.getOne(consumidorId);
-    const puestos = await Puesto.findAll({
-      where: {
-        encargadoId: consumidor.encargadoId,
-        habilitado: false,
-      },
-    });
-    return puestos;
+    if (!consumidorId) {
+      console.warn('⚠️ consumidorId no proporcionado');
+      return [];
+    }
+    
+    try {
+      const consumidor = await consumidorService.getOne(consumidorId);
+      if (!consumidor || !consumidor.encargadoId) {
+        return [];
+      }
+      
+      const puestos = await Puesto.findAll({
+        where: {
+          encargadoId: consumidor.encargadoId,
+          habilitado: false,
+        },
+      });
+      return puestos;
+    } catch (error) {
+      console.error('Error en getAllDeshabilitados:', error);
+      return [];
+    }
   }
 
   // services/puestoService.js
@@ -56,13 +92,27 @@ class PuestoService {
 
 
   async getAllByEncargado(consumidorId) {
-    const consumidor = await consumidorService.getOne(consumidorId);
-    const puestos = await Puesto.findAll({
-      where: {
-        encargadoId: consumidor.encargadoId,
-      },
-    });
-    return puestos;
+    if (!consumidorId) {
+      console.warn('⚠️ consumidorId no proporcionado');
+      return [];
+    }
+    
+    try {
+      const consumidor = await consumidorService.getOne(consumidorId);
+      if (!consumidor || !consumidor.encargadoId) {
+        return [];
+      }
+      
+      const puestos = await Puesto.findAll({
+        where: {
+          encargadoId: consumidor.encargadoId,
+        },
+      });
+      return puestos;
+    } catch (error) {
+      console.error('Error en getAllByEncargado:', error);
+      return [];
+    }
   }
 
   async getOne(id) {

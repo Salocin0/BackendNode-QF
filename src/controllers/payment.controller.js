@@ -6,7 +6,7 @@ export const createPaymentSheet = async (req, res) => {
   try {
     const { paymentIntent, ephemeralKey, customer } = await paymentService.createPaymentSheet(amount);
     res.json({
-      paymentIntent,
+      clientSecret: paymentIntent,
       ephemeralKey,
       customer,
     });

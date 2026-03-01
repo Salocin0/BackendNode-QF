@@ -5,22 +5,24 @@ class PuestoController {
   async getAllController(req, res) {
     try {
       const consumidorId = req.headers['consumidorid'];
-      const puestos = await puestoService.getAll(consumidorId);
-      if (puestos.length > 0) {
-        return res.status(200).json({
-          status: 'success',
-          msg: 'Found all puestos',
-          data: puestos,
-        });
-      } else {
-        return res.status(404).json({
-          status: 'Error',
-          msg: 'puestos not found',
+      
+      if (!consumidorId) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'ConsumidorId no proporcionado en headers',
           data: {},
         });
       }
+      
+      const puestos = await puestoService.getAll(consumidorId);
+      
+      return res.status(200).json({
+        status: 'success',
+        msg: 'Found all puestos',
+        data: puestos,
+      });
     } catch (e) {
-      console.log(e)
+      console.error('Error en getAllController:', e);
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',

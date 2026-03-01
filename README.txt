@@ -9,3 +9,6 @@ npm i
 
 #Ejecuta la serie de test
 npm test
+
+#Inserta datos de prueba en la base de datos
+npm run seed
