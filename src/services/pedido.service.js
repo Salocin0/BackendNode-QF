@@ -117,6 +117,17 @@ class PedidoService {
           ],
         },
         { model: Puesto },
+        {
+          model: Consumidor,
+          include: [
+            {
+              model: Usuario,
+              as: 'usuario',
+              attributes: ['usuario'],
+            },
+          ],
+          attributes: ['nombre', 'apellido'],
+        },
       ],
     });
 
@@ -183,7 +194,37 @@ class PedidoService {
       where: {
         id: id,
       },
-      include: [{ model: Puesto }, { model: DetallePedido, as: 'detalles' }],
+      include: [
+        { model: Puesto },
+        { model: DetallePedido, as: 'detalles' },
+        {
+          model: Consumidor,
+          include: [
+            {
+              model: Usuario,
+              as: 'usuario',
+              attributes: ['usuario', 'email', 'tokenWeb', 'tokenMobile'],
+            },
+          ],
+          attributes: ['nombre', 'apellido', 'email', 'telefono'],
+        },
+        {
+          model: Repartidor,
+          include: [
+            {
+              model: Consumidor,
+              include: [
+                {
+                  model: Usuario,
+                  as: 'usuario',
+                  attributes: ['usuario', 'email'],
+                },
+              ],
+              attributes: ['nombre', 'apellido', 'telefono'],
+            },
+          ],
+        },
+      ],
     });
 
     return pedido;
