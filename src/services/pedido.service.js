@@ -196,7 +196,13 @@ class PedidoService {
       },
       include: [
         { model: Puesto },
-        { model: DetallePedido, as: 'detalles' },
+        { 
+          model: DetallePedido, 
+          as: 'detalles',
+          include: [
+            { model: Producto, as: 'producto' }
+          ]
+        },
         {
           model: Consumidor,
           include: [
@@ -206,7 +212,8 @@ class PedidoService {
               attributes: ['usuario', 'email', 'tokenWeb', 'tokenMobile'],
             },
           ],
-          attributes: ['nombre', 'apellido', 'email', 'telefono'],
+          // 'email' is stored in the associated Usuario model, not in Consumidor
+          attributes: ['nombre', 'apellido', 'telefono'],
         },
         {
           model: Repartidor,

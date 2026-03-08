@@ -204,6 +204,10 @@ async function connectDB() {
     const nodeEnv = process.env.NODE_ENV || 'development';
     const isProd = nodeEnv === 'production' || nodeEnv === 'prod';
 
+    await withDbRetry('autenticar conexión inicial', async () => {
+      await sequelize.authenticate();
+    });
+
     // Asegurarnos de eliminar vistas dependientes antes de intentar modificar esquemas
     // Esto evita errores en Postgres cuando una vista depende de columnas que Sequelize intentará alterar.
     try {
@@ -217,14 +221,18 @@ async function connectDB() {
     try {
       const dialect = sequelize.getDialect ? sequelize.getDialect() : (sequelize.options && sequelize.options.dialect) || 'postgres';
       if (dialect === 'postgres') {
-        const views = await sequelize.query(
-          "SELECT table_schema, table_name FROM information_schema.views WHERE table_schema = 'public';",
-          { type: sequelize.QueryTypes.SELECT }
+        const views = await withDbRetry('consultar vistas de schema public', async () =>
+          sequelize.query(
+            "SELECT table_schema, table_name FROM information_schema.views WHERE table_schema = 'public';",
+            { type: sequelize.QueryTypes.SELECT }
+          )
         );
         for (const v of views) {
           const name = v.table_name;
           try {
-            await sequelize.query(`DROP VIEW IF EXISTS \"${name}\" CASCADE;`);
+            await withDbRetry(`eliminar vista ${name}`, async () => {
+              await sequelize.query(`DROP VIEW IF EXISTS \"${name}\" CASCADE;`);
+            });
             console.log('Vista eliminada:', name);
           } catch (err) {
             console.warn('No se pudo eliminar la vista', name, err.message || err);
@@ -237,14 +245,18 @@ async function connectDB() {
 
     if (!isProd) {
       // Modo desarrollo: permitir drop, sync con force y seed de datos
-      await sequelize.sync({ force: process.env.DB_FORCE === 'true' }); // false no modifica la base de datos
+      await withDbRetry('sincronizar modelos', async () => {
+        await sequelize.sync({ force: process.env.DB_FORCE === 'true' });
+      }); // false no modifica la base de datos
       if (process.env.DB_FORCE === 'true') {
         await DatosIniciales();
       }
       await generateAllData(); // Solo en desarrollo
     } else {
       // Modo producción: no borrar ni preinicializar datos. Sin force.
-      await sequelize.sync({ force: false });
+      await withDbRetry('sincronizar modelos en producción', async () => {
+        await sequelize.sync({ force: false });
+      });
       console.log('Modo producción detectado: no se preinicializan datos ni se borra la base de datos.');
     }
 
@@ -258,9 +270,62 @@ async function connectDB() {
   }
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isRetryableDbError(error) {
+  const message = String(error?.message || '').toLowerCase();
+  const parentMessage = String(error?.parent?.message || '').toLowerCase();
+  const code = String(error?.original?.code || error?.parent?.code || error?.code || '').toUpperCase();
+
+  if (code === 'ECONNRESET' || code === '57P03') {
+    return true;
+  }
+
+  const retryableFragments = [
+    'database system is starting up',
+    'the database system is starting up',
+    'terminating connection',
+    'connection terminated unexpectedly',
+    'read econnreset',
+    'could not connect to server',
+    'connection refused',
+  ];
+
+  return retryableFragments.some((fragment) => message.includes(fragment) || parentMessage.includes(fragment));
+}
+
+async function withDbRetry(operationName, operation, options = {}) {
+  const attempts = Number(options.attempts || process.env.DB_RETRY_ATTEMPTS || 12);
+  const baseDelayMs = Number(options.baseDelayMs || process.env.DB_RETRY_DELAY_MS || 2000);
+
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+      const retryable = isRetryableDbError(error);
+      if (!retryable || attempt === attempts) {
+        throw error;
+      }
+      console.warn(
+        `Error transitorio en DB al ${operationName}. Reintento ${attempt}/${attempts} en ${baseDelayMs}ms:`,
+        error.message || error
+      );
+      await sleep(baseDelayMs);
+    }
+  }
+
+  throw lastError;
+}
+
 export async function dropViewIfExists(viewName) {
   try {
-    await sequelize.query(`DROP VIEW IF EXISTS ${viewName} CASCADE;`);
+    await withDbRetry(`eliminar vista ${viewName}`, async () => {
+      await sequelize.query(`DROP VIEW IF EXISTS ${viewName} CASCADE;`);
+    });
     console.log(`Vista ${viewName} eliminada correctamente.`);
   } catch (error) {
     console.error(`Error al eliminar la vista ${viewName}:`, error);
@@ -272,7 +337,9 @@ async function DatosIniciales() {
     const sqlFilePath = path.resolve(__dirname, '../Datos_DB.sql');
     console.log('Ruta al archivo SQL:', sqlFilePath);
     const sql = readFileSync(sqlFilePath, 'utf-8');
-    await sequelize.query(sql);
+    await withDbRetry('ejecutar Datos_DB.sql', async () => {
+      await sequelize.query(sql);
+    });
     console.log('Datos iniciales cargados exitosamente.'); 
   } catch (error) {
     console.error('Error al setear los datos iniciales', error);
@@ -365,20 +432,26 @@ app.get('/resetear/db', async (req, res) => {
     }
 
     // Ejecutar el archivo SQL para reinsertar los datos
-    await sequelize.query(sql, { raw: true });
+    await withDbRetry('reinsertar datos desde SQL', async () => {
+      await sequelize.query(sql, { raw: true });
+    });
 
     // Después de ejecutar el SQL de seed, eliminar vistas que el SQL pueda haber creado
     try {
       const dialect = sequelize.getDialect ? sequelize.getDialect() : (sequelize.options && sequelize.options.dialect) || 'postgres';
       if (dialect === 'postgres') {
-        const views = await sequelize.query(
-          "SELECT table_schema, table_name FROM information_schema.views WHERE table_schema = 'public';",
-          { type: sequelize.QueryTypes.SELECT }
+        const views = await withDbRetry('consultar vistas post-seed', async () =>
+          sequelize.query(
+            "SELECT table_schema, table_name FROM information_schema.views WHERE table_schema = 'public';",
+            { type: sequelize.QueryTypes.SELECT }
+          )
         );
         for (const v of views) {
           const name = v.table_name;
           try {
-            await sequelize.query(`DROP VIEW IF EXISTS \"${name}\" CASCADE;`);
+            await withDbRetry(`eliminar vista post-seed ${name}`, async () => {
+              await sequelize.query(`DROP VIEW IF EXISTS \"${name}\" CASCADE;`);
+            });
             console.log('Vista eliminada post-seed:', name);
           } catch (err) {
             console.warn('No se pudo eliminar la vista post-seed', name, err.message || err);
