@@ -11,6 +11,8 @@ import { Repartidor } from '../DAO/models/repartidor.model.js';
 import { PuntoEncuentro } from '../DAO/models/puntoEncuentro.model.js';
 import Sequelize from 'sequelize';
 import { Usuario } from '../DAO/models/users.model.js';
+import { Evento } from '../DAO/models/evento.model.js';
+import { Productor } from '../DAO/models/Productor.model.js';
 
 class PedidoService {
   async getAll(consumidorId) {
@@ -228,6 +230,14 @@ class PedidoService {
                 },
               ],
               attributes: ['nombre', 'apellido', 'telefono'],
+            },
+          ],
+        },
+        {
+          model: Evento,
+          include: [
+            {
+              model: Productor,
             },
           ],
         },
