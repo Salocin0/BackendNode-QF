@@ -28,6 +28,8 @@ export const Pausado = {
   },
 
   continuarEvento: async (evento) => {
-    throw new Error('No se puede continuar un evento directamente desde "Pausado"');
+    evento.estado = 'EnCurso';
+    await evento.save();
+    return evento;
   }
 };

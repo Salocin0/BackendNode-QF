@@ -128,6 +128,45 @@ export const estadosEvento = {
     },
   },
 
+  // Compatibilidad con eventos existentes en estado legacy EnPreparacion3.
+  EnPreparacion3: {
+    crearEvento: async (evento) => {
+      return EnPreparacion.crearEvento(evento);
+    },
+
+    confirmarEvento: (evento) => {
+      return EnPreparacion.confirmarEvento(evento);
+    },
+
+    cancelarEvento: (evento) => {
+      return EnPreparacion.cancelarEvento(evento);
+    },
+
+    iniciarEvento: (evento) => {
+      return EnPreparacion.iniciarEvento(evento);
+    },
+
+    finalizarEvento: (evento) => {
+      return EnPreparacion.finalizarEvento(evento);
+    },
+
+    reprogramarEvento: (evento) => {
+      return EnPreparacion.reprogramarEvento(evento);
+    },
+
+    activarEvento: (evento) => {
+      return EnPreparacion.activarEvento(evento);
+    },
+
+    desactivarEvento: (evento) => {
+      return EnPreparacion.desactivarEvento(evento);
+    },
+
+    continuarEvento: (evento) => {
+      return EnPreparacion.continuarEvento(evento);
+    },
+  },
+
   EnCurso: {
     crearEvento: async (evento) => {
       return EnCurso.crearEvento(evento);

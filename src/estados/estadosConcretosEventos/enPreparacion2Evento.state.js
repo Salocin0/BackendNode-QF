@@ -27,7 +27,8 @@ export const EnPreparacion2 = {
               throw new Error('Evento no encontrado');
             }
 
-            evento.estado = 'EnPreparacion3';
+            // El flujo web 3/3 deja el evento listo para operar desde la web.
+            evento.estado = 'EnPreparacion';
             await evento.save();
             return evento;
           } catch (error) {
