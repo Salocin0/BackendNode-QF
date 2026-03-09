@@ -3,6 +3,7 @@ import { asignacionService } from '../services/asignacion.service.js';
 import { sequelize } from './connections.js';
 import { pedidoService } from '../services/pedido.service.js';
 import { puntoEncuentroService } from '../services/puntoEncuentro.service.js';
+import { isRetryableDbError, withDbRetry } from './dbRetry.js';
 
 // Configuración de intervalos (ms y segundos) configurable por env
 const NODE_ENV = process.env.NODE_ENV || 'development';
@@ -21,6 +22,15 @@ let ejecucionesVacias = 0;
 let procesoActivo = false;
 let intervalId = null;
 const MAX_EJECUCIONES_VACIAS = 3;
+const PROCESOS_DB_RETRY_ATTEMPTS = Number(process.env.PROCESOS_DB_RETRY_ATTEMPTS || 2);
+const PROCESOS_DB_RETRY_DELAY_MS = Number(process.env.PROCESOS_DB_RETRY_DELAY_MS || 1000);
+
+async function withProcesosDbRetry(operationName, operation) {
+  return withDbRetry(operationName, operation, {
+    attempts: PROCESOS_DB_RETRY_ATTEMPTS,
+    baseDelayMs: PROCESOS_DB_RETRY_DELAY_MS,
+  });
+}
 
 // Función para reactivar los procesos automáticos
 export function reactivarProcesosAutomaticos() {
@@ -124,6 +134,10 @@ function iniciarProcesosAutomaticos() {
       console.error('Error al actualizar pedidos:', error);
       // En caso de error, no contar como ejecución vacía
       ejecucionesVacias = 0;
+      if (isRetryableDbError(error)) {
+        console.warn('DB inestable detectada en procesosAutomaticos, pausando procesos hasta nueva actividad HTTP.');
+        detenerProcesosAutomaticos();
+      }
     }
   }, PROCESOS_INTERVAL_MS);
 }
@@ -151,7 +165,7 @@ function generateCode() {
 // Verificar si un pedido ya tiene una asignación aceptada
 export async function verificarAsignacionPorPedido(pedidoId) {
   try {
-    const resultado = await sequelize.query(
+    const resultado = await withProcesosDbRetry('verificar asignación por pedido aceptado', () => sequelize.query(
       `
             SELECT EXISTS (
                 SELECT 1
@@ -165,7 +179,7 @@ export async function verificarAsignacionPorPedido(pedidoId) {
         type: sequelize.QueryTypes.SELECT,
         logging: false,
       }
-    );
+    ));
 
     return resultado[0].existe;
   } catch (error) {
@@ -176,7 +190,7 @@ export async function verificarAsignacionPorPedido(pedidoId) {
 // Verificar si un pedido ya tiene una asignación aceptada
 export async function verificarAsignacionPorPedidoCompleto(pedidoId) {
   try {
-    const resultado = await sequelize.query(
+    const resultado = await withProcesosDbRetry('verificar asignación por pedido completo', () => sequelize.query(
       `
             SELECT EXISTS (
                 SELECT 1
@@ -190,7 +204,7 @@ export async function verificarAsignacionPorPedidoCompleto(pedidoId) {
         type: sequelize.QueryTypes.SELECT,
         logging: false,
       }
-    );
+    ));
 
     return resultado[0].existe;
   } catch (error) {
@@ -201,7 +215,7 @@ export async function verificarAsignacionPorPedidoCompleto(pedidoId) {
 
 export async function obtenerRepartidorAsignado(pedidoId) {
   try {
-    const resultado = await sequelize.query(
+    const resultado = await withProcesosDbRetry('obtener repartidor asignado por pedido', () => sequelize.query(
       `
             select "repartidoreId" from "Asignacions" where "PedidoId" = :pedidoId
         `,
@@ -210,7 +224,7 @@ export async function obtenerRepartidorAsignado(pedidoId) {
         type: sequelize.QueryTypes.SELECT,
         logging: false,
       }
-    );
+    ));
 
     // Asegúrate de acceder al campo correcto
     // Nota: Si la columna no existe, `resultado[0]` será `undefined`
@@ -244,7 +258,7 @@ function nowMinusSecondsExpr(seconds) {
 // Obtener pedidos que necesitan asignación
 export async function obtenerPedidosParaAsignacion() {
     const timeExpr = nowMinusSecondsExpr(ASIGNACION_WINDOW_SECONDS);
-    const pedidos = await sequelize.query(
+    const pedidos = await withProcesosDbRetry('obtener pedidos para asignación', () => sequelize.query(
     `
         SELECT id, "eventoId"
         FROM "Pedidos" p
@@ -258,7 +272,7 @@ export async function obtenerPedidosParaAsignacion() {
           );
     `,
     { type: sequelize.QueryTypes.SELECT, logging: false }
-  );
+  ));
 
   return pedidos;
 }
@@ -266,7 +280,7 @@ export async function obtenerPedidosParaAsignacion() {
 // Obtener pedidos que necesitan asignación
 export async function obtenerPedidosParaActualizar() {
     const timeExpr = nowMinusSecondsExpr(ASIGNACION_WINDOW_SECONDS);
-    const pedidos = await sequelize.query(
+    const pedidos = await withProcesosDbRetry('obtener pedidos para actualizar', () => sequelize.query(
     `
         SELECT id, "eventoId"
         FROM "Pedidos" p
@@ -280,7 +294,7 @@ export async function obtenerPedidosParaActualizar() {
           );
     `,
     { type: sequelize.QueryTypes.SELECT, logging: false }
-  );
+  ));
 
   return pedidos;
 }
@@ -289,7 +303,7 @@ export async function obtenerPedidosParaActualizar() {
 const obtenerRepartidor = async (eventoId, pedidoId) => {
   try {
     // Ejecutar la función SQL para obtener el repartidor seleccionado
-    const [results] = await sequelize.query(
+    const [results] = await withProcesosDbRetry('seleccionar repartidor por evento', () => sequelize.query(
       `
             SELECT seleccionar_repartidor_por_evento(:eventoId, :pedidoId) AS repartidor_id;
         `,
@@ -298,7 +312,7 @@ const obtenerRepartidor = async (eventoId, pedidoId) => {
         type: sequelize.QueryTypes.SELECT,
         logging: false,
       }
-    );
+    ));
     //console.log("resultados",results)
 
     // Verificar si se encontró un repartidor
@@ -323,7 +337,7 @@ const obtenerRepartidor = async (eventoId, pedidoId) => {
 export async function borrarAsignacionesPendienteViejas() {
   try {
     const timeExpr = nowMinusSecondsExpr(ASIGNACION_WINDOW_SECONDS);
-    await sequelize.query(
+    await withProcesosDbRetry('borrar asignaciones pendientes viejas', () => sequelize.query(
       `
             DELETE FROM "Asignacions"
             WHERE estado = 'Pendiente'
@@ -331,7 +345,7 @@ export async function borrarAsignacionesPendienteViejas() {
             RETURNING *;
         `,
       { type: sequelize.QueryTypes.DELETE, logging: false }
-    );
+    ));
 
     //console.log('Asignaciones viejas pendientes eliminadas.');
   } catch (error) {
@@ -342,13 +356,13 @@ export async function borrarAsignacionesPendienteViejas() {
 // Borrar asignaciones rechazadas
 export async function borrarAsignacionesCaducadas() {
   try {
-    await sequelize.query(
+    await withProcesosDbRetry('borrar asignaciones caducadas', () => sequelize.query(
       `
             DELETE FROM "Asignacions"
             WHERE estado='Caducado';
         `,
       { type: sequelize.QueryTypes.DELETE, logging: false }
-    );
+    ));
 
     //console.log('Asignaciones rechazadas eliminadas.');
   } catch (error) {
@@ -359,13 +373,13 @@ export async function borrarAsignacionesCaducadas() {
 // Borrar asignaciones rechazadas
 export async function borrarAsignacionesRechazadas() {
   try {
-    await sequelize.query(
+    await withProcesosDbRetry('borrar asignaciones rechazadas', () => sequelize.query(
       `
             DELETE FROM "Asignacions"
             WHERE estado = 'Rechazado';
         `,
       { type: sequelize.QueryTypes.DELETE, logging: false }
-    );
+    ));
 
     //console.log('Asignaciones rechazadas eliminadas.');
   } catch (error) {
@@ -376,7 +390,7 @@ export async function borrarAsignacionesRechazadas() {
 export async function caducarAsignaciones() {
   try {
     const timeExpr = nowMinusSecondsExpr(ASIGNACION_WINDOW_SECONDS);
-    const [results] = await sequelize.query(
+    const [results] = await withProcesosDbRetry('caducar asignaciones pendientes', () => sequelize.query(
       `
       UPDATE "Asignacions"
       SET estado = 'Caducado'
@@ -385,7 +399,7 @@ export async function caducarAsignaciones() {
       RETURNING *;
     `,
       { type: sequelize.QueryTypes.UPDATE, logging: false }
-    );
+    ));
 
     //console.log(`${results.length} asignaciones caducadas actualizadas.`);
   } catch (error) {

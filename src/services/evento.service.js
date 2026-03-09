@@ -5,6 +5,7 @@ import { estadosEvento } from '../estados/estados/estadosEvento.js';
 import { asociacionService } from './asociacion.service.js';
 import { consumidorService } from './consumidor.service.js';
 import { restriccionService } from './restriccion.service.js';
+import { withDbRetry } from '../util/dbRetry.js';
 
 class EventoService {
   async getAll(consumidorId) {
@@ -81,7 +82,10 @@ class EventoService {
         throw new Error('El objeto evento no puede ser undefined');
       }
 
-      const eventodb = await Evento.findByPk(id);
+      const eventodb = await withDbRetry('buscar evento por id para actualizar', () => Evento.findByPk(id), {
+        attempts: 4,
+        baseDelayMs: 1000,
+      });
       console.log("EVENTODB" + eventodb)
 
       if (!eventodb) {
@@ -93,6 +97,9 @@ class EventoService {
       if (datosEventoActualizar.descripcion !== undefined) eventodb.descripcion = datosEventoActualizar.descripcion;
       if (datosEventoActualizar.tipoEvento !== undefined) eventodb.tipoEvento = datosEventoActualizar.tipoEvento;
       if (datosEventoActualizar.tipoPago !== undefined) eventodb.tipoPago = datosEventoActualizar.tipoPago;
+      if (datosEventoActualizar.img !== undefined) eventodb.img = datosEventoActualizar.img;
+      if (datosEventoActualizar.imagenEvento !== undefined) eventodb.img = datosEventoActualizar.imagenEvento;
+      if (datosEventoActualizar.croquis !== undefined) eventodb.croquis = datosEventoActualizar.croquis;
       if (datosEventoActualizar.fechaInicio !== undefined) eventodb.fechaHoraInicio = datosEventoActualizar.fechaInicio;
       if (datosEventoActualizar.horaInicio !== undefined) eventodb.horaInicio = datosEventoActualizar.horaInicio;
       if (datosEventoActualizar.fechaFin !== undefined) eventodb.fechaHoraFin = datosEventoActualizar.fechaFin;
@@ -108,13 +115,20 @@ class EventoService {
       if (datosEventoActualizar.plazoCancelacionPreventa !== undefined) eventodb.plazoCancelacionPreventa = datosEventoActualizar.plazoCancelacionPreventa;
       if (datosEventoActualizar.linkVentaEntradas !== undefined) eventodb.linkVentaEntradas = datosEventoActualizar.linkVentaEntradas;
       if (datosEventoActualizar.ubicacion !== undefined) eventodb.ubicacion = datosEventoActualizar.ubicacion;
+      if (datosEventoActualizar.localidad !== undefined) eventodb.localidad = datosEventoActualizar.localidad;
+      if (datosEventoActualizar.provincia !== undefined) eventodb.provincia = datosEventoActualizar.provincia;
+      if (datosEventoActualizar.latitud !== undefined) eventodb.latitud = datosEventoActualizar.latitud;
+      if (datosEventoActualizar.longitud !== undefined) eventodb.longitud = datosEventoActualizar.longitud;
       if (datosEventoActualizar.estado !== undefined) eventodb.estado = datosEventoActualizar.estado;
       if (datosEventoActualizar.cantidadDiasEvento !== undefined) eventodb.cantidadDiasEvento = datosEventoActualizar.cantidadDiasEvento;
 
       this.actualizarEvento(eventodb);
 
 
-      await eventodb.save();
+      await withDbRetry('guardar actualización de evento', () => eventodb.save(), {
+        attempts: 4,
+        baseDelayMs: 1000,
+      });
 
       if (datosEventoActualizar.restricciones) {
         for (const restriccion of datosEventoActualizar.restricciones) {
@@ -132,10 +146,18 @@ class EventoService {
 
 
   async create(nuevoEvento) {
-    const consumidor = await consumidorService.getOne(nuevoEvento.consumidorId);
-    nuevoEvento.productorId = consumidor.productorId;
+    if (!nuevoEvento.productorId) {
+      const consumidor = await withDbRetry('buscar consumidor para crear evento', () => consumidorService.getOne(nuevoEvento.consumidorId), {
+        attempts: 4,
+        baseDelayMs: 1000,
+      });
+      nuevoEvento.productorId = consumidor.productorId;
+    }
     console.log("service:" + nuevoEvento.estado);
-    const eventoCreado = await Evento.create(nuevoEvento);
+    const eventoCreado = await withDbRetry('crear evento', () => Evento.create(nuevoEvento), {
+      attempts: 4,
+      baseDelayMs: 1000,
+    });
 
     this.crearEvento(eventoCreado);
 

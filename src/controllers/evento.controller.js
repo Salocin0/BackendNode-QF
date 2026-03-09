@@ -272,6 +272,8 @@ class EventoController {
             longitud,
             cantidadDiasEvento,
             diasEvento,
+            consumidorId,
+            productorId,
         } = req.body;
 
         console.log(req.body.estado);
@@ -311,7 +313,8 @@ class EventoController {
             longitud,
             restricciones,
             cantidadDiasEvento,
-            consumidorId: 1,
+            consumidorId: consumidorId || req.headers['consumidorid'] || req.headers['ConsumidorId'] || 1,
+            productorId,
             diasEvento: diasEvento || [],
         };
 

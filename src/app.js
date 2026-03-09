@@ -43,6 +43,7 @@ import { procesosAutomaticos } from './util/procesosAutomaticos.js';
 import { generateAllData } from './util/faker.js';
 import { middlewareReactivarProcesos } from './middlewares/reactivarProcesos.js';
 import { createHashPW } from './util/bcrypt.js';
+import { withDbRetry } from './util/dbRetry.js';
 import { Usuario } from './DAO/models/users.model.js';
 dotenv.config();
 //definicion de server de express
@@ -264,61 +265,31 @@ async function connectDB() {
     if (process.env.NODE_ENV !== 'test') {
       procesosAutomaticos();
     }
+    return true;
     
   } catch (error) {
     console.error('Error al conectar con la base de datos:', error);
+    throw error;
   }
 }
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+async function connectDbInBackground() {
+  const retryDelayMs = Number(process.env.DB_BOOT_RETRY_DELAY_MS || 5000);
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function isRetryableDbError(error) {
-  const message = String(error?.message || '').toLowerCase();
-  const parentMessage = String(error?.parent?.message || '').toLowerCase();
-  const code = String(error?.original?.code || error?.parent?.code || error?.code || '').toUpperCase();
-
-  if (code === 'ECONNRESET' || code === '57P03') {
-    return true;
-  }
-
-  const retryableFragments = [
-    'database system is starting up',
-    'the database system is starting up',
-    'terminating connection',
-    'connection terminated unexpectedly',
-    'read econnreset',
-    'could not connect to server',
-    'connection refused',
-  ];
-
-  return retryableFragments.some((fragment) => message.includes(fragment) || parentMessage.includes(fragment));
-}
-
-async function withDbRetry(operationName, operation, options = {}) {
-  const attempts = Number(options.attempts || process.env.DB_RETRY_ATTEMPTS || 12);
-  const baseDelayMs = Number(options.baseDelayMs || process.env.DB_RETRY_DELAY_MS || 2000);
-
-  let lastError;
-  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+  while (true) {
     try {
-      return await operation();
+      await connectDB();
+      console.log('DB conectada e inicializada correctamente.');
+      return;
     } catch (error) {
-      lastError = error;
-      const retryable = isRetryableDbError(error);
-      if (!retryable || attempt === attempts) {
-        throw error;
-      }
-      console.warn(
-        `Error transitorio en DB al ${operationName}. Reintento ${attempt}/${attempts} en ${baseDelayMs}ms:`,
-        error.message || error
+      console.error(
+        `No se pudo inicializar la DB al arrancar. Reintentando en ${retryDelayMs}ms...`,
+        error?.message || error
       );
-      await sleep(baseDelayMs);
+      await wait(retryDelayMs);
     }
   }
-
-  throw lastError;
 }
 
 export async function dropViewIfExists(viewName) {
@@ -346,9 +317,20 @@ async function DatosIniciales() {
   }
 }
 
-//conectar a la base de datos
-connectDB();
-//ejecutar procesos automaticos
+// Iniciar servidor solo cuando la DB esté lista para evitar errores de conexión en requests tempranos.
+async function bootstrap() {
+  app.listen(port, () => {
+    console.log('Servidor escuchando en el puerto ' + port);
+  });
+
+  // Mantener API arriba incluso si la DB está temporalmente caída.
+  connectDbInBackground().catch((error) => {
+    console.error('Error inesperado en inicialización de DB en background:', error?.message || error);
+  });
+}
+
+//conectar a la base de datos y luego iniciar API
+bootstrap();
 
 // Middleware global de error: captura cualquier error no manejado
 app.use((err, req, res, next) => {
@@ -369,10 +351,6 @@ app.use((req, res) => {
     path: req.path,
     method: req.method,
   });
-});
-
-app.listen(port, () => {
-  console.log('Servidor escuchando en el puerto ' + port);
 });
 
 // Endpoint público (o usado localmente) para resetear la DB según Datos_DB.sql
