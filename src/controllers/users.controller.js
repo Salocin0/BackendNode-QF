@@ -419,8 +419,7 @@ class UserController {
         sendEmail(
           correoElectronico,
           'Recuperar contraseña',
-          'Se solicitó un cambio de contraseña. Para cambiar tu contraseña, haz clic en el siguiente enlace: http://localhost:3000/cambiar-contrasenia/' + hash  +
-          ' o si queres recuperar a traves de nuestra app ingresa este codigo: ' + hash
+          `Se solicitó un cambio de contraseña. enlace:http://localhost:3000/cambiar-contrasenia/${hash} codigo:${hash}`
         );
         return res.status(200).json({
           status: 'success',

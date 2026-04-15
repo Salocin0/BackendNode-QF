@@ -168,7 +168,7 @@ class UserService {
     usuario.codigoValidacion = hash;
     await usuario.save();
     const url = `localhost:3000/habilitar-Usuario-email/${id}/${hash}`;
-    const respuestaEmail = await sendEmail(email, 'Habilitar Usuario', `para validar el email, ingrese al siguiente link: ${url}`);
+    const respuestaEmail = await sendEmail(email, 'Habilitar Usuario', `enlace:${url}`);
     return respuestaEmail;
   }
   // TO DO AGREGAR URL DEL FRONT DESPLEGADO .ENV
@@ -179,7 +179,7 @@ class UserService {
       usuario.codigoHabilitacion = hash;
       await usuario.save();
       const url = `localhost:3000/habilitar-Usuario/${id}/${hash}`;
-      const respuestaEmail = await sendEmail(email, 'Habilitar Usuario', `para habilitar el usuario nuevamente, ingrese al siguiente link: ${url}`);
+      const respuestaEmail = await sendEmail(email, 'Habilitar Usuario', `enlace:${url}`);
       return respuestaEmail;
     }
 
