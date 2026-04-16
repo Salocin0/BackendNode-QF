@@ -30,22 +30,23 @@ export const Restriccion = sequelize.define('Restriccion', {
     allowNull: false,
   },
 });
+
 Restriccion.belongsTo(Evento, {
-  foreinkey: 'eventoId',
-  sourceKey: 'id',
+  foreignKey: 'eventoId',
+  targetKey: 'id',
 });
 
-Evento.hasOne(Restriccion, {
-  foreinkey: 'eventoId',
-  targetId: 'id',
+Evento.hasMany(Restriccion, {
+  foreignKey: 'eventoId',
+  sourceKey: 'id',
 });
 
 Restriccion.belongsTo(Consumidor, {
-  foreinkey: 'consumidorId',
-  sourceKey: 'id',
+  foreignKey: 'consumidorId',
+  targetKey: 'id',
 });
 
-Consumidor.hasOne(Restriccion, {
-  foreinkey: 'consumidorId',
-  targetId: 'id',
+Consumidor.hasMany(Restriccion, {
+  foreignKey: 'consumidorId',
+  sourceKey: 'id',
 });

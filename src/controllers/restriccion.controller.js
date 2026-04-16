@@ -60,7 +60,7 @@ class RestriccionController {
   async getOneController(req, res) {
     try {
       const Id = req.params.id;
-      const restriccion = await productoService.getOne(Id);
+      const restriccion = await restriccionService.getOne(Id);
       if (restriccion !== null) {
         return res.status(200).json({
           status: 'success',
@@ -97,13 +97,13 @@ class RestriccionController {
         descripcion: descripcion,
       };
 
-      const restricionCreado = await restriccionService.create(nuevaRestriccion);
+      const restriccionCreada = await restriccionService.create(nuevaRestriccion);
 
       return res.status(200).json({
         status: 'success',
         msg: 'Restriccion created',
         code: 200,
-        data: restricionCreado,
+        data: restriccionCreada,
       });
     } catch (e) {
       console.log(e);

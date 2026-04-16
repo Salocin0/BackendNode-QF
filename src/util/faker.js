@@ -22,7 +22,25 @@ const descripciones = ['Un evento emocionante lleno de música.', 'Explora los a
 const tiposEvento = ['Música', 'Ciencia', 'Gastronomía'];
 const tiposPago = ['Tarjeta', 'Tarjeta', 'Tarjeta'];
 const tipoCocina = ['Comida Rápida', 'Cafetería', 'Restaurante Familiar', 'Food Truck', 'Pizzeria', 'Taco Stand', 'Pastelería', 'Heladería'];
+const PRODUCTOR_SEED_RAZON_SOCIAL = 'Productor Seed Default';
 // Función para generar usuarios y consumidores uno por uno
+
+async function getOrCreateSeedProductor() {
+  const [productor] = await Productor.findOrCreate({
+    where: { razonSocial: PRODUCTOR_SEED_RAZON_SOCIAL },
+    defaults: {
+      cuit: faker.number.bigInt({ min: 10000000000, max: 99999999999 }),
+      razonSocial: PRODUCTOR_SEED_RAZON_SOCIAL,
+      estaValido: true,
+      habilitado: true,
+      condicionIva: 'Monotributista',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  });
+
+  return productor;
+}
 
 // Helper: devolver un evento existente aleatorio o crear uno mínimo si no existen
 async function pickRandomEventoIdOrCreate() {
@@ -32,18 +50,7 @@ async function pickRandomEventoIdOrCreate() {
   }
 
   // No hay eventos: crear productor mínimo si hace falta
-  let productor = await Productor.findOne({ where: { id: 1 } });
-  if (!productor) {
-    productor = await Productor.create({
-      cuit: faker.number.bigInt({ min: 10000000000, max: 99999999999 }),
-      razonSocial: 'Productor Auto',
-      estaValido: true,
-      habilitado: true,
-      condicionIva: 'Monotributista',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-  }
+  const productor = await getOrCreateSeedProductor();
 
   const ev = await Evento.create({
     nombre: 'Evento Seed Auto',
@@ -61,8 +68,8 @@ async function pickRandomEventoIdOrCreate() {
     provincia: faker.helpers.arrayElement(provincias),
     img: '',
     estado: 'Finalizado',
-    longitud: faker.address.longitude(),
-    latitud: faker.address.latitude(),
+    longitud: faker.location.longitude(),
+    latitud: faker.location.latitude(),
     cantidadDiasEvento: 1,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -84,7 +91,7 @@ async function pickRandomEventoIdOrCreate() {
   return ev.id;
 }
 
-export async function generateUsers(count = 100) {
+export async function generateUsers(count = 10) {
   for (let i = 0; i < count; i++) {
     try {
       const consumidor = await Consumidor.create({
@@ -232,6 +239,36 @@ export async function generateEncargado(count) {
         createdAt: new Date(),
         updatedAt: new Date(),
       });
+
+      // Primero crear puestos/productos, así usuarios y pedidos siempre encuentran datos válidos.
+      for (let j = 0; j < 5; j++) {
+        const puesto = await Puesto.create({
+          nombreCarro: faker.lorem.word() + ' ' + faker.commerce.productName(), // Usar lorem.word en lugar de bsAdjective
+          numeroCarro: faker.number.bigInt({ min: 1, max: 9999 }),
+          tipoNegocio: tipoCocina[Math.floor(Math.random() * tipoCocina.length)],
+          telefonoCarro: faker.number.bigInt({ min: 10000000000000, max: 999999999999999 }),
+          estado: 'Creado',
+          encargadoId: encargado.id,
+          banner: 'baner',
+        });
+        for (let k = 0; k < 10; k++) {
+          await Producto.create({
+            nombre: faker.commerce.productName(),
+            descripcion: faker.commerce.productDescription(),
+            precio: faker.commerce.price(),
+            estado: true,
+            puestoId: puesto.id,
+          });
+        }
+        // Asociaciones: usar eventos válidos
+        const ev1 = await pickRandomEventoIdOrCreate();
+        if (ev1) await Asociacion.create({ estado: 'Aceptada', eventoId: ev1, puestoId: puesto.id });
+        const ev2 = await pickRandomEventoIdOrCreate();
+        if (ev2) await Asociacion.create({ estado: 'Aceptada', eventoId: ev2, puestoId: puesto.id });
+        const ev3 = await pickRandomEventoIdOrCreate();
+        if (ev3) await Asociacion.create({ estado: 'Aceptada', eventoId: ev3, puestoId: puesto.id });
+      }
+
       const consumidor = await Consumidor.create({
         nombre: faker.person.firstName(),
         apellido: faker.person.lastName(),
@@ -257,33 +294,7 @@ export async function generateEncargado(count) {
         updatedAt: new Date(),
         consumidorId: consumidor.id,
       });
-      for (let j = 0; j < 0; j++) {
-        const puesto = await Puesto.create({
-          nombreCarro: faker.lorem.word() + ' ' + faker.commerce.productName(), // Usar lorem.word en lugar de bsAdjective
-          numeroCarro: faker.number.bigInt({ min: 1, max: 9999 }),
-          tipoNegocio: tipoCocina[Math.floor(Math.random() * tipoCocina.length)],
-          telefonoCarro: faker.number.bigInt({ min: 10000000000000, max: 999999999999999 }),
-          estado: 'Creado',
-          encargadoId: 1,
-          banner: 'baner',
-        });
-        for (let k = 0; k < 10; k++) {
-          await Producto.create({
-            nombre: faker.commerce.productName(),
-            descripcion: faker.commerce.productDescription(),
-            precio: faker.commerce.price(),
-            estado: true,
-            puesto: puesto.id,
-          });
-        }
-        // Asociaciones: usar eventos válidos
-        const ev1 = await pickRandomEventoIdOrCreate();
-        if (ev1) await Asociacion.create({ estado: 'Aceptada', eventoId: ev1, puestoId: puesto.id });
-        const ev2 = await pickRandomEventoIdOrCreate();
-        if (ev2) await Asociacion.create({ estado: 'Aceptada', eventoId: ev2, puestoId: puesto.id });
-        const ev3 = await pickRandomEventoIdOrCreate();
-        if (ev3) await Asociacion.create({ estado: 'Aceptada', eventoId: ev3, puestoId: puesto.id });
-      }
+
       console.log(`puestos productos creados`);
     } catch (error) {
       console.error(`Error creando puestos y productos`, error);
@@ -309,7 +320,7 @@ export async function generateRepartidor(count) {
         habilitado: true,
         createdAt: new Date(),
         updatedAt: new Date(),
-        encargadoId: repartidor.id,
+        repartidorId: repartidor.id,
       });
       await Usuario.create({
         usuario: faker.person.firstName() + faker.person.lastName() + faker.person.middleName(),
@@ -331,13 +342,6 @@ export async function generateRepartidor(count) {
       if (evB) await Asociacion.create({ estado: 'Aceptada', eventoId: evB, repartidoreId: repartidor.id });
       const evC = await pickRandomEventoIdOrCreate();
       if (evC) await Asociacion.create({ estado: 'Aceptada', eventoId: evC, repartidoreId: repartidor.id });
-      // Asociaciones adicionales para el repartidor por defecto (id 1) si existe
-      const evD = await pickRandomEventoIdOrCreate();
-      if (evD) await Asociacion.create({ estado: 'Aceptada', eventoId: evD, repartidoreId: 1 });
-      const evE = await pickRandomEventoIdOrCreate();
-      if (evE) await Asociacion.create({ estado: 'Aceptada', eventoId: evE, repartidoreId: 1 });
-      const evF = await pickRandomEventoIdOrCreate();
-      if (evF) await Asociacion.create({ estado: 'Aceptada', eventoId: evF, repartidoreId: 1 });
 
       console.log(`puestos productos creados`);
     } catch (error) {
@@ -360,18 +364,7 @@ export async function generateEvents(count) {
       const descripcion = descripciones[i % descripciones.length];
       const tipoEvento = tiposEvento[i % tiposEvento.length];
       const tipoPago = tiposPago[i % tiposPago.length];
-      let productor = await Productor.findOne({ where: { id: 1 } });
-      if (!productor) {
-        productor = await Productor.create({
-          cuit: faker.number.bigInt({ min: 10000000000, max: 99999999999 }),
-          razonSocial: 'Productor Default',
-          estaValido: true,
-          habilitado: true,
-          condicionIva: 'Monotributista',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        });
-      }
+      const productor = await getOrCreateSeedProductor();
       // Crear el evento
       const evento = await Evento.create({
         nombre: nombre,
@@ -390,12 +383,12 @@ export async function generateEvents(count) {
         provincia: faker.helpers.arrayElement(provincias),
         img: '',
         estado: 'Finalizado',
-        longitud: faker.address.longitude(),
-        latitud: faker.address.latitude(),
+        longitud: faker.location.longitude(),
+        latitud: faker.location.latitude(),
         cantidadDiasEvento: 3,
         createdAt: new Date(),
         updatedAt: new Date(),
-        productorId: productor.id || 1,
+        productorId: productor.id,
       });
 
       // Crear días de evento
@@ -434,14 +427,11 @@ export async function generateEvents(count) {
 // Función principal para generar diferentes tipos de datos (solo usuarios por ahora)
 export async function generateAllData() {
   try {
-    const userCount = await Usuario.count(); // Contar registros en la tabla Usuarios
-
-
     console.log("✅ Generando datos de prueba...");
     await generateEvents(3);
     await generateEncargado(1);
     await generateRepartidor(1);
-    await generateUsers(40);
+    await generateUsers(10);
 
     console.log("🎉 Datos generados exitosamente.");
     console.log("👤 Cantidad de usuarios en la base de datos:", await Usuario.count())

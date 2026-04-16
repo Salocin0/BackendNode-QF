@@ -65,6 +65,13 @@ class UserController {
       }
     } catch (e) {
       console.error('Error en RegisterController:', e);
+      if (e.name === 'SequelizeUniqueConstraintError') {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'Usuario ya existe',
+          data: {},
+        });
+      }
       return res.status(500).json({
         status: 'error',
         msg: 'Error al registrar usuario: ' + (e.message || 'Error desconocido'),

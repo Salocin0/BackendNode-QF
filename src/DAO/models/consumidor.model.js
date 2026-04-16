@@ -6,9 +6,10 @@ import { Repartidor } from './repartidor.model.js';
 
 export const Consumidor = sequelize.define('consumidores', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
-    autoIncrement: true,
+    allowNull: false
   },
   nombre: {
     type: DataTypes.STRING,

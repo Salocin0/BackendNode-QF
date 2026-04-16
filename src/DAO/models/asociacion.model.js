@@ -22,42 +22,43 @@ export const Asociacion = sequelize.define('Asociacion', {
   }
   
 });
+
 Asociacion.belongsTo(Evento, {
-  foreinkey: 'eventoId',
-  sourceKey: 'id',
+  foreignKey: 'eventoId',
+  targetKey: 'id',
 });
 
-Evento.hasOne(Asociacion, {
-  foreinkey: 'eventoId',
-  targetId: 'id',
+Evento.hasMany(Asociacion, {
+  foreignKey: 'eventoId',
+  sourceKey: 'id',
 });
 
 Asociacion.belongsTo(Puesto, {
-  foreinkey: 'puestoId',
-  sourceKey: 'id',
+  foreignKey: 'puestoId',
+  targetKey: 'id',
 });
 
-Puesto.hasOne(Asociacion, {
-  foreinkey: 'puestoId',
-  targetId: 'id',
+Puesto.hasMany(Asociacion, {
+  foreignKey: 'puestoId',
+  sourceKey: 'id',
 });
 
 Asociacion.belongsTo(Repartidor, {
-  foreinkey: 'repartidorId',
+  foreignKey: 'repartidoreId',
+  targetKey: 'id',
+});
+
+Repartidor.hasMany(Asociacion, {
+  foreignKey: 'repartidoreId',
   sourceKey: 'id',
 });
 
-Repartidor.hasOne(Asociacion, {
-  foreinkey: 'repartidorId',
-  targetId: 'id',
-});
-
 Asociacion.hasMany(RTARestriccion, {
-  foreinkey: 'asociacionId',
+  foreignKey: 'asociacionId',
   sourceKey: 'id',
 });
 
 RTARestriccion.belongsTo(Asociacion, {
-  foreinkey: 'asociacionId',
-  targetId: 'id',
+  foreignKey: 'asociacionId',
+  targetKey: 'id',
 });

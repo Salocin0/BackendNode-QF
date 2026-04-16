@@ -15,22 +15,23 @@ export const Asignacion = sequelize.define('Asignacion', {
   }
   
 });
+
 Asignacion.belongsTo(Repartidor, {
-  foreinkey: 'repartidorId',
-  sourceKey: 'id',
+  foreignKey: 'repartidoreId',
+  targetKey: 'id',
 });
 
-Repartidor.hasOne(Asignacion, {
-  foreinkey: 'repartidorId',
-  targetId: 'id',
+Repartidor.hasMany(Asignacion, {
+  foreignKey: 'repartidoreId',
+  sourceKey: 'id',
 });
 
 Asignacion.belongsTo(Pedido, {
-  foreinkey: 'repartidorId',
-  sourceKey: 'id',
+  foreignKey: 'PedidoId',
+  targetKey: 'id',
 });
 
-Pedido.hasOne(Asignacion, {
-  foreinkey: 'repartidorId',
-  targetId: 'id',
+Pedido.hasMany(Asignacion, {
+  foreignKey: 'PedidoId',
+  sourceKey: 'id',
 });

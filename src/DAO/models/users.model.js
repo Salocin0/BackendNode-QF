@@ -6,9 +6,10 @@ import { ValoracionRepartidor } from './valoracionRepartidor.model.js';
 
 export const Usuario = sequelize.define('usuarios', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
-    autoIncrement: true,
+    allowNull: false
   },
   usuario: {
     type: DataTypes.STRING,

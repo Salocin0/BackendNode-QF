@@ -15,11 +15,11 @@ export const RTARestriccion = sequelize.define('RTARestriccion', {
 });
 
 RTARestriccion.belongsTo(Restriccion, {
-  foreinkey: 'puestoId',
-  sourceKey: 'id',
+  foreignKey: 'restriccionId',
+  targetKey: 'id',
 });
 
-Restriccion.hasOne(RTARestriccion, {
-  foreinkey: 'puestoId',
-  targetId: 'id',
+Restriccion.hasMany(RTARestriccion, {
+  foreignKey: 'restriccionId',
+  sourceKey: 'id',
 });

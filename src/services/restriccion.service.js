@@ -4,7 +4,7 @@ class RestriccionService {
   async getAll(consumidorId) {
     const restricciones = await Restriccion.findAll({
       where: {
-        consumidoreId: consumidorId,
+        consumidorId: consumidorId,
       },
     });
     return restricciones;
