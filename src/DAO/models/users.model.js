@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { Sequelize, DataTypes } from 'sequelize';
 import { sequelize } from './../../util/connections.js';
 import { Consumidor } from './consumidor.model.js';
 import { ValoracionPuesto } from './valoracionCarrito.model.js';
@@ -6,8 +6,8 @@ import { ValoracionRepartidor } from './valoracionRepartidor.model.js';
 
 export const Usuario = sequelize.define('usuarios', {
   id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
     primaryKey: true,
     allowNull: false
   },
@@ -75,16 +75,6 @@ export const Usuario = sequelize.define('usuarios', {
     type: DataTypes.FLOAT,
     allowNull: true,
   },
-});
-
-Usuario.hasOne(Consumidor, {
-  foreignKey: 'consumidorId',
-  sourceKey: 'id',
-});
-
-Consumidor.belongsTo(Usuario, {
-  foreignKey: 'consumidorId',
-  targetKey: 'id',
 });
 
 Consumidor.hasOne(Usuario, {

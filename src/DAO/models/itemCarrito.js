@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { Sequelize, DataTypes } from 'sequelize';
 import { sequelize } from '../../util/connections.js';
 import { Producto } from './producto.model.js';
 import { Evento } from './evento.model.js';
@@ -8,7 +8,7 @@ export const ItemCarrito = sequelize.define(
   {
     id: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      defaultValue: Sequelize.literal('uuid_generate_v4()'),
       primaryKey: true,
     },
     cantidad: {

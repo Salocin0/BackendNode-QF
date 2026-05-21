@@ -3,6 +3,28 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import { sequelize } from '../util/connections.js';
+import '../DAO/models/asignacion.model.js';
+import '../DAO/models/asociacion.model.js';
+import '../DAO/models/carrito.model.js';
+import '../DAO/models/consumidor.model.js';
+import '../DAO/models/detallePedido.model.js';
+import '../DAO/models/diaEvento.model.js';
+import '../DAO/models/encargado.model.js';
+import '../DAO/models/evento.model.js';
+import '../DAO/models/itemCarrito.js';
+import '../DAO/models/notificaciones.model.js';
+import '../DAO/models/pedido.model.js';
+import '../DAO/models/producto.model.js';
+import '../DAO/models/Productor.model.js';
+import '../DAO/models/puesto.model.js';
+import '../DAO/models/puntoEncuentro.model.js';
+import '../DAO/models/repartidor.model.js';
+import '../DAO/models/Restriccion.model.js';
+import '../DAO/models/RTARestriccion.model.js';
+import '../DAO/models/users.model.js';
+import '../DAO/models/valoracionCarrito.model.js';
+import '../DAO/models/valoracionRepartidor.model.js';
 
 // Configurar __dirname para ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -94,27 +116,21 @@ async function seedDatabase() {
     const sql = fs.readFileSync(sqlFilePath, 'utf8');
     console.log('✅ Archivo SQL leído correctamente\n');
 
-    // Paso 7: Ejecutar el SQL
+    // Paso 7: Sincronizar modelos con Sequelize y ejecutar el SQL completo
+    console.log('🔄 Sincronizando modelos via Sequelize...');
+    await sequelize.authenticate();
+    const dialect = sequelize.getDialect ? sequelize.getDialect() : (sequelize.options && sequelize.options.dialect) || 'postgres';
+    if (dialect === 'postgres') {
+      console.log('🔧 Asegurando extensión uuid-ossp en Postgres...');
+      await sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+    }
+    await sequelize.sync({ force: true });
+    console.log('✅ Modelos sincronizados');
+
     console.log('🔄 Ejecutando script de datos...');
     console.log('⚠️  Esto puede tomar un tiempo...\n');
 
-    // Dividir el SQL en statements individuales y ejecutarlos
-    const statements = sql.split(';').filter(stmt => stmt.trim().length > 0);
-    
-    for (let i = 0; i < statements.length; i++) {
-      const statement = statements[i].trim();
-      if (statement) {
-        try {
-          await dataClient.query(statement);
-          if (i % 10 === 0) {
-            process.stdout.write(`\r⏳ Ejecutando... ${i}/${statements.length}`);
-          }
-        } catch (error) {
-          console.error(`\n⚠️  Error en línea ${i + 1}: ${error.message}`);
-          // Continuar con los demás statements
-        }
-      }
-    }
+    await sequelize.query(sql, { raw: true });
 
     console.log(`\n✅ ¡Datos insertados exitosamente!`);
     console.log('\n📊 Se han agregado:');
