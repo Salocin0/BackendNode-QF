@@ -45,10 +45,31 @@ import { middlewareReactivarProcesos } from './middlewares/reactivarProcesos.js'
 import { createHashPW } from './util/bcrypt.js';
 import { withDbRetry } from './util/dbRetry.js';
 import { Usuario } from './DAO/models/users.model.js';
+import session from 'express-session';
 dotenv.config();
 //definicion de server de express
 const app = express();
 const port = 8000;
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+// CORS — PRIMERO, antes que todo lo demás
+app.use(
+  cors({
+    origin: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept', 'consumidorid', 'ConsumidorId', 'puestoid', 'puestoId'],
+    credentials: true,
+  })
+);
+
+//Limit
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(morgan('dev'));
+app.use(cookieParser());
+app.use(compression({ brotli: { enable: true, zlib: {} } }));
+//configuracion de sesiones
 const SequelizeStore = SequelizeStoreInit(session.Store);
 export const sessionStore = new SequelizeStore({
   db: sequelize,
@@ -61,51 +82,6 @@ app.use(
     store: sessionStore,
   })
 );
-import session from 'express-session';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-//inicializacion de la base de datos
-
-//Limit
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-// Middlewares
-// CORS: permitir orígenes dinámicos (reflejar Origin) para poder usar credentials
-app.use(
-  cors({
-    origin: true, // refleja el Origin de la petición en Access-Control-Allow-Origin
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept', 'consumidorid', 'ConsumidorId', 'puestoid', 'puestoId'],
-    credentials: true,
-  })
-);
-
-// Manejo de solicitudes OPTIONS manualmente (100% abierto)
-app.options("*", cors());
-
-// Fallback CORS middleware: asegura cabeceras en TODAS las respuestas (incluyendo errores)
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (origin) {
-    res.header('Access-Control-Allow-Origin', origin);
-  } else {
-    res.header('Access-Control-Allow-Origin', '*');
-  }
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, consumidorid, ConsumidorId, puestoid, puestoId');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(204);
-  }
-  next();
-});
-
-app.use(morgan('dev'));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cookieParser());
-app.use(compression({ brotli: { enable: true, zlib: {} } }));
-//configuracion de sesiones
 
 //Passport
 initPassport();
