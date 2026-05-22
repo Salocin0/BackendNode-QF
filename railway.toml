@@ -1,0 +1,4 @@
+[deploy]
+startCommand = "node ./src/app.js"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
