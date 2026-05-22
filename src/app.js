@@ -63,7 +63,7 @@ app.use(
 );
 import session from 'express-session';
 
-const stripe = new Stripe('sk_test_51PnpcMRoRlWr6LoNVHnAJMDXVOFLMlAAeTxMZUvUuWmPt4qMChWK3SYn8ZPcwE8cwg5dsEmkEIPWjlFBRzBOOpco00YLHUKBoL');
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 //inicializacion de la base de datos
 
 //Limit

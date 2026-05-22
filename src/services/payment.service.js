@@ -1,16 +1,23 @@
 import Stripe from 'stripe';
 
-const stripe = new Stripe("sk_test_51PnpcMRoRlWr6LoNVHnAJMDXVOFLMlAAeTxMZUvUuWmPt4qMChWK3SYn8ZPcwE8cwg5dsEmkEIPWjlFBRzBOOpco00YLHUKBoL", { apiVersion: '2023-08-16' });
+let stripe;
+const getStripe = () => {
+  if (!stripe) {
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2023-08-16' });
+  }
+  return stripe;
+};
 
 export const createPaymentSheet = async (amount) => {
-  const customer = await stripe.customers.create();
+  const s = getStripe();
+  const customer = await s.customers.create();
 
-  const ephemeralKey = await stripe.ephemeralKeys.create(
+  const ephemeralKey = await s.ephemeralKeys.create(
     { customer: customer.id },
     { apiVersion: '2023-08-16' }
   );
 
-  const paymentIntent = await stripe.paymentIntents.create({
+  const paymentIntent = await s.paymentIntents.create({
     amount:Math.round(amount),
     currency: 'usd',
     customer: customer.id,
