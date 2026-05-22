@@ -8,7 +8,7 @@ export const ItemCarrito = sequelize.define(
   {
     id: {
       type: DataTypes.UUID,
-      defaultValue: Sequelize.literal('uuid_generate_v4()'),
+      defaultValue: Sequelize.literal('gen_random_uuid()'),
       primaryKey: true,
     },
     cantidad: {
