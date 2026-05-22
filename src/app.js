@@ -54,9 +54,19 @@ const port = 8000;
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // CORS — PRIMERO, antes que todo lo demás
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
+  : [];
 app.use(
   cors({
-    origin: true,
+    origin: (origin, callback) => {
+      // Permitir requests sin origin (Postman, server-to-server, mobile)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      callback(new Error('CORS not allowed'));
+    },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept', 'consumidorid', 'ConsumidorId', 'puestoid', 'puestoId'],
     credentials: true,
