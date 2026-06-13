@@ -13,16 +13,26 @@ import { repartidorService } from './repartidor.service.js';
 import { notificationTexts } from '../config/notificacionesConfig.js';
 
 class NotificacionesService {
-  async getNotificaciones(idConsumidor, dispositivo) {
+  async getNotificaciones(idConsumidor) {
     const usuario = await userService.getOneByConsumidorId(idConsumidor);
     
-    // Ordenar por fecha de manera descendente (más reciente primero)
     const notificaciones = await Notificacion.findAll({
-      where: { usuarioId: usuario.id, dispositivo: dispositivo },
-      order: [['fecha', 'DESC']], // Ordena por el campo fecha en orden descendente
+      where: { usuarioId: usuario.id },
+      order: [['fecha', 'DESC']],
     });
   
-    return notificaciones;
+    // Deduplicar: cuando se creaban notificaciones por separado para web y mobile
+    // se generaban dos registros iguales. Nos quedamos con el primero de cada grupo.
+    const seen = new Set();
+    const deduplicadas = notificaciones.filter(n => {
+      const fecha = new Date(n.fecha);
+      const key = `${n.titulo}|${n.descripcion}|${fecha.toISOString().slice(0, 16)}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  
+    return deduplicadas;
   }
   
 
@@ -66,35 +76,44 @@ class NotificacionesService {
     const usuario = await userService.getOneByConsumidorId(consumidor.id);
     const titulo = tituloNotificacion;
     const descripcion = descripcionNotificacion;
+    let estadoNotif = 'pendiente';
     if (tokenUsuarioWeb) {
       await sendNotificacionesWeb(tokenUsuarioWeb, titulo, descripcion);
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'web', 'visto');
-    }else{
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'web', 'pendiente');
+      estadoNotif = 'visto';
     }
     if (tokenUsuarioMobile) {
       await sendNotificacionesMobile(tokenUsuarioMobile, titulo, descripcion);
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'mobile', 'visto');
-    }else{
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'mobile', 'pendiente');
+      estadoNotif = 'visto';
     }
+    await this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'todos', estadoNotif);
   }
 
   async enviarNotificacionesAUsuario(usuarioId, tituloNotificacion, descripcionNotificacion, tokenUsuarioMobile, tokenUsuarioWeb) {
     const titulo = tituloNotificacion;
     const descripcion = descripcionNotificacion;
+    let estadoNotif = 'pendiente';
     if (tokenUsuarioWeb) {
       await sendNotificacionesWeb(tokenUsuarioWeb, titulo, descripcion);
-      this.crearNotificacion(usuarioId, tituloNotificacion, descripcionNotificacion, 'web', 'visto');
-    }else{
-      this.crearNotificacion(usuarioId, tituloNotificacion, descripcionNotificacion, 'web', 'pendiente');
+      estadoNotif = 'visto';
     }
     if (tokenUsuarioMobile) {
       await sendNotificacionesMobile(tokenUsuarioMobile, titulo, descripcion);
-      this.crearNotificacion(usuarioId, tituloNotificacion, descripcionNotificacion, 'mobile', 'visto');
-    }else{
-      this.crearNotificacion(usuarioId, tituloNotificacion, descripcionNotificacion, 'mobile', 'pendiente');
+      estadoNotif = 'visto';
     }
+    await this.crearNotificacion(usuarioId, tituloNotificacion, descripcionNotificacion, 'todos', estadoNotif);
+  }
+
+  async _enviarConUnificacion(usuario, tituloNotificacion, descripcionNotificacion, tokenWeb, tokenMobile) {
+    let estadoNotif = 'pendiente';
+    if (tokenWeb) {
+      await sendNotificacionesWeb(tokenWeb, tituloNotificacion, descripcionNotificacion);
+      estadoNotif = 'visto';
+    }
+    if (tokenMobile) {
+      await sendNotificacionesMobile(tokenMobile, tituloNotificacion, descripcionNotificacion);
+      estadoNotif = 'visto';
+    }
+    await this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'todos', estadoNotif);
   }
 
   async enviarNotificacionesAsociacion(eventoId, tituloNotificacion, descripcionNotificacion) {
@@ -102,20 +121,7 @@ class NotificacionesService {
     const evento = await eventoService.getOne(eventoId);
     const consumidor = await consumidorService.getOneByProductorId(evento.productorId); 
     const usuario = await userService.getOneByConsumidorId(consumidor.id);
-    const titulo = tituloNotificacion;
-    const descripcion = descripcionNotificacion;
-    if (tokenUsuarioWeb) {
-      await sendNotificacionesWeb(tokenUsuarioWeb, titulo, descripcion);
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'web', 'visto');
-    }else{
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'web', 'pendiente');
-    }
-    if (tokenUsuarioMobile) {
-      await sendNotificacionesMobile(tokenUsuarioMobile, titulo, descripcion);
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'mobile', 'visto');
-    }else{
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'mobile', 'pendiente');
-    }
+    await this._enviarConUnificacion(usuario, tituloNotificacion, descripcionNotificacion, tokenUsuarioWeb, tokenUsuarioMobile);
   }
 
   async enviarNotificacionesAsociacionAceptaradaRepartidor(Id, tituloNotificacion, descripcionNotificacion) {
@@ -123,21 +129,9 @@ class NotificacionesService {
     const evento = await eventoService.getOne(Id);
     const consumidor = await consumidorService.getOneByProductorId(evento.productorId); 
     const usuario = await userService.getOneByConsumidorId(consumidor.id);
-    const titulo = tituloNotificacion;
-    const descripcion = descripcionNotificacion;
-    if (tokenUsuarioWeb) {
-      await sendNotificacionesWeb(tokenUsuarioWeb, titulo, descripcion);
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'web', 'visto');
-    }else{
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'web', 'pendiente');
-    }
-    if (tokenUsuarioMobile) {
-      await sendNotificacionesMobile(tokenUsuarioMobile, titulo, descripcion);
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'mobile', 'visto');
-    }else{
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'mobile', 'pendiente');
-    }
+    await this._enviarConUnificacion(usuario, tituloNotificacion, descripcionNotificacion, tokenUsuarioWeb, tokenUsuarioMobile);
   }
+
   async enviarNotificacionesAsociacionAPartirAsociacion(Id, tituloNotificacion, descripcionNotificacion) {
     const { tokenUsuarioWeb, tokenUsuarioMobile } = await this.buscarTokenPorAsociacion(Id);
     const asociacion = await asociacionService.getOne(Id);
@@ -145,26 +139,12 @@ class NotificacionesService {
     if(asociacion.repartidoreId){
       const repartidor = await repartidorService.getOne(asociacion.repartidoreId);
       consumidor = await consumidorService.getOneByRepartidorId(repartidor.id);
-      
     }else{
       const puesto = await puestoService.getOne(asociacion.puestoId);
       consumidor = await consumidorService.getOneByEncargadoId(puesto.encargadoId);
     }
     const usuario = await userService.getOneByConsumidorId(consumidor.id);
-    const titulo = tituloNotificacion;
-    const descripcion = descripcionNotificacion;
-    if (tokenUsuarioWeb) {
-      await sendNotificacionesWeb(tokenUsuarioWeb, titulo, descripcion);
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'web', 'visto');
-    }else{
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'web', 'pendiente');
-    }
-    if (tokenUsuarioMobile) {
-      await sendNotificacionesMobile(tokenUsuarioMobile, titulo, descripcion);
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'mobile', 'visto');
-    }else{
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'mobile', 'pendiente');
-    }
+    await this._enviarConUnificacion(usuario, tituloNotificacion, descripcionNotificacion, tokenUsuarioWeb, tokenUsuarioMobile);
   }
 
   async enviarNotificacionesProductorEvento(eventoid, tituloNotificacion, descripcionNotificacion) {
@@ -172,23 +152,9 @@ class NotificacionesService {
     const productorId = await productorService.getProductorByEvento(eventoid);
     const consumidor = await consumidorService.getOneByRepartidorId(productorId);
     const usuario = await userService.getOneByConsumidorId(consumidor.id);
-    const titulo = tituloNotificacion;
-    const descripcion = descripcionNotificacion;
-    if (tokenUsuarioWeb) {
-      await sendNotificacionesWeb(tokenUsuarioWeb, titulo, descripcion);
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'web', 'visto');
-    }else{
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'web', 'pendiente');
-    }
-    if (tokenUsuarioMobile) {
-      await sendNotificacionesMobile(tokenUsuarioMobile, titulo, descripcion);
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'mobile', 'visto');
-    }else{
-      this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'mobile', 'pendiente');
-    }
+    await this._enviarConUnificacion(usuario, tituloNotificacion, descripcionNotificacion, tokenUsuarioWeb, tokenUsuarioMobile);
   }
 
-  enviarNotificacionesPedidoValorado
   async enviarNotificacionesPedidoValorado(pedidoId, tituloNotificacionEncargado, descripcionNotificacionEncargado, tituloNotificacionRepartidor, descripcionNotificacionRepartidor) {
     const pedido = await pedidoService.getOne(pedidoId);
     const puesto = await puestoService.getOne(pedido.puestoId);
@@ -196,36 +162,12 @@ class NotificacionesService {
     const repartidorId = await pedido.repartidorId;
     const consumidor = await consumidorService.getOneByEncargadoId(encargadoId);
     const usuarioEncargado = await userService.getOneByConsumidorId(consumidor.id);
-    const usuarioRepartidor = await userService.getOneByRepartidorId(repartidorId);
     const { tokenUsuarioWeb: tokenUsuarioWebEncargado, tokenUsuarioMobile: tokenUsuarioMobileEncargado } = await this.buscarTokenPorPuesto(puesto.id);
-    this.enviarNotificacionesAUsuario(usuarioEncargado.id, tituloNotificacionEncargado, descripcionNotificacionEncargado, tokenUsuarioMobileEncargado, tokenUsuarioWebEncargado);
-    const { tokenUsuarioWeb: tokenUsuarioWebRepartidor, tokenUsuarioMobile: tokenUsuarioMobileRepartidor } = getTokenByRepartidorrId(repartidorId);
-    this.enviarNotificacionesAUsuario(usuarioRepartidor.id, tituloNotificacionRepartidor, descripcionNotificacionRepartidor, tokenUsuarioMobileRepartidor, tokenUsuarioWebRepartidor);
+    await this._enviarConUnificacion(usuarioEncargado, tituloNotificacionEncargado, descripcionNotificacionEncargado, tokenUsuarioWebEncargado, tokenUsuarioMobileEncargado);
 
-    if (tokenUsuarioWebEncargado) {
-      await sendNotificacionesWeb(tokenUsuarioWebEncargado, tituloNotificacionEncargado, descripcionNotificacionEncargado);
-      this.crearNotificacion(usuarioEncargado.id, tituloNotificacionEncargado, descripcionNotificacionEncargado, 'web', 'visto');
-    }else{
-      this.crearNotificacion(usuarioEncargado.id, tituloNotificacionEncargado, descripcionNotificacionEncargado, 'web', 'pendiente');
-    }
-    if (tokenUsuarioWebRepartidor) {
-      await sendNotificacionesWeb(tokenUsuarioWebRepartidor, tituloNotificacionRepartidor, descripcionNotificacionRepartidor);
-      this.crearNotificacion(usuarioRepartidor.id, tituloNotificacionRepartidor, descripcionNotificacionRepartidor, 'web', 'visto');
-    }else{
-      this.crearNotificacion(usuarioRepartidor.id, tituloNotificacionRepartidor, descripcionNotificacionRepartidor, 'web', 'pendiente');
-    }
-    if (tokenUsuarioMobileEncargado) {
-      await sendNotificacionesMobile(tokenUsuarioMobileEncargado, tituloNotificacionEncargado, descripcionNotificacionEncargado);
-      this.crearNotificacion(usuarioEncargado.id, tituloNotificacionEncargado, descripcionNotificacionEncargado, 'mobile', 'visto');
-    }else{
-      this.crearNotificacion(usuarioEncargado.id, tituloNotificacionEncargado, descripcionNotificacionEncargado, 'mobile', 'pendiente');
-    }
-    if (tokenUsuarioMobileRepartidor) {
-      await sendNotificacionesMobile(tokenUsuarioMobileRepartidor, tituloNotificacionRepartidor, descripcionNotificacionRepartidor);
-      this.crearNotificacion(usuarioRepartidor.id, tituloNotificacionRepartidor, descripcionNotificacionRepartidor, 'mobile', 'visto');
-    }else{
-      this.crearNotificacion(usuarioRepartidor.id, tituloNotificacionRepartidor, descripcionNotificacionRepartidor, 'mobile', 'pendiente');
-    }
+    const usuarioRepartidor = await userService.getOneByRepartidorId(repartidorId);
+    const { tokenUsuarioWeb: tokenUsuarioWebRepartidor, tokenUsuarioMobile: tokenUsuarioMobileRepartidor } = getTokenByRepartidorrId(repartidorId) || {};
+    await this._enviarConUnificacion(usuarioRepartidor, tituloNotificacionRepartidor, descripcionNotificacionRepartidor, tokenUsuarioWebRepartidor, tokenUsuarioMobileRepartidor);
   }
 
   async buscarTokenPorPuesto(puestoId) {

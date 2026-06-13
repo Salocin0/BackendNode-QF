@@ -15,7 +15,7 @@ class NotificacionController {
   getNotificacionesweb = async (req, res) => {
     try {
       const consumidorId = req.headers['consumidorid'];
-      const notificaciones = await notificacionesService.getNotificaciones(consumidorId,"web");
+      const notificaciones = await notificacionesService.getNotificaciones(consumidorId);
       res.status(200).json({ mensaje: 'Notificaciones obtenidas correctamente.', notificaciones });
     } catch (error) {
       console.log(error)
@@ -25,7 +25,7 @@ class NotificacionController {
   getNotificacionesmobile = async (req, res) => {
     try {
       const consumidorId = req.headers['consumidorid'];
-      const notificaciones = await notificacionesService.getNotificaciones(consumidorId,"mobile");
+      const notificaciones = await notificacionesService.getNotificaciones(consumidorId);
       res.status(200).json({ mensaje: 'Notificaciones obtenidas correctamente.', notificaciones });
     } catch (error) {
       console.log(error)
