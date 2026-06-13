@@ -177,7 +177,6 @@ export async function generateUsers(count = 10) {
             where: { puestoId: puesto.id }, // Filtra por el puesto específico
             order: Sequelize.literal('random()'), // Ordena aleatoriamente y obtiene uno
           });
-          console.log(producto);
           if (producto) {
             // Random quantity between 1 and 3
             const cantidad = faker.number.int({ min: 1, max: 3 });

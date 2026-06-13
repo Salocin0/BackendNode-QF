@@ -25,6 +25,9 @@ import '../DAO/models/RTARestriccion.model.js';
 import '../DAO/models/users.model.js';
 import '../DAO/models/valoracionCarrito.model.js';
 import '../DAO/models/valoracionRepartidor.model.js';
+import { Usuario } from '../DAO/models/users.model.js';
+import { generateAllData } from '../util/faker.js';
+import { createHashPW } from '../util/bcrypt.js';
 
 // Configurar __dirname para ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -141,6 +144,17 @@ async function seedDatabase() {
     console.log('   ✓ 4 Consumidores');
     console.log('   ✓ 4 Eventos (Festival, Concierto, Teatro, etc)');
     console.log('   ✓ Productos y más...\n');
+
+    // Paso 8: Generar datos adicionales con Faker
+    console.log('🔄 Generando datos de prueba con Faker...');
+    await generateAllData();
+    console.log('✅ Datos Faker generados exitosamente\n');
+
+    // Paso 9: Unificar todas las contraseñas a '123123123'
+    console.log('🔄 Unificando contraseñas a 123123123...');
+    const hashed = createHashPW('123123123');
+    await Usuario.update({ contraseña: hashed }, { where: {} });
+    console.log('✅ Contraseñas actualizadas\n');
 
   } catch (error) {
     console.error('\n❌ Error:', error.message);
