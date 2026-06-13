@@ -1,3 +1,5 @@
+import { cancelarPedidosPendientes } from './pedidoUtils.js';
+
 export const Confirmado = {
   crearEvento: async (evento) => {
     throw new Error('Error el evento ya ha sido creado');
@@ -9,6 +11,7 @@ export const Confirmado = {
 
   cancelarEvento: async (evento) => {
     evento.estado = 'Cancelado';
+    cancelarPedidosPendientes(evento.id);
     await evento.save();
     return evento;
   },

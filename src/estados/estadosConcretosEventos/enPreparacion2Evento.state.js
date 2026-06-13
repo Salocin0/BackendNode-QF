@@ -1,3 +1,4 @@
+import { cancelarPedidosPendientes } from './pedidoUtils.js';
 import { Evento } from "../../DAO/models/evento.model.js";
 
 export const EnPreparacion2 = {
@@ -15,6 +16,7 @@ export const EnPreparacion2 = {
 
     cancelarEvento: async (evento) => {
       evento.estado = 'Cancelado';
+      cancelarPedidosPendientes(evento.id);
       await evento.save();
       return evento;
     },

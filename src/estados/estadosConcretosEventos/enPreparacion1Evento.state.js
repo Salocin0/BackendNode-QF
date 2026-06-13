@@ -1,3 +1,5 @@
+import { cancelarPedidosPendientes } from './pedidoUtils.js';
+
 export const EnPreparacion1 = {
     crearEvento: async (evento) => {
       evento.estado = 'EnPreparacion1';
@@ -13,6 +15,7 @@ export const EnPreparacion1 = {
 
     cancelarEvento: async (evento) => {
       evento.estado = 'Cancelado';
+      cancelarPedidosPendientes(evento.id);
       await evento.save();
       return evento;
     },
