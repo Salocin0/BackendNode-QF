@@ -17,10 +17,23 @@ import { ValoracionPuesto } from '../DAO/models/valoracionCarrito.model.js';
 
 const provincias = ['Buenos Aires', 'Córdoba', 'Santa Fe', 'Mendoza', 'Tucumán', 'Salta', 'Chaco', 'Entre Ríos', 'Misiones', 'San Juan'];
 const localidades = ['La Plata', 'Córdoba', 'Rosario', 'Mendoza', 'San Miguel de Tucumán', 'Salta', 'Resistencia', 'Paraná', 'Posadas', 'San Juan'];
-const nombres = ['Concierto de Rock', 'Feria de Ciencia', 'Festival Gastronómico'];
-const descripciones = ['Un evento emocionante lleno de música.', 'Explora los avances científicos.', 'Disfruta de una variedad de comidas y bebidas.'];
-const tiposEvento = ['Música', 'Ciencia', 'Gastronomía'];
-const tiposPago = ['Tarjeta', 'Tarjeta', 'Tarjeta'];
+const nombres = [
+  'Concierto de Rock', 'Feria de Ciencia', 'Festival Gastronómico',
+  'Noche de Jazz', 'Exposición de Arte', 'Feria de Artesanías',
+  'Festival de Cine', 'Maratón Musical'
+];
+const descripciones = [
+  'Un evento emocionante lleno de música.',
+  'Explora los avances científicos.',
+  'Disfruta de una variedad de comidas y bebidas.',
+  'Una noche mágica con los mejores músicos de jazz.',
+  'Descubre obras de artistas locales e internacionales.',
+  'Artesanías únicas hechas por artesanos de la región.',
+  'Lo mejor del cine independiente en una sola pantalla.',
+  'Una jornada musical ininterrumpida con bandas en vivo.'
+];
+const tiposEvento = ['Música', 'Ciencia', 'Gastronomía', 'Arte', 'Cine', 'Feria', 'Deportivo', 'Teatro'];
+const tiposPago = ['Tarjeta', 'Efectivo', 'Transferencia', 'Tarjeta', 'Efectivo', 'Tarjeta', 'Transferencia', 'Efectivo'];
 const tipoCocina = ['Comida Rápida', 'Cafetería', 'Restaurante Familiar', 'Food Truck', 'Pizzeria', 'Taco Stand', 'Pastelería', 'Heladería'];
 const PRODUCTOR_SEED_RAZON_SOCIAL = 'Productor Seed Default';
 // Función para generar usuarios y consumidores uno por uno
@@ -49,8 +62,10 @@ async function pickRandomEventoIdOrCreate() {
     return faker.helpers.arrayElement(eventos.map(e => e.id));
   }
 
-  // No hay eventos: crear productor mínimo si hace falta
+  // No hay eventos: crear un evento "hoy" como fallback
   const productor = await getOrCreateSeedProductor();
+  const ahora = new Date();
+  const hoy10am = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate(), 10, 0, 0);
 
   const ev = await Evento.create({
     nombre: 'Evento Seed Auto',
@@ -67,7 +82,7 @@ async function pickRandomEventoIdOrCreate() {
     localidad: faker.helpers.arrayElement(localidades),
     provincia: faker.helpers.arrayElement(provincias),
     img: '',
-    estado: 'Finalizado',
+    estado: 'EnCurso',
     longitud: faker.location.longitude(),
     latitud: faker.location.latitude(),
     cantidadDiasEvento: 1,
@@ -76,12 +91,12 @@ async function pickRandomEventoIdOrCreate() {
     productorId: productor.id,
   });
 
-  // Crear al menos un día de evento para que otros seeders lo consuman
+  // Crear día de evento para hoy
   await DiaEvento.create({
     nombre: 'Día automático',
     descripcion: 'Día creado automáticamente',
-    fechaHoraInicioDiaEvento: new Date(),
-    fechaHoraFinDiaEvento: new Date(Date.now() + 1000 * 60 * 60 * 3),
+    fechaHoraInicioDiaEvento: hoy10am,
+    fechaHoraFinDiaEvento: new Date(hoy10am.getTime() + 7 * 60 * 60 * 1000),
     tienePreventa: false,
     eventoId: ev.id,
     createdAt: new Date(),
@@ -121,7 +136,8 @@ export async function generateUsers(count = 10) {
       });
 
       // Create orders for the consumer
-      for (let j = 0; j < 15; j++) {
+      const ordenesPorUsuario = faker.number.int({ min: 8, max: 12 });
+      for (let j = 0; j < ordenesPorUsuario; j++) {
         // Fetch a random "puesto" (shop)
         const puesto = await Puesto.findOne({ order: Sequelize.literal('random()') });
         if (!puesto) {
@@ -152,8 +168,23 @@ export async function generateUsers(count = 10) {
         const minutosAdicionales = Math.floor(Math.random() * (25 - 10 + 1) + 10); // Aleatorio entre 10 y 25
         const fechaEntrega = new Date(fechaPedido.getTime() + minutosAdicionales * 60 * 1000);
 
-        // Determinar el estado del pedido
-        const estado = Math.random() < 0.35 ? 'Valorado' : 'Entregado'; // 35% de probabilidad de ser "Valorado"
+        // Determinar el estado del pedido según la línea temporal
+        const ahora = new Date();
+        const esPedidoPasado = fechaEntrega < ahora;
+        const esPedidoFuturo = fechaPedido > ahora;
+
+        let estado;
+        if (esPedidoPasado) {
+          // Evento pasado → Entregado o Valorado (para estadísticas)
+          estado = Math.random() < 0.35 ? 'Valorado' : 'Entregado';
+        } else if (esPedidoFuturo) {
+          // Evento futuro → preventa o pendiente
+          estado = Math.random() < 0.7 ? 'Precomprado' : 'Pendiente';
+        } else {
+          // Evento activo → mezcla de estados del flujo activo
+          const estadosActivos = ['Pendiente', 'Aceptado', 'EnPreparacion', 'EnCamino', 'Entregado'];
+          estado = faker.helpers.arrayElement(estadosActivos);
+        }
 
         // Crear el pedido
         const pedido = await Pedido.create({
@@ -349,39 +380,57 @@ export async function generateRepartidor(count) {
   }
 }
 
-export async function generateEvents(count) {
+export async function generateEvents() {
   const ahora = new Date();
-  const haceUnAno = new Date(ahora.getFullYear() - 1, ahora.getMonth(), ahora.getDate());
-  const haceUnMes = new Date(ahora.getFullYear(), ahora.getMonth() - 1, ahora.getDate());
+  const productor = await getOrCreateSeedProductor();
 
-  for (let i = 0; i < count; i++) {
+  // Configuración de cada evento: [estado, tipo fecha, tienePreventa]
+  const configs = [
+    // ── PASADOS (Finalizado) ──
+    { estado: 'Finalizado', rangoDias: [-180, -90], tienePreventa: false, habilitado: true },
+    { estado: 'Finalizado', rangoDias: [-90, -30],  tienePreventa: true,  habilitado: true },
+    // ── ACTUALES (EnCurso) ──
+    { estado: 'EnCurso',     rangoDias: [-2, 1],     tienePreventa: true,  habilitado: true },
+    { estado: 'EnCurso',     rangoDias: [0, 2],      tienePreventa: false, habilitado: true },
+    // ── FUTUROS ──
+    { estado: 'Confirmado',  rangoDias: [7, 14],     tienePreventa: true,  habilitado: true },
+    { estado: 'EnPreparacion', rangoDias: [21, 60],  tienePreventa: false, habilitado: true },
+    // ── BORDES ──
+    { estado: 'Cancelado',   rangoDias: [-60, -30],  tienePreventa: false, habilitado: false },
+    { estado: 'Pausado',     rangoDias: [-3, 1],     tienePreventa: true,  habilitado: true },
+  ];
+
+  for (let i = 0; i < configs.length; i++) {
     try {
-      const fechaHoraInicio = faker.date.between({ from: haceUnAno, to: haceUnMes });
-      const fechaHoraFin = [new Date(fechaHoraInicio.getTime() + 1000 * 60 * 60 * 24), fechaHoraInicio.getTime() + 1000 * 60 * 60 * 24 * 1, fechaHoraInicio.getTime() + 1000 * 60 * 60 * 24 * 2];
+      const { estado, rangoDias, tienePreventa, habilitado } = configs[i];
 
-      const nombre = nombres[i % nombres.length];
-      const descripcion = descripciones[i % descripciones.length];
-      const tipoEvento = tiposEvento[i % tiposEvento.length];
-      const tipoPago = tiposPago[i % tiposPago.length];
-      const productor = await getOrCreateSeedProductor();
-      // Crear el evento
+      // Fecha base del evento dentro del rango en días desde hoy
+      const diasOffset = faker.number.int({ min: rangoDias[0], max: rangoDias[1] });
+      const fechaBase = new Date(ahora.getTime() + diasOffset * 24 * 60 * 60 * 1000);
+      // Ajustar a las 10:00 AM para consistencia
+      fechaBase.setHours(10, 0, 0, 0);
+
+      const fechaInicioPreventa = tienePreventa
+        ? new Date(fechaBase.getTime() - faker.number.int({ min: 7, max: 30 }) * 24 * 60 * 60 * 1000)
+        : null;
+
       const evento = await Evento.create({
-        nombre: nombre,
-        descripcion: descripcion,
-        tipoEvento: tipoEvento,
-        tipoPago: tipoPago,
-        cantidadPuestos: 6,
-        conButaca: false,
+        nombre: nombres[i % nombres.length],
+        descripcion: descripciones[i % descripciones.length],
+        tipoEvento: tiposEvento[i % tiposEvento.length],
+        tipoPago: tiposPago[i % tiposPago.length],
+        cantidadPuestos: faker.number.int({ min: 4, max: 15 }),
+        conButaca: faker.datatype.boolean(),
         conRepartidor: true,
-        tienePreventa: false,
-        fechaInicioPreventa: null,
-        linkVentaEntradas: faker.internet.url(),
-        ubicacion: '',
-        habilitado: true,
+        tienePreventa,
+        fechaInicioPreventa,
+        linkVentaEntradas: tienePreventa ? faker.internet.url() : '',
+        ubicacion: faker.location.streetAddress(),
+        habilitado,
         localidad: faker.helpers.arrayElement(localidades),
         provincia: faker.helpers.arrayElement(provincias),
         img: '',
-        estado: 'Finalizado',
+        estado,
         longitud: faker.location.longitude(),
         latitud: faker.location.latitude(),
         cantidadDiasEvento: 3,
@@ -390,47 +439,38 @@ export async function generateEvents(count) {
         productorId: productor.id,
       });
 
-      // Crear días de evento
+      // Crear 3 días de evento escalonados
       for (let j = 0; j < 3; j++) {
-        try {
-          let fechaHoraInicioDia = fechaHoraInicio;
-          if (j >= 1) {
-            fechaHoraInicioDia = new Date(fechaHoraFin[j]);
-          }
+        const fechaInicioDia = new Date(fechaBase.getTime() + j * 24 * 60 * 60 * 1000);
+        const fechaFinDia = new Date(fechaInicioDia.getTime() + 7 * 60 * 60 * 1000); // +7 horas
 
-          const fechaHoraFinDia = new Date(fechaHoraInicioDia.getTime() + 1000 * 60 * 60 * 7); // 7 horas después para fechaHoraFinDia
-
-          await DiaEvento.create({
-            nombre: faker.lorem.words(2),
-            descripcion: faker.lorem.sentence(),
-            fechaHoraInicioDiaEvento: fechaHoraInicioDia,
-            fechaHoraFinDiaEvento: fechaHoraFinDia,
-            tienePreventa: faker.datatype.boolean(),
-            eventoId: evento.id,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          });
-          console.log(`Día Evento ${j + 1} para ${evento.id} creado exitosamente.`);
-        } catch (error) {
-          console.error(`Error creando día evento en iteración ${j + 1}:`, error);
-        }
+        await DiaEvento.create({
+          nombre: `Día ${j + 1} - ${faker.lorem.words(2)}`,
+          descripcion: faker.lorem.sentence(),
+          fechaHoraInicioDiaEvento: fechaInicioDia,
+          fechaHoraFinDiaEvento: fechaFinDia,
+          tienePreventa: faker.datatype.boolean(),
+          eventoId: evento.id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
       }
 
-      console.log(`Evento ${evento.id} creado exitosamente.`);
+      console.log(`✅ Evento "${evento.nombre}" [${evento.estado}] creado (ID ${evento.id})`);
     } catch (error) {
-      console.error(`Error creando evento y días de evento en iteración ${i + 1}:`, error);
+      console.error(`Error creando evento ${i + 1}:`, error);
     }
   }
 }
 
-// Función principal para generar diferentes tipos de datos (solo usuarios por ahora)
+// Función principal para generar diferentes tipos de datos
 export async function generateAllData() {
   try {
     console.log("✅ Generando datos de prueba...");
-    await generateEvents(3);
+    await generateEvents();
     await generateEncargado(1);
     await generateRepartidor(1);
-    await generateUsers(10);
+    await generateUsers(6);
 
     console.log("🎉 Datos generados exitosamente.");
     console.log("👤 Cantidad de usuarios en la base de datos:", await Usuario.count())
