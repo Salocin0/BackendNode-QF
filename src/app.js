@@ -237,32 +237,14 @@ async function connectDB() {
       }); // false no modifica la base de datos
       if (process.env.DB_FORCE === 'true') {
         await DatosIniciales();
+        await generateAllData();
       }
-      await generateAllData(); // Solo en desarrollo
     } else {
       // Modo producción: no borrar ni preinicializar datos. Sin force.
       await withDbRetry('sincronizar modelos en producción', async () => {
         await sequelize.sync({ force: false });
       });
       console.log('Modo producción detectado: no se preinicializan datos ni se borra la base de datos.');
-    }
-
-    // Auto-seed si la base de datos está vacía (útil para deploys frescos en cualquier entorno)
-    try {
-      const userCount = await Usuario.count();
-      if (userCount === 0) {
-        console.log('Base de datos vacía — sembrando datos iniciales...');
-        await DatosIniciales();
-        await generateAllData();
-        // Actualizar todas las contraseñas al default '123123123'
-        const hashed = createHashPW('123123123');
-        await Usuario.update({ contraseña: hashed }, { where: {} });
-        console.log('Seed automático completado.');
-      } else {
-        console.log(`Base de datos con datos (${userCount} usuarios). No se ejecuta seed.`);
-      }
-    } catch (err) {
-      console.warn('Error al verificar/seedear datos automáticos:', err.message || err);
     }
 
     // Ejecutar procesos automáticos en cualquier entorno

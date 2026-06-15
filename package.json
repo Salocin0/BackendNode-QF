@@ -11,7 +11,8 @@
     "start": "nodemon ./src/app.js --omit=dev",
     "dev": "nodemon ./src/app.js",
     "test": "mocha ./src/test/",
-    "seed": "node ./src/scripts/seedDatabase.js"
+    "seed": "node ./src/scripts/seedDatabase.js",
+    "seed:data": "node ./src/scripts/seedData.js"
   },
   "repository": {
     "type": "git",
