@@ -296,6 +296,43 @@ class EstadisticasController {
     }
   }
 
+  async getPuestosConPedidos(req, res) {
+    try {
+      const idConsumidor = req.params.idConsumidor;
+      const datos = await estadisticasService.getPuestosConPedidos(idConsumidor);
+      return res.status(200).json({
+        status: 'success',
+        msg: 'Found puestos with pedidos',
+        data: datos,
+      });
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
+
+  async getEventosConPedidos(req, res) {
+    try {
+      const idConsumidor = req.params.idConsumidor;
+      const datos = await estadisticasService.getEventosConPedidos(idConsumidor);
+      return res.status(200).json({
+        status: 'success',
+        msg: 'Found eventos with pedidos',
+        data: datos,
+      });
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
 }
 
 export const estadisticasController = new EstadisticasController();

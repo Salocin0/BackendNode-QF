@@ -737,8 +737,62 @@ class EstadisticasService {
       throw new Error('Error al calcular estadísticas del repartidor');
     }
   }
-  
-  
+
+  async getPuestosConPedidos(idConsumidor) {
+    try {
+      const consumidor = await consumidorService.getOne(idConsumidor);
+      if (!consumidor || !consumidor.encargadoId) {
+        return [];
+      }
+
+      const query = `
+        SELECT DISTINCT p.id, p."nombreCarro", p."numeroCarro", p."tipoNegocio", p."telefonoCarro", p."estado"
+        FROM "Puestos" p
+        INNER JOIN "Pedidos" ped ON ped."puestoId" = p.id
+        WHERE p."encargadoId" = :encargadoId
+        AND p."estado" = 'Creado'
+        AND (ped.estado = 'Entregado' OR ped.estado = 'Valorado')
+      `;
+
+      const results = await sequelize.query(query, {
+        replacements: { encargadoId: consumidor.encargadoId },
+        type: sequelize.QueryTypes.SELECT,
+      });
+
+      return results;
+    } catch (error) {
+      console.error('Error obteniendo puestos con pedidos:', error);
+      throw new Error('Error al obtener puestos con pedidos');
+    }
+  }
+
+  async getEventosConPedidos(idConsumidor) {
+    try {
+      const consumidor = await consumidorService.getOne(idConsumidor);
+      if (!consumidor || !consumidor.encargadoId) {
+        return [];
+      }
+
+      const query = `
+        SELECT DISTINCT e.id, e.nombre
+        FROM "Eventos" e
+        INNER JOIN "Pedidos" ped ON ped."eventoId" = e.id
+        INNER JOIN "Puestos" p ON p.id = ped."puestoId"
+        WHERE p."encargadoId" = :encargadoId
+        AND (ped.estado = 'Entregado' OR ped.estado = 'Valorado')
+      `;
+
+      const results = await sequelize.query(query, {
+        replacements: { encargadoId: consumidor.encargadoId },
+        type: sequelize.QueryTypes.SELECT,
+      });
+
+      return results;
+    } catch (error) {
+      console.error('Error obteniendo eventos con pedidos:', error);
+      throw new Error('Error al obtener eventos con pedidos');
+    }
+  }
 }
 
 export const estadisticasService = new EstadisticasService();
