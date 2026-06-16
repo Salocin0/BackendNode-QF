@@ -247,6 +247,11 @@ async function connectDB() {
       console.log('Modo producción detectado: no se preinicializan datos ni se borra la base de datos.');
     }
 
+    // Recrear la vista del chatbot DESPUÉS del sync (las tablas ya existen) y después de
+    // haber eliminado las vistas al inicio. Sin esto, el chatbot Foody devuelve 500 porque
+    // la vista "chatbotData" no existe en la base de datos.
+    await crearVistaChatbot();
+
     // Ejecutar procesos automáticos en cualquier entorno
     if (process.env.NODE_ENV !== 'test') {
       procesosAutomaticos();
@@ -286,6 +291,50 @@ export async function dropViewIfExists(viewName) {
     console.log(`Vista ${viewName} eliminada correctamente.`);
   } catch (error) {
     console.error(`Error al eliminar la vista ${viewName}:`, error);
+  }
+}
+
+// Crea (o recrea) la vista que alimenta al chatbot "Foody".
+// Es necesaria porque al arrancar se eliminan todas las vistas del schema public
+// para permitir que Sequelize altere los esquemas de las tablas. Si no la volvemos
+// a crear, el chatbot falla con: relation "public.chatbotdata" does not exist.
+// El nombre se deja SIN comillas a propósito para que Postgres lo normalice a
+// minúsculas (chatbotdata), igual que la consulta del chatbot (SELECT * FROM public.chatbotData).
+export async function crearVistaChatbot() {
+  const createViewSql = `
+    CREATE OR REPLACE VIEW chatbotData AS
+    SELECT ev.nombre,
+           ev.descripcion,
+           ev."tipoEvento",
+           (SELECT date(min(de."fechaHoraInicioDiaEvento"))
+            FROM "diaEventos" de
+            WHERE de."eventoId" = ev.id) AS "fechaInicioEvento",
+           (SELECT date(max(de."fechaHoraFinDiaEvento"))
+            FROM "diaEventos" de
+            WHERE de."eventoId" = ev.id) AS "fechaFinEvento",
+           ev."conButaca",
+           ev."tienePreventa",
+           ev."linkVentaEntradas",
+           ev.ubicacion,
+           ev.localidad,
+           ev.provincia,
+           ev.estado,
+           string_agg(DISTINCT ps."nombreCarro"::text, ', '::text) AS "nombreCarroLista",
+           string_agg(DISTINCT ps."tipoNegocio"::text, ', '::text) AS "tipoNegocioLista"
+    FROM eventos ev
+         LEFT JOIN "Asociacions" ac ON ev.id = ac."eventoId"
+         LEFT JOIN puestos ps ON ac."puestoId" = ps.id
+    WHERE ev.estado IN ('EnCurso', 'Confirmado')
+    GROUP BY ev.id;
+  `;
+
+  try {
+    await withDbRetry('crear vista chatbotData', async () => {
+      await sequelize.query(createViewSql);
+    });
+    console.log('Vista chatbotData creada/actualizada correctamente.');
+  } catch (error) {
+    console.error('Error al crear la vista chatbotData:', error.message || error);
   }
 }
 

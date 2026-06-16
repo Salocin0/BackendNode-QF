@@ -28,6 +28,53 @@ const sequelize = connectionString
       },
     });
 
+// SQL para (re)crear la vista que alimenta al chatbot. Debe coincidir con la definición
+// de Datos_DB.sql y con la usada en app.js (crearVistaChatbot). El nombre se deja sin
+// comillas para que Postgres lo normalice a minúsculas (chatbotdata).
+const CREATE_CHATBOT_VIEW_SQL = `
+  CREATE OR REPLACE VIEW chatbotData AS
+  SELECT ev.nombre,
+         ev.descripcion,
+         ev."tipoEvento",
+         (SELECT date(min(de."fechaHoraInicioDiaEvento"))
+          FROM "diaEventos" de
+          WHERE de."eventoId" = ev.id) AS "fechaInicioEvento",
+         (SELECT date(max(de."fechaHoraFinDiaEvento"))
+          FROM "diaEventos" de
+          WHERE de."eventoId" = ev.id) AS "fechaFinEvento",
+         ev."conButaca",
+         ev."tienePreventa",
+         ev."linkVentaEntradas",
+         ev.ubicacion,
+         ev.localidad,
+         ev.provincia,
+         ev.estado,
+         string_agg(DISTINCT ps."nombreCarro"::text, ', '::text) AS "nombreCarroLista",
+         string_agg(DISTINCT ps."tipoNegocio"::text, ', '::text) AS "tipoNegocioLista"
+  FROM eventos ev
+       LEFT JOIN "Asociacions" ac ON ev.id = ac."eventoId"
+       LEFT JOIN puestos ps ON ac."puestoId" = ps.id
+  WHERE ev.estado IN ('EnCurso', 'Confirmado')
+  GROUP BY ev.id;
+`;
+
+// Consulta la vista chatbotData. Si no existe (Postgres 42P01) la crea y reintenta una vez.
+async function consultarChatbotData() {
+  try {
+    const [results] = await sequelize.query('SELECT * FROM public.chatbotData;');
+    return results;
+  } catch (error) {
+    const code = error?.parent?.code || error?.original?.code;
+    const missingView = code === '42P01' || /does not exist/i.test(error?.message || '');
+    if (!missingView) throw error;
+
+    console.warn('La vista chatbotData no existe. Creándola y reintentando...');
+    await sequelize.query(CREATE_CHATBOT_VIEW_SQL);
+    const [results] = await sequelize.query('SELECT * FROM public.chatbotData;');
+    return results;
+  }
+}
+
 async function getChatResponse(userMessage) {
   try {
     // Verificar conexión a la base de datos
@@ -38,9 +85,11 @@ async function getChatResponse(userMessage) {
     // Refrescar la vista materializada
    //await sequelize.query("REFRESH MATERIALIZED VIEW public.chatbotData;");
 
-    // Realizar consulta directa usando Sequelize
-    const [results] = await sequelize.query("SELECT * FROM public.chatbotData;");
-    
+    // Realizar consulta directa usando Sequelize.
+    // La vista chatbotData puede no existir (al arrancar se eliminan todas las vistas del
+    // schema public). Si Postgres responde 42P01 (relation does not exist) la creamos al
+    // vuelo y reintentamos una vez, para que el chatbot sea auto-reparable.
+    const results = await consultarChatbotData();
 
 
     const apiKey = process.env.CHATBOT_API_KEY;
