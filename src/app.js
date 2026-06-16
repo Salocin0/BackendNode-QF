@@ -303,7 +303,8 @@ export async function dropViewIfExists(viewName) {
 export async function crearVistaChatbot() {
   const createViewSql = `
     CREATE OR REPLACE VIEW chatbotData AS
-    SELECT ev.nombre,
+    SELECT ev.id,
+           ev.nombre,
            ev.descripcion,
            ev."tipoEvento",
            (SELECT date(min(de."fechaHoraInicioDiaEvento"))

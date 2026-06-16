@@ -28,12 +28,28 @@ const sequelize = connectionString
       },
     });
 
+// URL base del frontend para construir los links que sugiere el chatbot.
+// Se toma de FRONTEND_URL; si no existe, del primer origen permitido en CORS_ORIGIN.
+const FRONTEND_URL = (
+  process.env.FRONTEND_URL ||
+  (process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',')[0].trim() : '') ||
+  ''
+).replace(/\/+$/, '');
+
+// Construye el link de detalle (puestos del evento) para un id dado.
+function construirLinkEvento(id) {
+  if (id == null) return undefined;
+  const base = FRONTEND_URL || '';
+  return `${base}/listado-puestos/${id}`;
+}
+
 // SQL para (re)crear la vista que alimenta al chatbot. Debe coincidir con la definición
 // de Datos_DB.sql y con la usada en app.js (crearVistaChatbot). El nombre se deja sin
 // comillas para que Postgres lo normalice a minúsculas (chatbotdata).
 const CREATE_CHATBOT_VIEW_SQL = `
   CREATE OR REPLACE VIEW chatbotData AS
-  SELECT ev.nombre,
+  SELECT ev.id,
+         ev.nombre,
          ev.descripcion,
          ev."tipoEvento",
          (SELECT date(min(de."fechaHoraInicioDiaEvento"))
@@ -91,6 +107,10 @@ async function getChatResponse(userMessage) {
     // vuelo y reintentamos una vez, para que el chatbot sea auto-reparable.
     const results = await consultarChatbotData();
 
+    // Enriquecer cada evento con su link de detalle para que el modelo no invente URLs.
+    const eventosConLink = Array.isArray(results)
+      ? results.map((ev) => ({ ...ev, link: construirLinkEvento(ev.id) }))
+      : results;
 
     const apiKey = process.env.CHATBOT_API_KEY;
 
@@ -98,16 +118,21 @@ async function getChatResponse(userMessage) {
       apiKey: apiKey,
       modelName: 'gpt-3.5-turbo', // Puedes cambiar a 'gpt-4-turbo'
       temperature: 0,
-      maxTokens: 150,
+      maxTokens: 300,
     });
 
     const template = new PromptTemplate({
       inputVariables: ['chatbotData', 'input'],
-      template: `Olvida todas tus conversaciones pasadas. Ahora eres un asistente inteligente de una plataforma de eventos. Tienes acceso a la siguiente información sobre eventos y los carros de comida asociados a esos eventos: {chatbotData}. Tu tarea es responder con precisión y claridad a la siguiente pregunta de un usuario utilizando la información proporcionada:
+      template: `Olvida todas tus conversaciones pasadas. Ahora eres "Foody", el asistente inteligente de QuickFood, una plataforma de eventos gastronómicos. Tienes acceso a la siguiente información de eventos y los carros de comida asociados (cada evento incluye un campo "link" con la URL para ver su detalle): {chatbotData}.
+
+                Tu tarea es responder con precisión y claridad a la pregunta del usuario usando únicamente esa información.
+
+                Reglas:
+                - La respuesta debe ser CORTA, clara y útil.
+                - Cuando menciones o sugieras un evento, incluí SIEMPRE su link en formato Markdown: [nombre del evento](link). Usá exactamente el valor del campo "link" del evento; no inventes ni modifiques URLs.
+                - Si la información solicitada no está disponible, indicálo claramente y ofrecé la alternativa de comunicarse con 'consultas@QF.com'.
 
                 Pregunta del usuario: {input}
-
-                Asegúrate de que tu respuesta sea con la información, respuesta CORTA y útil para el usuario. Si la información que se pide no está disponible, indícalo claramente y ofrece la alternativa de comunicarte con 'consultas@QF.com '.
                 `,
     });
 
@@ -117,7 +142,7 @@ async function getChatResponse(userMessage) {
     });
 
     // Convertir los resultados en un formato legible
-    const chatbotData = JSON.stringify(results);
+    const chatbotData = JSON.stringify(eventosConLink);
 
     const response = await chain.call({ input: userMessage, chatbotData });
     return response.text;
