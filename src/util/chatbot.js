@@ -116,7 +116,7 @@ async function getChatResponse(userMessage) {
 
     const openAIModel = new ChatOpenAI({
       apiKey: apiKey,
-      modelName: 'gpt-3.5-turbo', // Puedes cambiar a 'gpt-4-turbo'
+      modelName: 'gpt-4o-mini', // Puedes cambiar a 'gpt-4-turbo'
       temperature: 0,
       maxTokens: 300,
     });
