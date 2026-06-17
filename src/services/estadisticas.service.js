@@ -747,7 +747,7 @@ class EstadisticasService {
 
       const query = `
         SELECT DISTINCT p.id, p."nombreCarro", p."numeroCarro", p."tipoNegocio", p."telefonoCarro", p."estado"
-        FROM "Puestos" p
+        FROM "puestos" p
         INNER JOIN "Pedidos" ped ON ped."puestoId" = p.id
         WHERE p."encargadoId" = :encargadoId
         AND p."estado" = 'Creado'
@@ -775,9 +775,9 @@ class EstadisticasService {
 
       const query = `
         SELECT DISTINCT e.id, e.nombre
-        FROM "Eventos" e
+        FROM "eventos" e
         INNER JOIN "Pedidos" ped ON ped."eventoId" = e.id
-        INNER JOIN "Puestos" p ON p.id = ped."puestoId"
+        INNER JOIN "puestos" p ON p.id = ped."puestoId"
         WHERE p."encargadoId" = :encargadoId
         AND (ped.estado = 'Entregado' OR ped.estado = 'Valorado')
       `;
