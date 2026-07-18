@@ -470,7 +470,7 @@ class EventoController {
         return res.status(200).json({
           status: 'success',
           msg: 'eventos not found',
-          data: {},
+          data: [],
         });
       }
     } catch (e) {

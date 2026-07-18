@@ -301,7 +301,7 @@ class PuestoController {
         return res.status(200).json({
           status: 'success',
           msg: 'puestos not found',
-          data: {},
+          data: [],
         });
       }
     } catch (e) {
