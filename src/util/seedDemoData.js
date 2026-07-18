@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { sequelize } from './connections.js';
 import '../DAO/models/asignacion.model.js';
 import '../DAO/models/asociacion.model.js';
@@ -35,6 +38,25 @@ import { DetallePedido } from '../DAO/models/detallePedido.model.js';
 import { Asignacion } from '../DAO/models/asignacion.model.js';
 import { createHashPW } from './bcrypt.js';
 import { EstadosEvento, EstadosAsociaciones, EstadosPedido } from '../enums/Estados.enums.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const IMAGES_DIR = path.join(__dirname, '..', 'public', 'images');
+const MIME_BY_EXT = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp' };
+
+// Lee una imagen de src/public/images/<baseName>.<jpg|jpeg|png|webp> y la
+// devuelve como data URI base64 (formato que espera el frontend en los
+// campos img/banner). Si no encuentra el archivo, devuelve '' sin romper el seed.
+function loadImageAsDataUri(baseName) {
+  for (const ext of Object.keys(MIME_BY_EXT)) {
+    const filePath = path.join(IMAGES_DIR, baseName + ext);
+    if (fs.existsSync(filePath)) {
+      const buffer = fs.readFileSync(filePath);
+      return `data:${MIME_BY_EXT[ext]};base64,${buffer.toString('base64')}`;
+    }
+  }
+  console.warn(`⚠️  No se encontró imagen "${baseName}" en ${IMAGES_DIR} (.jpg/.jpeg/.png/.webp) — se deja sin imagen.`);
+  return '';
+}
 
 // Ejecuta el seed de datos de demo completo: vacía todas las tablas y siembra
 // un dataset fijo (4 usuarios por rol, evento "fiesta del cuarteto", puesto +
@@ -201,7 +223,7 @@ export async function runSeedDemo() {
     habilitado: true,
     localidad: 'Villa María',
     provincia: 'Córdoba',
-    img: '',
+    img: loadImageAsDataUri('evento-cuarteto'),
     estado: EstadosEvento.EnCurso,
     longitud: '-63.2304',
     latitud: '-32.4076',
@@ -224,11 +246,13 @@ export async function runSeedDemo() {
 
   // Paso 4: puesto del encargado + productos
   console.log('🔄 Creando puesto y productos demo...');
+  const puestoImg = loadImageAsDataUri('puesto-cuarteto');
   const puesto = await Puesto.create({
     nombreCarro: 'Puesto Cuarteto',
     numeroCarro: 1,
     tipoNegocio: 'Food Truck',
-    banner: '',
+    banner: puestoImg || '',
+    img: puestoImg || null,
     telefonoCarro: '3535123456',
     estado: 'Creado',
     encargadoId: encargado.id,
@@ -240,6 +264,7 @@ export async function runSeedDemo() {
       descripcion: 'Choripán casero con chimichurri.',
       precio: 3500,
       estado: true,
+      img: loadImageAsDataUri('producto-choripan') || null,
       puestoId: puesto.id,
     }),
     Producto.create({
@@ -247,6 +272,7 @@ export async function runSeedDemo() {
       descripcion: 'Cerveza artesanal 500ml.',
       precio: 2500,
       estado: true,
+      img: loadImageAsDataUri('producto-cerveza') || null,
       puestoId: puesto.id,
     }),
     Producto.create({
@@ -254,6 +280,7 @@ export async function runSeedDemo() {
       descripcion: 'Empanada de carne cortada a cuchillo.',
       precio: 1200,
       estado: true,
+      img: loadImageAsDataUri('producto-empanada') || null,
       puestoId: puesto.id,
     }),
     Producto.create({
@@ -261,6 +288,7 @@ export async function runSeedDemo() {
       descripcion: 'Agua mineral 500ml.',
       precio: 1000,
       estado: true,
+      img: loadImageAsDataUri('producto-agua') || null,
       puestoId: puesto.id,
     }),
   ]);
