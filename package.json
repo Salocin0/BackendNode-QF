@@ -12,7 +12,8 @@
     "dev": "nodemon ./src/app.js",
     "test": "mocha ./src/test/",
     "seed": "node ./src/scripts/seedDatabase.js",
-    "seed:data": "node ./src/scripts/seedData.js"
+    "seed:data": "node ./src/scripts/seedData.js",
+    "seed:demo": "node ./src/scripts/seedDemo.js"
   },
   "repository": {
     "type": "git",

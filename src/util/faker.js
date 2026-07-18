@@ -14,6 +14,7 @@ import { DetallePedido } from '../DAO/models/detallePedido.model.js';
 import { Sequelize } from 'sequelize';
 import { Productor } from '../DAO/models/Productor.model.js';
 import { ValoracionPuesto } from '../DAO/models/valoracionCarrito.model.js';
+import { EstadosPedido } from '../enums/Estados.enums.js';
 
 const provincias = ['Buenos Aires', 'Córdoba', 'Santa Fe', 'Mendoza', 'Tucumán', 'Salta', 'Chaco', 'Entre Ríos', 'Misiones', 'San Juan'];
 const localidades = ['La Plata', 'Córdoba', 'Rosario', 'Mendoza', 'San Miguel de Tucumán', 'Salta', 'Resistencia', 'Paraná', 'Posadas', 'San Juan'];
@@ -182,7 +183,7 @@ export async function generateUsers(count = 10) {
           estado = Math.random() < 0.7 ? 'Precomprado' : 'Pendiente';
         } else {
           // Evento activo → mezcla de estados del flujo activo
-          const estadosActivos = ['Pendiente', 'Aceptado', 'EnPreparacion', 'EnCamino', 'Entregado'];
+          const estadosActivos = ['Pendiente', 'Aceptado', EstadosPedido.EnPreparacion, EstadosPedido.EnCamino, 'Entregado'];
           estado = faker.helpers.arrayElement(estadosActivos);
         }
 
@@ -319,7 +320,7 @@ export async function generateEncargado(count) {
         contraseña: '$2b$10$r0eqwWy3mo9xWFo9t4NVFetBAt88AT5GbK2vMkcJWEHoYL.TPvjLK',
         fechaAlta: new Date(),
         habilitado: true,
-        tipoUsuario: 'consumidor',
+        tipoUsuario: 'encargado',
         createdAt: new Date(),
         updatedAt: new Date(),
         consumidorId: consumidor.id,
@@ -359,7 +360,7 @@ export async function generateRepartidor(count) {
         contraseña: '$2b$10$r0eqwWy3mo9xWFo9t4NVFetBAt88AT5GbK2vMkcJWEHoYL.TPvjLK',
         fechaAlta: new Date(),
         habilitado: true,
-        tipoUsuario: 'consumidor',
+        tipoUsuario: 'repartidor',
         createdAt: new Date(),
         updatedAt: new Date(),
         consumidorId: consumidor.id,
