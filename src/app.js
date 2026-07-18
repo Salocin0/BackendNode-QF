@@ -38,6 +38,7 @@ import  RouterChatbot  from './routes/chatbot.router.js'
 import dotenv from 'dotenv';
 import express from 'express';
 import { sequelize } from './util/connections.js';
+import { runSeedDemo } from './util/seedDemoData.js';
 import SequelizeStoreInit from 'connect-session-sequelize';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
 import { generateAllData } from './util/faker.js';
@@ -183,6 +184,20 @@ app.post('/admin/reset-db', async (req, res) => {
   } catch (error) {
     console.error('Error en reset DB:', error);
     return res.status(500).json({ status: 'error', msg: 'Error resetting database', error: error.message });
+  }
+});
+
+// Endpoint de demo: vacía la DB y siembra el dataset de demo (4 roles, evento "fiesta del cuarteto", puesto, pedidos)
+// Sin autenticación a propósito — uso interno para preparar demos, decisión del dueño del proyecto.
+app.get('/seed/demo', async (req, res) => {
+  try {
+    console.log('🔄 /seed/demo: iniciando reseed de datos de demo...');
+    const resumen = await runSeedDemo();
+    console.log('✅ /seed/demo: reseed completado.');
+    return res.status(200).json({ status: 'success', msg: 'Demo data seeded', ...resumen });
+  } catch (error) {
+    console.error('❌ /seed/demo: error al sembrar datos de demo:', error);
+    return res.status(500).json({ status: 'error', msg: 'Error seeding demo data', error: error.message });
   }
 });
 
