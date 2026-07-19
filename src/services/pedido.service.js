@@ -98,7 +98,7 @@ class PedidoService {
       ],
     });
 
-    console.log('Pedidos obtenidos:', pedidos);
+    console.log('Pedidos obtenidos:', pedidos.length);
     return pedidos;
   }
 
@@ -133,7 +133,7 @@ class PedidoService {
       ],
     });
 
-    console.log('Pedidos obtenidos:', pedidos);
+    console.log('Pedidos obtenidos:', pedidos.length);
     return pedidos;
   }
   
@@ -187,7 +187,7 @@ class PedidoService {
       include: includeModels,
     });
     
-    console.log('Pedidos obtenidos:', pedidos);
+    console.log('Pedidos obtenidos:', pedidos.length);
     return pedidos;    
   }
 
@@ -283,7 +283,7 @@ class PedidoService {
       ],
     });
 
-    console.log('Pedidos obtenidos:', pedidos);
+    console.log('Pedidos obtenidos:', pedidos.length);
     return pedidos;
   }
 
@@ -369,19 +369,13 @@ class PedidoService {
       if (!pedido) {
         throw new Error('Pedido no encontrado');
       }
-  
-      // Verifica que el objeto pedido se actualice correctamente
-      console.log('pedido antes de actualizar:', pedido);
-  
+
       pedido.repartidorId = idRepartidor;
       pedido.codigoEntrega = codigo;
       pedido.puntoEncuentroId = Number(idPE.id);
-  
-      // Verifica que los cambios se reflejen en el objeto pedido
-      console.log('pedido después de actualizar:', pedido);
-  
+
       await pedido.save();
-      console.log('Pedido guardado exitosamente');
+      console.log(`Pedido ${pedido.id} actualizado con repartidorId=${idRepartidor}`);
       return pedido;
     } catch (error) {
       console.error('Error al guardar el pedido:', error);

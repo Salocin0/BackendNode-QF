@@ -153,7 +153,6 @@ class EventoController {
     try {
       const id = req.params.id;
       const evento = req.body.evento;
-      console.log(evento)
 
       const result = await eventoService.update(id, evento);
       return res.status(200).json({

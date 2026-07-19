@@ -17,9 +17,7 @@ class AsignacionService {
   }
 
   async getOne(consumidorId) {
-    console.log(consumidorId);
     const consumidor = await consumidorService.getOne(consumidorId);
-    console.log(consumidor);
     const asignacion = await Asignacion.findOne({
       where: { repartidoreId: consumidor.repartidorId },
       include: [

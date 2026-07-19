@@ -63,22 +63,18 @@ function iniciarProcesosAutomaticos() {
 
   intervalId = setInterval(async () => {
     try {
-      console.warn('procesosAutomaticos');
-      
       // Contador de trabajo realizado en esta ejecución
       let trabajoRealizado = false;
-      
+
       await caducarAsignaciones();
       const pedidos = await obtenerPedidosParaAsignacion();
-      console.warn('pedidos pendientes de asignar', pedidos);
-
       if (pedidos.length > 0) {
+        console.log('Pedidos pendientes de asignar:', pedidos.map(p => p.id));
         trabajoRealizado = true;
       }
 
       for (const pedido of pedidos) {
         const existeAsignacion = await verificarAsignacionPorPedidoCompleto(pedido.id);
-        console.warn('existeAsignacion', existeAsignacion);
 
         if (!existeAsignacion) {
           const repartidorid = await obtenerRepartidor(pedido.eventoId, pedido.id);

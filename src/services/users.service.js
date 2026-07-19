@@ -146,7 +146,6 @@ class UserService {
       } else if (rol == 'repartidor') {
         const repartidor = await repartidorService.create();
         const consumidor = await consumidorService.getOne(user.consumidorId);
-        console.log(repartidor, consumidor);
         consumidor.repartidorId = repartidor.id;
         consumidor.save();
         user.tipoUsuario = 'repartidor';

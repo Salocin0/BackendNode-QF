@@ -69,7 +69,6 @@ class EventoService {
         throw new Error('Evento no encontrado');
       }
 
-      console.log(evento);
       return evento.cantidadDiasEvento;
     } catch (error) {
       console.error("Error al obtener la cantidad de días del evento:", error);
@@ -188,15 +187,10 @@ class EventoService {
   }
 
   async istime() {
-    console.log(Date.now());
     await this.getAllInState(EstadosEvento.Confirmado).then((eventos) => {
-      console.log(eventos);
       eventos.forEach(async (evento) => {
-        console.log(evento);
-        if (true) {
-          evento.estado = EstadosEvento.EnCurso;
-          await evento.save();
-        }
+        evento.estado = EstadosEvento.EnCurso;
+        await evento.save();
       });
     });
   }

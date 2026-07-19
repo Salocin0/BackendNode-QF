@@ -264,7 +264,6 @@ class UserController {
   async getTokenByPuestoId(puestoId) {
     try {
       const puesto = await puestoService.getOne(puestoId)
-      console.log(puesto)
       const encargadoid= puesto.encargadoId
 
       const consumidor = await Consumidor.findOne({
