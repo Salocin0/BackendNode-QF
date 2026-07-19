@@ -20,9 +20,9 @@ export const EstadosPedido = {
   Pendiente: 'Pendiente',
   Aceptado: 'Aceptado',
   Cancelado: 'Cancelado',
-  EnPreparacion: 'En Preparacion',
+  EnPreparacion: 'EnPreparacion',
   Listo: 'Listo',
-  EnCamino: 'En Camino',
+  EnCamino: 'EnCamino',
   Entregado: 'Entregado',
   valorado: 'Valorado',
 };
