@@ -19,7 +19,8 @@ class AsignacionService {
   async getOne(consumidorId) {
     const consumidor = await consumidorService.getOne(consumidorId);
     const asignacion = await Asignacion.findOne({
-      where: { repartidoreId: consumidor.repartidorId },
+      where: { repartidoreId: consumidor.repartidorId, estado: 'Pendiente' },
+      order: [['createdAt', 'ASC']],
       include: [
         {
           model: Pedido,
