@@ -430,7 +430,7 @@ export async function runSeedDemo() {
   // Sin esto, procesosAutomaticos.js explota al finalizar la asignación de un
   // repartidor (pedidoService.setDatosExtraPedido hace idPE.id sobre un array
   // vacío) y el pedido nunca queda con repartidorId asignado.
-  await PuntoEncuentro.create({
+  const puntoEncuentro = await PuntoEncuentro.create({
     nombre: 'Entrada principal - Fiesta del Cuarteto',
     longitud: '-63.2304',
     latitud: '-32.4076',
@@ -601,11 +601,17 @@ export async function runSeedDemo() {
     repartidoreId: repartidor.id,
     PedidoId: pedidoEnCamino.id,
   });
-  // Seteamos repartidorId directo: en la app real lo hace procesosAutomaticos.js
-  // en su siguiente ciclo, pero esa consulta solo mira asignaciones aceptadas en
-  // los últimos 45s (ASIGNACION_WINDOW_SECONDS) — si el usuario tarda en revisar
-  // la demo, la ventana ya cerró y el pedido queda sin repartidor para siempre.
-  await pedidoEnCamino.update({ repartidorId: repartidor.id });
+  // Seteamos repartidorId/puntoEncuentroId/codigoEntrega directo: en la app real
+  // los pone procesosAutomaticos.js en su siguiente ciclo (pedidoService.setDatosExtraPedido),
+  // pero esa consulta solo mira asignaciones aceptadas en los últimos 45s
+  // (ASIGNACION_WINDOW_SECONDS) y además exige repartidorId IS NULL — si lo
+  // seteáramos solo a él, el pedido quedaría excluido de esa consulta y nunca
+  // recibiría punto de encuentro ni código de entrega.
+  await pedidoEnCamino.update({
+    repartidorId: repartidor.id,
+    puntoEncuentroId: puntoEncuentro.id,
+    codigoEntrega: 'CUARTETO1',
+  });
 
   const fechaEntregado = minutosAtras(60);
   const pedidoEntregado = await crearPedido({
