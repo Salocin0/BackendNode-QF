@@ -30,6 +30,7 @@ import { Encargado } from '../DAO/models/encargado.model.js';
 import { Repartidor } from '../DAO/models/repartidor.model.js';
 import { Evento } from '../DAO/models/evento.model.js';
 import { DiaEvento } from '../DAO/models/diaEvento.model.js';
+import { PuntoEncuentro } from '../DAO/models/puntoEncuentro.model.js';
 import { Puesto } from '../DAO/models/puesto.model.js';
 import { Producto } from '../DAO/models/producto.model.js';
 import { Asociacion } from '../DAO/models/asociacion.model.js';
@@ -426,6 +427,17 @@ export async function runSeedDemo() {
     eventoId: evento.id,
   });
 
+  // Sin esto, procesosAutomaticos.js explota al finalizar la asignación de un
+  // repartidor (pedidoService.setDatosExtraPedido hace idPE.id sobre un array
+  // vacío) y el pedido nunca queda con repartidorId asignado.
+  await PuntoEncuentro.create({
+    nombre: 'Entrada principal - Fiesta del Cuarteto',
+    longitud: '-63.2304',
+    latitud: '-32.4076',
+    habilitado: true,
+    eventoId: evento.id,
+  });
+
   console.log('✅ Evento demo creado\n');
 
   // Paso 4: puesto del encargado + productos
@@ -589,6 +601,11 @@ export async function runSeedDemo() {
     repartidoreId: repartidor.id,
     PedidoId: pedidoEnCamino.id,
   });
+  // Seteamos repartidorId directo: en la app real lo hace procesosAutomaticos.js
+  // en su siguiente ciclo, pero esa consulta solo mira asignaciones aceptadas en
+  // los últimos 45s (ASIGNACION_WINDOW_SECONDS) — si el usuario tarda en revisar
+  // la demo, la ventana ya cerró y el pedido queda sin repartidor para siempre.
+  await pedidoEnCamino.update({ repartidorId: repartidor.id });
 
   const fechaEntregado = minutosAtras(60);
   const pedidoEntregado = await crearPedido({
