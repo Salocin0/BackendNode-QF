@@ -72,6 +72,190 @@ export async function runSeedDemo() {
   await sequelize.sync();
   console.log('✅ Esquema sincronizado\n');
 
+  // Paso 0: asegurar que exista la función de asignación de repartidores.
+  // Solo se crea al correr Datos_DB.sql (npm run seed) — si esta base nunca
+  // corrió ese script, procesosAutomaticos.js falla en silencio al llamarla
+  // (catch que devuelve -2) y ningún pedido "En Camino" le llega a un
+  // repartidor. CREATE OR REPLACE es idempotente, seguro de repetir siempre.
+  const dialect = sequelize.getDialect ? sequelize.getDialect() : (sequelize.options && sequelize.options.dialect) || 'postgres';
+  if (dialect === 'postgres') {
+    console.log('🔄 Asegurando función seleccionar_repartidor_por_evento...');
+    await sequelize.query(`
+      CREATE OR REPLACE FUNCTION seleccionar_repartidor_por_evento(evento_id INTEGER, pedido_id INTEGER)
+      RETURNS INTEGER AS $$
+      DECLARE
+          repartidor_seleccionado INTEGER;
+          total_asignaciones_pendientes INTEGER;
+          total_repartidores_sin_estrellas INTEGER;
+          total_asignaciones INTEGER;
+      BEGIN
+          -- 1. Verificar si todos los repartidores asociados al evento están libres y no tienen entregas pendientes
+          SELECT COUNT(*) INTO total_asignaciones_pendientes
+          FROM "Asignacions" a
+          JOIN "Asociacions" asi ON a."repartidoreId" = asi."repartidoreId"
+          WHERE a.estado = 'Pendiente'
+            AND asi."eventoId" = evento_id
+            AND a."PedidoId" != pedido_id;
+
+          IF total_asignaciones_pendientes = 0 THEN
+              SELECT r.id INTO repartidor_seleccionado
+              FROM "repartidores" r
+              JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
+              WHERE asi."eventoId" = evento_id
+                AND r.id NOT IN (
+                    SELECT a."repartidoreId"
+                    FROM "Asignacions" a
+                    WHERE a."PedidoId" = pedido_id
+                )
+              ORDER BY RANDOM()
+              LIMIT 1;
+
+              IF FOUND THEN
+                  RETURN repartidor_seleccionado;
+              ELSE
+                  RETURN -1;
+              END IF;
+          END IF;
+
+          -- 2. Caso 1: Repartidores sin estrellas y sin pedidos asociados al evento
+          SELECT COUNT(*) INTO total_repartidores_sin_estrellas
+          FROM "repartidores" r
+          JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
+          LEFT JOIN "valoracionRepartidors" vr ON r.id = vr."repartidorId"
+          WHERE vr."repartidorId" IS NULL
+            AND asi."eventoId" = evento_id
+            AND r.id NOT IN (
+                SELECT a."repartidoreId"
+                FROM "Asignacions" a
+                WHERE a."PedidoId" = pedido_id
+            );
+
+          SELECT COUNT(*) INTO total_asignaciones
+          FROM "Asignacions" a
+          JOIN "Asociacions" asi ON a."repartidoreId" = asi."repartidoreId"
+          WHERE asi."eventoId" = evento_id
+            AND a."PedidoId" != pedido_id;
+
+          IF total_repartidores_sin_estrellas > 0 AND total_asignaciones = 0 THEN
+              SELECT r.id INTO repartidor_seleccionado
+              FROM "repartidores" r
+              JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
+              WHERE NOT EXISTS (
+                  SELECT 1
+                  FROM "valoracionRepartidors" vr
+                  WHERE r.id = vr."repartidorId"
+              )
+              AND asi."eventoId" = evento_id
+              AND r.id NOT IN (
+                  SELECT a."repartidoreId"
+                  FROM "Asignacions" a
+                  WHERE a."PedidoId" = pedido_id
+              )
+              ORDER BY RANDOM()
+              LIMIT 1;
+
+              IF FOUND THEN
+                  RETURN repartidor_seleccionado;
+              ELSE
+                  RETURN -1;
+              END IF;
+          END IF;
+
+          -- 3. Caso 2: Repartidores con estrellas y otros sin, asociados al evento
+          SELECT r.id INTO repartidor_seleccionado
+          FROM "repartidores" r
+          JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
+          WHERE NOT EXISTS (
+              SELECT 1
+              FROM "valoracionRepartidors" vr
+              WHERE r.id = vr."repartidorId"
+          )
+          AND asi."eventoId" = evento_id
+          AND r.id NOT IN (
+              SELECT a."repartidoreId"
+              FROM "Asignacions" a
+              WHERE a."PedidoId" = pedido_id
+          )
+          ORDER BY (
+              SELECT COUNT(*)
+              FROM "Asignacions" a2
+              WHERE a2."repartidoreId" = r.id AND a2."PedidoId" = pedido_id
+          )
+          LIMIT 1;
+
+          IF FOUND THEN
+              RETURN repartidor_seleccionado;
+          ELSE
+              RETURN -1;
+          END IF;
+
+          -- 4. Caso 3: Todos los repartidores con estrellas, asociados al evento
+          SELECT r.id INTO repartidor_seleccionado
+          FROM "repartidores" r
+          JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
+          JOIN "valoracionRepartidors" vr ON r.id = vr."repartidorId"
+          WHERE asi."eventoId" = evento_id
+          AND r.id NOT IN (
+              SELECT a."repartidoreId"
+              FROM "Asignacions" a
+              WHERE a."PedidoId" = pedido_id
+          )
+          ORDER BY vr.puntuacion DESC
+          LIMIT 1;
+
+          IF FOUND THEN
+              RETURN repartidor_seleccionado;
+          ELSE
+              RETURN -1;
+          END IF;
+
+          -- 5. Caso 4: Mismo puntaje, asociados al evento
+          SELECT r.id INTO repartidor_seleccionado
+          FROM (
+              SELECT r.id, AVG(vr.puntuacion) / COUNT(*) as ratio
+              FROM "repartidores" r
+              JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
+              JOIN "valoracionRepartidors" vr ON r.id = vr."repartidorId"
+              WHERE asi."eventoId" = evento_id
+              AND r.id NOT IN (
+                  SELECT a."repartidoreId"
+                  FROM "Asignacions" a
+                  WHERE a."PedidoId" = pedido_id
+              )
+              GROUP BY r.id
+              HAVING COUNT(*) > 0
+          ) t
+          WHERE ratio = (
+              SELECT MAX(ratio)
+              FROM (
+                  SELECT AVG(vr.puntuacion) / COUNT(*) as ratio
+                  FROM "repartidores" r
+                  JOIN "Asociacions" asi ON r.id = asi."repartidoreId"
+                  JOIN "valoracionRepartidors" vr ON r.id = vr."repartidorId"
+                  WHERE asi."eventoId" = evento_id
+                  AND r.id NOT IN (
+                      SELECT a."repartidoreId"
+                      FROM "Asignacions" a
+                      WHERE a."PedidoId" = pedido_id
+                  )
+                  GROUP BY r.id
+              ) sub
+          )
+          ORDER BY RANDOM()
+          LIMIT 1;
+
+          IF FOUND THEN
+              RETURN repartidor_seleccionado;
+          ELSE
+              RETURN -1;
+          END IF;
+
+      END;
+      $$ LANGUAGE plpgsql;
+    `);
+    console.log('✅ Función seleccionar_repartidor_por_evento asegurada\n');
+  }
+
   // Paso 1: vaciar la base
   console.log('🔄 Vaciando tablas existentes...');
   try {
