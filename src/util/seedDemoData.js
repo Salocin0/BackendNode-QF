@@ -610,7 +610,7 @@ export async function runSeedDemo() {
   await pedidoEnCamino.update({
     repartidorId: repartidor.id,
     puntoEncuentroId: puntoEncuentro.id,
-    codigoEntrega: 'CUARTETO1',
+    codigoEntrega: 'CUARTE',
   });
 
   const fechaEntregado = minutosAtras(60);
@@ -621,7 +621,7 @@ export async function runSeedDemo() {
   });
   await pedidoEntregado.update({
     fechaEntrega: new Date(fechaEntregado.getTime() + 10 * 60 * 1000),
-    codigoEntrega: 'DEMO123',
+    codigoEntrega: 'DEMO12',
   });
 
   console.log('✅ Pedidos demo creados\n');

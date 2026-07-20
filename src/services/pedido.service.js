@@ -371,7 +371,8 @@ class PedidoService {
       }
 
       pedido.repartidorId = idRepartidor;
-      pedido.codigoEntrega = codigo;
+      // Forzar que el código de entrega tenga como máximo 6 caracteres
+      pedido.codigoEntrega = String(codigo).toUpperCase().slice(0, 6);
       pedido.puntoEncuentroId = Number(idPE.id);
 
       await pedido.save();

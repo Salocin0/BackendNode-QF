@@ -27,6 +27,12 @@ export const Pedido = sequelize.define('Pedido', {
   codigoEntrega:{
     type: DataTypes.STRING,
     allowNull: true,
+    validate: {
+      len: {
+        args: [0, 6],
+        msg: "El código de entrega debe tener como máximo 6 caracteres",
+      },
+    },
   },
   fechaPreCompra:{
     type: DataTypes.DATE,
