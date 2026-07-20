@@ -333,6 +333,25 @@ class EstadisticasController {
       });
     }
   }
+
+  async getAnalisisLLM(req, res) {
+    try {
+      const { tipo, idConsumidor, idEvento, idPuesto } = req.body;
+      if (!tipo || !idConsumidor) {
+        return res.status(400).json({ status: 'error', msg: 'Faltan parámetros requeridos', data: {} });
+      }
+      const datos = await estadisticasService.getAnalisisLLM(
+        tipo,
+        idConsumidor,
+        idEvento || 'Todos',
+        idPuesto || 'Todos'
+      );
+      return res.status(200).json({ status: 'success', msg: 'Análisis generado', data: datos });
+    } catch (e) {
+      console.error(e);
+      return res.status(500).json({ status: 'error', msg: 'Error generando análisis', data: {} });
+    }
+  }
 }
 
 export const estadisticasController = new EstadisticasController();

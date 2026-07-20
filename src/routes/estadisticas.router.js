@@ -16,3 +16,4 @@ RouterEstadisticas.get('/consumidor/:idConsumidor', estadisticasController.getEs
 RouterEstadisticas.get('/repartidor/:idConsumidor', estadisticasController.getEstadisticasRepartidor);
 RouterEstadisticas.get('/puestos-con-pedidos/:idConsumidor', estadisticasController.getPuestosConPedidos);
 RouterEstadisticas.get('/eventos-con-pedidos/:idConsumidor', estadisticasController.getEventosConPedidos);
+RouterEstadisticas.post('/analisis-llm', estadisticasController.getAnalisisLLM);

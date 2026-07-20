@@ -5,6 +5,9 @@ import { consumidorService } from './consumidor.service.js';
 import { encargadoService } from './encargado.service.js';
 import { repartidorService } from './repartidor.service.js';
 import { userService } from './users.service.js';
+import { ChatOpenAI } from '@langchain/openai';
+import { PromptTemplate } from '@langchain/core/prompts';
+import { LLMChain } from 'langchain/chains';
 
 class EstadisticasService {
   async getTotalRecaudadoPorPuestoEnEvento(idevento) {
@@ -791,6 +794,95 @@ class EstadisticasService {
     } catch (error) {
       console.error('Error obteniendo eventos con pedidos:', error);
       throw new Error('Error al obtener eventos con pedidos');
+    }
+  }
+
+  async getAnalisisLLM(tipo, idConsumidor, idEvento, idPuesto) {
+    try {
+      let statsData = {};
+
+      if (tipo === 'encargado') {
+        const [totalRecaudado, valoracion, tiempoPromedio, topProductos] = await Promise.allSettled([
+          this.getTotalRecaudadoPuestoEvento(idConsumidor, idPuesto, idEvento),
+          this.getPromedioValoracionPuestoEvento(idConsumidor, idPuesto, idEvento),
+          this.getTiempoPromedioEntrega(idConsumidor, idPuesto, idEvento),
+          this.getTopProductosPorEventoYpuesto(idEvento, idPuesto),
+        ]);
+
+        statsData = {
+          rol: 'Encargado de Puesto',
+          filtros: {
+            evento: idEvento === 'Todos' ? 'Todos los eventos' : `Evento ID ${idEvento}`,
+            puesto: idPuesto === 'Todos' ? 'Todos los puestos' : `Puesto ID ${idPuesto}`,
+          },
+          totalRecaudado: totalRecaudado.status === 'fulfilled' ? totalRecaudado.value : 'Sin datos',
+          valoracionPromedio: valoracion.status === 'fulfilled' ? valoracion.value : 'Sin datos',
+          tiempoPromedioEntregaMinutos: tiempoPromedio.status === 'fulfilled' ? tiempoPromedio.value : 'Sin datos',
+          topProductos: topProductos.status === 'fulfilled' ? (topProductos.value || []).slice(0, 5) : [],
+        };
+      } else if (tipo === 'productor') {
+        const [totalRecaudado, valoracion, topPuestos] = await Promise.allSettled([
+          this.getTotalRecaudadoEvento(idEvento),
+          this.getPromedioValoracionPuesto(idEvento),
+          this.getTotalRecaudadoPorPuestoEnEvento(idEvento),
+        ]);
+
+        statsData = {
+          rol: 'Productor de Evento',
+          filtros: {
+            evento: idEvento === 'Todos' ? 'Todos los eventos' : `Evento ID ${idEvento}`,
+          },
+          totalRecaudado: totalRecaudado.status === 'fulfilled' ? totalRecaudado.value : 'Sin datos',
+          valoracionPromedio: valoracion.status === 'fulfilled' ? valoracion.value : 'Sin datos',
+          topPuestos: topPuestos.status === 'fulfilled' ? (topPuestos.value || []).slice(0, 5) : [],
+        };
+      }
+
+      const apiKey = process.env.CHATBOT_API_KEY;
+      const model = new ChatOpenAI({
+        apiKey,
+        modelName: 'gpt-4o',
+        temperature: 0.4,
+        maxTokens: 1200,
+      });
+
+      const template = new PromptTemplate({
+        inputVariables: ['statsData'],
+        template: `Sos un experto en análisis de negocios gastronómicos y eventos. 
+Tenés acceso a los siguientes datos estadísticos de QuickFood, una plataforma de eventos gastronómicos:
+
+{statsData}
+
+Generá un informe ejecutivo profesional en español con las siguientes secciones claramente delimitadas con títulos en MAYÚSCULAS:
+
+RESUMEN EJECUTIVO
+(2-3 oraciones con los puntos clave más importantes)
+
+ANÁLISIS DE RENDIMIENTO
+(Interpretación detallada de cada métrica: recaudación, valoración, tiempos, productos/puestos top. Indicá si los valores son buenos, regulares o malos según estándares del sector gastronómico)
+
+OPORTUNIDADES DETECTADAS
+(2-3 oportunidades concretas basadas en los datos)
+
+RIESGOS Y ALERTAS
+(Señalá métricas preocupantes si las hay, o indicá que no hay alertas)
+
+RECOMENDACIONES ESTRATÉGICAS
+(3-5 acciones concretas y priorizadas para mejorar el desempeño)
+
+Sé específico con los números. Usá un tono profesional pero accesible. No uses markdown como asteriscos o #.`,
+      });
+
+      const chain = new LLMChain({ llm: model, prompt: template });
+      const response = await chain.call({ statsData: JSON.stringify(statsData, null, 2) });
+
+      return {
+        analisis: response.text,
+        estadisticas: statsData,
+      };
+    } catch (error) {
+      console.error('Error generando análisis LLM:', error);
+      throw new Error('Error al generar el análisis con IA');
     }
   }
 }
