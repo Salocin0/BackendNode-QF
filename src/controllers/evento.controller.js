@@ -180,7 +180,7 @@ class EventoController {
 
       const result = await eventoService.update(id, datosEventoActualizar);
 
-      const todosLosDiasCreados = true;
+      let todosLosDiasCreados = true;
       if (datosEventoActualizar.diasEvento && datosEventoActualizar.diasEvento.length > 0) {
         for (const dia of datosEventoActualizar.diasEvento) {
           console.log('Creando día:', {
@@ -227,6 +227,13 @@ class EventoController {
       });
     } catch (e) {
       console.log('Error:', e);
+      if (e.message === 'No se encontró el evento con el id proporcionado') {
+        return res.status(404).json({
+          status: 'error',
+          msg: e.message,
+          data: {},
+        });
+      }
       return res.status(500).json({
         status: 'error',
         msg: 'Algo salió mal :(',
