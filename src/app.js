@@ -187,6 +187,49 @@ app.post('/admin/reset-db', async (req, res) => {
   }
 });
 
+// Página visual para disparar el seed de demo con un botón y ver el resumen
+app.get('/seed', (req, res) => {
+  res.status(200).send(`<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>QuickFood - Seed Demo</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #1a1a1a; color: #f0c040; max-width: 720px; margin: 40px auto; padding: 0 16px; }
+  h1 { text-align: center; }
+  button { background: #f0c040; color: #1a1a1a; border: none; padding: 14px 28px; font-size: 18px; font-weight: bold; border-radius: 8px; cursor: pointer; display: block; margin: 24px auto; }
+  button:disabled { opacity: .5; cursor: wait; }
+  pre { background: #111; color: #ddd; padding: 16px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap; }
+  .warn { color: #ff7043; text-align: center; }
+</style>
+</head>
+<body>
+<h1>🌱 Seed de datos de demo</h1>
+<p class="warn">⚠️ Esto VACÍA todas las tablas y siembra el dataset de demo (evento, 3 puestos, historial de pedidos para estadísticas).</p>
+<button id="btn" onclick="seed()">Resetear y sembrar datos de demo</button>
+<pre id="out">Todavía no se ejecutó nada.</pre>
+<script>
+async function seed() {
+  const btn = document.getElementById('btn');
+  const out = document.getElementById('out');
+  if (!confirm('¿Seguro? Se borran TODOS los datos actuales.')) return;
+  btn.disabled = true;
+  out.textContent = '⏳ Sembrando... (puede tardar un rato por el historial de pedidos)';
+  try {
+    const r = await fetch('/seed/demo');
+    const data = await r.json();
+    out.textContent = JSON.stringify(data, null, 2);
+  } catch (e) {
+    out.textContent = '❌ Error: ' + e.message;
+  } finally {
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>`);
+});
+
 // Endpoint de demo: vacía la DB y siembra el dataset de demo (4 roles, evento "fiesta del cuarteto", puesto, pedidos)
 // Sin autenticación a propósito — uso interno para preparar demos, decisión del dueño del proyecto.
 app.get('/seed/demo', async (req, res) => {

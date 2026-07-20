@@ -37,6 +37,8 @@ import { Asociacion } from '../DAO/models/asociacion.model.js';
 import { Pedido } from '../DAO/models/pedido.model.js';
 import { DetallePedido } from '../DAO/models/detallePedido.model.js';
 import { Asignacion } from '../DAO/models/asignacion.model.js';
+import { ValoracionPuesto } from '../DAO/models/valoracionCarrito.model.js';
+import { ValoracionRepartidor } from '../DAO/models/valoracionRepartidor.model.js';
 import { createHashPW } from './bcrypt.js';
 import { EstadosEvento, EstadosAsociaciones, EstadosPedido } from '../enums/Estados.enums.js';
 
@@ -418,14 +420,27 @@ export async function runSeedDemo() {
     productorId: productor.id,
   });
 
-  await DiaEvento.create({
-    nombre: 'Fiesta del Cuarteto',
-    descripcion: 'Jornada completa de la fiesta del cuarteto en Villa María.',
-    fechaHoraInicioDiaEvento: inicioEvento,
-    fechaHoraFinDiaEvento: finEvento,
-    tienePreventa: false,
-    eventoId: evento.id,
-  });
+  // Un DiaEvento por cada día desde el inicio (hace 7 días) hasta hoy inclusive.
+  // Así las estadísticas "pedidos por día" y "productos vendidos por día"
+  // muestran varios puntos en el gráfico en vez de un único bloque gigante.
+  const diasEvento = [];
+  for (let d = 0; ; d++) {
+    const inicioDia = new Date(inicioEvento);
+    inicioDia.setDate(inicioEvento.getDate() + d);
+    inicioDia.setHours(10, 0, 0, 0);
+    if (inicioDia > ahora) break;
+    const finDia = new Date(inicioDia);
+    finDia.setHours(23, 59, 0, 0);
+    const dia = await DiaEvento.create({
+      nombre: `Fiesta del Cuarteto - Día ${d + 1}`,
+      descripcion: 'Jornada de la fiesta del cuarteto en Villa María.',
+      fechaHoraInicioDiaEvento: inicioDia,
+      fechaHoraFinDiaEvento: finDia,
+      tienePreventa: false,
+      eventoId: evento.id,
+    });
+    diasEvento.push(dia);
+  }
 
   // Sin esto, procesosAutomaticos.js explota al finalizar la asignación de un
   // repartidor (pedidoService.setDatosExtraPedido hace idPE.id sobre un array
@@ -495,6 +510,84 @@ export async function runSeedDemo() {
     eventoId: evento.id,
     puestoId: puesto.id,
   });
+
+  // Dos puestos extra del mismo encargado, con sus productos, para que las
+  // estadísticas por puesto (ranking del productor, filtros del encargado)
+  // tengan varias series y no un único puesto.
+  const puestoParrilla = await Puesto.create({
+    nombreCarro: 'Parrilla Don Cuarteto',
+    numeroCarro: 2,
+    tipoNegocio: 'Food Truck',
+    banner: '',
+    img: null,
+    telefonoCarro: '3535123457',
+    estado: 'Creado',
+    encargadoId: encargado.id,
+  });
+  const [bondiola, papas] = await Promise.all([
+    Producto.create({
+      nombre: 'Bondiola',
+      descripcion: 'Sándwich de bondiola completo.',
+      precio: 4500,
+      estado: true,
+      img: null,
+      puestoId: puestoParrilla.id,
+    }),
+    Producto.create({
+      nombre: 'Papas fritas',
+      descripcion: 'Porción grande de papas fritas.',
+      precio: 2000,
+      estado: true,
+      img: null,
+      puestoId: puestoParrilla.id,
+    }),
+  ]);
+
+  const puestoBebidas = await Puesto.create({
+    nombreCarro: 'Barra de Tragos',
+    numeroCarro: 3,
+    tipoNegocio: 'Barra',
+    banner: '',
+    img: null,
+    telefonoCarro: '3535123458',
+    estado: 'Creado',
+    encargadoId: encargado.id,
+  });
+  const [fernet, gaseosa] = await Promise.all([
+    Producto.create({
+      nombre: 'Fernet con cola',
+      descripcion: 'Fernet con cola en vaso de litro.',
+      precio: 3000,
+      estado: true,
+      img: null,
+      puestoId: puestoBebidas.id,
+    }),
+    Producto.create({
+      nombre: 'Gaseosa',
+      descripcion: 'Gaseosa línea 500ml.',
+      precio: 1500,
+      estado: true,
+      img: null,
+      puestoId: puestoBebidas.id,
+    }),
+  ]);
+
+  await Asociacion.create({
+    estado: EstadosAsociaciones.Aceptada,
+    eventoId: evento.id,
+    puestoId: puestoParrilla.id,
+  });
+  await Asociacion.create({
+    estado: EstadosAsociaciones.Aceptada,
+    eventoId: evento.id,
+    puestoId: puestoBebidas.id,
+  });
+
+  const puestosConProductos = [
+    { puesto, productos },
+    { puesto: puestoParrilla, productos: [bondiola, papas] },
+    { puesto: puestoBebidas, productos: [fernet, gaseosa] },
+  ];
 
   console.log('✅ Puesto y productos demo creados\n');
 
@@ -626,6 +719,109 @@ export async function runSeedDemo() {
 
   console.log('✅ Pedidos demo creados\n');
 
+  // Paso 6b: historial de pedidos para las estadísticas.
+  // Genera pedidos Entregado/Valorado repartidos en todos los días del evento,
+  // en los 3 puestos, con tiempos de entrega realistas, valoraciones de puesto
+  // (alimenta las stats del Encargado y del Productor) y entregas hechas por el
+  // Repartidor demo con sus valoraciones (alimenta las stats del Repartidor).
+  console.log('🔄 Creando historial de pedidos para estadísticas...');
+
+  const OPINIONES = [
+    'Muy rico, volvería a pedir.',
+    'Llegó rápido y caliente.',
+    'Buena atención.',
+    'Tardó un poco pero valió la pena.',
+    'Excelente relación precio-calidad.',
+    'Todo perfecto.',
+  ];
+  const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+  let totalHistorial = 0;
+  let entregadosPorRepartidor = 0;
+
+  for (const dia of diasEvento) {
+    const inicioDia = new Date(dia.fechaHoraInicioDiaEvento);
+    for (const { puesto: p, productos: prods } of puestosConProductos) {
+      // Entre 4 y 8 pedidos por puesto por día
+      const cantidadPedidos = randomInt(4, 8);
+      for (let i = 0; i < cantidadPedidos; i++) {
+        // Hora del pedido: entre las 11:00 y las 22:30 del día
+        const fechaPedido = new Date(inicioDia);
+        fechaPedido.setHours(randomInt(11, 22), randomInt(0, 59), 0, 0);
+        if (fechaPedido > ahora) continue; // no crear pedidos en el futuro
+
+        const consumidorRandom = consumidoresRelleno[randomInt(0, consumidoresRelleno.length - 1)];
+        const esValorado = Math.random() < 0.6; // 60% valorados, 40% solo entregados
+        const conRepartidor = Math.random() < 0.5; // 50% entregados por el repartidor demo
+
+        const pedido = await Pedido.create({
+          fecha: fechaPedido,
+          total: 0,
+          estado: esValorado ? EstadosPedido.valorado : EstadosPedido.Entregado,
+          consumidorId: consumidorRandom.id,
+          eventoId: evento.id,
+          puestoId: p.id,
+        });
+
+        let total = 0;
+        const cantidadDetalles = randomInt(1, 3);
+        for (let j = 0; j < cantidadDetalles; j++) {
+          const producto = prods[randomInt(0, prods.length - 1)];
+          const cantidad = randomInt(1, 3);
+          total += cantidad * producto.precio;
+          await DetallePedido.create({
+            cantidad,
+            precio: producto.precio,
+            productoId: producto.id,
+            PedidoId: pedido.id,
+          });
+        }
+
+        // Tiempo de entrega: entre 8 y 35 minutos
+        const fechaEntrega = new Date(fechaPedido.getTime() + randomInt(8, 35) * 60 * 1000);
+        const updateData = {
+          total,
+          fechaEntrega,
+          codigoEntrega: `H${String(totalHistorial).padStart(5, '0')}`,
+        };
+
+        if (conRepartidor) {
+          updateData.repartidorId = repartidor.id;
+          updateData.puntoEncuentroId = puntoEncuentro.id;
+          await Asignacion.create({
+            estado: 'Aceptado',
+            repartidoreId: repartidor.id,
+            PedidoId: pedido.id,
+          });
+          entregadosPorRepartidor++;
+        }
+
+        await pedido.update(updateData);
+
+        if (esValorado) {
+          await ValoracionPuesto.create({
+            puntuacion: randomInt(3, 5),
+            opinion: OPINIONES[randomInt(0, OPINIONES.length - 1)],
+            puestoId: p.id,
+            pedidoId: pedido.id,
+          });
+          if (conRepartidor) {
+            await ValoracionRepartidor.create({
+              puntuacion: randomInt(3, 5),
+              opinion: OPINIONES[randomInt(0, OPINIONES.length - 1)],
+              repartidorId: repartidor.id,
+              pedidoId: pedido.id,
+            });
+          }
+        }
+
+        totalHistorial++;
+      }
+    }
+  }
+
+  console.log(`✅ Historial creado: ${totalHistorial} pedidos (${entregadosPorRepartidor} entregados por el Repartidor demo)\n`);
+
   // Paso 7: resumen final
   console.log('========================================');
   console.log('🎉 SEED DE DEMO COMPLETADO 🎉');
@@ -645,6 +841,9 @@ export async function runSeedDemo() {
   console.log(`   - ${EstadosPedido.Listo}: 1 (Cliente4)`);
   console.log(`   - ${EstadosPedido.EnCamino}: 1 (Consumidor demo, con Asignacion a Repartidor)`);
   console.log(`   - ${EstadosPedido.Entregado}: 1 (Cliente5)`);
+  console.log(`\n📊 Historial para estadísticas:`);
+  console.log(`   - ${totalHistorial} pedidos Entregado/Valorado repartidos en ${diasEvento.length} días y 3 puestos`);
+  console.log(`   - ${entregadosPorRepartidor} entregados por el Repartidor demo (con valoraciones)`);
   console.log('========================================');
 
   const resumen = {
@@ -667,6 +866,12 @@ export async function runSeedDemo() {
       [EstadosPedido.Listo]: 1,
       [EstadosPedido.EnCamino]: 1,
       [EstadosPedido.Entregado]: 1,
+      historialEstadisticas: {
+        totalPedidos: totalHistorial,
+        entregadosPorRepartidorDemo: entregadosPorRepartidor,
+        dias: diasEvento.length,
+        puestos: puestosConProductos.length,
+      },
     },
   };
 
