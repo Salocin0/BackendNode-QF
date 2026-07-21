@@ -9,8 +9,12 @@ import { isRetryableDbError, withDbRetry } from './dbRetry.js';
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const IS_PROD = NODE_ENV === 'production' || NODE_ENV === 'prod';
 
-// Intervalo entre ejecuciones del proceso principal (en ms)
-const DEFAULT_INTERVAL_MS = 15 * 1000; // 15 segundos para todos los ambientes
+// Intervalo entre ejecuciones del proceso principal (en ms). Cuánto tarda un
+// pedido recién puesto "En Camino" en generarle una propuesta de asignación
+// a un repartidor es, en el peor caso, este intervalo (más el polling de 1s
+// del celular) — 15s hacía sentir la demo lenta, 5s la hace ágil sin generar
+// carga real dado el volumen de esta app.
+const DEFAULT_INTERVAL_MS = 5 * 1000;
 const PROCESOS_INTERVAL_MS = process.env.PROCESOS_INTERVAL_MS ? parseInt(process.env.PROCESOS_INTERVAL_MS, 10) : DEFAULT_INTERVAL_MS;
 
 // Ventana en segundos usada para determinar si una asignación es reciente/caducable.
