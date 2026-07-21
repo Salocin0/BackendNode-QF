@@ -13,8 +13,11 @@ const IS_PROD = NODE_ENV === 'production' || NODE_ENV === 'prod';
 const DEFAULT_INTERVAL_MS = 15 * 1000; // 15 segundos para todos los ambientes
 const PROCESOS_INTERVAL_MS = process.env.PROCESOS_INTERVAL_MS ? parseInt(process.env.PROCESOS_INTERVAL_MS, 10) : DEFAULT_INTERVAL_MS;
 
-// Ventana en segundos usada para determinar si una asignación es reciente/caducable
-const DEFAULT_WINDOW_SECONDS = IS_PROD ? 45 : 45; // prod: 5min, dev: 45s
+// Ventana en segundos usada para determinar si una asignación es reciente/caducable.
+// Tiene que coincidir con ASIGNACION_WINDOW_SECONDS en my-app/Views/Pedidos/CardAsignacionPedido.js
+// (el celular oculta la propuesta sola pasado ese tiempo, sin importar si el backend la sigue
+// considerando "Pendiente"). El ternario anterior daba 45 en los dos casos pese al comentario.
+const DEFAULT_WINDOW_SECONDS = 300;
 const ASIGNACION_WINDOW_SECONDS = process.env.ASIGNACION_WINDOW_SECONDS ? parseInt(process.env.ASIGNACION_WINDOW_SECONDS, 10) : DEFAULT_WINDOW_SECONDS;
 
 // Control de ejecuciones vacías para optimizar costos
