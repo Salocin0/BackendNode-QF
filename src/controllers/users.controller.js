@@ -8,6 +8,12 @@ import { createHashPW } from '../util/bcrypt.js';
 import { sendEmail } from '../util/emailSender.js';
 import { puestoService } from '../services/puesto.service.js';
 
+// URL base del frontend para construir los links de los emails.
+const FRONTEND_URL = (
+  process.env.FRONTEND_URL ||
+  (process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',')[0].trim() : '') ||
+  'http://localhost:3000'
+).replace(/\/+$/, '');
 
 class UserController {
   async getAllcontroller(req, res) {
@@ -425,7 +431,7 @@ class UserController {
         sendEmail(
           correoElectronico,
           'Recuperar contraseña',
-          `Se solicitó un cambio de contraseña. enlace:http://localhost:3000/cambiar-contrasenia/${hash} codigo:${hash}`
+          `Se solicitó un cambio de contraseña. enlace:${FRONTEND_URL}/cambiar-contrasenia/${hash} codigo:${hash}`
         );
         return res.status(200).json({
           status: 'success',

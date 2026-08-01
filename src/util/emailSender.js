@@ -14,13 +14,14 @@ const getPasswordResetTemplate = (resetLink, code) => `
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recuperar Contraseña - QuickFood</title>
 </head>
-<body style="font-family: Arial, sans-serif; background-color: #000000; color: #FFD700; margin: 0; padding: 20px; text-align: center;">
+<body style="font-family: Arial, sans-serif; background-color: #ffffff; color: #FFD700; margin: 0; padding: 20px; text-align: center;">
     <div style="max-width: 600px; margin: 0 auto; background-color: #000000; padding: 20px; border: 2px solid #FFD700; border-radius: 10px;">
         <div style="font-size: 24px; font-weight: bold; margin-bottom: 20px; color: #FFD700;">QuickFood - Recuperar Contraseña</div>
         <div style="font-size: 16px; line-height: 1.6; color: #FFD700;">
             <p style="color: #FFD700;">Hola,</p>
             <p style="color: #FFD700;">Has solicitado recuperar tu contraseña. Haz clic en el siguiente enlace para cambiarla:</p>
             <a href="${resetLink}" style="display: inline-block; background-color: #FFD700; color: #000000; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin: 10px 0; font-weight: bold;">Cambiar Contraseña</a>
+            <p style="color: #FFD700; font-size: 13px;">Si el botón no funciona, copia y pega este link:<br><a href="${resetLink}" style="color: #FFD700;">${resetLink}</a></p>
             <p style="color: #FFD700;">O ingresa este código en la app:</p>
             <div style="font-size: 18px; font-weight: bold; background-color: #FFD700; color: #000000; padding: 10px; border-radius: 5px; display: inline-block; margin: 10px 0;">${code}</div>
             <p style="color: #FFD700;">Si no solicitaste este cambio, ignora este mensaje.</p>
@@ -41,13 +42,14 @@ const getUserActivationTemplate = (activationLink) => `
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Activar Usuario - QuickFood</title>
 </head>
-<body style="font-family: Arial, sans-serif; background-color: #000000; color: #FFD700; margin: 0; padding: 20px; text-align: center;">
+<body style="font-family: Arial, sans-serif; background-color: #ffffff; color: #FFD700; margin: 0; padding: 20px; text-align: center;">
     <div style="max-width: 600px; margin: 0 auto; background-color: #000000; padding: 20px; border: 2px solid #FFD700; border-radius: 10px;">
         <div style="font-size: 24px; font-weight: bold; margin-bottom: 20px; color: #FFD700;">QuickFood - Activar Usuario</div>
         <div style="font-size: 16px; line-height: 1.6; color: #FFD700;">
             <p style="color: #FFD700;">Hola,</p>
             <p style="color: #FFD700;">Para validar tu email y activar tu cuenta, haz clic en el siguiente enlace:</p>
             <a href="${activationLink}" style="display: inline-block; background-color: #FFD700; color: #000000; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin: 10px 0; font-weight: bold;">Activar Cuenta</a>
+            <p style="color: #FFD700; font-size: 13px;">Si el botón no funciona, copia y pega este link:<br><a href="${activationLink}" style="color: #FFD700;">${activationLink}</a></p>
             <p style="color: #FFD700;">¡Bienvenido a QuickFood!</p>
         </div>
         <div style="margin-top: 20px; font-size: 14px; color: #FFD700;">

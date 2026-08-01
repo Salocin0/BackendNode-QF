@@ -8,6 +8,14 @@ import { encargadoService } from './encargado.service.js';
 import { productorService } from './productor.service.js';
 import { repartidorService } from './repartidor.service.js';
 
+// URL base del frontend para construir los links de los emails.
+// Se toma de FRONTEND_URL; si no existe, del primer origen permitido en CORS_ORIGIN.
+const FRONTEND_URL = (
+  process.env.FRONTEND_URL ||
+  (process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',')[0].trim() : '') ||
+  'http://localhost:3000'
+).replace(/\/+$/, '');
+
 class UserService {
   async getAll() {
     const usuarios = await Usuario.findAll();
@@ -160,24 +168,22 @@ class UserService {
       return undefined;
     }
   }
-  // TO DO AGREGAR URL DEL FRONT DESPLEGADO .ENV
   async enviarEmailValidarEmail(id, email) {
     const usuario = await Usuario.findByPk(id);
     const hash = createHash('sha256').update(Date.now().toString()).digest('hex');
     usuario.codigoValidacion = hash;
     await usuario.save();
-    const url = `localhost:3000/habilitar-Usuario-email/${id}/${hash}`;
+    const url = `${FRONTEND_URL}/habilitar-Usuario-email/${id}/${hash}`;
     const respuestaEmail = await sendEmail(email, 'Habilitar Usuario', `enlace:${url}`);
     return respuestaEmail;
   }
-  // TO DO AGREGAR URL DEL FRONT DESPLEGADO .ENV
   async habilitarUsuario(id, email) {
     const usuario = await Usuario.findByPk(id);
     if (usuario.email === email) {
       const hash = createHash('sha256').update(Date.now().toString()).digest('hex');
       usuario.codigoHabilitacion = hash;
       await usuario.save();
-      const url = `localhost:3000/habilitar-Usuario/${id}/${hash}`;
+      const url = `${FRONTEND_URL}/habilitar-Usuario/${id}/${hash}`;
       const respuestaEmail = await sendEmail(email, 'Habilitar Usuario', `enlace:${url}`);
       return respuestaEmail;
     }
