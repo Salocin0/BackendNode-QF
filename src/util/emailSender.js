@@ -194,7 +194,7 @@ export async function sendEmail(destino, asuntoemail, mensajeemail, tipo = 'text
   for (let attempt = 1; attempt <= MAX_SEND_ATTEMPTS; attempt++) {
     try {
       const { data, error } = await resend.emails.send({
-        from: 'QuickFood <noreply@quickfood.com>', // Cambiar a dominio verificado en Resend
+        from: 'QuickFood <onboarding@resend.dev>', // Sandbox de Resend: solo entrega al email de la cuenta hasta verificar un dominio propio
         to: [to],
         subject: subject,
         text: text,
