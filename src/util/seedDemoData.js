@@ -822,7 +822,42 @@ export async function runSeedDemo() {
 
   console.log(`✅ Historial creado: ${totalHistorial} pedidos (${entregadosPorRepartidor} entregados por el Repartidor demo)\n`);
 
-  // Paso 7: resumen final
+  // Paso 7: evento recién creado, sin asociaciones, para probar el flujo de
+  // asociar puestos/repartidores desde cero (mismo Productor demo).
+  console.log('🔄 Creando evento demo "recién creado" (sin asociaciones)...');
+  const inicioEventoNuevo = new Date(ahora);
+  inicioEventoNuevo.setDate(ahora.getDate() + 14);
+  inicioEventoNuevo.setHours(10, 0, 0, 0);
+  const finEventoNuevo = new Date(ahora);
+  finEventoNuevo.setDate(ahora.getDate() + 15);
+  finEventoNuevo.setHours(23, 0, 0, 0);
+
+  const eventoNuevo = await Evento.create({
+    nombre: 'Feria de Otoño',
+    descripcion: 'Evento recién creado, todavía sin puestos ni repartidores asociados.',
+    tipoEvento: 'Feria',
+    tipoPago: 'Efectivo',
+    cantidadPuestos: '1',
+    conButaca: false,
+    conRepartidor: true,
+    tienePreventa: false,
+    linkVentaEntradas: '',
+    ubicacion: 'Villa María, Córdoba',
+    habilitado: true,
+    localidad: 'Villa María',
+    provincia: 'Córdoba',
+    img: loadImageAsDataUri('evento-cuarteto'),
+    estado: 'EnPreparacion1',
+    longitud: '-63.2304',
+    latitud: '-32.4076',
+    cantidadDiasEvento: String(Math.ceil((finEventoNuevo - inicioEventoNuevo) / 86400000)),
+    fechaHoraInicio: inicioEventoNuevo,
+    fechaHoraFin: finEventoNuevo,
+    productorId: productor.id,
+  });
+  console.log(`✅ Evento "${eventoNuevo.nombre}" creado sin asociaciones (estado: ${eventoNuevo.estado})\n`);
+
+  // Paso 8: resumen final
   console.log('========================================');
   console.log('🎉 SEED DE DEMO COMPLETADO 🎉');
   console.log('========================================\n');
@@ -834,6 +869,9 @@ export async function runSeedDemo() {
   console.log(`🎪 Evento: "${evento.nombre}"`);
   console.log(`   Inicio: ${inicioEvento.toString()}`);
   console.log(`   Fin:    ${finEvento.toString()}\n`);
+  console.log(`🆕 Evento sin asociaciones: "${eventoNuevo.nombre}" (estado: ${eventoNuevo.estado})`);
+  console.log(`   Inicio: ${inicioEventoNuevo.toString()}`);
+  console.log(`   Fin:    ${finEventoNuevo.toString()}\n`);
   console.log('🧾 Pedidos creados por estado:');
   console.log(`   - ${EstadosPedido.Pendiente}: 1 (Cliente1)`);
   console.log(`   - ${EstadosPedido.Aceptado}: 1 (Cliente2)`);
@@ -858,6 +896,12 @@ export async function runSeedDemo() {
       nombre: evento.nombre,
       inicio: inicioEvento,
       fin: finEvento,
+    },
+    eventoSinAsociaciones: {
+      nombre: eventoNuevo.nombre,
+      estado: eventoNuevo.estado,
+      inicio: inicioEventoNuevo,
+      fin: finEventoNuevo,
     },
     pedidos: {
       [EstadosPedido.Pendiente]: 1,
