@@ -152,44 +152,79 @@ const getUserActivationTemplate = (activationLink) => `
 </html>
 `;
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Errores de Resend que no se resuelven reintentando (config/datos inválidos)
+const NON_RETRYABLE_ERROR_NAMES = new Set([
+  'validation_error',
+  'missing_api_key',
+  'invalid_api_key',
+  'restricted_api_key',
+  'missing_required_field',
+  'invalid_from_address',
+  'invalid_to_address',
+]);
+
+const MAX_SEND_ATTEMPTS = 3;
+const RETRY_BASE_DELAY_MS = 1000;
+
 // Función para enviar el correo electrónico con Resend
 export async function sendEmail(destino, asuntoemail, mensajeemail, tipo = 'text') {
-  try {
-    const to = destino;
-    const subject = asuntoemail;
+  const to = destino;
+  const subject = asuntoemail;
 
-    let html = null;
-    let text = mensajeemail;
+  let html = null;
+  let text = mensajeemail;
 
-    // Si es recuperación de contraseña, generar HTML
-    if (asuntoemail.includes('Recuperar') || asuntoemail.includes('contraseña')) {
-      const enlaceMatch = mensajeemail.match(/enlace:([^\s]+)/);
-      const resetLink = enlaceMatch ? enlaceMatch[1] : '';
-      const codeMatch = mensajeemail.match(/codigo:([^\s]+)/);
-      const code = codeMatch ? codeMatch[1] : '';
-      html = getPasswordResetTemplate(resetLink, code);
-    }
-    // Si es habilitar usuario
-    else if (asuntoemail.includes('Habilitar') || asuntoemail.includes('Usuario')) {
-      const enlaceMatch = mensajeemail.match(/enlace:([^\s]+)/);
-      const activationLink = enlaceMatch ? enlaceMatch[1] : '';
-      html = getUserActivationTemplate(activationLink);
-    }
-
-    const data = await resend.emails.send({
-      from: 'QuickFood <noreply@quickfood.com>', // Cambiar a dominio verificado en Resend
-      to: [to],
-      subject: subject,
-      text: text,
-      html: html,
-    });
-
-    console.log('✅ Correo electrónico enviado:', data.data?.id);
-    return true;
-  } catch (error) {
-    console.error('❌ Error al enviar el correo electrónico:', error.message);
-    return false;
+  // Si es recuperación de contraseña, generar HTML
+  if (asuntoemail.includes('Recuperar') || asuntoemail.includes('contraseña')) {
+    const enlaceMatch = mensajeemail.match(/enlace:([^\s]+)/);
+    const resetLink = enlaceMatch ? enlaceMatch[1] : '';
+    const codeMatch = mensajeemail.match(/codigo:([^\s]+)/);
+    const code = codeMatch ? codeMatch[1] : '';
+    html = getPasswordResetTemplate(resetLink, code);
   }
+  // Si es habilitar usuario
+  else if (asuntoemail.includes('Habilitar') || asuntoemail.includes('Usuario')) {
+    const enlaceMatch = mensajeemail.match(/enlace:([^\s]+)/);
+    const activationLink = enlaceMatch ? enlaceMatch[1] : '';
+    html = getUserActivationTemplate(activationLink);
+  }
+
+  for (let attempt = 1; attempt <= MAX_SEND_ATTEMPTS; attempt++) {
+    try {
+      const { data, error } = await resend.emails.send({
+        from: 'QuickFood <noreply@quickfood.com>', // Cambiar a dominio verificado en Resend
+        to: [to],
+        subject: subject,
+        text: text,
+        html: html,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      console.log('✅ Correo electrónico enviado:', data?.id);
+      return true;
+    } catch (error) {
+      const isLastAttempt = attempt === MAX_SEND_ATTEMPTS;
+      const isRetryable = !NON_RETRYABLE_ERROR_NAMES.has(error?.name);
+
+      console.error(
+        `❌ Error al enviar el correo electrónico (intento ${attempt}/${MAX_SEND_ATTEMPTS}):`,
+        error.message
+      );
+
+      if (!isRetryable || isLastAttempt) {
+        return false;
+      }
+
+      await sleep(RETRY_BASE_DELAY_MS * attempt);
+    }
+  }
+
+  return false;
 }
 
 
