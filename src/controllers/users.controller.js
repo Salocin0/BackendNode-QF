@@ -632,6 +632,43 @@ class UserController {
       });
     }
   }
+
+  async actualizarToken(req, res) {
+    try {
+      const { id, tokenMobile, tokenWeb } = req.body;
+      if (!id) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'id is required',
+          code: 400,
+          data: {},
+        });
+      }
+      const usuario = await userService.setTokens(id, tokenWeb, tokenMobile);
+      if (usuario) {
+        return res.status(200).json({
+          status: 'success',
+          msg: 'token actualizado',
+          code: 200,
+          data: usuario,
+        });
+      } else {
+        return res.status(404).json({
+          status: 'error',
+          msg: 'usuario no encontrado',
+          code: 404,
+          data: {},
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        status: 'error',
+        msg: 'something went wrong :(',
+        data: {},
+      });
+    }
+  }
 }
 
 export const userController = new UserController();

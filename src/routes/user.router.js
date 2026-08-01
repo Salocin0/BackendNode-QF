@@ -36,3 +36,5 @@ RouterUser.delete('/:id', userController.deshabilitarUsuario);
 RouterUser.post('/cerrarWeb', userController.cerrarWeb);
 
 RouterUser.post('/cerrarMobile', userController.cerrarMobile);
+
+RouterUser.put('/token', userController.actualizarToken);

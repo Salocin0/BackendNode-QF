@@ -1,4 +1,4 @@
-import { sendNotificacionesMobile } from '../../dist/util/NotificacionesMobile.js';
+import { sendNotificacionesMobile } from '../util/NotificacionesMobile.js';
 import { userController } from '../controllers/users.controller.js';
 import { sendNotificacionesWeb } from '../util/Notificaciones.js';
 import { asociacionService } from './asociacion.service.js';
@@ -60,9 +60,8 @@ class NotificacionesService {
     for (const pedido of pedidos) {
       const consumidorid = pedido.consumidorId;
       const usuario = await userService.getOneByConsumidorId(consumidorid);
-      userController.getTokenByEncargadoId
-      const tokenUsuarioMobile = usuario.tokenWeb;
-      const tokenUsuarioWeb = usuario.tokenMobile;
+      const tokenUsuarioMobile = usuario.tokenMobile;
+      const tokenUsuarioWeb = usuario.tokenWeb;
       const tituloNotificacion = notificationTexts.consumidor.tituloEventoIniciado;
       const descripcionNotificacion = notificationTexts.consumidor.descripcionEventoIniciado;
       this.enviarNotificacionesAUsuario(usuario.id, tituloNotificacion, descripcionNotificacion, tokenUsuarioMobile, tokenUsuarioWeb)
@@ -82,7 +81,7 @@ class NotificacionesService {
       estadoNotif = 'visto';
     }
     if (tokenUsuarioMobile) {
-      await sendNotificacionesMobile(tokenUsuarioMobile, titulo, descripcion);
+      await sendNotificacionesMobile(tokenUsuarioMobile, titulo, descripcion, usuario.id);
       estadoNotif = 'visto';
     }
     await this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'todos', estadoNotif);
@@ -97,7 +96,7 @@ class NotificacionesService {
       estadoNotif = 'visto';
     }
     if (tokenUsuarioMobile) {
-      await sendNotificacionesMobile(tokenUsuarioMobile, titulo, descripcion);
+      await sendNotificacionesMobile(tokenUsuarioMobile, titulo, descripcion, usuarioId);
       estadoNotif = 'visto';
     }
     await this.crearNotificacion(usuarioId, tituloNotificacion, descripcionNotificacion, 'todos', estadoNotif);
@@ -110,7 +109,7 @@ class NotificacionesService {
       estadoNotif = 'visto';
     }
     if (tokenMobile) {
-      await sendNotificacionesMobile(tokenMobile, tituloNotificacion, descripcionNotificacion);
+      await sendNotificacionesMobile(tokenMobile, tituloNotificacion, descripcionNotificacion, usuario.id);
       estadoNotif = 'visto';
     }
     await this.crearNotificacion(usuario.id, tituloNotificacion, descripcionNotificacion, 'todos', estadoNotif);
@@ -166,7 +165,7 @@ class NotificacionesService {
     await this._enviarConUnificacion(usuarioEncargado, tituloNotificacionEncargado, descripcionNotificacionEncargado, tokenUsuarioWebEncargado, tokenUsuarioMobileEncargado);
 
     const usuarioRepartidor = await userService.getOneByRepartidorId(repartidorId);
-    const { tokenUsuarioWeb: tokenUsuarioWebRepartidor, tokenUsuarioMobile: tokenUsuarioMobileRepartidor } = getTokenByRepartidorrId(repartidorId) || {};
+    const { tokenUsuarioWeb: tokenUsuarioWebRepartidor, tokenUsuarioMobile: tokenUsuarioMobileRepartidor } = await userController.getTokenByRepartidorrId(repartidorId);
     await this._enviarConUnificacion(usuarioRepartidor, tituloNotificacionRepartidor, descripcionNotificacionRepartidor, tokenUsuarioWebRepartidor, tokenUsuarioMobileRepartidor);
   }
 

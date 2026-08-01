@@ -393,24 +393,19 @@ class PedidoService {
       if (estadosPedido[estadoActual] && estadosPedido[estadoActual][accion]) {
         await estadosPedido[estadoActual][accion](pedido);
         if(accion === 'aceptar'){
-          const puestoId = pedido.puestoId;
-          const pedidoNotificaciones = await this.sendNotificacionesPedidoAceptado(puestoId);
+          const pedidoNotificaciones = await this.sendNotificacionesPedidoAceptado(pedido.consumidorId);
         }
         if(accion === 'preparar'){
-          const puestoId = pedido.puestoId;
-          const pedidoNotificaciones = await this.sendNotificacionesPedidoPreparado(puestoId);
+          const pedidoNotificaciones = await this.sendNotificacionesPedidoPreparado(pedido.consumidorId);
         }
         if(accion === 'enCamino'){
-          const puestoId = pedido.puestoId;
-          const pedidoNotificaciones = await this.sendNotificacionesPedidoEnCamino(puestoId);
+          const pedidoNotificaciones = await this.sendNotificacionesPedidoEnCamino(pedido.consumidorId);
         }
         if(accion === 'cancelar'){
-          const puestoId = pedido.puestoId;
-          const pedidoNotificaciones = await this.sendNotificacionesPedidoCancelado(puestoId);
+          const pedidoNotificaciones = await this.sendNotificacionesPedidoCancelado(pedido.puestoId, pedido.consumidorId);
         }
         if(accion === 'pedidoEntregado'){
-          const puestoId = pedido.puestoId;
-          const pedidoNotificaciones = await this.sendNotificacionesPedidoEntregado(puestoId);
+          const pedidoNotificaciones = await this.sendNotificacionesPedidoEntregado(pedido.consumidorId);
           pedido.fechaEntrega = Date.now();
           pedido.save();
         }
