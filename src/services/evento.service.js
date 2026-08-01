@@ -16,9 +16,10 @@ class EventoService {
       },
       include: [{
         model: DiaEvento,
+        required: false,
       }],
     });
-  
+
     return eventos;
   }
   
@@ -26,6 +27,7 @@ class EventoService {
   async getAll() {
     const eventos = await Evento.findAll({include: [{
       model: DiaEvento,
+      required: false,
     }]});
     return eventos;
   }
@@ -56,6 +58,7 @@ class EventoService {
     const evento = Evento.findByPk(id,{
       include: [{
         model: DiaEvento,
+        required: false,
       }]
     });
     return evento;
