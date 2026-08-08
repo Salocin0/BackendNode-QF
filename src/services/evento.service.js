@@ -161,7 +161,7 @@ class EventoService {
       baseDelayMs: 1000,
     });
 
-    this.crearEvento(eventoCreado);
+    await this.crearEvento(eventoCreado);
 
     if (nuevoEvento.restricciones && nuevoEvento.restricciones.length > 0) {
       nuevoEvento.restricciones.forEach(async (restriccion) => {
@@ -199,11 +199,11 @@ class EventoService {
   }
 
   async crearEvento(evento) {
-    estadosEvento.EnPreparacion.crearEvento(evento);
+    return estadosEvento.EnPreparacion.crearEvento(evento);
   }
 
   async actualizarEvento(evento) {
-    estadosEvento.EnPreparacion1.actualizarEvento(evento);
+    return estadosEvento.EnPreparacion1.actualizarEvento(evento);
   }
 
 

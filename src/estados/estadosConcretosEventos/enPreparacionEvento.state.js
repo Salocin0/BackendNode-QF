@@ -2,7 +2,7 @@ import { cancelarPedidosPendientes } from './pedidoUtils.js';
 
 export const EnPreparacion = {
   crearEvento: async (evento) => {
-    evento.estado = 'EnPreparacion1';
+    evento.estado = 'EnPreparacion';
     await evento.save();
     return evento;
   },
