@@ -429,8 +429,15 @@ export async function runSeedDemo() {
     inicioDia.setDate(inicioEvento.getDate() + d);
     inicioDia.setHours(10, 0, 0, 0);
     if (inicioDia > ahora) break;
+    // El evento es de Villa María (ART, UTC-3), pero el proceso corre en UTC
+    // (Railway). "23:59 hora Argentina" equivale a las 02:59 UTC del día
+    // siguiente: si se usara setHours(23,59,...) directo, el día quedaría
+    // "finalizado" (fechaFin < ahora) desde las 21:00 ART en adelante, y
+    // filtrarFinalizados() del frontend ocultaría el evento aunque su
+    // estado siga en EnCurso.
     const finDia = new Date(inicioDia);
-    finDia.setHours(23, 59, 0, 0);
+    finDia.setDate(finDia.getDate() + 1);
+    finDia.setHours(2, 59, 0, 0);
     const dia = await DiaEvento.create({
       nombre: `Fiesta del Cuarteto - Día ${d + 1}`,
       descripcion: 'Jornada de la fiesta del cuarteto en Villa María.',
