@@ -866,86 +866,219 @@ export async function runSeedDemo() {
 
   // Paso 7b: un evento por cada estado posible y por cada combinatoria
   // con/sin preventa, para poder probar cualquier pantalla que filtre por
-  // estado o por preventa. Salvo "EnCurso" (que arranca ya y se extiende
-  // varios días a futuro, para que se vea "en vivo" sin caer en el mismo
-  // bug de vencimiento que "fiesta del cuarteto"), todos arrancan semanas
-  // a futuro: nunca "terminan pronto", así no dependen de cuándo se corra
-  // el seed para seguir siendo visibles.
+  // estado o por preventa. "temporalidad" define cuándo arranca cada uno:
+  //   - 'futuro': arranca semanas adelante y nunca "termina pronto" (no
+  //     depende de cuándo se corra el seed para seguir siendo visible).
+  //   - 'vivo': arrancó hace 2 días y se extiende 14 días a futuro, para
+  //     que se vea "en vivo" sin caer en el bug de vencimiento que tenía
+  //     "fiesta del cuarteto".
+  //   - 'pasado': ya terminó hace semanas (solo tiene sentido para
+  //     "Finalizado" — un evento finalizado no puede estar a futuro).
+  // No se les pone imagen: solo existe la foto de "fiesta del cuarteto" en
+  // src/public/images, y reusarla en 16 eventos distintos sería engañoso.
   console.log('🔄 Creando eventos demo por estado y combinatoria de preventa...');
-  const estadosDemo = [
-    'EnPreparacion',
-    'EnPreparacion1',
-    'EnPreparacion2',
-    'Confirmado',
-    'EnCurso',
-    'Pausado',
-    'Cancelado',
-    'Finalizado',
+  const eventosDemoDef = [
+    {
+      estado: 'EnPreparacion',
+      temporalidad: 'futuro',
+      nombre: 'Feria de Emprendedores de Villa María',
+      descripcion: 'Feria de emprendedores locales en la Plaza San Martín. Todavía en planificación: faltan confirmar puestos y fecha definitiva.',
+      tipoEvento: 'Feria',
+      conPreventa: false,
+    },
+    {
+      estado: 'EnPreparacion',
+      temporalidad: 'futuro',
+      nombre: 'Festival de Cerveza Artesanal Cordobesa',
+      descripcion: 'Festival de cervecerías artesanales de la región. Se abrió la preventa de entradas mientras se terminan de definir los puestos.',
+      tipoEvento: 'Gastronómico',
+      conPreventa: true,
+    },
+    {
+      estado: 'EnPreparacion1',
+      temporalidad: 'futuro',
+      nombre: 'Corso de Carnaval Villa María',
+      descripcion: 'Corsos populares por Av. Sabattini. En etapa inicial de organización con el municipio.',
+      tipoEvento: 'Cultural',
+      conPreventa: false,
+    },
+    {
+      estado: 'EnPreparacion1',
+      temporalidad: 'futuro',
+      nombre: 'Recital de Rock Nacional - Estadio Municipal',
+      descripcion: 'Recital con bandas de rock nacional en el Estadio Municipal. Line-up todavía por confirmar, preventa anticipada ya disponible.',
+      tipoEvento: 'Música',
+      conPreventa: true,
+    },
+    {
+      estado: 'EnPreparacion2',
+      temporalidad: 'futuro',
+      nombre: 'Exposición Rural de Villa María',
+      descripcion: 'Muestra anual de la Sociedad Rural, con stands de maquinaria agrícola y remate de hacienda. Cerrando detalles de logística.',
+      tipoEvento: 'Exposición',
+      conPreventa: false,
+    },
+    {
+      estado: 'EnPreparacion2',
+      temporalidad: 'futuro',
+      nombre: 'Festival de Jazz de Verano',
+      descripcion: 'Ciclo de jazz al aire libre en el Anfiteatro Municipal. Preventa de abonos ya abierta, cartel de artistas en definición.',
+      tipoEvento: 'Música',
+      conPreventa: true,
+    },
+    {
+      estado: 'Confirmado',
+      temporalidad: 'futuro',
+      nombre: 'Fiesta Patronal de San Martín',
+      descripcion: 'Fiesta patronal del barrio San Martín, con entrada libre y gratuita. Fecha y puestos ya confirmados.',
+      tipoEvento: 'Fiesta popular',
+      conPreventa: false,
+    },
+    {
+      estado: 'Confirmado',
+      temporalidad: 'futuro',
+      nombre: 'Cosquín Rock - Edición Villa María',
+      descripcion: 'Edición confirmada del festival itinerante, con entradas generales y VIP en preventa.',
+      tipoEvento: 'Música',
+      conPreventa: true,
+    },
+    {
+      estado: 'EnCurso',
+      temporalidad: 'vivo',
+      nombre: 'Kermés Solidaria del Club Atlético',
+      descripcion: 'Kermés a beneficio de las divisiones inferiores del club, ya en marcha, con entrada libre.',
+      tipoEvento: 'Solidario',
+      conPreventa: false,
+    },
+    {
+      estado: 'EnCurso',
+      temporalidad: 'vivo',
+      nombre: 'Expo Gastronómica del Río Ctalamochita',
+      descripcion: 'Muestra gastronómica a orillas del río, en curso durante varios días, con entradas anticipadas para las jornadas que faltan.',
+      tipoEvento: 'Gastronómico',
+      conPreventa: true,
+    },
+    {
+      estado: 'Pausado',
+      temporalidad: 'futuro',
+      nombre: 'Festival de Doma y Folklore',
+      descripcion: 'Festival tradicionalista pausado por pronóstico de lluvia; se reanuda apenas mejore el clima.',
+      tipoEvento: 'Cultural',
+      conPreventa: false,
+    },
+    {
+      estado: 'Pausado',
+      temporalidad: 'futuro',
+      nombre: 'Maratón Solidaria Nocturna',
+      descripcion: 'Maratón a beneficio pausada por reprogramación del circuito. La preventa de kits e inscripciones sigue activa.',
+      tipoEvento: 'Deportivo',
+      conPreventa: true,
+    },
+    {
+      estado: 'Cancelado',
+      temporalidad: 'futuro',
+      nombre: 'Verbena Popular Barrio Centro',
+      descripcion: 'Verbena barrial cancelada por falta de permisos municipales.',
+      tipoEvento: 'Fiesta popular',
+      conPreventa: false,
+    },
+    {
+      estado: 'Cancelado',
+      temporalidad: 'futuro',
+      nombre: 'Show de Fin de Año - Plaza Vélez Sarsfield',
+      descripcion: 'Show musical de fin de año cancelado por el municipio; las entradas ya vendidas en preventa quedan pendientes de reembolso.',
+      tipoEvento: 'Música',
+      conPreventa: true,
+    },
+    {
+      estado: 'Finalizado',
+      temporalidad: 'pasado',
+      nombre: 'Fiesta de la Cosecha 2025',
+      descripcion: 'Edición 2025 de la fiesta de la cosecha, ya finalizada.',
+      tipoEvento: 'Fiesta popular',
+      conPreventa: false,
+    },
+    {
+      estado: 'Finalizado',
+      temporalidad: 'pasado',
+      nombre: 'Aniversario de Villa María 2025',
+      descripcion: 'Festejos por el aniversario de la ciudad en 2025, ya finalizados. Tuvo entradas en preventa para los shows centrales.',
+      tipoEvento: 'Fiesta popular',
+      conPreventa: true,
+    },
   ];
 
   let semanaOffset = 3;
+  let semanaOffsetPasado = 10;
   const eventosPorEstado = [];
-  for (const estadoDemo of estadosDemo) {
-    for (const conPreventa of [false, true]) {
-      let inicioDemo;
-      let finDemo;
-      if (estadoDemo === 'EnCurso') {
-        inicioDemo = new Date(ahora);
-        inicioDemo.setDate(ahora.getDate() - 2);
-        inicioDemo.setHours(10, 0, 0, 0);
-        finDemo = new Date(ahora);
-        finDemo.setDate(ahora.getDate() + 14);
-        finDemo.setHours(23, 0, 0, 0);
-      } else {
-        inicioDemo = new Date(ahora);
-        inicioDemo.setDate(ahora.getDate() + semanaOffset * 7);
-        inicioDemo.setHours(10, 0, 0, 0);
-        finDemo = new Date(inicioDemo);
-        finDemo.setDate(inicioDemo.getDate() + 2);
-        finDemo.setHours(23, 0, 0, 0);
-        semanaOffset += 1;
-      }
-
-      const eventoDemo = await Evento.create({
-        nombre: `Evento demo ${estadoDemo} ${conPreventa ? 'con' : 'sin'} preventa`,
-        descripcion: `Evento de prueba en estado "${estadoDemo}", ${conPreventa ? 'con' : 'sin'} preventa habilitada.`,
-        tipoEvento: 'Feria',
-        tipoPago: 'Efectivo',
-        cantidadPuestos: '1',
-        conButaca: false,
-        conRepartidor: true,
-        tienePreventa: conPreventa,
-        fechaInicioPreventa: conPreventa ? ahora : null,
-        linkVentaEntradas: conPreventa ? 'https://entradas.demo/qf' : '',
-        ubicacion: 'Villa María, Córdoba',
-        habilitado: true,
-        localidad: 'Villa María',
-        provincia: 'Córdoba',
-        img: loadImageAsDataUri('evento-cuarteto'),
-        estado: estadoDemo,
-        longitud: '-63.2304',
-        latitud: '-32.4076',
-        cantidadDiasEvento: String(Math.ceil((finDemo - inicioDemo) / 86400000)),
-        fechaHoraInicio: inicioDemo,
-        fechaHoraFin: finDemo,
-        productorId: productor.id,
-      });
-
-      await DiaEvento.create({
-        nombre: `${eventoDemo.nombre} - Día 1`,
-        descripcion: `Jornada del evento demo en estado "${estadoDemo}".`,
-        fechaHoraInicioDiaEvento: inicioDemo,
-        fechaHoraFinDiaEvento: finDemo,
-        tienePreventa: conPreventa,
-        eventoId: eventoDemo.id,
-      });
-
-      eventosPorEstado.push({
-        id: eventoDemo.id,
-        estado: estadoDemo,
-        tienePreventa: conPreventa,
-      });
+  for (const def of eventosDemoDef) {
+    let inicioDemo;
+    let finDemo;
+    if (def.temporalidad === 'vivo') {
+      inicioDemo = new Date(ahora);
+      inicioDemo.setDate(ahora.getDate() - 2);
+      inicioDemo.setHours(10, 0, 0, 0);
+      finDemo = new Date(ahora);
+      finDemo.setDate(ahora.getDate() + 14);
+      finDemo.setHours(23, 0, 0, 0);
+    } else if (def.temporalidad === 'pasado') {
+      inicioDemo = new Date(ahora);
+      inicioDemo.setDate(ahora.getDate() - semanaOffsetPasado * 7);
+      inicioDemo.setHours(10, 0, 0, 0);
+      finDemo = new Date(inicioDemo);
+      finDemo.setDate(inicioDemo.getDate() + 2);
+      finDemo.setHours(23, 0, 0, 0);
+      semanaOffsetPasado += 1;
+    } else {
+      inicioDemo = new Date(ahora);
+      inicioDemo.setDate(ahora.getDate() + semanaOffset * 7);
+      inicioDemo.setHours(10, 0, 0, 0);
+      finDemo = new Date(inicioDemo);
+      finDemo.setDate(inicioDemo.getDate() + 2);
+      finDemo.setHours(23, 0, 0, 0);
+      semanaOffset += 1;
     }
+
+    const eventoDemo = await Evento.create({
+      nombre: def.nombre,
+      descripcion: def.descripcion,
+      tipoEvento: def.tipoEvento,
+      tipoPago: 'Efectivo',
+      cantidadPuestos: '1',
+      conButaca: false,
+      conRepartidor: true,
+      tienePreventa: def.conPreventa,
+      fechaInicioPreventa: def.conPreventa ? ahora : null,
+      linkVentaEntradas: def.conPreventa ? 'https://entradas.demo/qf' : '',
+      ubicacion: 'Villa María, Córdoba',
+      habilitado: true,
+      localidad: 'Villa María',
+      provincia: 'Córdoba',
+      img: '',
+      estado: def.estado,
+      longitud: '-63.2304',
+      latitud: '-32.4076',
+      cantidadDiasEvento: String(Math.ceil((finDemo - inicioDemo) / 86400000)),
+      fechaHoraInicio: inicioDemo,
+      fechaHoraFin: finDemo,
+      productorId: productor.id,
+    });
+
+    await DiaEvento.create({
+      nombre: `${eventoDemo.nombre} - Día 1`,
+      descripcion: `Jornada de "${eventoDemo.nombre}".`,
+      fechaHoraInicioDiaEvento: inicioDemo,
+      fechaHoraFinDiaEvento: finDemo,
+      tienePreventa: def.conPreventa,
+      eventoId: eventoDemo.id,
+    });
+
+    eventosPorEstado.push({
+      id: eventoDemo.id,
+      nombre: eventoDemo.nombre,
+      estado: def.estado,
+      tienePreventa: def.conPreventa,
+    });
   }
   console.log(`✅ ${eventosPorEstado.length} eventos demo creados (uno por combinación estado × preventa)\n`);
 
@@ -964,7 +1097,7 @@ export async function runSeedDemo() {
   console.log(`🆕 Evento sin asociaciones: "${eventoNuevo.nombre}" (estado: ${eventoNuevo.estado})`);
   console.log(`   Inicio: ${inicioEventoNuevo.toString()}`);
   console.log(`   Fin:    ${finEventoNuevo.toString()}\n`);
-  console.log(`🗂️  Eventos demo por estado × preventa: ${eventosPorEstado.length} (${estadosDemo.join(', ')})\n`);
+  console.log(`🗂️  Eventos demo por estado × preventa: ${eventosPorEstado.length}\n`);
   console.log('🧾 Pedidos creados por estado:');
   console.log(`   - ${EstadosPedido.Pendiente}: 1 (Cliente1)`);
   console.log(`   - ${EstadosPedido.Aceptado}: 1 (Cliente2)`);
