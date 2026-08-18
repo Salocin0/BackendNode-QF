@@ -864,6 +864,91 @@ export async function runSeedDemo() {
   });
   console.log(`✅ Evento "${eventoNuevo.nombre}" creado sin asociaciones (estado: ${eventoNuevo.estado})\n`);
 
+  // Paso 7b: un evento por cada estado posible y por cada combinatoria
+  // con/sin preventa, para poder probar cualquier pantalla que filtre por
+  // estado o por preventa. Salvo "EnCurso" (que arranca ya y se extiende
+  // varios días a futuro, para que se vea "en vivo" sin caer en el mismo
+  // bug de vencimiento que "fiesta del cuarteto"), todos arrancan semanas
+  // a futuro: nunca "terminan pronto", así no dependen de cuándo se corra
+  // el seed para seguir siendo visibles.
+  console.log('🔄 Creando eventos demo por estado y combinatoria de preventa...');
+  const estadosDemo = [
+    'EnPreparacion',
+    'EnPreparacion1',
+    'EnPreparacion2',
+    'Confirmado',
+    'EnCurso',
+    'Pausado',
+    'Cancelado',
+    'Finalizado',
+  ];
+
+  let semanaOffset = 3;
+  const eventosPorEstado = [];
+  for (const estadoDemo of estadosDemo) {
+    for (const conPreventa of [false, true]) {
+      let inicioDemo;
+      let finDemo;
+      if (estadoDemo === 'EnCurso') {
+        inicioDemo = new Date(ahora);
+        inicioDemo.setDate(ahora.getDate() - 2);
+        inicioDemo.setHours(10, 0, 0, 0);
+        finDemo = new Date(ahora);
+        finDemo.setDate(ahora.getDate() + 14);
+        finDemo.setHours(23, 0, 0, 0);
+      } else {
+        inicioDemo = new Date(ahora);
+        inicioDemo.setDate(ahora.getDate() + semanaOffset * 7);
+        inicioDemo.setHours(10, 0, 0, 0);
+        finDemo = new Date(inicioDemo);
+        finDemo.setDate(inicioDemo.getDate() + 2);
+        finDemo.setHours(23, 0, 0, 0);
+        semanaOffset += 1;
+      }
+
+      const eventoDemo = await Evento.create({
+        nombre: `Evento demo ${estadoDemo} ${conPreventa ? 'con' : 'sin'} preventa`,
+        descripcion: `Evento de prueba en estado "${estadoDemo}", ${conPreventa ? 'con' : 'sin'} preventa habilitada.`,
+        tipoEvento: 'Feria',
+        tipoPago: 'Efectivo',
+        cantidadPuestos: '1',
+        conButaca: false,
+        conRepartidor: true,
+        tienePreventa: conPreventa,
+        fechaInicioPreventa: conPreventa ? ahora : null,
+        linkVentaEntradas: conPreventa ? 'https://entradas.demo/qf' : '',
+        ubicacion: 'Villa María, Córdoba',
+        habilitado: true,
+        localidad: 'Villa María',
+        provincia: 'Córdoba',
+        img: loadImageAsDataUri('evento-cuarteto'),
+        estado: estadoDemo,
+        longitud: '-63.2304',
+        latitud: '-32.4076',
+        cantidadDiasEvento: String(Math.ceil((finDemo - inicioDemo) / 86400000)),
+        fechaHoraInicio: inicioDemo,
+        fechaHoraFin: finDemo,
+        productorId: productor.id,
+      });
+
+      await DiaEvento.create({
+        nombre: `${eventoDemo.nombre} - Día 1`,
+        descripcion: `Jornada del evento demo en estado "${estadoDemo}".`,
+        fechaHoraInicioDiaEvento: inicioDemo,
+        fechaHoraFinDiaEvento: finDemo,
+        tienePreventa: conPreventa,
+        eventoId: eventoDemo.id,
+      });
+
+      eventosPorEstado.push({
+        id: eventoDemo.id,
+        estado: estadoDemo,
+        tienePreventa: conPreventa,
+      });
+    }
+  }
+  console.log(`✅ ${eventosPorEstado.length} eventos demo creados (uno por combinación estado × preventa)\n`);
+
   // Paso 8: resumen final
   console.log('========================================');
   console.log('🎉 SEED DE DEMO COMPLETADO 🎉');
@@ -879,6 +964,7 @@ export async function runSeedDemo() {
   console.log(`🆕 Evento sin asociaciones: "${eventoNuevo.nombre}" (estado: ${eventoNuevo.estado})`);
   console.log(`   Inicio: ${inicioEventoNuevo.toString()}`);
   console.log(`   Fin:    ${finEventoNuevo.toString()}\n`);
+  console.log(`🗂️  Eventos demo por estado × preventa: ${eventosPorEstado.length} (${estadosDemo.join(', ')})\n`);
   console.log('🧾 Pedidos creados por estado:');
   console.log(`   - ${EstadosPedido.Pendiente}: 1 (Cliente1)`);
   console.log(`   - ${EstadosPedido.Aceptado}: 1 (Cliente2)`);
@@ -910,6 +996,7 @@ export async function runSeedDemo() {
       inicio: inicioEventoNuevo,
       fin: finEventoNuevo,
     },
+    eventosPorEstado,
     pedidos: {
       [EstadosPedido.Pendiente]: 1,
       [EstadosPedido.Aceptado]: 1,
