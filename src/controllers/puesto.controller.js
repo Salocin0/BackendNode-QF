@@ -61,23 +61,14 @@ class PuestoController {
 
   async getAllInEventController(req, res) {
     try {
-      console.log("llega")
       const eventoId = req.params.eventoId;
       const puestos = await puestoService.getAllInEvent(eventoId);
-      console.log(puestos);
-      if (puestos.length > 0) {
-        return res.status(200).json({
-          status: 'success',
-          msg: 'Found all puestos',
-          data: puestos,
-        });
-      } else {
-        return res.status(200).json({
-          status: 'Error',
-          msg: 'puestos not found',
-          data: {},
-        });
-      }
+      // An event without stands is a valid state: answer with an empty list so clients can render an empty state.
+      return res.status(200).json({
+        status: 'success',
+        msg: puestos.length > 0 ? 'Found all puestos' : 'puestos not found',
+        data: puestos,
+      });
     } catch (e) {
       return res.status(500).json({
         status: 'error',
@@ -89,7 +80,6 @@ class PuestoController {
 
   async getAllControllerByEncargado(req, res) {
     try {
-      console.log(req.headers)
       const consumidorId = req.headers['consumidorid'];
       const puestos = await puestoService.getAllByEncargado(consumidorId);
       if (puestos.length > 0) {

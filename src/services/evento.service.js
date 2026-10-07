@@ -6,6 +6,8 @@ import { asociacionService } from './asociacion.service.js';
 import { consumidorService } from './consumidor.service.js';
 import { restriccionService } from './restriccion.service.js';
 import { withDbRetry } from '../util/dbRetry.js';
+import { normalizeEventoPayload, resolveEstadoOnUpdate } from '../util/eventoPayload.js';
+import { isEventoFinalizado, withEstadoEfectivo } from '../util/validation.js';
 
 class EventoService {
   async getAll(consumidorId) {
@@ -29,7 +31,7 @@ class EventoService {
       model: DiaEvento,
       required: false,
     }]});
-    return eventos;
+    return eventos.map((evento) => withEstadoEfectivo(evento));
   }
 
   async getAllInState(estado) {
@@ -46,7 +48,9 @@ class EventoService {
         ],
       });
   
-      return eventos;
+      // Display the date-derived state and hide events that already ended from every other state list.
+      const efectivos = eventos.map((evento) => withEstadoEfectivo(evento));
+      return estado === 'Finalizado' ? efectivos : efectivos.filter((evento) => evento.estado !== 'Finalizado');
     } catch (error) {
       console.error('Error fetching events with estado:', error);
       throw error;
@@ -79,17 +83,17 @@ class EventoService {
     }
   }
 
-    async update(id, datosEventoActualizar) {
-      if (!datosEventoActualizar) {
+    async update(id, rawDatosEventoActualizar) {
+      if (!rawDatosEventoActualizar) {
         throw new Error('El objeto evento no puede ser undefined');
       }
+      // Validates ISO dates/numbers and maps wizard aliases to model columns (throws EventoPayloadError).
+      const datosEventoActualizar = normalizeEventoPayload(rawDatosEventoActualizar);
 
       const eventodb = await withDbRetry('buscar evento por id para actualizar', () => Evento.findByPk(id), {
         attempts: 4,
         baseDelayMs: 1000,
       });
-      console.log("EVENTODB" + eventodb)
-
       if (!eventodb) {
         throw new Error('No se encontró el evento con el id proporcionado');
       }
@@ -102,15 +106,16 @@ class EventoService {
       if (datosEventoActualizar.img !== undefined) eventodb.img = datosEventoActualizar.img;
       if (datosEventoActualizar.imagenEvento !== undefined) eventodb.img = datosEventoActualizar.imagenEvento;
       if (datosEventoActualizar.croquis !== undefined) eventodb.croquis = datosEventoActualizar.croquis;
-      if (datosEventoActualizar.fechaInicio !== undefined) eventodb.fechaHoraInicio = datosEventoActualizar.fechaInicio;
+      if (datosEventoActualizar.fechaHoraInicio !== undefined) eventodb.fechaHoraInicio = datosEventoActualizar.fechaHoraInicio;
       if (datosEventoActualizar.horaInicio !== undefined) eventodb.horaInicio = datosEventoActualizar.horaInicio;
-      if (datosEventoActualizar.fechaFin !== undefined) eventodb.fechaHoraFin = datosEventoActualizar.fechaFin;
+      if (datosEventoActualizar.fechaHoraFin !== undefined) eventodb.fechaHoraFin = datosEventoActualizar.fechaHoraFin;
       if (datosEventoActualizar.cantidadPuestos !== undefined) eventodb.cantidadPuestos = datosEventoActualizar.cantidadPuestos;
       if (datosEventoActualizar.cantidadRepartidores !== undefined) eventodb.cantidadRepartidores = datosEventoActualizar.cantidadRepartidores;
       if (datosEventoActualizar.capacidadMaxima !== undefined) eventodb.capacidadMaxima = datosEventoActualizar.capacidadMaxima;
       if (datosEventoActualizar.conButaca !== undefined) eventodb.conButaca = datosEventoActualizar.conButaca;
       if (datosEventoActualizar.conRepartidor !== undefined) eventodb.conRepartidor = datosEventoActualizar.conRepartidor;
       if (datosEventoActualizar.conPreventa !== undefined) eventodb.conPreventa = datosEventoActualizar.conPreventa;
+      if (datosEventoActualizar.tienePreventa !== undefined) eventodb.tienePreventa = datosEventoActualizar.tienePreventa;
       if (datosEventoActualizar.tipoPreventa !== undefined) eventodb.tipoPreventa = datosEventoActualizar.tipoPreventa;
       if (datosEventoActualizar.fechaInicioPreventa !== undefined) eventodb.fechaInicioPreventa = datosEventoActualizar.fechaInicioPreventa;
       if (datosEventoActualizar.fechaFinPreventa !== undefined) eventodb.fechaFinPreventa = datosEventoActualizar.fechaFinPreventa;
@@ -121,10 +126,9 @@ class EventoService {
       if (datosEventoActualizar.provincia !== undefined) eventodb.provincia = datosEventoActualizar.provincia;
       if (datosEventoActualizar.latitud !== undefined) eventodb.latitud = datosEventoActualizar.latitud;
       if (datosEventoActualizar.longitud !== undefined) eventodb.longitud = datosEventoActualizar.longitud;
-      if (datosEventoActualizar.estado !== undefined) eventodb.estado = datosEventoActualizar.estado;
+      // Drafts progress through the wizard; completed/confirmed events keep their state.
+      eventodb.estado = resolveEstadoOnUpdate(eventodb.estado, datosEventoActualizar.estado);
       if (datosEventoActualizar.cantidadDiasEvento !== undefined) eventodb.cantidadDiasEvento = datosEventoActualizar.cantidadDiasEvento;
-
-      this.actualizarEvento(eventodb);
 
 
       await withDbRetry('guardar actualización de evento', () => eventodb.save(), {
@@ -161,7 +165,10 @@ class EventoService {
       baseDelayMs: 1000,
     });
 
-    await this.crearEvento(eventoCreado);
+    // Wizard drafts are created in EnPreparacion1; crearEvento would overwrite them with EnPreparacion (completed).
+    if (nuevoEvento.estado !== 'EnPreparacion1') {
+      await this.crearEvento(eventoCreado);
+    }
 
     if (nuevoEvento.restricciones && nuevoEvento.restricciones.length > 0) {
       nuevoEvento.restricciones.forEach(async (restriccion) => {
@@ -190,7 +197,8 @@ class EventoService {
   }
 
   async istime() {
-    await this.getAllInState(EstadosEvento.Confirmado).then((eventos) => {
+    // Needs real model instances (save), so it must not go through the display-only getAllInState.
+    await Evento.findAll({ where: { estado: EstadosEvento.Confirmado } }).then((eventos) => {
       eventos.forEach(async (evento) => {
         evento.estado = EstadosEvento.EnCurso;
         await evento.save();
@@ -220,7 +228,10 @@ class EventoService {
 
       const eventosEnPreparacion = await this.getAllInState(estado);
 
-      const eventosFiltrados = eventosEnPreparacion.filter((evento) => !eventosAsociados.includes(evento.id));
+      // Events whose end date already passed are not valid targets even if their stored state lags behind.
+      const eventosFiltrados = eventosEnPreparacion.filter(
+        (evento) => !eventosAsociados.includes(evento.id) && !isEventoFinalizado(evento)
+      );
 
       return eventosFiltrados;
     } catch (error) {
@@ -243,7 +254,9 @@ class EventoService {
 
       const eventosEnPreparacion = await this.getAllInState(estado);
 
-      const eventosFiltrados = eventosEnPreparacion.filter((evento) => !eventosAsociados.includes(evento.id));
+      const eventosFiltrados = eventosEnPreparacion.filter(
+        (evento) => !eventosAsociados.includes(evento.id) && !isEventoFinalizado(evento)
+      );
 
       return eventosFiltrados;
     } catch (error) {

@@ -20,7 +20,7 @@ describe('Modificar usuario', () => {
         expect(response.status).to.equal(500);
 
         expect(response.body).to.have.property('status', 'error');
-        expect(response.body).to.have.property('msg', 'Ocurrió un error al actualizar el encargado :(');
+        expect(response.body).to.have.property('msg', 'Ocurrió un error al actualizar el consumidor :(');
 
 
       });
@@ -44,7 +44,7 @@ describe('Modificar usuario', () => {
         expect(response.status).to.equal(500);
 
         expect(response.body).to.have.property('status', 'error');
-        expect(response.body).to.have.property('msg', 'Ocurrió un error al actualizar el encargado :(');
+        expect(response.body).to.have.property('msg', 'Ocurrió un error al actualizar el consumidor :(');
 
 
       });

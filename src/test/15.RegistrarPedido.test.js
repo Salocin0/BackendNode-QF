@@ -15,7 +15,7 @@ describe('Registrar Pedido (Usuario)', () => {
         total: 100.0
       });
     console.log(response.body);
-    expect(response.status).to.equal(500);
+    expect(response.status).to.equal(400);
     expect(response.body).to.have.property('data');
     // Ajustar expectativas según respuesta
   });

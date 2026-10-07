@@ -1,4 +1,5 @@
 import { productoService } from '../services/producto.service.js';
+import { isValidPrice } from '../util/validation.js';
 
 class ProductoController {
   async getAllController(req, res) {
@@ -88,6 +89,14 @@ class ProductoController {
     try {
       const id = req.params.id;
       const { producto } = req.body;
+      if (!producto || !isValidPrice(producto.precio)) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'El precio debe ser un número mayor o igual a 0',
+          code: 400,
+          data: {},
+        });
+      }
       const result = await productoService.update(id, producto);
 
       if (result) {
@@ -149,6 +158,14 @@ class ProductoController {
   async createOneController(req, res) {
     try {
       const { nombre, descripcion, imagen, precio, estado, aderezos, puestoId } = req.body;
+      if (!isValidPrice(precio)) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'El precio debe ser un número mayor o igual a 0',
+          code: 400,
+          data: {},
+        });
+      }
       const nuevoProducto = {
         nombre: nombre,
         descripcion: descripcion,

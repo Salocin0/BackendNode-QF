@@ -24,7 +24,7 @@ class EstadisticasService {
           FROM 
             public."Pedidos"
           WHERE 
-            estado = 'Entregado' or estado = 'Valorado'
+            estado IN ('Entregado', 'Valorado')
           GROUP BY 
             "puestoId"
           ORDER BY 
@@ -45,7 +45,7 @@ class EstadisticasService {
             FROM 
               public."Pedidos"
             WHERE 
-              estado = 'Entregado' or estado = 'Valorado'
+              estado IN ('Entregado', 'Valorado')
             GROUP BY 
               "puestoId"
             ORDER BY 
@@ -71,7 +71,7 @@ class EstadisticasService {
             public."Pedidos"
           WHERE 
             "eventoId" = :eventoId 
-            AND estado = 'Entregado' or estado = 'Valorado'
+            AND estado IN ('Entregado', 'Valorado')
           GROUP BY 
             "puestoId"
           ORDER BY 
@@ -93,7 +93,7 @@ class EstadisticasService {
               public."Pedidos"
             WHERE 
               "eventoId" = :eventoId 
-              AND estado = 'Entregado' or estado = 'Valorado'
+              AND estado IN ('Entregado', 'Valorado')
             GROUP BY 
               "puestoId"
             ORDER BY 
@@ -130,7 +130,7 @@ class EstadisticasService {
         FROM 
             public."Pedidos"
         WHERE 
-            estado = 'Entregado' or estado = 'Valorado';
+            estado IN ('Entregado', 'Valorado');
       `;
       } else {
         query = `
@@ -140,7 +140,7 @@ class EstadisticasService {
             public."Pedidos"
         WHERE 
             "eventoId" = :eventoId 
-            AND estado = 'Entregado' or estado = 'Valorado';
+            AND estado IN ('Entregado', 'Valorado');
       `;
       }
 
@@ -267,8 +267,6 @@ class EstadisticasService {
 
   async getTotalRecaudadoPuestoEvento(idConsumidor, idPuesto, idEvento) {
     try {
-      console.log(idConsumidor, idPuesto, idEvento);
-
       // Asegúrate de que `consumidorService.getOne` devuelva el objeto correctamente
       const consumidor = await consumidorService.getOne(idConsumidor);
       if (!consumidor || !consumidor.encargadoId) {
@@ -286,7 +284,8 @@ class EstadisticasService {
           FROM 
             public."Pedidos"
           WHERE 
-            "puestoId" IN (
+            estado IN ('Entregado', 'Valorado')
+            AND "puestoId" IN (
               SELECT id 
               FROM Puestos 
               WHERE "encargadoId" = :idEncargado
@@ -299,7 +298,8 @@ class EstadisticasService {
           FROM 
             public."Pedidos"
           WHERE 
-            "puestoId" IN (
+            estado IN ('Entregado', 'Valorado')
+            AND "puestoId" IN (
               SELECT id 
               FROM Puestos
               WHERE "encargadoId" = :idEncargado
@@ -314,7 +314,8 @@ class EstadisticasService {
           FROM 
             public."Pedidos"
           WHERE 
-            "puestoId" = :idPuesto 
+            estado IN ('Entregado', 'Valorado')
+            AND "puestoId" = :idPuesto 
             AND "puestoId" IN (
               SELECT id 
               FROM Puestos
@@ -329,7 +330,8 @@ class EstadisticasService {
           FROM 
             public."Pedidos"
           WHERE 
-            "puestoId" = :idPuesto 
+            estado IN ('Entregado', 'Valorado')
+            AND "puestoId" = :idPuesto 
             AND "eventoId" = :idEvento 
             AND "puestoId" IN (
               SELECT id 
@@ -359,8 +361,6 @@ class EstadisticasService {
 
   async getPromedioValoracionPuestoEvento(idConsumidor, idPuesto, idEvento) {
     try {
-      console.log(idConsumidor, idPuesto, idEvento);
-
       const consumidor = await consumidorService.getOne(idConsumidor);
       if (!consumidor || !consumidor.encargadoId) {
         return 0;
@@ -450,7 +450,6 @@ class EstadisticasService {
 
   async getTiempoPromedioEntrega(idConsumidor, idPuesto, idEvento) {
     try {
-      console.log(idEvento, idPuesto);
 
       let query = '';
       const replacements = {};
@@ -722,7 +721,7 @@ class EstadisticasService {
   
             (SELECT COUNT(*) 
              FROM "Pedidos" 
-             WHERE "repartidorId" = :repartidorid AND estado = 'Entregado') AS pedidos_entregados;
+             WHERE "repartidorId" = :repartidorid AND estado IN ('Entregado', 'Valorado')) AS pedidos_entregados;
       `;
   
       const results = await sequelize.query(query, {
@@ -738,6 +737,30 @@ class EstadisticasService {
     } catch (error) {
       console.error('Error obteniendo estadísticas del repartidor:', error);
       throw new Error('Error al calcular estadísticas del repartidor');
+    }
+  }
+
+  async getEstadisticasProductor(consumidorid) {
+    try {
+      const consumidor = await consumidorService.getOne(consumidorid);
+      const productorid = consumidor?.productorId;
+      if (!productorid) return { total_eventos: 0, total_recaudado: 0 };
+      const results = await sequelize.query(
+        `
+        SELECT
+          (SELECT COUNT(*) FROM eventos WHERE "productorId" = :productorid) AS total_eventos,
+          (SELECT COALESCE(ROUND(SUM(p.total)::numeric, 2), 0)
+             FROM "Pedidos" p
+             JOIN eventos e ON e.id = p."eventoId"
+            WHERE e."productorId" = :productorid
+              AND p.estado IN ('Entregado', 'Valorado')) AS total_recaudado;
+      `,
+        { replacements: { productorid }, type: sequelize.QueryTypes.SELECT }
+      );
+      return results[0] || { total_eventos: 0, total_recaudado: 0 };
+    } catch (error) {
+      console.error('Error obteniendo estadísticas del productor:', error);
+      throw new Error('Error al calcular estadísticas del productor');
     }
   }
 
@@ -777,12 +800,14 @@ class EstadisticasService {
       }
 
       const query = `
-        SELECT DISTINCT e.id, e.nombre
+        SELECT e.id, e.nombre
         FROM "eventos" e
         INNER JOIN "Pedidos" ped ON ped."eventoId" = e.id
         INNER JOIN "puestos" p ON p.id = ped."puestoId"
         WHERE p."encargadoId" = :encargadoId
-        AND (ped.estado = 'Entregado' OR ped.estado = 'Valorado')
+        AND ped.estado IN ('Entregado', 'Valorado')
+        GROUP BY e.id, e.nombre, e."fechaHoraInicio"
+        ORDER BY e."fechaHoraInicio" ASC, e.id ASC
       `;
 
       const results = await sequelize.query(query, {

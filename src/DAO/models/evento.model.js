@@ -93,7 +93,15 @@ export const Evento = sequelize.define('evento', {
   cantidadDiasEvento: {
     type: DataTypes.STRING,
     allowNull: true,
-  }
+  },
+  capacidadMaxima: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  cantidadRepartidores: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
 });
 
 DiaEvento.belongsTo(Evento, {
