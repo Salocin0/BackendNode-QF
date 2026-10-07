@@ -1,4 +1,5 @@
 import { consumidorService } from '../services/consumidor.service.js';
+import { parseIsoDate } from '../util/validation.js';
 
 class ConsumidorController {
   async getAllController(req, res) {
@@ -58,17 +59,27 @@ class ConsumidorController {
       const id = req.params.id;
       const consumidor = await consumidorService.getOne(id);
 
-      console.log('Este  es el ID: ' + consumidor.id);
-
       const { nombre, apellido, dni, fechaNacimiento, provincia, localidad, telefono,nombreUsuario } = req.body;
 
-      console.log(id, nombre, apellido, dni, fechaNacimiento, provincia, localidad, telefono,nombreUsuario);
+      // Only ISO dates are accepted: dd/mm/yyyy and mm/dd/yyyy are ambiguous and used to be silently swapped.
+      let fechaNacimientoParsed = fechaNacimiento;
+      if (fechaNacimiento !== undefined && fechaNacimiento !== null && fechaNacimiento !== '') {
+        fechaNacimientoParsed = parseIsoDate(fechaNacimiento);
+        if (!fechaNacimientoParsed) {
+          return res.status(400).json({
+            status: 'error',
+            msg: 'fechaNacimiento debe tener formato ISO (YYYY-MM-DD)',
+            code: 400,
+            data: {},
+          });
+        }
+      }
 
-      const result = await consumidorService.updateOneNew(consumidor.id, { nombre, apellido, dni, fechaNacimiento, provincia, localidad, telefono,nombreUsuario });
+      const result = await consumidorService.updateOneNew(consumidor.id, { nombre, apellido, dni, fechaNacimiento: fechaNacimientoParsed, provincia, localidad, telefono,nombreUsuario });
 
       return res.status(200).json({
         status: 'success',
-        msg: 'Encargado actualizado correctamente',
+        msg: 'Consumidor actualizado correctamente',
         code: 200,
         data: result,
       });
@@ -76,7 +87,7 @@ class ConsumidorController {
       console.error(e);
       return res.status(500).json({
         status: 'error',
-        msg: 'Ocurrió un error al actualizar el encargado :(',
+        msg: 'Ocurrió un error al actualizar el consumidor :(',
         data: {},
       });
     }

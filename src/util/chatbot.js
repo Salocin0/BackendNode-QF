@@ -3,6 +3,7 @@ import { Sequelize } from 'sequelize';
 import { LLMChain } from "langchain/chains";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { ChatOpenAI } from "@langchain/openai";
+import { CREATE_CHATBOT_VIEW_SQL } from './chatbotView.js';
 
 dotenv.config();
 
@@ -43,36 +44,6 @@ function construirLinkEvento(id) {
   return `${base}/listado-puestos/${id}`;
 }
 
-// SQL para (re)crear la vista que alimenta al chatbot. Debe coincidir con la definición
-// de Datos_DB.sql y con la usada en app.js (crearVistaChatbot). El nombre se deja sin
-// comillas para que Postgres lo normalice a minúsculas (chatbotdata).
-const CREATE_CHATBOT_VIEW_SQL = `
-  CREATE OR REPLACE VIEW chatbotData AS
-  SELECT ev.id,
-         ev.nombre,
-         ev.descripcion,
-         ev."tipoEvento",
-         (SELECT date(min(de."fechaHoraInicioDiaEvento"))
-          FROM "diaEventos" de
-          WHERE de."eventoId" = ev.id) AS "fechaInicioEvento",
-         (SELECT date(max(de."fechaHoraFinDiaEvento"))
-          FROM "diaEventos" de
-          WHERE de."eventoId" = ev.id) AS "fechaFinEvento",
-         ev."conButaca",
-         ev."tienePreventa",
-         ev."linkVentaEntradas",
-         ev.ubicacion,
-         ev.localidad,
-         ev.provincia,
-         ev.estado,
-         string_agg(DISTINCT ps."nombreCarro"::text, ', '::text) AS "nombreCarroLista",
-         string_agg(DISTINCT ps."tipoNegocio"::text, ', '::text) AS "tipoNegocioLista"
-  FROM eventos ev
-       LEFT JOIN "Asociacions" ac ON ev.id = ac."eventoId"
-       LEFT JOIN puestos ps ON ac."puestoId" = ps.id
-  WHERE ev.estado IN ('EnCurso', 'Confirmado')
-  GROUP BY ev.id;
-`;
 
 // Consulta la vista chatbotData. Si no existe (Postgres 42P01) la crea y reintenta una vez.
 async function consultarChatbotData() {
@@ -91,6 +62,17 @@ async function consultarChatbotData() {
   }
 }
 
+// Usage-help entries (how to order, register, pay...) stored by a migration in chatbot_ayuda.
+async function consultarAyuda() {
+  try {
+    const [rows] = await sequelize.query('SELECT tema, pregunta, respuesta FROM chatbot_ayuda ORDER BY tema;');
+    return Array.isArray(rows) ? rows : [];
+  } catch (error) {
+    console.warn('No se pudo leer chatbot_ayuda (continuando sin ayuda de uso):', error?.message || error);
+    return [];
+  }
+}
+
 async function getChatResponse(userMessage) {
   try {
     // Verificar conexión a la base de datos
@@ -106,6 +88,7 @@ async function getChatResponse(userMessage) {
     // schema public). Si Postgres responde 42P01 (relation does not exist) la creamos al
     // vuelo y reintentamos una vez, para que el chatbot sea auto-reparable.
     const results = await consultarChatbotData();
+    const ayuda = await consultarAyuda();
 
     // Enriquecer cada evento con su link de detalle para que el modelo no invente URLs.
     const eventosConLink = Array.isArray(results)
@@ -122,8 +105,10 @@ async function getChatResponse(userMessage) {
     });
 
     const template = new PromptTemplate({
-      inputVariables: ['chatbotData', 'input'],
+      inputVariables: ['chatbotData', 'ayuda', 'input'],
       template: `Olvida todas tus conversaciones pasadas. Ahora eres "Foody", el asistente inteligente de QuickFood, una plataforma de eventos gastronómicos. Tienes acceso a la siguiente información de eventos y los carros de comida asociados (cada evento incluye un campo "link" con la URL para ver su detalle): {chatbotData}.
+
+                Guía de uso de la plataforma (úsala para preguntas sobre cómo hacer un pedido, registrarse, pagar, el código de entrega o los roles): {ayuda}.
 
                 Tu tarea es responder con precisión y claridad a la pregunta del usuario usando únicamente esa información.
 
@@ -144,7 +129,7 @@ async function getChatResponse(userMessage) {
     // Convertir los resultados en un formato legible
     const chatbotData = JSON.stringify(eventosConLink);
 
-    const response = await chain.call({ input: userMessage, chatbotData });
+    const response = await chain.call({ input: userMessage, chatbotData, ayuda: JSON.stringify(ayuda) });
     return response.text;
   } catch (error) {
     console.error('Error al obtener la respuesta de OpenAI:', error);

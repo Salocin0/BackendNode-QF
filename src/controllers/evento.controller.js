@@ -2,6 +2,8 @@ import { DiaEvento } from '../DAO/models/diaEvento.model.js';
 import { estadosEvento } from '../estados/estados/estadosEvento.js';
 import { eventoService } from '../services/evento.service.js';
 import { notificacionesService } from '../services/notificaciones.service.js';
+import { EventoPayloadError, normalizeEventoPayload } from '../util/eventoPayload.js';
+import { parseIsoDate, withEstadoEfectivo } from '../util/validation.js';
 
 class EventoController {
   async getAllController(req, res) {
@@ -101,7 +103,7 @@ class EventoController {
         return res.status(200).json({
           status: 'success',
           msg: 'evento found',
-          data: evento,
+          data: withEstadoEfectivo(evento),
         });
       } else {
         return res.status(404).json({
@@ -163,6 +165,9 @@ class EventoController {
       });
     } catch (e) {
       console.log(e);
+      if (e instanceof EventoPayloadError) {
+        return res.status(400).json({ status: 'error', msg: e.message, data: {} });
+      }
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',
@@ -176,48 +181,40 @@ class EventoController {
       const id = req.params.id;
       const datosEventoActualizar = req.body;
 
-      console.log("Datos a actualizar:", datosEventoActualizar);
+      // Validate day dates up-front (ISO only) so we never persist a half-created event.
+      const diasInvalidos = (datosEventoActualizar.diasEvento || []).filter(
+        (dia) => !parseIsoDate(dia.horaInicio) || !parseIsoDate(dia.horaFin)
+      );
+      if (diasInvalidos.length > 0) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'horaInicio y horaFin de cada día deben ser fechas ISO válidas',
+          data: {},
+        });
+      }
 
       const result = await eventoService.update(id, datosEventoActualizar);
 
-      let todosLosDiasCreados = true;
       if (datosEventoActualizar.diasEvento && datosEventoActualizar.diasEvento.length > 0) {
-        for (const dia of datosEventoActualizar.diasEvento) {
-          console.log('Creando día:', {
-            nombre: `Día ${dia.dia}`,
-            descripcion: `Descripción para el día ${dia.dia}`,
-            horarioInicioEvento: dia.horaInicio,
-            horarioFinEvento: dia.horaFin,
-            tienePreventa: dia.tienePreventa !== undefined ? dia.tienePreventa : false,
-            eventoId: id,
-          });
-
-          try {
-            await DiaEvento.create({
+        // One transaction and one bulk insert (instead of one round trip per day). Replacing the
+        // days makes a repeated save of step 3/4 idempotent instead of duplicating them.
+        await DiaEvento.sequelize.transaction(async (transaction) => {
+          await DiaEvento.destroy({ where: { eventoId: id }, transaction });
+          await DiaEvento.bulkCreate(
+            datosEventoActualizar.diasEvento.map((dia) => ({
               nombre: `Día ${dia.dia}`,
               descripcion: `Descripción para el día ${dia.dia}`,
-              fechaHoraInicioDiaEvento: new Date(dia.horaInicio),
-              fechaHoraFinDiaEvento: new Date(dia.horaFin),
+              fechaHoraInicioDiaEvento: parseIsoDate(dia.horaInicio),
+              fechaHoraFinDiaEvento: parseIsoDate(dia.horaFin),
               tienePreventa: dia.tienePreventa !== undefined ? dia.tienePreventa : false,
               eventoId: id,
-            });
-            estadosEvento.EnPreparacion2.actualizarEvento(id);
-
-          } catch (error) {
-            console.error("Error al crear el día del evento:", error);
-            todosLosDiasCreados = false;
-
-          }
-        }
-      } else {
-        console.log("No hay días para crear.");
-
+            })),
+            { transaction }
+          );
+        });
+        // Days saved: the web wizard leaves the event ready to operate (done once, not once per day).
+        await estadosEvento.EnPreparacion2.actualizarEvento(id);
       }
-
-
-
-
-
 
       return res.status(200).json({
         status: 'success',
@@ -227,6 +224,9 @@ class EventoController {
       });
     } catch (e) {
       console.log('Error:', e);
+      if (e instanceof EventoPayloadError) {
+        return res.status(400).json({ status: 'error', msg: e.message, data: {} });
+      }
       if (e.message === 'No se encontró el evento con el id proporcionado') {
         return res.status(404).json({
           status: 'error',
@@ -246,7 +246,6 @@ class EventoController {
 
 
   async createOneController(req, res) {
-    console.log("ENTRE");
     try {
         const {
             nombre,
@@ -282,12 +281,26 @@ class EventoController {
             productorId,
         } = req.body;
 
-        console.log(req.body.estado);
+        // ISO dates only: new Date() would silently swap day and month for dd/mm/yyyy strings.
+        const parseDate = (dateStr) => parseIsoDate(dateStr);
 
-        const parseDate = (dateStr) => {
-            const date = new Date(dateStr);
-            return isNaN(date.getTime()) ? null : date;
-        };
+        // A date that was sent but is not valid ISO must be rejected, not silently stored as null.
+        const invalidDates = Object.entries({
+            fechaHoraInicioEvento,
+            fechaHoraFinEvento,
+            fechaInicioPreventa,
+            fechaFinPreventa,
+        })
+            .filter(([, value]) => value !== undefined && value !== null && value !== '' && !parseDate(value))
+            .map(([name]) => name);
+        if (invalidDates.length > 0) {
+            return res.status(400).json({
+                status: 'error',
+                msg: `Fechas inválidas (se requiere formato ISO): ${invalidDates.join(', ')}`,
+                code: 400,
+                data: {},
+            });
+        }
 
         const nuevoEvento = {
             nombre,
@@ -297,7 +310,7 @@ class EventoController {
             ubicacion,
             localidad,
             provincia,
-            tipoEvento,
+            tipoEvento: normalizeEventoPayload({ tipoEvento }).tipoEvento,
             fechaHoraInicio: parseDate(fechaHoraInicioEvento),
             fechaHoraFin: parseDate(fechaHoraFinEvento),
             tienePreventa,
@@ -310,7 +323,7 @@ class EventoController {
             conRepartidor: tieneRepartidores || false,
             cantidadRepartidores: cantidadRepartidores || 0,
             capacidadMaxima: capacidadMaxima || 0,
-            tipoPago,
+            tipoPago: normalizeEventoPayload({ tipoPago }).tipoPago,
             linkVentaEntradas,
             conButaca: tieneButacas || false,
             habilitado: true,
@@ -323,9 +336,6 @@ class EventoController {
             productorId,
             diasEvento: diasEvento || [],
         };
-
-        console.log("aca:" + nuevoEvento.estado);
-        console.log(nuevoEvento.fechaHoraFin);
 
         const eventoCreado = await eventoService.create(nuevoEvento);
 

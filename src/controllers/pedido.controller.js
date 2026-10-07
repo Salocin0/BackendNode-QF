@@ -1,6 +1,9 @@
 import { estadosPedido } from '../estados/estados/estadosPedido.js';
 import { pedidoService } from '../services/pedido.service.js';
 import { puestoService } from '../services/puesto.service.js';
+import { eventoService } from '../services/evento.service.js';
+import { productoService } from '../services/producto.service.js';
+import { createPedidoHandler } from './pedidoCreate.handler.js';
 
 class PedidoController {
   async getAllController(req, res) {
@@ -139,51 +142,18 @@ class PedidoController {
     }
   }
 
-  async createOneController(req, res) {
-    try {
-      const { detalles, consumidorId, total, puestoId,fecha,precompra,eventoId } = req.body;
-      var nuevoPedido = {
-        fecha: Date.now(),
-        consumidorId: consumidorId,
-        total: total,
-        estado: 'Pendiente',
-        puestoId: puestoId,
-        eventoId: eventoId,
-        fechaPreCompra: !isNaN(new Date(precompra).getTime()) ? new Date(precompra) : null
-      };
-      if(precompra){
-        nuevoPedido.estado="Precomprado"
-      }
-      
-      const pedidoCreado = await pedidoService.create(nuevoPedido, detalles);
-      if (pedidoCreado === false) {
-        return res.status(400).json({
-          status: 'error',
-          msg: 'Producto used',
-          code: 400,
-          data: {},
-        });
-      } else {
-        //llamar al pedidoService(puestoId) (SERVICE CON SERVICE)
-        const pedidoNotificaciones = await pedidoService.sendNotificacionesPedidoCreado(puestoId,consumidorId);
-
-        return res.status(200).json({
-          status: 'success',
-          msg: 'Producto created',
-          code: 200,
-          data: pedidoCreado,
-        });
-      }
-    } catch (e) {
-      console.log(e);
-      return res.status(500).json({
-        status: 'error',
-        msg: 'something went wrong :(',
-        code: 500,
-        data: {},
-      });
-    }
-  }
+  // Creation logic lives in its own module so it can be tested with stubbed services.
+  createOneController = createPedidoHandler({
+    get pedidoService() {
+      return pedidoService;
+    },
+    get eventoService() {
+      return eventoService;
+    },
+    get productoService() {
+      return productoService;
+    },
+  });
 
   async updateStateController(req, res) {
     const pedidoId = req.params.id;

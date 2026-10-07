@@ -1,4 +1,5 @@
 import { carritoService } from '../services/carrito.service.js';
+import { parsePositiveInteger } from '../util/validation.js';
 
 class CarritoController {
   async getController(req, res) {
@@ -79,9 +80,16 @@ class CarritoController {
         });
       }
       
-      const productoId = req.params.productoId;
+      const productoId = parsePositiveInteger(req.params.productoId);
       const fecha = req.body.fecha;
-      const eventoId = req.body.eventoId;
+      const eventoId = parsePositiveInteger(req.body.eventoId);
+      if (!productoId || !eventoId) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'productoId y eventoId son obligatorios y deben ser válidos',
+          data: {},
+        });
+      }
       let cantidad = req.body.cantidad;
       if(!cantidad){
         cantidad = 1;
@@ -109,15 +117,22 @@ class CarritoController {
   async removeToCartController(req, res) {
     try {
       const consumidorId = req.headers['consumidorid'];
-      const productoId = req.params.productoId;
+      const productoId = parsePositiveInteger(req.params.productoId);
+      const eventoId = parsePositiveInteger(req.body.eventoId);
+      const cantidad = req.body.cantidad ? parsePositiveInteger(req.body.cantidad) : 1;
+      if (!productoId || !eventoId || !cantidad) {
+        return res.status(400).json({
+          status: 'error',
+          msg: 'productoId, eventoId y cantidad deben ser enteros positivos',
+          data: {},
+        });
+      }
       const carrito = await carritoService.getOneByConsumidorId(consumidorId);
+      if (!carrito) {
+        return res.status(404).json({ status: 'error', msg: 'Carrito no encontrado', data: {} });
+      }
       const carritoId = carrito.id;
       const fecha = req.body.fecha;
-      const eventoId = req.body.eventoId;
-      let cantidad = req.body.cantidad;
-      if(!cantidad){
-        cantidad=1
-      }
       const data = await carritoService.removeProductFromCart(carritoId, productoId, cantidad, eventoId,fecha);
 
       return res.status(200).json({

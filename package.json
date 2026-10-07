@@ -11,6 +11,9 @@
     "start": "nodemon ./src/app.js --omit=dev",
     "dev": "nodemon ./src/app.js",
     "test": "mocha ./src/test/",
+    "migrate": "node ./src/scripts/migrate.js up",
+    "migrate:down": "node ./src/scripts/migrate.js down",
+    "migrate:status": "node ./src/scripts/migrate.js status",
     "seed": "node ./src/scripts/seedDatabase.js",
     "seed:data": "node ./src/scripts/seedData.js",
     "seed:demo": "node ./src/scripts/seedDemo.js"
@@ -67,7 +70,8 @@
     "socket.io": "^4.8.3",
     "sqlite3": "^5.1.7",
     "stripe": "^22.1.1",
-    "typeorm": "^0.3.30"
+    "typeorm": "^0.3.30",
+    "umzug": "^3.8.3"
   },
   "devDependencies": {
     "@types/node": "^25.9.1",

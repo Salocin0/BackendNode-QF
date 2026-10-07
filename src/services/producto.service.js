@@ -44,6 +44,9 @@ class ProductoService {
     productodb.img = producto.img;
     productodb.precio = producto.precio;
     productodb.estado = producto.estado;
+    if (producto.aderezos !== undefined) {
+      productodb.aderezos = producto.aderezos;
+    }
     await productodb.save();
     return productodb;
   }

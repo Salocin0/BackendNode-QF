@@ -269,6 +269,16 @@ class EstadisticasController {
     }
   }
 
+  async getEstadisticasProductor(req, res) {
+    try {
+      const datos = await estadisticasService.getEstadisticasProductor(req.params.idConsumidor);
+      return res.status(200).json({ status: 'success', msg: 'Found data', data: datos });
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({ status: 'error', msg: 'something went wrong :(', data: {} });
+    }
+  }
+
   async getEstadisticasRepartidor(req, res) {
     try {
       const idConsumidor = req.params.idConsumidor;
