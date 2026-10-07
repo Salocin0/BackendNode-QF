@@ -41,6 +41,8 @@ import { sequelize } from './util/connections.js';
 import { runSeedDemo } from './util/seedDemoData.js';
 import SequelizeStoreInit from 'connect-session-sequelize';
 import { procesosAutomaticos } from './util/procesosAutomaticos.js';
+import { runMigrations } from './util/migrator.js';
+import { CREATE_CHATBOT_VIEW_SQL } from './util/chatbotView.js';
 import { generateAllData } from './util/faker.js';
 import { middlewareReactivarProcesos } from './middlewares/reactivarProcesos.js';
 import { createHashPW } from './util/bcrypt.js';
@@ -75,8 +77,16 @@ app.use(
 );
 
 //Limit
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+// Small default body limit; only routes that receive base64 images/documents get the large one.
+const DEFAULT_BODY_LIMIT = process.env.BODY_LIMIT || '1mb';
+const UPLOAD_BODY_LIMIT = process.env.UPLOAD_BODY_LIMIT || '50mb';
+const UPLOAD_ROUTES = /^\/(evento|puesto|producto|productor|repartidor|encargado)(\/|$)/;
+const jsonDefault = express.json({ limit: DEFAULT_BODY_LIMIT });
+const jsonUpload = express.json({ limit: UPLOAD_BODY_LIMIT });
+const urlencodedDefault = express.urlencoded({ extended: true, limit: DEFAULT_BODY_LIMIT });
+const urlencodedUpload = express.urlencoded({ extended: true, limit: UPLOAD_BODY_LIMIT });
+app.use((req, res, next) => (UPLOAD_ROUTES.test(req.path) ? jsonUpload : jsonDefault)(req, res, next));
+app.use((req, res, next) => (UPLOAD_ROUTES.test(req.path) ? urlencodedUpload : urlencodedDefault)(req, res, next));
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(compression({ brotli: { enable: true, zlib: {} } }));
@@ -305,6 +315,10 @@ async function connectDB() {
       console.log('Modo producción detectado: no se preinicializan datos ni se borra la base de datos.');
     }
 
+    // sync() only creates missing tables; schema changes to existing tables live in src/migrations.
+    // Throws (and the retry loop keeps the API from being declared ready) if a migration fails.
+    await runMigrations(sequelize);
+
     // Recrear la vista del chatbot DESPUÉS del sync (las tablas ya existen) y después de
     // haber eliminado las vistas al inicio. Sin esto, el chatbot Foody devuelve 500 porque
     // la vista "chatbotData" no existe en la base de datos.
@@ -332,6 +346,10 @@ async function connectDbInBackground() {
       console.log('DB conectada e inicializada correctamente.');
       return;
     } catch (error) {
+      if (error?.isMigrationFailure) {
+        console.error('FATAL: migración fallida, el servidor se detiene.');
+        process.exit(1);
+      }
       console.error(
         `No se pudo inicializar la DB al arrancar. Reintentando en ${retryDelayMs}ms...`,
         error?.message || error
@@ -359,33 +377,7 @@ export async function dropViewIfExists(viewName) {
 // El nombre se deja SIN comillas a propósito para que Postgres lo normalice a
 // minúsculas (chatbotdata), igual que la consulta del chatbot (SELECT * FROM public.chatbotData).
 export async function crearVistaChatbot() {
-  const createViewSql = `
-    CREATE OR REPLACE VIEW chatbotData AS
-    SELECT ev.id,
-           ev.nombre,
-           ev.descripcion,
-           ev."tipoEvento",
-           (SELECT date(min(de."fechaHoraInicioDiaEvento"))
-            FROM "diaEventos" de
-            WHERE de."eventoId" = ev.id) AS "fechaInicioEvento",
-           (SELECT date(max(de."fechaHoraFinDiaEvento"))
-            FROM "diaEventos" de
-            WHERE de."eventoId" = ev.id) AS "fechaFinEvento",
-           ev."conButaca",
-           ev."tienePreventa",
-           ev."linkVentaEntradas",
-           ev.ubicacion,
-           ev.localidad,
-           ev.provincia,
-           ev.estado,
-           string_agg(DISTINCT ps."nombreCarro"::text, ', '::text) AS "nombreCarroLista",
-           string_agg(DISTINCT ps."tipoNegocio"::text, ', '::text) AS "tipoNegocioLista"
-    FROM eventos ev
-         LEFT JOIN "Asociacions" ac ON ev.id = ac."eventoId"
-         LEFT JOIN puestos ps ON ac."puestoId" = ps.id
-    WHERE ev.estado IN ('EnCurso', 'Confirmado')
-    GROUP BY ev.id;
-  `;
+  const createViewSql = CREATE_CHATBOT_VIEW_SQL;
 
   try {
     await withDbRetry('crear vista chatbotData', async () => {
