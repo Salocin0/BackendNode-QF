@@ -39,19 +39,11 @@ class EventoController {
       const estado = req.params.state;
       console.log('ESTADO' + estado);
       const eventos = await eventoService.getAllInState(estado);
-      if (eventos.length > 0) {
-        return res.status(200).json({
-          status: 'success',
-          msg: 'Found all eventos',
-          data: eventos,
-        });
-      } else {
-        return res.status(404).json({
-          status: 'Error',
-          msg: 'eventos not found',
-          data: {},
-        });
-      }
+      return res.status(200).json({
+        status: 'success',
+        msg: 'Found all eventos',
+        data: eventos,
+      });
     } catch (e) {
       console.log(e);
 
