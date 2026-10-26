@@ -876,12 +876,15 @@ export async function runSeedDemo() {
   //     "Finalizado" — un evento finalizado no puede estar a futuro).
   // No se les pone imagen: solo existe la foto de "fiesta del cuarteto" en
   // src/public/images, y reusarla en 16 eventos distintos sería engañoso.
+  // Cada evento demo tiene su propia portada (tools/generate_event_images.ps1);
+  // "img" en la definición apunta al archivo, y si falta queda sin imagen.
   console.log('🔄 Creando eventos demo por estado y combinatoria de preventa...');
   const eventosDemoDef = [
     {
       estado: 'EnPreparacion',
       temporalidad: 'futuro',
       nombre: 'Feria de Emprendedores de Villa María',
+      img: loadImageAsDataUri('evento-feria-emprendedores'),
       descripcion: 'Feria de emprendedores locales en la Plaza San Martín.',
       tipoEvento: 'Feria',
       conPreventa: false,
@@ -890,6 +893,7 @@ export async function runSeedDemo() {
       estado: 'EnPreparacion',
       temporalidad: 'futuro',
       nombre: 'Festival de Cerveza Artesanal Cordobesa',
+      img: loadImageAsDataUri('evento-cerveza-artesanal'),
       descripcion: 'Festival de cervecerías artesanales de la región.',
       tipoEvento: 'Gastronómico',
       conPreventa: true,
@@ -898,6 +902,7 @@ export async function runSeedDemo() {
       estado: 'EnPreparacion1',
       temporalidad: 'futuro',
       nombre: 'Corso de Carnaval Villa María',
+      img: loadImageAsDataUri('evento-corso-carnaval'),
       descripcion: 'Corsos populares por Av. Sabattini.',
       tipoEvento: 'Cultural',
       conPreventa: false,
@@ -906,6 +911,7 @@ export async function runSeedDemo() {
       estado: 'EnPreparacion1',
       temporalidad: 'futuro',
       nombre: 'Recital de Rock Nacional - Estadio Municipal',
+      img: loadImageAsDataUri('evento-rock-nacional'),
       descripcion: 'Recital de bandas de rock nacional en el Estadio Municipal.',
       tipoEvento: 'Música',
       conPreventa: true,
@@ -914,6 +920,7 @@ export async function runSeedDemo() {
       estado: 'EnPreparacion2',
       temporalidad: 'futuro',
       nombre: 'Exposición Rural de Villa María',
+      img: loadImageAsDataUri('evento-expo-rural'),
       descripcion: 'Muestra anual de la Sociedad Rural, con remate de hacienda.',
       tipoEvento: 'Exposición',
       conPreventa: false,
@@ -922,6 +929,7 @@ export async function runSeedDemo() {
       estado: 'EnPreparacion2',
       temporalidad: 'futuro',
       nombre: 'Festival de Jazz de Verano',
+      img: loadImageAsDataUri('evento-jazz-verano'),
       descripcion: 'Ciclo de jazz al aire libre en el Anfiteatro Municipal.',
       tipoEvento: 'Música',
       conPreventa: true,
@@ -938,6 +946,7 @@ export async function runSeedDemo() {
       estado: 'Confirmado',
       temporalidad: 'futuro',
       nombre: 'Cosquín Rock - Edición Villa María',
+      img: loadImageAsDataUri('evento-cosquin-rock'),
       descripcion: 'Edición confirmada del festival itinerante, entradas en preventa.',
       tipoEvento: 'Música',
       conPreventa: true,
@@ -946,6 +955,7 @@ export async function runSeedDemo() {
       estado: 'EnCurso',
       temporalidad: 'vivo',
       nombre: 'Kermés Solidaria del Club Atlético',
+      img: loadImageAsDataUri('evento-kermes-solidaria'),
       descripcion: 'Kermés a beneficio de las divisiones inferiores del club.',
       tipoEvento: 'Solidario',
       conPreventa: false,
@@ -954,6 +964,7 @@ export async function runSeedDemo() {
       estado: 'EnCurso',
       temporalidad: 'vivo',
       nombre: 'Expo Gastronómica del Río Ctalamochita',
+      img: loadImageAsDataUri('evento-expo-gastronomica'),
       descripcion: 'Muestra gastronómica a orillas del río Ctalamochita.',
       tipoEvento: 'Gastronómico',
       conPreventa: true,
@@ -1054,7 +1065,7 @@ export async function runSeedDemo() {
       habilitado: true,
       localidad: 'Villa María',
       provincia: 'Córdoba',
-      img: '',
+      img: def.img || '',
       estado: def.estado,
       longitud: '-63.2304',
       latitud: '-32.4076',
