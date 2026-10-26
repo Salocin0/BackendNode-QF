@@ -1,10 +1,19 @@
 import { chatbotService } from '../services/chatbot.service.js';
+import { normalizeChatInput } from '../util/chatbotInput.js';
 
 
 class ChatbotController {
   async createChatbotText(req, res) {
     try {
-      const message = req.body.userMessage
+      const message = normalizeChatInput(req.body?.userMessage);
+      if (!message) {
+        return res.status(400).json({
+          status: 'Error',
+          msg: 'Escribí una consulta para poder ayudarte.',
+          data: {},
+        });
+      }
+
       const text_response = await chatbotService.enviarChatbotTexto(message);
       if (text_response) {
         return res.status(200).json({
