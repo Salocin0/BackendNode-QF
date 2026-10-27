@@ -45,6 +45,7 @@ import { runMigrations } from './util/migrator.js';
 import { CREATE_CHATBOT_VIEW_SQL } from './util/chatbotView.js';
 import { generateAllData } from './util/faker.js';
 import { middlewareReactivarProcesos } from './middlewares/reactivarProcesos.js';
+import { requireAdminKey } from './middlewares/adminKey.js';
 import { createHashPW } from './util/bcrypt.js';
 import { withDbRetry } from './util/dbRetry.js';
 import { Usuario } from './DAO/models/users.model.js';
@@ -166,15 +167,9 @@ app.get('/health', (req, res) => {
 });
 
 // Endpoint protegido para resetear la base de datos y volver a sembrar datos
-// Requiere enviar { key: process.env.DB_RESET_KEY } en el body (POST)
-app.post('/admin/reset-db', async (req, res) => {
+// Requiere ADMIN_KEY (header x-admin-key, ?key= o { key } en el body).
+app.post('/admin/reset-db', requireAdminKey, async (req, res) => {
   try {
-    const providedKey = req.body?.key || req.headers['x-reset-key'];
-    const secretKey = process.env.DB_RESET_KEY || 'dev-reset-key';
-    if (providedKey !== secretKey) {
-      return res.status(403).json({ status: 'error', msg: 'Invalid reset key' });
-    }
-
     console.log('Iniciando reset de base de datos (force sync)...');
     // Forzar recreación de tablas
     await sequelize.sync({ force: true });
@@ -198,7 +193,7 @@ app.post('/admin/reset-db', async (req, res) => {
 });
 
 // Página visual para disparar el seed de demo con un botón y ver el resumen
-app.get('/seed', (req, res) => {
+app.get('/seed', requireAdminKey, (req, res) => {
   res.status(200).send(`<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -241,8 +236,8 @@ async function seed() {
 });
 
 // Endpoint de demo: vacía la DB y siembra el dataset de demo (4 roles, evento "fiesta del cuarteto", puesto, pedidos)
-// Sin autenticación a propósito — uso interno para preparar demos, decisión del dueño del proyecto.
-app.get('/seed/demo', async (req, res) => {
+// Protegido con ADMIN_KEY: borra todas las tablas.
+app.get('/seed/demo', requireAdminKey, async (req, res) => {
   try {
     console.log('🔄 /seed/demo: iniciando reseed de datos de demo...');
     const resumen = await runSeedDemo();
@@ -429,19 +424,9 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Middleware para rutas no encontradas (404)
-app.use((req, res) => {
-  return res.status(404).json({
-    status: 'error',
-    msg: 'Ruta no encontrada',
-    path: req.path,
-    method: req.method,
-  });
-});
-
-// Endpoint público (o usado localmente) para resetear la DB según Datos_DB.sql
-// Lee el archivo SQL, elimina los datos de las tablas afectadas y vuelve a insertar.
-app.get('/resetear/db', async (req, res) => {
+// Endpoint para resetear la DB según Datos_DB.sql
+// Protegido con ADMIN_KEY: trunca tablas y reinserta el dataset.
+app.get('/resetear/db', requireAdminKey, async (req, res) => {
   try {
     const sqlFilePath = path.resolve(__dirname, '../Datos_DB.sql');
     console.log('Reset DB: leyendo archivo SQL en', sqlFilePath);
@@ -533,3 +518,13 @@ app.get('/resetear/db', async (req, res) => {
     return res.status(500).json({ status: 'error', msg: 'Error resetting DB', error: error.message });
   }
 });
+// Middleware para rutas no encontradas (404)
+app.use((req, res) => {
+  return res.status(404).json({
+    status: 'error',
+    msg: 'Ruta no encontrada',
+    path: req.path,
+    method: req.method,
+  });
+});
+
