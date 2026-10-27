@@ -20,7 +20,13 @@ $events = @(
   @{ File = "evento-corso-carnaval.jpg";      Title = "Corso de Carnaval";             Sub = "Av. Sabattini - Villa Maria"; Accent = @(200, 90, 160) },
   @{ File = "evento-rock-nacional.jpg";       Title = "Recital de Rock Nacional";      Sub = "Estadio Municipal";           Accent = @(170, 70, 70) },
   @{ File = "evento-kermes-solidaria.jpg";    Title = "Kermes Solidaria";              Sub = "Club Atletico - Villa Maria"; Accent = @(70, 140, 190) },
-  @{ File = "evento-expo-gastronomica.jpg";   Title = "Expo Gastronomica";             Sub = "Rio Ctalamochita";            Accent = @(200, 120, 50) }
+  @{ File = "evento-expo-gastronomica.jpg";   Title = "Expo Gastronomica";             Sub = "Rio Ctalamochita";            Accent = @(200, 120, 50) },
+  @{ File = "evento-fiesta-patronal.jpg";     Title = "Fiesta Patronal";               Sub = "Barrio San Martin";           Accent = @(180, 140, 70) },
+  @{ File = "evento-doma-folklore.jpg";       Title = "Doma y Folklore";               Sub = "Villa Maria - Cordoba";       Accent = @(150, 110, 60) },
+  @{ File = "evento-maraton-nocturna.jpg";    Title = "Maraton Nocturna";              Sub = "Circuito Urbano";             Accent = @(60, 110, 180) },
+  @{ File = "evento-verbena-barrio.jpg";      Title = "Verbena Popular";               Sub = "Barrio Centro";               Accent = @(190, 100, 90) },
+  @{ File = "evento-fin-de-anio.jpg";         Title = "Show de Fin de Anio";           Sub = "Plaza Velez Sarsfield";       Accent = @(120, 80, 170) },
+  @{ File = "evento-cuarteto.jpg";            Title = "Fiesta del Cuarteto";           Sub = "Villa Maria - Cordoba";       Accent = @(200, 140, 50) }
 )
 
 foreach ($ev in $events) {
