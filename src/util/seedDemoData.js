@@ -510,7 +510,27 @@ export async function runSeedDemo() {
       puestoId: puesto.id,
     }),
   ]);
-  const productos = [choripan, cerveza, empanada, agua];
+  // Opciones veganas: sin esto el chatbot no puede responder "¿dónde como vegano?"
+  // y contesta que no tiene la carta, aunque la carta sí exista.
+  const [burgerVegana, empanadaVegana] = await Promise.all([
+    Producto.create({
+      nombre: 'Burger vegana',
+      descripcion: 'Medallón de lentejas y garbanzos, sin ingredientes de origen animal.',
+      precio: 3800,
+      estado: true,
+      img: null,
+      puestoId: puesto.id,
+    }),
+    Producto.create({
+      nombre: 'Empanada vegana',
+      descripcion: 'Empanada de verdura y tofu, masa sin grasa animal.',
+      precio: 1300,
+      estado: true,
+      img: null,
+      puestoId: puesto.id,
+    }),
+  ]);
+  const productos = [choripan, cerveza, empanada, agua, burgerVegana, empanadaVegana];
 
   await Asociacion.create({
     estado: EstadosAsociaciones.Aceptada,
@@ -1095,6 +1115,19 @@ export async function runSeedDemo() {
       estado: def.estado,
       tienePreventa: def.conPreventa,
     });
+
+    // Los eventos visibles para el consumidor (y por lo tanto para el chatbot)
+    // necesitan puestos con carta; si no, "¿dónde venden chori?" no tiene
+    // respuesta aunque los productos existan en la base.
+    if (def.estado === 'EnCurso' || def.estado === 'Confirmado') {
+      for (const p of [puesto, puestoParrilla, puestoBebidas]) {
+        await Asociacion.create({
+          estado: EstadosAsociaciones.Aceptada,
+          eventoId: eventoDemo.id,
+          puestoId: p.id,
+        });
+      }
+    }
   }
   console.log(`✅ ${eventosPorEstado.length} eventos demo creados (uno por combinación estado × preventa)\n`);
 

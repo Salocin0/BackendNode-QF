@@ -52,4 +52,22 @@ describe('chatbotPrompt (unit, no server/DB/LLM required)', () => {
     const out = await render({ chatbotData: '[]', ayuda: '[]', input: 'x' });
     expect(out).to.match(/nunca dejes una frase cortada/i);
   });
+
+  // Without these instructions the model answered "no tengo la carta" even
+  // though the menu was in the payload.
+  it('tells the model to search the menu for a product', async () => {
+    const out = await render({ chatbotData: '[]', ayuda: '[]', input: 'x' });
+    expect(out).to.match(/buscá ese producto en la "carta"/i);
+    expect(out).to.match(/nombrando el evento y el puesto/i);
+  });
+
+  it('forbids inventing products or prices', async () => {
+    const out = await render({ chatbotData: '[]', ayuda: '[]', input: 'x' });
+    expect(out).to.match(/No inventes productos ni precios/i);
+  });
+
+  it('explains an empty menu instead of claiming the data is missing', async () => {
+    const out = await render({ chatbotData: '[]', ayuda: '[]', input: 'x' });
+    expect(out).to.match(/todavía no publicó sus puestos/i);
+  });
 });
