@@ -392,8 +392,14 @@ export async function runSeedDemo() {
   const inicioEvento = new Date(ahora);
   inicioEvento.setDate(ahora.getDate() - 7);
   inicioEvento.setHours(10, 0, 0, 0);
+  // Los días se generan desde hace 7 días hasta DÍAS_FUTURO adelante, y
+  // fechaHoraFin se deriva del último día. Antes finEvento era "hoy + 1 mes"
+  // mientras los diaEventos terminaban hoy: getEventoEndTime() usa el fin del
+  // último día, así que el evento se reportaba "Finalizado" y desaparecía del
+  // carrusel, del listado y del chatbot aunque en la tabla dijera EnCurso.
+  const DIAS_FUTURO = 7;
   const finEvento = new Date(ahora);
-  finEvento.setMonth(ahora.getMonth() + 1);
+  finEvento.setDate(ahora.getDate() + DIAS_FUTURO);
   finEvento.setHours(23, 0, 0, 0);
 
   const evento = await Evento.create({
@@ -420,15 +426,16 @@ export async function runSeedDemo() {
     productorId: productor.id,
   });
 
-  // Un DiaEvento por cada día desde el inicio (hace 7 días) hasta hoy inclusive.
-  // Así las estadísticas "pedidos por día" y "productos vendidos por día"
-  // muestran varios puntos en el gráfico en vez de un único bloque gigante.
+  // Un DiaEvento por cada día desde el inicio (hace 7 días) hasta finEvento
+  // inclusive. Así las estadísticas "pedidos por día" y "productos vendidos por
+  // día" muestran varios puntos en el gráfico, y el último día coincide con
+  // fechaHoraFin para que el evento siga vigente durante la demo.
   const diasEvento = [];
   for (let d = 0; ; d++) {
     const inicioDia = new Date(inicioEvento);
     inicioDia.setDate(inicioEvento.getDate() + d);
     inicioDia.setHours(10, 0, 0, 0);
-    if (inicioDia > ahora) break;
+    if (inicioDia > finEvento) break;
     // El evento es de Villa María (ART, UTC-3), pero el proceso corre en UTC
     // (Railway). "23:59 hora Argentina" equivale a las 02:59 UTC del día
     // siguiente: si se usara setHours(23,59,...) directo, el día quedaría
@@ -1127,6 +1134,24 @@ export async function runSeedDemo() {
           puestoId: p.id,
         });
       }
+      // Sin repartidor asociado, seleccionar_repartidor_por_evento() devuelve -1
+      // y el pedido queda "EnCamino" con repartidorId NULL para siempre: el
+      // repartidor nunca lo ve en su lista y la entrega no se puede demostrar.
+      await Asociacion.create({
+        estado: EstadosAsociaciones.Aceptada,
+        eventoId: eventoDemo.id,
+        repartidoreId: repartidor.id,
+      });
+      // procesosAutomaticos usa puntoEncuentroService.getAllInEvent(...)[0] para
+      // cerrar la asignación; sin un punto de encuentro el pedido se queda en
+      // "EnCamino" sin repartidor ni código de entrega.
+      await PuntoEncuentro.create({
+        nombre: `Entrada principal - ${eventoDemo.nombre}`,
+        longitud: '-63.2304',
+        latitud: '-32.4076',
+        habilitado: true,
+        eventoId: eventoDemo.id,
+      });
     }
   }
   console.log(`✅ ${eventosPorEstado.length} eventos demo creados (uno por combinación estado × preventa)\n`);

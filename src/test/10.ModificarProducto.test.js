@@ -1,13 +1,29 @@
 import * as chai from 'chai';
-import { describe, it } from 'mocha';
+import { describe, it, before } from 'mocha';
 import supertest from 'supertest';
 
 const expect = chai.expect;
 const requester = supertest('http://localhost:8000');
 
+// Uses a throwaway product instead of id=1: the demo seed puts the Choripán
+// there, and renaming it left the chatbot without a menu to answer from.
 describe('Actualizar un producto', () => {
+  let productoId;
+
+  before(async () => {
+    const creado = await requester.post('/producto').send({
+      nombre: `ProductoActualizar-${Date.now()}`,
+      descripcion: 'Producto descartable para el test de actualización',
+      imagen: 'imagenBase64',
+      precio: 10.99,
+      estado: true,
+      aderezos: 'Aderezos',
+      puestoId: 1,
+    });
+    productoId = creado.body?.data?.id;
+  });
+
   it('Debería actualizar un producto existente', async () => {
-    const productoId = 1;
     const productoActualizado = {
       nombre: 'Nuevo Nombre',
       descripcion: 'Nueva Descripción',

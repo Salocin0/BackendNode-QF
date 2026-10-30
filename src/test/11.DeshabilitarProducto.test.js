@@ -1,13 +1,29 @@
 import * as chai from 'chai';
-import { describe, it } from 'mocha';
+import { describe, it, before } from 'mocha';
 import supertest from 'supertest';
 
 const expect = chai.expect;
 const requester = supertest('http://localhost:8000');
 
+// Deletes a throwaway product instead of id=1: the demo seed puts the Choripán
+// there, and deleting it left the chatbot without a menu to answer from.
 describe('Eliminar un producto', () => {
+  let productId;
+
+  before(async () => {
+    const creado = await requester.post('/producto').send({
+      nombre: `ProductoEliminar-${Date.now()}`,
+      descripcion: 'Producto descartable para el test de borrado',
+      imagen: 'imagenBase64',
+      precio: 9.99,
+      estado: true,
+      aderezos: 'Aderezos',
+      puestoId: 1,
+    });
+    productId = creado.body?.data?.id;
+  });
+
   it('Debería eliminar un producto si existe', async () => {
-    const productId = 1;
     const response = await requester
       .delete(`/producto/${productId}`) 
 
