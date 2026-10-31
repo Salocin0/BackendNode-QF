@@ -16,7 +16,7 @@ export const buildCheckoutSnapshot = (items) => {
     const date = item.fecha ? parseIsoDate(item.fecha) : null;
     if (item.fecha && !date) throw new CheckoutError('Fecha de precompra inválida');
     const key = JSON.stringify([event.id, product.puestoId, date?.toISOString() || null]);
-    if (!groups.has(key)) groups.set(key, { puestoId: product.puestoId, eventoId: event.id, fechaPreCompra: date?.toISOString() || null, detalles: [], items: [], subtotalCents: 0 });
+    if (!groups.has(key)) groups.set(key, { puestoId: product.puestoId, eventoId: event.id, fechaPreCompra: date?.toISOString() || null, currency: "usd", detalles: [], items: [], subtotalCents: 0 });
     const group = groups.get(key);
     group.detalles.push({ productoId: product.id, cantidad: quantity, precio: Number(product.precio) });
     group.items.push({ id: item.id, cantidad: quantity });
@@ -42,21 +42,29 @@ export const createCartCheckoutService = (deps) => {
       const items = await ItemCarrito.findAll({ where: { carritoId: cart.id }, include: [{ model: Producto }, { model: Evento, include: deps.eventInclude || [] }], order: [['id', 'ASC']] });
       const snapshot = buildCheckoutSnapshot(items.map((item) => item.get ? item.get({ plain: true }) : item));
       const checkout = await Checkout.create({ consumidorId: consumerId, carritoId: cart.id, snapshot: snapshot.orders, amount: snapshot.amount });
-      const intent = await getStripe().paymentIntents.create({ amount: snapshot.amount, currency: 'ars', metadata: { checkoutId: checkout.id, consumidorId: String(consumerId) } }, { idempotencyKey: `cart-checkout-${checkout.id}` });
+      const stripe = getStripe();
+      const customer = await stripe.customers.create({ metadata: { checkoutId: checkout.id } }, { idempotencyKey: `cart-checkout-customer-${checkout.id}` });
+      const intent = await stripe.paymentIntents.create({ amount: snapshot.amount, currency: 'usd', customer: customer.id, metadata: { checkoutId: checkout.id, consumidorId: String(consumerId) } }, { idempotencyKey: `cart-checkout-${checkout.id}` });
       await checkout.update({ paymentIntentId: intent.id });
-      return { checkoutId: checkout.id, clientSecret: intent.client_secret, amount: checkout.amount };
+      return { checkoutId: checkout.id, clientSecret: intent.client_secret, amount: checkout.amount, currency: intent.currency };
     },
     async resume(id, consumerId) {
       const checkout = await owned(id, consumerId);
-      const intent = await getStripe().paymentIntents.retrieve(checkout.paymentIntentId);
-      return { checkoutId: id, clientSecret: intent.client_secret, amount: checkout.amount, paid: intent.status === 'succeeded', completed: checkout.status === 'completed' };
+      const stripe = getStripe();
+      const intent = await stripe.paymentIntents.retrieve(checkout.paymentIntentId);
+      // Replace only unpaid legacy ARS quotes. Already-paid snapshots keep their original currency.
+      if (!checkout.snapshot[0]?.currency && intent.currency === 'ars' && ['requires_payment_method', 'canceled'].includes(intent.status)) {
+        if (intent.status !== 'canceled') await stripe.paymentIntents.cancel(intent.id, {}, { idempotencyKey: `replace-legacy-cart-${checkout.id}` });
+        return this.create(consumerId);
+      }
+      return { checkoutId: id, clientSecret: intent.client_secret, amount: checkout.amount, currency: intent.currency, paid: intent.status === 'succeeded', completed: checkout.status === 'completed' };
     },
     async complete(id, consumerId) {
       const checkout = await owned(id, consumerId);
       if (checkout.status === 'completed') return checkout.result;
       const intent = await getStripe().paymentIntents.retrieve(checkout.paymentIntentId);
       if (intent.status !== 'succeeded') throw new CheckoutError('El pago todavía no está confirmado', 409);
-      if (intent.amount_received !== checkout.amount || intent.currency !== 'ars' || intent.metadata?.checkoutId !== checkout.id) throw new CheckoutError('El pago no coincide con esta compra', 409);
+      if (intent.amount_received !== checkout.amount || intent.currency !== (checkout.snapshot[0]?.currency || 'ars') || intent.metadata?.checkoutId !== checkout.id) throw new CheckoutError('El pago no coincide con esta compra', 409);
       let created = false;
       const result = await sequelize.transaction(async (transaction) => {
         const locked = await owned(id, consumerId, { transaction, lock: transaction.LOCK.UPDATE });

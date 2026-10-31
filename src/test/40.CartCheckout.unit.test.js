@@ -24,9 +24,10 @@ describe('single-payment cart checkout (isolated in-memory DB)', function () {
     await Producto.bulkCreate([{ id: 1, precio: 1000, puestoId: 1, estado: true }, { id: 2, precio: 500, puestoId: 2, estado: true }]);
     await ItemCarrito.bulkCreate([{ id: 1, carritoId: cart.id, productoId: 1, eventoId: 1, cantidad: 2 }, { id: 2, carritoId: cart.id, productoId: 2, eventoId: 1, cantidad: 1 }]);
     intents = new Map(); notifications = [];
-    const stripe = { paymentIntents: {
+    const stripe = { customers: { create: async () => ({ id: "cus_test" }) }, paymentIntents: {
       create: async (data) => { const intent = { ...data, id: 'pi_test', client_secret: 'secret_test', status: 'requires_payment_method', amount_received: 0 }; intents.set(intent.id, intent); return intent; },
       retrieve: async (id) => intents.get(id),
+      cancel: async (id) => { intents.get(id).status = "canceled"; return intents.get(id); },
     } };
     service = createCartCheckoutService({ sequelize: db, Checkout, Carrito, ItemCarrito, Producto, Evento, Pedido, DetallePedido, getStripe: () => stripe, notify: async (...args) => notifications.push(args) });
   });
@@ -36,6 +37,8 @@ describe('single-payment cart checkout (isolated in-memory DB)', function () {
   it('quotes all stands from server prices, creates all orders once and clears only purchased items', async () => {
     const quote = await service.create(1);
     expect(quote.amount).to.equal(287500);
+    expect(quote.currency).to.equal("usd");
+    expect(intents.get("pi_test").customer).to.equal("cus_test");
     await ItemCarrito.update({ cantidad: 3 }, { where: { id: 1 } });
     pay();
     const first = await service.complete(quote.checkoutId, 1);
@@ -77,6 +80,19 @@ describe('single-payment cart checkout (isolated in-memory DB)', function () {
     try { await service.complete(quote.checkoutId, 2); } catch (caught) { error = caught; }
     expect(error.status).to.equal(404);
     expect(await Pedido.count()).to.equal(0);
+  });
+  it('replaces an unpaid legacy ARS quote with the working USD flow without charging', async () => {
+    const quote = await service.create(1);
+    const checkout = await Checkout.findByPk(quote.checkoutId);
+    const legacySnapshot = checkout.snapshot.map(({ currency, ...group }) => group);
+    intents.set('pi_legacy', { ...intents.get('pi_test'), id: 'pi_legacy', currency: 'ars' });
+    await checkout.update({ snapshot: legacySnapshot, paymentIntentId: 'pi_legacy' });
+    const replacement = await service.resume(quote.checkoutId, 1);
+    expect(replacement.checkoutId).not.to.equal(quote.checkoutId);
+    expect(replacement.currency).to.equal('usd');
+    expect(intents.get('pi_legacy').status).to.equal('canceled');
+    expect(await Pedido.count()).to.equal(0);
+    expect(await ItemCarrito.count()).to.equal(2);
   });
   it('rounds fees per order and rejects expired events or invalid quantities', () => {
     const item = { id: 1, cantidad: 1, producto: { id: 1, puestoId: 1, precio: 0.9 }, evento: { id: 1, estado: 'EnCurso' } };
