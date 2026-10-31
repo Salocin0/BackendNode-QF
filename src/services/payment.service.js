@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 
 let stripe;
-const getStripe = () => {
+export const getStripe = () => {
   if (!stripe) {
     stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2023-08-16' });
   }
