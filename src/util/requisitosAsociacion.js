@@ -25,6 +25,7 @@ export function encodeRequirementAnswer(requirement, answer) {
   const text = String(answer).trim();
   if (text.length > 10000) throw new RequisitoError('La respuesta es demasiado larga');
   if (requirement.tipo === 'Numerico' && !Number.isFinite(Number(text))) throw new RequisitoError(`${requirement.titulo} debe ser un número`);
+  if (requirement.tipo === 'Numerico' && String(requirement.titulo).trim().toLocaleLowerCase('es').includes('disponibilidad horaria') && Number(text) < 0) throw new RequisitoError('La disponibilidad horaria no puede ser negativa');
   if (['Opciones', 'select'].includes(requirement.tipo) && !options(requirement.opciones).includes(text)) throw new RequisitoError(`Seleccioná una opción válida para ${requirement.titulo}`);
   return text;
 }
