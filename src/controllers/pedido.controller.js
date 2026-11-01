@@ -91,7 +91,7 @@ class PedidoController {
   async getAllRepartidorController(req, res) {
     try {
       const consumidorId = req.headers['consumidorid'];
-      const pedidos = await pedidoService.getAllRepartidor(consumidorId);
+      const pedidos = await pedidoService.getAllRepartidor(consumidorId, { incluirHistorial: req.query?.historial === 'true' });
       if (pedidos) {
         return res.status(200).json({
           status: 'success',

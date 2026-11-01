@@ -1,4 +1,5 @@
 import { Op } from 'sequelize';
+import { estadosPedidosRepartidor } from '../util/pedidosRepartidor.js';
 import { notificationTexts } from '../config/notificacionesConfig.js';
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { DetallePedido } from '../DAO/models/detallePedido.model.js';
@@ -138,7 +139,7 @@ class PedidoService {
   }
   
   
-  async getAllRepartidor(consumidorId) {
+  async getAllRepartidor(consumidorId, { incluirHistorial = false } = {}) {
     const consumidor = await Consumidor.findOne({
       where: {
         id: consumidorId,
@@ -181,7 +182,7 @@ class PedidoService {
       where: {
         repartidorId: repartidorId,
         estado: {
-          [Op.or]: ["EnCamino", "Entregado"],
+          [Op.or]: estadosPedidosRepartidor(incluirHistorial),
         },
       },
       include: includeModels,
