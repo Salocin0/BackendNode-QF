@@ -1,4 +1,9 @@
 import { Op } from 'sequelize';
+import { sequelize } from '../util/connections.js';
+import { Evento } from '../DAO/models/evento.model.js';
+import { Restriccion } from '../DAO/models/Restriccion.model.js';
+import { RTARestriccion } from '../DAO/models/RTARestriccion.model.js';
+import { RequisitoError, normalizeRequirementAnswers } from '../util/requisitosAsociacion.js';
 import { notificationTexts } from '../config/notificacionesConfig.js';
 import { Asociacion } from '../DAO/models/asociacion.model.js';
 import { EstadosAsociaciones } from '../enums/Estados.enums.js';
@@ -80,29 +85,27 @@ class AsociacionService {
     return asociacion;
   }
 
-  async create(nuevaAsociacion, respuestas, consumidorId, restricciones) {
-    if (consumidorId !== 0) {
+  async create(nuevaAsociacion, respuestas, consumidorId) {
+    if (Number(consumidorId) !== 0) {
       const consumidor = await consumidorService.getOne(consumidorId);
-      nuevaAsociacion.repartidoreId = consumidor?.repartidorId;
-    } else {
-      nuevaAsociacion.repartidoreId = null;
-    }
-    if (nuevaAsociacion.puestoId === 0) {
-      nuevaAsociacion.puestoId = null;
-    }
-
+      if (!consumidor?.repartidorId) throw new RequisitoError('El usuario no tiene un rol de repartidor habilitado');
+      nuevaAsociacion.repartidoreId = consumidor.repartidorId;
+    } else nuevaAsociacion.repartidoreId = null;
+    if (Number(nuevaAsociacion.puestoId) === 0) nuevaAsociacion.puestoId = null;
     nuevaAsociacion.estado = EstadosAsociaciones.Pendiente;
-    const asociacionCreada = await Asociacion.create(nuevaAsociacion);
-    console.log(respuestas);
-    if (respuestas !== null) {
-      const respuestasArray = Object.values(respuestas);
-      await Promise.all(
-        respuestasArray.map(async (respuesta) => {
-          await nuevaRespuesta.save();
-        })
-      );
-    }
-    this.sendNotificacionesAsociacionCreada(asociacionCreada);
+    const asociacionCreada = await sequelize.transaction(async (transaction) => {
+      const evento = await Evento.findByPk(nuevaAsociacion.eventoId, { transaction, lock: transaction.LOCK.UPDATE });
+      if (!evento) throw new RequisitoError('Evento no encontrado', 404);
+      const existing = await Asociacion.findOne({ where: { eventoId: nuevaAsociacion.eventoId, ...(nuevaAsociacion.repartidoreId ? { repartidoreId: nuevaAsociacion.repartidoreId } : { puestoId: nuevaAsociacion.puestoId }), estado: { [Op.ne]: 'Cancelada' } }, transaction });
+      if (existing) throw new RequisitoError('Ya tenés una solicitud para este evento', 409);
+      const requirements = respuestas !== null ? await Restriccion.findAll({ where: { eventoId: evento.id }, transaction }) : [];
+      const answers = respuestas !== null ? normalizeRequirementAnswers(requirements, respuestas) : [];
+      const association = await Asociacion.create(nuevaAsociacion, { transaction });
+      for (const answer of answers) await RTARestriccion.create({ ...answer, asociacionId: association.id }, { transaction });
+      return association;
+    });
+    // A notification failure must not turn a persisted request into a reported failure.
+    this.sendNotificacionesAsociacionCreada(asociacionCreada).catch((error) => console.error('No se pudo notificar la asociación:', error.message));
     return asociacionCreada;
   }
 
