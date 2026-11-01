@@ -1,3 +1,4 @@
+import { RequisitoError } from '../util/requisitosAsociacion.js';
 import { Asociacion } from '../DAO/models/asociacion.model.js';
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Evento } from '../DAO/models/evento.model.js';
@@ -214,6 +215,7 @@ class AsociacionController {
       });
     } catch (e) {
       console.log(e);
+      if (e instanceof RequisitoError) return res.status(e.status).json({ status: 'error', msg: e.message, code: e.status });
       return res.status(500).json({
         status: 'error',
         msg: 'something went wrong :(',

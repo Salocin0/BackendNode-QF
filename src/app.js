@@ -81,7 +81,7 @@ app.use(
 // Small default body limit; only routes that receive base64 images/documents get the large one.
 const DEFAULT_BODY_LIMIT = process.env.BODY_LIMIT || '1mb';
 const UPLOAD_BODY_LIMIT = process.env.UPLOAD_BODY_LIMIT || '50mb';
-const UPLOAD_ROUTES = /^\/(evento|puesto|producto|productor|repartidor|encargado)(\/|$)/;
+const UPLOAD_ROUTES = /^\/(evento|puesto|producto|productor|repartidor|encargado|asociacion)(\/|$)/;
 const jsonDefault = express.json({ limit: DEFAULT_BODY_LIMIT });
 const jsonUpload = express.json({ limit: UPLOAD_BODY_LIMIT });
 const urlencodedDefault = express.urlencoded({ extended: true, limit: DEFAULT_BODY_LIMIT });

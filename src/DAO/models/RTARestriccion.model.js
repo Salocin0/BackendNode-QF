@@ -9,7 +9,7 @@ export const RTARestriccion = sequelize.define('RTARestriccion', {
     autoIncrement: true,
   },
   respuesta: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
 });

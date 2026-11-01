@@ -1,10 +1,14 @@
 import express from 'express';
+import { requisitosAsociacionController } from '../controllers/requisitosAsociacion.controller.js';
 import { asociacionController } from '../controllers/asociacion.controller.js';
 export const RouterAsociacion = express.Router();
 
 RouterAsociacion.get('/', asociacionController.getAllController);
 
 RouterAsociacion.get('/evento/:id', asociacionController.getAllInEventController);
+
+RouterAsociacion.get('/:id/requisitos', requisitosAsociacionController.getRequirementAnswers);
+RouterAsociacion.get('/:id/requisitos/:respuestaId/archivo', requisitosAsociacionController.getRequirementAnswers);
 
 RouterAsociacion.get('/:id', asociacionController.getOneController);
 
