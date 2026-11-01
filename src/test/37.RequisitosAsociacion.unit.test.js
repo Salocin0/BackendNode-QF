@@ -26,4 +26,11 @@ describe('Requisitos de asociación y documentos', () => {
     expect(() => encodeRequirementAnswer({ tipo: 'Opciones', opciones: 'Moto,Bici' }, 'Auto')).to.throw();
     expect(encodeRequirementAnswer({ tipo: 'Opciones', opciones: '["Moto","Bici"]' }, 'Moto')).to.equal('Moto');
   });
+  it('rechaza disponibilidad horaria negativa sin bloquear cero ni valores positivos', () => {
+    const requirement = { tipo: 'Numerico', titulo: 'Disponibilidad horaria' };
+    expect(() => encodeRequirementAnswer(requirement, '-1')).to.throw('no puede ser negativa');
+    expect(encodeRequirementAnswer(requirement, '0')).to.equal('0');
+    expect(encodeRequirementAnswer(requirement, '4')).to.equal('4');
+  });
+
 });
