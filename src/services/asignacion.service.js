@@ -4,6 +4,9 @@ import { Pedido } from '../DAO/models/pedido.model.js';
 import { Repartidor } from '../DAO/models/repartidor.model.js';
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Puesto } from '../DAO/models/puesto.model.js';
+import { responder, AsignacionError } from './asignacion.core.js';
+
+export { AsignacionError };
 
 class AsignacionService {
   async create(estado, pedidoId, repartidorId) {
@@ -33,20 +36,16 @@ class AsignacionService {
     return asignacion;
   }
 
-  async rechazar(Id) {
-    const asignacion = await Asignacion.findOne({
-      where: { id: Id },
-    });
-    asignacion.estado = 'Rechazado';
-    asignacion.save()
+  responder(id, nuevoEstado, consumidorId = null) {
+    return responder({ Asignacion, getConsumidor: (cid) => consumidorService.getOne(cid) }, id, nuevoEstado, consumidorId);
   }
 
-  async aceptar(Id) {
-    const asignacion = await Asignacion.findOne({
-      where: { id: Id },
-    });
-    asignacion.estado = 'Aceptado';
-    asignacion.save()
+  async rechazar(id, consumidorId = null) {
+    return this.responder(id, 'Rechazado', consumidorId);
+  }
+
+  async aceptar(id, consumidorId = null) {
+    return this.responder(id, 'Aceptado', consumidorId);
   }
 }
 
