@@ -1,8 +1,6 @@
 export const pendiente = {
   crearPedido: async (pedido) => {
-    pedido.estado = 'Pendiente';
-    await pedido.save();
-    return pedido;
+    throw new Error('Error el pedido ya se ha creado');
   },
 
   aceptar: async (pedido) => {
@@ -34,9 +32,7 @@ export const pendiente = {
   },
 
   valorar: async (pedido) => {
-    pedido.estado = 'Valorado';
-    await pedido.save();
-    return pedido;
+    throw new Error('Error el pedido no se puede valorar hasta que sea entregado');
   },
 
 };

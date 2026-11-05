@@ -83,3 +83,42 @@ export const resolveEstadoOnUpdate = (currentEstado, requestedEstado) => {
   const next = requestedEstado !== undefined ? requestedEstado : currentEstado;
   return next === 'EnPreparacion1' ? 'EnPreparacion2' : next;
 };
+
+const hasValue = (value) => value !== undefined && value !== null && String(value).trim() !== '';
+
+/**
+ * Business validation for POST /evento. Returns a list of human readable errors (empty when valid).
+ * Wizard drafts (EnPreparacion1) are saved after the first step, so dates are only mandatory for non-draft events.
+ */
+export const validateEventoCreate = (body = {}) => {
+  const errors = [];
+  if (!hasValue(body.nombre)) errors.push('El nombre del evento es obligatorio');
+
+  const isDraft = body.estado === 'EnPreparacion1';
+  const inicio = hasValue(body.fechaHoraInicioEvento) ? parseIsoDate(body.fechaHoraInicioEvento) : null;
+  const fin = hasValue(body.fechaHoraFinEvento) ? parseIsoDate(body.fechaHoraFinEvento) : null;
+  if (!isDraft) {
+    if (!inicio) errors.push('La fecha de inicio del evento es obligatoria');
+    if (!fin) errors.push('La fecha de fin del evento es obligatoria');
+  }
+  if (inicio && fin && fin.getTime() <= inicio.getTime()) {
+    errors.push('La fecha de fin debe ser posterior a la fecha de inicio');
+  }
+
+  for (const field of ['capacidadMaxima', 'cantidadRepartidores', 'cantidadPuestos']) {
+    if (hasValue(body[field])) {
+      const num = Number(body[field]);
+      if (!Number.isInteger(num) || num < 0) errors.push(`${field} debe ser un entero mayor o igual a 0`);
+    }
+  }
+
+  const dias = Array.isArray(body.diasEvento) ? body.diasEvento : [];
+  dias.forEach((dia, index) => {
+    const diaInicio = parseIsoDate(dia?.horaInicio);
+    const diaFin = parseIsoDate(dia?.horaFin);
+    if (!diaInicio || !diaFin) errors.push(`El día ${index + 1} necesita horario de inicio y fin válidos`);
+    else if (diaFin.getTime() <= diaInicio.getTime()) errors.push(`El día ${index + 1} debe terminar después de empezar`);
+  });
+
+  return errors;
+};

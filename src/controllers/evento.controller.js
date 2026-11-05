@@ -2,7 +2,7 @@ import { DiaEvento } from '../DAO/models/diaEvento.model.js';
 import { estadosEvento } from '../estados/estados/estadosEvento.js';
 import { eventoService } from '../services/evento.service.js';
 import { notificacionesService } from '../services/notificaciones.service.js';
-import { EventoPayloadError, normalizeEventoPayload } from '../util/eventoPayload.js';
+import { EventoPayloadError, normalizeEventoPayload, validateEventoCreate } from '../util/eventoPayload.js';
 import { parseIsoDate, withEstadoEfectivo } from '../util/validation.js';
 
 class EventoController {
@@ -276,6 +276,11 @@ class EventoController {
         // ISO dates only: new Date() would silently swap day and month for dd/mm/yyyy strings.
         const parseDate = (dateStr) => parseIsoDate(dateStr);
 
+        const businessErrors = validateEventoCreate(req.body);
+        if (businessErrors.length > 0) {
+            return res.status(400).json({ status: 'error', msg: businessErrors.join('. '), code: 400, data: {} });
+        }
+
         // A date that was sent but is not valid ISO must be rejected, not silently stored as null.
         const invalidDates = Object.entries({
             fechaHoraInicioEvento,
@@ -324,10 +329,14 @@ class EventoController {
             longitud,
             restricciones,
             cantidadDiasEvento,
-            consumidorId: consumidorId || req.headers['consumidorid'] || req.headers['ConsumidorId'] || 1,
+            consumidorId: consumidorId || req.headers['consumidorid'] || undefined,
             productorId,
             diasEvento: diasEvento || [],
         };
+
+        if (!nuevoEvento.productorId && !nuevoEvento.consumidorId) {
+            return res.status(400).json({ status: 'error', msg: 'No se pudo identificar al productor del evento', code: 400, data: {} });
+        }
 
         const eventoCreado = await eventoService.create(nuevoEvento);
 
@@ -378,6 +387,9 @@ class EventoController {
             });
         }
     } catch (e) {
+        if (e instanceof EventoPayloadError) {
+            return res.status(400).json({ status: 'error', msg: e.message, code: 400, data: {} });
+        }
         console.log('Error:', e);
         return res.status(500).json({
             status: 'error',

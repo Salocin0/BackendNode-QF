@@ -6,7 +6,7 @@ import { asociacionService } from './asociacion.service.js';
 import { consumidorService } from './consumidor.service.js';
 import { restriccionService } from './restriccion.service.js';
 import { withDbRetry } from '../util/dbRetry.js';
-import { normalizeEventoPayload, resolveEstadoOnUpdate } from '../util/eventoPayload.js';
+import { EventoPayloadError, normalizeEventoPayload, resolveEstadoOnUpdate } from '../util/eventoPayload.js';
 import { isEventoFinalizado, withEstadoEfectivo } from '../util/validation.js';
 
 class EventoService {
@@ -157,6 +157,7 @@ class EventoService {
         attempts: 4,
         baseDelayMs: 1000,
       });
+      if (!consumidor?.productorId) throw new EventoPayloadError('El usuario no está habilitado como productor de eventos');
       nuevoEvento.productorId = consumidor.productorId;
     }
     console.log("service:" + nuevoEvento.estado);
