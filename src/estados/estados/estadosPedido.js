@@ -274,8 +274,8 @@ export const estadosPedido = {
       return entregado.asignar(pedido);
     },
     
-    Valorado: async (pedido) => {
-      return entregado.valorado(pedido);
+    valorar: async (pedido) => {
+      return entregado.valorar(pedido);
     },
   },
 
