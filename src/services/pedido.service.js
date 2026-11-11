@@ -210,12 +210,12 @@ class PedidoService {
         id: id,
       },
       include: [
-        { model: Puesto },
+        { model: Puesto, attributes: PUESTO_SIN_IMAGENES },
         { 
           model: DetallePedido, 
           as: 'detalles',
           include: [
-            { model: Producto, as: 'producto' }
+            { model: Producto, as: 'producto', attributes: PRODUCTO_SIN_IMAGEN }
           ]
         },
         {
@@ -224,7 +224,8 @@ class PedidoService {
             {
               model: Usuario,
               as: 'usuario',
-              attributes: ['usuario', 'email', 'tokenWeb', 'tokenMobile'],
+              // Push tokens are never part of a response: notifications read them from Usuario directly.
+              attributes: ['usuario', 'email'],
             },
           ],
           // 'email' is stored in the associated Usuario model, not in Consumidor
@@ -248,6 +249,7 @@ class PedidoService {
         },
         {
           model: Evento,
+          attributes: { exclude: ['img'] },
           include: [
             {
               model: Productor,
