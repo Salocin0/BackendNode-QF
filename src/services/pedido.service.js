@@ -15,18 +15,24 @@ import { Usuario } from '../DAO/models/users.model.js';
 import { Evento } from '../DAO/models/evento.model.js';
 import { Productor } from '../DAO/models/Productor.model.js';
 
+// Order lists never render stand or product images; their base64 payloads made
+// GET /pedido/puesto/:id weigh 100+ MB for stands with a few hundred orders.
+const PUESTO_SIN_IMAGENES = { exclude: ['img', 'banner'] };
+const PRODUCTO_SIN_IMAGEN = { exclude: ['img'] };
+
 class PedidoService {
   async getAll(consumidorId) {
     const whereConditions = { consumidorId };
     const includeModels = [
-      { model: Puesto },
+      { model: Puesto, attributes: PUESTO_SIN_IMAGENES },
       {
         model: DetallePedido,
         as: 'detalles',
         include: [
           {
             model: Producto,
-            as: 'producto'
+            as: 'producto',
+            attributes: PRODUCTO_SIN_IMAGEN,
           }
         ]
       }
@@ -92,10 +98,11 @@ class PedidoService {
             {
               model: Producto,
               as: 'producto',
+              attributes: PRODUCTO_SIN_IMAGEN,
             },
           ],
         },
-        { model: Puesto },
+        { model: Puesto, attributes: PUESTO_SIN_IMAGENES },
       ],
     });
 
@@ -116,10 +123,11 @@ class PedidoService {
             {
               model: Producto,
               as: 'producto',
+              attributes: PRODUCTO_SIN_IMAGEN,
             },
           ],
         },
-        { model: Puesto },
+        { model: Puesto, attributes: PUESTO_SIN_IMAGENES },
         {
           model: Consumidor,
           include: [
@@ -160,7 +168,7 @@ class PedidoService {
           },
         ],
       },
-      { model: Puesto },
+      { model: Puesto, attributes: PUESTO_SIN_IMAGENES },
       { model: Consumidor, include: [{ model: Usuario, as: 'usuario' }] }, // Include Usuario relation here
       {
         model: Repartidor,
@@ -278,10 +286,11 @@ class PedidoService {
             {
               model: Producto,
               as: 'producto',
+              attributes: PRODUCTO_SIN_IMAGEN,
             },
           ],
         },
-        { model: Puesto },
+        { model: Puesto, attributes: PUESTO_SIN_IMAGENES },
       ],
     });
 
