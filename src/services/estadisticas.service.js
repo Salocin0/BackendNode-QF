@@ -231,7 +231,8 @@ class EstadisticasService {
             public."Pedidos" ped
         JOIN 
             public."diaEventos" d 
-            ON ped."fecha" BETWEEN d."fechaHoraInicioDiaEvento" AND d."fechaHoraFinDiaEvento" -- Relación entre pedidos y días del evento mediante el rango de fechas
+            ON ped."eventoId" = d."eventoId" -- Cada pedido solo cuenta en los días de su propio evento (con eventos simultáneos, "Todos" duplicaba pedidos)
+            AND ped."fecha" BETWEEN d."fechaHoraInicioDiaEvento" AND d."fechaHoraFinDiaEvento" -- Relación entre pedidos y días del evento mediante el rango de fechas
         JOIN 
             public."puestos" p 
             ON ped."puestoId" = p.id -- Relación entre pedidos y puestos

@@ -40,7 +40,11 @@ import { Asignacion } from '../DAO/models/asignacion.model.js';
 import { ValoracionPuesto } from '../DAO/models/valoracionCarrito.model.js';
 import { ValoracionRepartidor } from '../DAO/models/valoracionRepartidor.model.js';
 import { createHashPW } from './bcrypt.js';
-import { EstadosEvento, EstadosAsociaciones, EstadosPedido } from '../enums/Estados.enums.js';
+import { EstadosAsociaciones, EstadosPedido } from '../enums/Estados.enums.js';
+import {
+  slug, NOMBRES, APELLIDOS, PERSONAS_DEMO, ENCARGADOS_EXTRA, REPARTIDORES_EXTRA, PUESTOS, EVENTOS_ACTIVOS,
+  EVENTOS_POR_ESTADO, OPINIONES_GENERICAS, OPINIONES_REPARTIDOR, crearRng, intensidad, placeholderSvg,
+} from './seedDemoCatalog.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const IMAGES_DIR = path.join(__dirname, '..', 'public', 'images');
@@ -48,8 +52,8 @@ const MIME_BY_EXT = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'imag
 
 // Lee una imagen de src/public/images/<baseName>.<jpg|jpeg|png|webp> y la
 // devuelve como data URI base64 (formato que espera el frontend en los
-// campos img/banner). Si no encuentra el archivo, devuelve '' sin romper el seed.
-function loadImageAsDataUri(baseName) {
+// campos img/banner). Si no existe devuelve '' y el caller usa un placeholder.
+function loadImageAsDataUri(baseName, { silent = false } = {}) {
   for (const ext of Object.keys(MIME_BY_EXT)) {
     const filePath = path.join(IMAGES_DIR, baseName + ext);
     if (fs.existsSync(filePath)) {
@@ -57,13 +61,16 @@ function loadImageAsDataUri(baseName) {
       return `data:${MIME_BY_EXT[ext]};base64,${buffer.toString('base64')}`;
     }
   }
-  console.warn(`⚠️  No se encontró imagen "${baseName}" en ${IMAGES_DIR} (.jpg/.jpeg/.png/.webp) — se deja sin imagen.`);
+  if (!silent) console.warn(`⚠️  No se encontró imagen "${baseName}" en ${IMAGES_DIR}.`);
   return '';
 }
 
 // Ejecuta el seed de datos de demo completo: vacía todas las tablas y siembra
-// un dataset fijo (4 usuarios por rol, evento "fiesta del cuarteto", puesto +
-// productos, y pedidos en distintos estados).
+// 4 usuarios por rol (más encargados, repartidores y consumidores con nombres
+// reales), 10 puestos con su carta, eventos vivos y finalizados con miles de
+// pedidos históricos (olas de compra por hora y por día, valoraciones), pedidos
+// en curso en cada estado y eventos en todos los estados posibles.
+// Los datos viven en seedDemoCatalog.js.
 //
 // A propósito NO hace sequelize.authenticate(), sequelize.close() ni
 // process.exit(): esta función corre dentro del mismo proceso Node que el
@@ -271,892 +278,448 @@ export async function runSeedDemo() {
     throw error;
   }
 
-  // Paso 2: un usuario por rol
-  console.log('🔄 Creando usuarios demo (uno por rol)...');
+  const rng = crearRng();
   const hashed = createHashPW('123123123');
-
-  // Productor
-  const productor = await Productor.create({
-    cuit: '20304050601',
-    razonSocial: 'Productor Demo SRL',
-    estaValido: true,
-    habilitado: true,
-    condicionIva: 'Monotributista',
-  });
-  const consumidorProductor = await Consumidor.create({
-    nombre: 'Productor',
-    apellido: 'Demo',
-    fechaNacimiento: new Date(1985, 0, 1),
-    dni: 30111221,
-    localidad: 'Villa María',
-    provincia: 'Córdoba',
-    telefono: 3515551001,
-    habilitado: true,
-    productorId: productor.id,
-  });
-  const usuarioProductor = await Usuario.create({
-    usuario: 'Productor',
-    email: 'productor@demo.com',
-    emailValidado: true,
-    contraseña: hashed,
-    fechaAlta: new Date(),
-    habilitado: true,
-    tipoUsuario: 'productor',
-    consumidorId: consumidorProductor.id,
-  });
-
-  // Encargado
-  const encargado = await Encargado.create({
-    cuit: '20304050602',
-    razonSocial: 'Puesto Cuarteto Demo',
-    estaValido: true,
-    habilitado: true,
-    condicionIva: 'Monotributista',
-  });
-  const consumidorEncargado = await Consumidor.create({
-    nombre: 'Encargado',
-    apellido: 'Demo',
-    fechaNacimiento: new Date(1988, 0, 1),
-    dni: 30111222,
-    localidad: 'Villa María',
-    provincia: 'Córdoba',
-    telefono: 3515551002,
-    habilitado: true,
-    encargadoId: encargado.id,
-  });
-  const usuarioEncargado = await Usuario.create({
-    usuario: 'Encargado',
-    email: 'encargado@demo.com',
-    emailValidado: true,
-    contraseña: hashed,
-    fechaAlta: new Date(),
-    habilitado: true,
-    tipoUsuario: 'encargado',
-    consumidorId: consumidorEncargado.id,
-  });
-
-  // Repartidor
-  const repartidor = await Repartidor.create({
-    estaValido: true,
-    habilitado: true,
-  });
-  const consumidorRepartidor = await Consumidor.create({
-    nombre: 'Repartidor',
-    apellido: 'Demo',
-    fechaNacimiento: new Date(1992, 0, 1),
-    dni: 30111223,
-    localidad: 'Villa María',
-    provincia: 'Córdoba',
-    telefono: 3515551003,
-    habilitado: true,
-    repartidorId: repartidor.id,
-  });
-  const usuarioRepartidor = await Usuario.create({
-    usuario: 'Repartidor',
-    email: 'repartidor@demo.com',
-    emailValidado: true,
-    contraseña: hashed,
-    fechaAlta: new Date(),
-    habilitado: true,
-    tipoUsuario: 'repartidor',
-    consumidorId: consumidorRepartidor.id,
-  });
-
-  // Consumidor
-  const consumidorConsumidor = await Consumidor.create({
-    nombre: 'Consumidor',
-    apellido: 'Demo',
-    fechaNacimiento: new Date(1995, 0, 1),
-    dni: 30111224,
-    localidad: 'Villa María',
-    provincia: 'Córdoba',
-    telefono: 3515551004,
-    habilitado: true,
-  });
-  const usuarioConsumidor = await Usuario.create({
-    usuario: 'Consumidor',
-    email: 'consumidor@demo.com',
-    emailValidado: true,
-    contraseña: hashed,
-    fechaAlta: new Date(),
-    habilitado: true,
-    tipoUsuario: 'consumidor',
-    consumidorId: consumidorConsumidor.id,
-  });
-
-  console.log('✅ Usuarios demo creados (Productor, Encargado, Repartidor, Consumidor)\n');
-
-  // Paso 3: evento "fiesta del cuarteto" en Villa María
-  console.log('🔄 Creando evento demo...');
   const ahora = new Date();
-  const inicioEvento = new Date(ahora);
-  inicioEvento.setDate(ahora.getDate() - 7);
-  inicioEvento.setHours(10, 0, 0, 0);
-  // Los días se generan desde hace 7 días hasta DÍAS_FUTURO adelante, y
-  // fechaHoraFin se deriva del último día. Antes finEvento era "hoy + 1 mes"
-  // mientras los diaEventos terminaban hoy: getEventoEndTime() usa el fin del
-  // último día, así que el evento se reportaba "Finalizado" y desaparecía del
-  // carrusel, del listado y del chatbot aunque en la tabla dijera EnCurso.
-  const DIAS_FUTURO = 7;
-  const finEvento = new Date(ahora);
-  finEvento.setDate(ahora.getDate() + DIAS_FUTURO);
-  finEvento.setHours(23, 0, 0, 0);
 
-  const evento = await Evento.create({
-    nombre: 'fiesta del cuarteto',
-    descripcion: 'La fiesta del cuarteto más grande de Villa María, con los mejores puestos de comida y bebida.',
-    tipoEvento: 'Música',
-    tipoPago: 'Efectivo',
-    cantidadPuestos: '1',
-    conButaca: false,
-    conRepartidor: true,
-    tienePreventa: false,
-    linkVentaEntradas: '',
-    ubicacion: 'Villa María, Córdoba',
-    habilitado: true,
-    localidad: 'Villa María',
-    provincia: 'Córdoba',
-    img: loadImageAsDataUri('evento-cuarteto'),
-    estado: EstadosEvento.EnCurso,
-    longitud: '-63.2304',
-    latitud: '-32.4076',
-    cantidadDiasEvento: String(Math.ceil((finEvento - inicioEvento) / 86400000)),
-    fechaHoraInicio: inicioEvento,
-    fechaHoraFin: finEvento,
-    productorId: productor.id,
-  });
+  // Fechas en hora de Argentina (ART, UTC-3) aunque el proceso corra en UTC
+  // (Railway): "base" es la medianoche ART de hoy, y artDate(d, h) devuelve el
+  // instante de la hora h (decimal, puede pasar de 24) del día hoy+d.
+  const ART_MS = 3 * 3600 * 1000;
+  const DIA_MS = 86400000;
+  const hoyArt = new Date(ahora.getTime() - ART_MS);
+  const baseArt = Date.UTC(hoyArt.getUTCFullYear(), hoyArt.getUTCMonth(), hoyArt.getUTCDate());
+  const artDate = (offsetDias, hora) => new Date(baseArt + offsetDias * DIA_MS + hora * 3600000 + ART_MS);
+  const diaSemanaArt = (offsetDias) => new Date(baseArt + offsetDias * DIA_MS).getUTCDay();
 
-  // Un DiaEvento por cada día desde el inicio (hace 7 días) hasta finEvento
-  // inclusive. Así las estadísticas "pedidos por día" y "productos vendidos por
-  // día" muestran varios puntos en el gráfico, y el último día coincide con
-  // fechaHoraFin para que el evento siga vigente durante la demo.
-  const diasEvento = [];
-  for (let d = 0; ; d++) {
-    const inicioDia = new Date(inicioEvento);
-    inicioDia.setDate(inicioEvento.getDate() + d);
-    inicioDia.setHours(10, 0, 0, 0);
-    if (inicioDia > finEvento) break;
-    // El evento es de Villa María (ART, UTC-3), pero el proceso corre en UTC
-    // (Railway). "23:59 hora Argentina" equivale a las 02:59 UTC del día
-    // siguiente: si se usara setHours(23,59,...) directo, el día quedaría
-    // "finalizado" (fechaFin < ahora) desde las 21:00 ART en adelante, y
-    // filtrarFinalizados() del frontend ocultaría el evento aunque su
-    // estado siga en EnCurso.
-    const finDia = new Date(inicioDia);
-    finDia.setDate(finDia.getDate() + 1);
-    finDia.setHours(2, 59, 0, 0);
-    const dia = await DiaEvento.create({
-      nombre: `Fiesta del Cuarteto - Día ${d + 1}`,
-      descripcion: 'Jornada de la fiesta del cuarteto en Villa María.',
-      fechaHoraInicioDiaEvento: inicioDia,
-      fechaHoraFinDiaEvento: finDia,
-      tienePreventa: false,
-      eventoId: evento.id,
-    });
-    diasEvento.push(dia);
-  }
+  // Cada día de evento va de las 10:00 a las 03:00 ART del día siguiente. Los
+  // pedidos hechos en vivo durante la demo caen dentro de esa ventana y entran
+  // en las estadísticas por día y por hora.
+  const HORA_INICIO_DIA = 10;
+  const HORA_FIN_DIA = 27;
 
-  // Sin esto, procesosAutomaticos.js explota al finalizar la asignación de un
-  // repartidor (pedidoService.setDatosExtraPedido hace idPE.id sobre un array
-  // vacío) y el pedido nunca queda con repartidorId asignado.
-  const puntoEncuentro = await PuntoEncuentro.create({
-    nombre: 'Entrada principal - Fiesta del Cuarteto',
-    longitud: '-63.2304',
-    latitud: '-32.4076',
-    habilitado: true,
-    eventoId: evento.id,
-  });
-
-  console.log('✅ Evento demo creado\n');
-
-  // Paso 4: puesto del encargado + productos
-  console.log('🔄 Creando puesto y productos demo...');
-  const puestoImg = loadImageAsDataUri('puesto-cuarteto');
-  const puesto = await Puesto.create({
-    nombreCarro: 'Puesto Cuarteto',
-    numeroCarro: 1,
-    tipoNegocio: 'Food Truck',
-    banner: puestoImg || '',
-    img: puestoImg || null,
-    telefonoCarro: '3535123456',
-    estado: 'Creado',
-    encargadoId: encargado.id,
-  });
-
-  const [choripan, cerveza, empanada, agua] = await Promise.all([
-    Producto.create({
-      nombre: 'Choripán',
-      descripcion: 'Choripán casero con chimichurri.',
-      precio: 3500,
-      estado: true,
-      img: loadImageAsDataUri('producto-choripan') || null,
-      puestoId: puesto.id,
-    }),
-    Producto.create({
-      nombre: 'Cerveza',
-      descripcion: 'Cerveza artesanal 500ml.',
-      precio: 2500,
-      estado: true,
-      img: loadImageAsDataUri('producto-cerveza') || null,
-      puestoId: puesto.id,
-    }),
-    Producto.create({
-      nombre: 'Empanada',
-      descripcion: 'Empanada de carne cortada a cuchillo.',
-      precio: 1200,
-      estado: true,
-      img: loadImageAsDataUri('producto-empanada') || null,
-      puestoId: puesto.id,
-    }),
-    Producto.create({
-      nombre: 'Agua',
-      descripcion: 'Agua mineral 500ml.',
-      precio: 1000,
-      estado: true,
-      img: loadImageAsDataUri('producto-agua') || null,
-      puestoId: puesto.id,
-    }),
-  ]);
-  // Opciones veganas: sin esto el chatbot no puede responder "¿dónde como vegano?"
-  // y contesta que no tiene la carta, aunque la carta sí exista.
-  const [burgerVegana, empanadaVegana] = await Promise.all([
-    Producto.create({
-      nombre: 'Burger vegana',
-      descripcion: 'Medallón de lentejas y garbanzos, sin ingredientes de origen animal.',
-      precio: 3800,
-      estado: true,
-      img: null,
-      puestoId: puesto.id,
-    }),
-    Producto.create({
-      nombre: 'Empanada vegana',
-      descripcion: 'Empanada de verdura y tofu, masa sin grasa animal.',
-      precio: 1300,
-      estado: true,
-      img: null,
-      puestoId: puesto.id,
-    }),
-  ]);
-  const productos = [choripan, cerveza, empanada, agua, burgerVegana, empanadaVegana];
-
-  await Asociacion.create({
-    estado: EstadosAsociaciones.Aceptada,
-    eventoId: evento.id,
-    puestoId: puesto.id,
-  });
-
-  // Dos puestos extra del mismo encargado, con sus productos, para que las
-  // estadísticas por puesto (ranking del productor, filtros del encargado)
-  // tengan varias series y no un único puesto.
-  const puestoParrilla = await Puesto.create({
-    nombreCarro: 'Parrilla Don Cuarteto',
-    numeroCarro: 2,
-    tipoNegocio: 'Food Truck',
-    banner: '',
-    img: null,
-    telefonoCarro: '3535123457',
-    estado: 'Creado',
-    encargadoId: encargado.id,
-  });
-  const [bondiola, papas] = await Promise.all([
-    Producto.create({
-      nombre: 'Bondiola',
-      descripcion: 'Sándwich de bondiola completo.',
-      precio: 4500,
-      estado: true,
-      img: null,
-      puestoId: puestoParrilla.id,
-    }),
-    Producto.create({
-      nombre: 'Papas fritas',
-      descripcion: 'Porción grande de papas fritas.',
-      precio: 2000,
-      estado: true,
-      img: null,
-      puestoId: puestoParrilla.id,
-    }),
-  ]);
-
-  const puestoBebidas = await Puesto.create({
-    nombreCarro: 'Barra de Tragos',
-    numeroCarro: 3,
-    tipoNegocio: 'Barra',
-    banner: '',
-    img: null,
-    telefonoCarro: '3535123458',
-    estado: 'Creado',
-    encargadoId: encargado.id,
-  });
-  const [fernet, gaseosa] = await Promise.all([
-    Producto.create({
-      nombre: 'Fernet con cola',
-      descripcion: 'Fernet con cola en vaso de litro.',
-      precio: 3000,
-      estado: true,
-      img: null,
-      puestoId: puestoBebidas.id,
-    }),
-    Producto.create({
-      nombre: 'Gaseosa',
-      descripcion: 'Gaseosa línea 500ml.',
-      precio: 1500,
-      estado: true,
-      img: null,
-      puestoId: puestoBebidas.id,
-    }),
-  ]);
-
-  await Asociacion.create({
-    estado: EstadosAsociaciones.Aceptada,
-    eventoId: evento.id,
-    puestoId: puestoParrilla.id,
-  });
-  await Asociacion.create({
-    estado: EstadosAsociaciones.Aceptada,
-    eventoId: evento.id,
-    puestoId: puestoBebidas.id,
-  });
-
-  const puestosConProductos = [
-    { puesto, productos },
-    { puesto: puestoParrilla, productos: [bondiola, papas] },
-    { puesto: puestoBebidas, productos: [fernet, gaseosa] },
-  ];
-
-  console.log('✅ Puesto y productos demo creados\n');
-
-  // Paso 5: repartidor asociado al evento
-  console.log('🔄 Asociando repartidor al evento...');
-  await Asociacion.create({
-    estado: EstadosAsociaciones.Aceptada,
-    eventoId: evento.id,
-    repartidoreId: repartidor.id,
-  });
-  console.log('✅ Repartidor asociado al evento\n');
-
-  // Paso 6: pedidos en distintos estados
-  console.log('🔄 Creando pedidos demo en distintos estados...');
-
-  // 5 consumidores de relleno, cada uno con su propio usuario
-  const consumidoresRelleno = [];
-  for (let i = 1; i <= 5; i++) {
-    const consumidorRelleno = await Consumidor.create({
-      nombre: `Cliente${i}`,
-      apellido: 'Demo',
-      fechaNacimiento: new Date(1990, 0, i),
-      dni: 30111224 + i,
-      localidad: 'Villa María',
-      provincia: 'Córdoba',
-      telefono: 3515551004 + i,
-      habilitado: true,
-    });
-    await Usuario.create({
-      usuario: `Cliente${i}`,
-      email: `cliente${i}@demo.com`,
-      emailValidado: true,
-      contraseña: hashed,
-      fechaAlta: new Date(),
-      habilitado: true,
-      tipoUsuario: 'consumidor',
-      consumidorId: consumidorRelleno.id,
-    });
-    consumidoresRelleno.push(consumidorRelleno);
-  }
-
-  const minutosAtras = (min) => new Date(ahora.getTime() - min * 60 * 1000);
-
-  const crearPedido = async ({ estado, consumidorId, fecha }) => {
-    const pedido = await Pedido.create({
-      fecha,
-      total: 0,
-      estado,
-      consumidorId,
-      eventoId: evento.id,
-      puestoId: puesto.id,
-    });
-
-    const cantidadDetalles = Math.floor(Math.random() * 3) + 1; // 1 a 3
-    let total = 0;
-    for (let i = 0; i < cantidadDetalles; i++) {
-      const producto = productos[Math.floor(Math.random() * productos.length)];
-      const cantidad = Math.floor(Math.random() * 3) + 1; // 1 a 3
-      const precio = producto.precio;
-      total += cantidad * precio;
-      await DetallePedido.create({
-        cantidad,
-        precio,
-        productoId: producto.id,
-        PedidoId: pedido.id,
-      });
+  const imagenesCache = new Map();
+  const imagen = (imgKey, texto, ancho, alto) => {
+    const clave = `${imgKey}|${texto}`;
+    if (!imagenesCache.has(clave)) {
+      imagenesCache.set(clave, loadImageAsDataUri(imgKey, { silent: true }) || placeholderSvg(texto, ancho, alto));
     }
-
-    await pedido.update({ total });
-    return pedido;
+    return imagenesCache.get(clave);
   };
 
-  const pedidoPendiente = await crearPedido({
-    estado: EstadosPedido.Pendiente,
-    consumidorId: consumidoresRelleno[0].id,
-    fecha: minutosAtras(0),
-  });
-
-  const pedidoAceptado = await crearPedido({
-    estado: EstadosPedido.Aceptado,
-    consumidorId: consumidoresRelleno[1].id,
-    fecha: minutosAtras(10),
-  });
-
-  const pedidoEnPreparacion = await crearPedido({
-    estado: EstadosPedido.EnPreparacion,
-    consumidorId: consumidoresRelleno[2].id,
-    fecha: minutosAtras(20),
-  });
-
-  const pedidoListo = await crearPedido({
-    estado: EstadosPedido.Listo,
-    consumidorId: consumidoresRelleno[3].id,
-    fecha: minutosAtras(30),
-  });
-
-  const pedidoEnCamino = await crearPedido({
-    estado: EstadosPedido.EnCamino,
-    consumidorId: consumidorConsumidor.id,
-    fecha: minutosAtras(40),
-  });
-  await Asignacion.create({
-    estado: 'Aceptado',
-    repartidoreId: repartidor.id,
-    PedidoId: pedidoEnCamino.id,
-  });
-  // Seteamos repartidorId/puntoEncuentroId/codigoEntrega directo: en la app real
-  // los pone procesosAutomaticos.js en su siguiente ciclo (pedidoService.setDatosExtraPedido),
-  // pero esa consulta solo mira asignaciones aceptadas en los últimos 45s
-  // (ASIGNACION_WINDOW_SECONDS) y además exige repartidorId IS NULL — si lo
-  // seteáramos solo a él, el pedido quedaría excluido de esa consulta y nunca
-  // recibiría punto de encuentro ni código de entrega.
-  await pedidoEnCamino.update({
-    repartidorId: repartidor.id,
-    puntoEncuentroId: puntoEncuentro.id,
-    codigoEntrega: 'CUARTE',
-  });
-
-  const fechaEntregado = minutosAtras(60);
-  const pedidoEntregado = await crearPedido({
-    estado: EstadosPedido.Entregado,
-    consumidorId: consumidoresRelleno[4].id,
-    fecha: fechaEntregado,
-  });
-  await pedidoEntregado.update({
-    fechaEntrega: new Date(fechaEntregado.getTime() + 10 * 60 * 1000),
-    codigoEntrega: 'DEMO12',
-  });
-
-  console.log('✅ Pedidos demo creados\n');
-
-  // Paso 6b: historial de pedidos para las estadísticas.
-  // Genera pedidos Entregado/Valorado repartidos en todos los días del evento,
-  // en los 3 puestos, con tiempos de entrega realistas, valoraciones de puesto
-  // (alimenta las stats del Encargado y del Productor) y entregas hechas por el
-  // Repartidor demo con sus valoraciones (alimenta las stats del Repartidor).
-  console.log('🔄 Creando historial de pedidos para estadísticas...');
-
-  const OPINIONES = [
-    'Muy rico, volvería a pedir.',
-    'Llegó rápido y caliente.',
-    'Buena atención.',
-    'Tardó un poco pero valió la pena.',
-    'Excelente relación precio-calidad.',
-    'Todo perfecto.',
-  ];
-  const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-
-  let totalHistorial = 0;
-  let entregadosPorRepartidor = 0;
-
-  for (const dia of diasEvento) {
-    const inicioDia = new Date(dia.fechaHoraInicioDiaEvento);
-    for (const { puesto: p, productos: prods } of puestosConProductos) {
-      // Entre 4 y 8 pedidos por puesto por día
-      const cantidadPedidos = randomInt(4, 8);
-      for (let i = 0; i < cantidadPedidos; i++) {
-        // Hora del pedido: entre las 11:00 y las 22:30 del día
-        const fechaPedido = new Date(inicioDia);
-        fechaPedido.setHours(randomInt(11, 22), randomInt(0, 59), 0, 0);
-        if (fechaPedido > ahora) continue; // no crear pedidos en el futuro
-
-        const consumidorRandom = consumidoresRelleno[randomInt(0, consumidoresRelleno.length - 1)];
-        const esValorado = Math.random() < 0.6; // 60% valorados, 40% solo entregados
-        const conRepartidor = Math.random() < 0.5; // 50% entregados por el repartidor demo
-
-        const pedido = await Pedido.create({
-          fecha: fechaPedido,
-          total: 0,
-          estado: esValorado ? EstadosPedido.valorado : EstadosPedido.Entregado,
-          consumidorId: consumidorRandom.id,
-          eventoId: evento.id,
-          puestoId: p.id,
-        });
-
-        let total = 0;
-        const cantidadDetalles = randomInt(1, 3);
-        for (let j = 0; j < cantidadDetalles; j++) {
-          const producto = prods[randomInt(0, prods.length - 1)];
-          const cantidad = randomInt(1, 3);
-          total += cantidad * producto.precio;
-          await DetallePedido.create({
-            cantidad,
-            precio: producto.precio,
-            productoId: producto.id,
-            PedidoId: pedido.id,
-          });
-        }
-
-        // Tiempo de entrega: entre 8 y 35 minutos
-        const fechaEntrega = new Date(fechaPedido.getTime() + randomInt(8, 35) * 60 * 1000);
-        const updateData = {
-          total,
-          fechaEntrega,
-          codigoEntrega: `H${String(totalHistorial).padStart(5, '0')}`,
-        };
-
-        if (conRepartidor) {
-          updateData.repartidorId = repartidor.id;
-          updateData.puntoEncuentroId = puntoEncuentro.id;
-          await Asignacion.create({
-            estado: 'Aceptado',
-            repartidoreId: repartidor.id,
-            PedidoId: pedido.id,
-          });
-          entregadosPorRepartidor++;
-        }
-
-        await pedido.update(updateData);
-
-        if (esValorado) {
-          await ValoracionPuesto.create({
-            puntuacion: randomInt(3, 5),
-            opinion: OPINIONES[randomInt(0, OPINIONES.length - 1)],
-            puestoId: p.id,
-            pedidoId: pedido.id,
-          });
-          if (conRepartidor) {
-            await ValoracionRepartidor.create({
-              puntuacion: randomInt(3, 5),
-              opinion: OPINIONES[randomInt(0, OPINIONES.length - 1)],
-              repartidorId: repartidor.id,
-              pedidoId: pedido.id,
-            });
-          }
-        }
-
-        totalHistorial++;
-      }
+  const bulk = async (model, filas, tamano = 500) => {
+    const creadas = [];
+    for (let i = 0; i < filas.length; i += tamano) {
+      creadas.push(...(await model.bulkCreate(filas.slice(i, i + tamano), { returning: true })));
     }
+    return creadas;
+  };
+
+  // Paso 2: personas. Un usuario por rol con credenciales fijas, más
+  // encargados, repartidores y consumidores con nombres reales.
+  console.log('🔄 Creando usuarios...');
+  let contadorDni = 30111220;
+  let contadorTel = 3535410000;
+  const crearPersona = async ({ nombre, apellido, tipoUsuario, usuario, email, nacimiento, vinculo = {} }) => {
+    const consumidor = await Consumidor.create({
+      nombre,
+      apellido,
+      fechaNacimiento: nacimiento,
+      dni: ++contadorDni,
+      localidad: 'Villa María',
+      provincia: 'Córdoba',
+      telefono: ++contadorTel,
+      habilitado: true,
+      ...vinculo,
+    });
+    const user = await Usuario.create({
+      usuario,
+      email,
+      emailValidado: true,
+      contraseña: hashed,
+      fechaAlta: ahora,
+      habilitado: true,
+      tipoUsuario,
+      consumidorId: consumidor.id,
+    });
+    return { consumidor, user };
+  };
+  const slugUsuario = (nombre, apellido) => `${slug(nombre)}.${slug(apellido)}`;
+
+  const pd = PERSONAS_DEMO;
+  const productor = await Productor.create({ cuit: '20304050601', razonSocial: pd.productor.razonSocial, estaValido: true, habilitado: true, condicionIva: 'Monotributista' });
+  const { user: usuarioProductor } = await crearPersona({ ...pd.productor, tipoUsuario: 'productor', usuario: 'Productor', email: 'productor@demo.com', nacimiento: new Date(1985, 2, 14), vinculo: { productorId: productor.id } });
+
+  const crearEncargado = async (persona, usuario, email) => {
+    const encargado = await Encargado.create({ cuit: `2030405${String(++contadorDni).slice(-4)}`, razonSocial: persona.razonSocial, estaValido: true, habilitado: true, condicionIva: 'Monotributista' });
+    const { user } = await crearPersona({ ...persona, tipoUsuario: 'encargado', usuario, email, nacimiento: new Date(1986, 5, 3), vinculo: { encargadoId: encargado.id } });
+    return { encargado, user };
+  };
+  const { encargado: encargadoDemo, user: usuarioEncargado } = await crearEncargado(pd.encargado, 'Encargado', 'encargado@demo.com');
+  const encargadosExtra = [];
+  for (const e of ENCARGADOS_EXTRA) {
+    encargadosExtra.push((await crearEncargado(e, slugUsuario(e.nombre, e.apellido), `${slugUsuario(e.nombre, e.apellido)}@demo.com`)).encargado);
   }
 
-  console.log(`✅ Historial creado: ${totalHistorial} pedidos (${entregadosPorRepartidor} entregados por el Repartidor demo)\n`);
+  const crearRepartidor = async (persona, usuario, email) => {
+    const repartidor = await Repartidor.create({ estaValido: true, habilitado: true });
+    const { user } = await crearPersona({ ...persona, tipoUsuario: 'repartidor', usuario, email, nacimiento: new Date(1993, 8, 21), vinculo: { repartidorId: repartidor.id } });
+    return { repartidor, user };
+  };
+  const { repartidor: repartidorDemo, user: usuarioRepartidor } = await crearRepartidor(pd.repartidor, 'Repartidor', 'repartidor@demo.com');
+  const repartidoresExtra = [];
+  for (const r of REPARTIDORES_EXTRA) {
+    repartidoresExtra.push((await crearRepartidor(r, slugUsuario(r.nombre, r.apellido), `${slugUsuario(r.nombre, r.apellido)}@demo.com`)).repartidor);
+  }
 
-  // Paso 7: evento recién creado, sin asociaciones, para probar el flujo de
-  // asociar puestos/repartidores desde cero (mismo Productor demo).
-  console.log('🔄 Creando evento demo "recién creado" (sin asociaciones)...');
-  const inicioEventoNuevo = new Date(ahora);
-  inicioEventoNuevo.setDate(ahora.getDate() + 14);
-  inicioEventoNuevo.setHours(10, 0, 0, 0);
-  const finEventoNuevo = new Date(ahora);
-  finEventoNuevo.setDate(ahora.getDate() + 15);
-  finEventoNuevo.setHours(23, 0, 0, 0);
+  const { consumidor: consumidorDemo, user: usuarioConsumidor } = await crearPersona({ ...pd.consumidor, tipoUsuario: 'consumidor', usuario: 'Consumidor', email: 'consumidor@demo.com', nacimiento: new Date(1995, 0, 18) });
 
-  const eventoNuevo = await Evento.create({
-    nombre: 'Feria de Otoño',
-    descripcion: 'Evento recién creado, todavía sin puestos ni repartidores asociados.',
-    tipoEvento: 'Feria',
-    tipoPago: 'Efectivo',
-    cantidadPuestos: '1',
-    conButaca: false,
-    conRepartidor: true,
-    tienePreventa: false,
-    linkVentaEntradas: '',
-    ubicacion: 'Villa María, Córdoba',
-    habilitado: true,
-    localidad: 'Villa María',
-    provincia: 'Córdoba',
-    img: loadImageAsDataUri('evento-cuarteto'),
-    estado: 'EnPreparacion1',
-    longitud: '-63.2304',
-    latitud: '-32.4076',
-    cantidadDiasEvento: String(Math.ceil((finEventoNuevo - inicioEventoNuevo) / 86400000)),
-    fechaHoraInicio: inicioEventoNuevo,
-    fechaHoraFin: finEventoNuevo,
-    productorId: productor.id,
-  });
-  console.log(`✅ Evento "${eventoNuevo.nombre}" creado sin asociaciones (estado: ${eventoNuevo.estado})\n`);
+  // Consumidores de relleno: se insertan en bloque (son muchos).
+  const CANTIDAD_CONSUMIDORES = 48;
+  const filasConsumidor = [];
+  const datosUsuario = [];
+  for (let i = 0; i < CANTIDAD_CONSUMIDORES; i++) {
+    const nombre = NOMBRES[i % NOMBRES.length];
+    const apellido = APELLIDOS[(i * 7 + 3) % APELLIDOS.length];
+    filasConsumidor.push({
+      nombre,
+      apellido,
+      fechaNacimiento: new Date(1980 + (i % 24), i % 12, 1 + (i % 27)),
+      dni: ++contadorDni,
+      localidad: i % 5 === 0 ? 'Villa Nueva' : 'Villa María',
+      provincia: 'Córdoba',
+      telefono: ++contadorTel,
+      habilitado: true,
+    });
+    datosUsuario.push(`${slugUsuario(nombre, apellido)}${i + 1}`);
+  }
+  const consumidoresRelleno = await bulk(Consumidor, filasConsumidor);
+  await bulk(
+    Usuario,
+    consumidoresRelleno.map((c, i) => ({
+      usuario: datosUsuario[i],
+      email: `${datosUsuario[i]}@demo.com`,
+      emailValidado: true,
+      contraseña: hashed,
+      fechaAlta: ahora,
+      habilitado: true,
+      tipoUsuario: 'consumidor',
+      consumidorId: c.id,
+    }))
+  );
+  // El consumidor demo compra más seguido que el resto (su historial se ve rico).
+  const pesoConsumidor = new Map([[consumidorDemo.id, 4]]);
+  consumidoresRelleno.forEach((c, i) => pesoConsumidor.set(c.id, i % 6 === 0 ? 3 : 1));
+  const todosConsumidores = [consumidorDemo, ...consumidoresRelleno];
+  console.log(`✅ Usuarios creados (4 demo + ${ENCARGADOS_EXTRA.length} encargados, ${REPARTIDORES_EXTRA.length} repartidores y ${CANTIDAD_CONSUMIDORES} consumidores)\n`);
 
-  // Paso 7b: un evento por cada estado posible y por cada combinatoria
-  // con/sin preventa, para poder probar cualquier pantalla que filtre por
-  // estado o por preventa. "temporalidad" define cuándo arranca cada uno:
-  //   - 'futuro': arranca semanas adelante y nunca "termina pronto" (no
-  //     depende de cuándo se corra el seed para seguir siendo visible).
-  //   - 'vivo': arrancó hace 2 días y se extiende 14 días a futuro, para
-  //     que se vea "en vivo" sin caer en el bug de vencimiento que tenía
-  //     "fiesta del cuarteto".
-  //   - 'pasado': ya terminó hace semanas (solo tiene sentido para
-  //     "Finalizado" — un evento finalizado no puede estar a futuro).
-  // No se les pone imagen: solo existe la foto de "fiesta del cuarteto" en
-  // src/public/images, y reusarla en 16 eventos distintos sería engañoso.
-  // Cada evento demo tiene su propia portada (tools/generate_event_images.ps1);
-  // "img" en la definición apunta al archivo, y si falta queda sin imagen.
-  console.log('🔄 Creando eventos demo por estado y combinatoria de preventa...');
-  const eventosDemoDef = [
-    {
-      estado: 'EnPreparacion',
-      temporalidad: 'futuro',
-      nombre: 'Feria de Emprendedores de Villa María',
-      img: loadImageAsDataUri('evento-feria-emprendedores'),
-      descripcion: 'Feria de emprendedores locales en la Plaza San Martín.',
-      tipoEvento: 'Feria',
-      conPreventa: false,
-    },
-    {
-      estado: 'EnPreparacion',
-      temporalidad: 'futuro',
-      nombre: 'Festival de Cerveza Artesanal Cordobesa',
-      img: loadImageAsDataUri('evento-cerveza-artesanal'),
-      descripcion: 'Festival de cervecerías artesanales de la región.',
-      tipoEvento: 'Gastronómico',
-      conPreventa: true,
-    },
-    {
-      estado: 'EnPreparacion1',
-      temporalidad: 'futuro',
-      nombre: 'Corso de Carnaval Villa María',
-      img: loadImageAsDataUri('evento-corso-carnaval'),
-      descripcion: 'Corsos populares por Av. Sabattini.',
-      tipoEvento: 'Cultural',
-      conPreventa: false,
-    },
-    {
-      estado: 'EnPreparacion1',
-      temporalidad: 'futuro',
-      nombre: 'Recital de Rock Nacional - Estadio Municipal',
-      img: loadImageAsDataUri('evento-rock-nacional'),
-      descripcion: 'Recital de bandas de rock nacional en el Estadio Municipal.',
-      tipoEvento: 'Música',
-      conPreventa: true,
-    },
-    {
-      estado: 'EnPreparacion2',
-      temporalidad: 'futuro',
-      nombre: 'Exposición Rural de Villa María',
-      img: loadImageAsDataUri('evento-expo-rural'),
-      descripcion: 'Muestra anual de la Sociedad Rural, con remate de hacienda.',
-      tipoEvento: 'Exposición',
-      conPreventa: false,
-    },
-    {
-      estado: 'EnPreparacion2',
-      temporalidad: 'futuro',
-      nombre: 'Festival de Jazz de Verano',
-      img: loadImageAsDataUri('evento-jazz-verano'),
-      descripcion: 'Ciclo de jazz al aire libre en el Anfiteatro Municipal.',
-      tipoEvento: 'Música',
-      conPreventa: true,
-    },
-    {
-      estado: 'Confirmado',
-      temporalidad: 'futuro',
-      nombre: 'Fiesta Patronal de San Martín',
-      img: loadImageAsDataUri('evento-fiesta-patronal'),
-      descripcion: 'Fiesta patronal del barrio San Martín, entrada libre y gratuita.',
-      tipoEvento: 'Fiesta popular',
-      conPreventa: false,
-    },
-    {
-      estado: 'Confirmado',
-      temporalidad: 'futuro',
-      nombre: 'Cosquín Rock - Edición Villa María',
-      img: loadImageAsDataUri('evento-cosquin-rock'),
-      descripcion: 'Edición confirmada del festival itinerante, entradas en preventa.',
-      tipoEvento: 'Música',
-      conPreventa: true,
-    },
-    {
-      estado: 'EnCurso',
-      temporalidad: 'vivo',
-      nombre: 'Kermés Solidaria del Club Atlético',
-      img: loadImageAsDataUri('evento-kermes-solidaria'),
-      descripcion: 'Kermés a beneficio de las divisiones inferiores del club.',
-      tipoEvento: 'Solidario',
-      conPreventa: false,
-    },
-    {
-      estado: 'EnCurso',
-      temporalidad: 'vivo',
-      nombre: 'Expo Gastronómica del Río Ctalamochita',
-      img: loadImageAsDataUri('evento-expo-gastronomica'),
-      descripcion: 'Muestra gastronómica a orillas del río Ctalamochita.',
-      tipoEvento: 'Gastronómico',
-      conPreventa: true,
-    },
-    {
-      estado: 'Pausado',
-      temporalidad: 'futuro',
-      nombre: 'Festival de Doma y Folklore',
-      img: loadImageAsDataUri('evento-doma-folklore'),
-      descripcion: 'Festival tradicionalista pausado por pronóstico de lluvia.',
-      tipoEvento: 'Cultural',
-      conPreventa: false,
-    },
-    {
-      estado: 'Pausado',
-      temporalidad: 'futuro',
-      nombre: 'Maratón Solidaria Nocturna',
-      img: loadImageAsDataUri('evento-maraton-nocturna'),
-      descripcion: 'Maratón solidaria pausada por reprogramación del circuito.',
-      tipoEvento: 'Deportivo',
-      conPreventa: true,
-    },
-    {
-      estado: 'Cancelado',
-      temporalidad: 'futuro',
-      nombre: 'Verbena Popular Barrio Centro',
-      img: loadImageAsDataUri('evento-verbena-barrio'),
-      descripcion: 'Verbena barrial cancelada por falta de permisos municipales.',
-      tipoEvento: 'Fiesta popular',
-      conPreventa: false,
-    },
-    {
-      estado: 'Cancelado',
-      temporalidad: 'futuro',
-      nombre: 'Show de Fin de Año - Plaza Vélez Sarsfield',
-      img: loadImageAsDataUri('evento-fin-de-anio'),
-      descripcion: 'Show de fin de año cancelado por el municipio.',
-      tipoEvento: 'Música',
-      conPreventa: true,
-    },
-    {
-      estado: 'Finalizado',
-      temporalidad: 'pasado',
-      nombre: 'Fiesta de la Cosecha 2025',
-      descripcion: 'Edición 2025 de la Fiesta de la Cosecha.',
-      tipoEvento: 'Fiesta popular',
-      conPreventa: false,
-    },
-    {
-      estado: 'Finalizado',
-      temporalidad: 'pasado',
-      nombre: 'Aniversario de Villa María 2025',
-      descripcion: 'Festejos por el aniversario de la ciudad, edición 2025.',
-      tipoEvento: 'Fiesta popular',
-      conPreventa: true,
-    },
-  ];
+  // Paso 3: puestos ("carritos") con sus productos
+  console.log('🔄 Creando puestos y productos...');
+  const puestosPorKey = new Map();
+  let numeroCarro = 0;
+  for (const def of PUESTOS) {
+    const dueño = def.dueño === 'demo' ? encargadoDemo : encargadosExtra[def.dueño];
+    const img = imagen(def.imgKey || `puesto-${def.key}`, def.nombre, 1200, 675);
+    const puesto = await Puesto.create({
+      nombreCarro: def.nombre,
+      numeroCarro: ++numeroCarro,
+      tipoNegocio: def.tipoNegocio,
+      banner: img,
+      img,
+      telefonoCarro: `3535${String(400000 + numeroCarro * 1731).slice(-6)}`,
+      estado: 'Creado',
+      encargadoId: dueño.id,
+    });
+    const productos = await bulk(
+      Producto,
+      def.productos.map((p) => ({
+        nombre: p.nombre,
+        descripcion: p.descripcion,
+        aderezos: p.aderezos,
+        precio: p.precio,
+        estado: true,
+        img: imagen(p.imgKey || `producto-${slug(p.nombre)}`, p.nombre, 600, 400),
+        puestoId: puesto.id,
+      }))
+    );
+    puestosPorKey.set(def.key, {
+      def,
+      puesto,
+      productos: productos.map((prod, i) => ({ prod, peso: def.productos[i].peso })),
+    });
+  }
+  console.log(`✅ ${puestosPorKey.size} puestos creados con su carta\n`);
 
-  let semanaOffset = 3;
-  let semanaOffsetPasado = 10;
-  const eventosPorEstado = [];
-  for (const def of eventosDemoDef) {
-    let inicioDemo;
-    let finDemo;
-    if (def.temporalidad === 'vivo') {
-      inicioDemo = new Date(ahora);
-      inicioDemo.setDate(ahora.getDate() - 2);
-      inicioDemo.setHours(10, 0, 0, 0);
-      finDemo = new Date(ahora);
-      finDemo.setDate(ahora.getDate() + 14);
-      finDemo.setHours(23, 0, 0, 0);
-    } else if (def.temporalidad === 'pasado') {
-      inicioDemo = new Date(ahora);
-      inicioDemo.setDate(ahora.getDate() - semanaOffsetPasado * 7);
-      inicioDemo.setHours(10, 0, 0, 0);
-      finDemo = new Date(inicioDemo);
-      finDemo.setDate(inicioDemo.getDate() + 2);
-      finDemo.setHours(23, 0, 0, 0);
-      semanaOffsetPasado += 1;
-    } else {
-      inicioDemo = new Date(ahora);
-      inicioDemo.setDate(ahora.getDate() + semanaOffset * 7);
-      inicioDemo.setHours(10, 0, 0, 0);
-      finDemo = new Date(inicioDemo);
-      finDemo.setDate(inicioDemo.getDate() + 2);
-      finDemo.setHours(23, 0, 0, 0);
-      semanaOffset += 1;
+  // Paso 4: eventos con actividad (vivos y finalizados), con días, puestos,
+  // repartidores asociados y punto de encuentro.
+  console.log('🔄 Creando eventos con actividad...');
+  const crearDias = async (evento, nombreBase, desde, hasta, tienePreventa, bandas = []) => {
+    const dias = [];
+    for (let d = desde; d <= hasta; d++) {
+      const banda = bandas.length ? bandas[(d - desde) % bandas.length] : null;
+      dias.push(
+        await DiaEvento.create({
+          nombre: `${nombreBase} - Día ${d - desde + 1}`,
+          descripcion: banda ? `Jornada ${d - desde + 1}. Show central: ${banda}.` : `Jornada ${d - desde + 1} de "${nombreBase}".`,
+          fechaHoraInicioDiaEvento: artDate(d, HORA_INICIO_DIA),
+          fechaHoraFinDiaEvento: artDate(d, HORA_FIN_DIA - 0.017),
+          tienePreventa,
+          eventoId: evento.id,
+        })
+      );
+      dias[dias.length - 1].offset = d;
     }
-
-    const eventoDemo = await Evento.create({
-      nombre: def.nombre,
-      descripcion: def.descripcion,
-      tipoEvento: def.tipoEvento,
-      tipoPago: 'Efectivo',
-      cantidadPuestos: '1',
+    return dias;
+  };
+  const crearEvento = async (campos, desde, hasta) => {
+    const inicio = artDate(desde, HORA_INICIO_DIA);
+    const fin = artDate(hasta, HORA_FIN_DIA - 0.017);
+    return Evento.create({
       conButaca: false,
       conRepartidor: true,
-      tienePreventa: def.conPreventa,
-      fechaInicioPreventa: def.conPreventa ? ahora : null,
-      linkVentaEntradas: def.conPreventa ? 'https://entradas.demo/qf' : '',
-      ubicacion: 'Villa María, Córdoba',
+      tienePreventa: false,
+      linkVentaEntradas: '',
       habilitado: true,
       localidad: 'Villa María',
       provincia: 'Córdoba',
-      img: def.img || '',
-      estado: def.estado,
-      longitud: '-63.2304',
-      latitud: '-32.4076',
-      cantidadDiasEvento: String(Math.ceil((finDemo - inicioDemo) / 86400000)),
-      fechaHoraInicio: inicioDemo,
-      fechaHoraFin: finDemo,
+      tipoPago: 'Efectivo',
+      ...campos,
+      cantidadDiasEvento: String(hasta - desde + 1),
+      fechaHoraInicio: inicio,
+      fechaHoraFin: fin,
       productorId: productor.id,
     });
+  };
+  const asociarPuestos = async (evento, keys) => {
+    for (const key of keys) {
+      await Asociacion.create({ estado: EstadosAsociaciones.Aceptada, eventoId: evento.id, puestoId: puestosPorKey.get(key).puesto.id });
+    }
+  };
+  const asociarRepartidores = async (evento, repartidores) => {
+    for (const r of repartidores) {
+      await Asociacion.create({ estado: EstadosAsociaciones.Aceptada, eventoId: evento.id, repartidoreId: r.id });
+    }
+  };
+  // procesosAutomaticos usa puntoEncuentroService.getAllInEvent(...)[0] para cerrar
+  // la asignación; sin un punto de encuentro el pedido se queda "EnCamino" sin
+  // repartidor ni código de entrega.
+  const crearPuntoEncuentro = (evento, latitud, longitud) =>
+    PuntoEncuentro.create({ nombre: `Entrada principal - ${evento.nombre}`, longitud, latitud, habilitado: true, eventoId: evento.id });
 
-    await DiaEvento.create({
-      nombre: `${eventoDemo.nombre} - Día 1`,
-      descripcion: `Jornada de "${eventoDemo.nombre}".`,
-      fechaHoraInicioDiaEvento: inicioDemo,
-      fechaHoraFinDiaEvento: finDemo,
-      tienePreventa: def.conPreventa,
-      eventoId: eventoDemo.id,
+  const activos = [];
+  for (const def of EVENTOS_ACTIVOS) {
+    const evento = await crearEvento(
+      {
+        nombre: def.nombre,
+        descripcion: def.descripcion,
+        tipoEvento: def.tipoEvento,
+        tipoPago: def.tipoPago,
+        cantidadPuestos: String(def.puestos.length),
+        capacidadMaxima: def.pedidosPorDia * 40,
+        cantidadRepartidores: def.repartidores === 'demo' ? 1 : 1 + repartidoresExtra.length,
+        ubicacion: def.ubicacion,
+        img: imagen(def.imgKey, def.nombre, 1200, 675),
+        estado: def.estado,
+        longitud: def.longitud,
+        latitud: def.latitud,
+      },
+      def.diaInicio,
+      def.diaFin
+    );
+    const dias = await crearDias(evento, def.nombre, def.diaInicio, def.diaFin, false, def.bandas);
+    await asociarPuestos(evento, def.puestos);
+    // En los eventos vivos solo está asociado el Repartidor demo: la función de
+    // asignación elige al azar entre los asociados al evento, y así el pedido
+    // que se haga en la demo siempre le llega a ese usuario.
+    await asociarRepartidores(evento, def.repartidores === 'demo' ? [repartidorDemo] : [repartidorDemo, ...repartidoresExtra]);
+    const punto = await crearPuntoEncuentro(evento, def.latitud, def.longitud);
+    activos.push({ def, evento, dias, punto });
+  }
+  console.log(`✅ ${activos.length} eventos con actividad creados\n`);
+
+  // Paso 5: historial de ventas con olas de compra.
+  console.log('🔄 Generando historial de ventas...');
+  const pedidosHist = [];
+  const meta = [];
+  const codigoAleatorio = () => {
+    const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let r = '';
+    for (let i = 0; i < 6; i++) r += caracteres[rng.int(0, caracteres.length - 1)];
+    return r;
+  };
+  const puntuacion = (media) => Math.max(1, Math.min(5, Math.round(media + rng.gauss() * 0.7)));
+  const OPINION_BAJA = ['Demoró más de lo esperado.', 'Llegó tibio.', 'Mucha espera.'];
+
+  for (const { def, evento, dias, punto } of activos) {
+    const puestosEvento = def.puestos.map((k) => puestosPorKey.get(k));
+    const slots = [];
+    for (let h = 12; h < HORA_FIN_DIA - 0.25; h += 0.25) slots.push(h);
+    const sumaIntensidad = slots.reduce((s, h) => s + intensidad(def.curva, h), 0);
+    const maxIntensidad = Math.max(...slots.map((h) => intensidad(def.curva, h)));
+    const repartidoresEvento = def.repartidores === 'demo' ? [repartidorDemo] : [repartidorDemo, ...repartidoresExtra];
+
+    dias.forEach((dia, idx) => {
+      const offset = dia.offset;
+      if (artDate(offset, 12) > ahora) return; // días futuros: sin ventas
+      const dow = diaSemanaArt(offset);
+      const factorDia = ([5, 6].includes(dow) ? 1.35 : dow === 0 ? 1.1 : 0.8) * (0.85 + 0.3 * (idx / Math.max(1, dias.length - 1)));
+      for (const h of slots) {
+        const lambda = (def.pedidosPorDia * factorDia * intensidad(def.curva, h)) / sumaIntensidad;
+        const cantidad = rng.poisson(lambda);
+        for (let n = 0; n < cantidad; n++) {
+          const fecha = new Date(artDate(offset, h).getTime() + rng.int(0, 14 * 60 + 59) * 1000);
+          if (fecha > new Date(ahora.getTime() - 2 * 60 * 1000)) continue;
+
+          const { def: defPuesto, puesto, productos } = rng.weighted(puestosEvento, (p) => p.def.popularidad);
+          const consumidor = rng.weighted(todosConsumidores, (c) => pesoConsumidor.get(c.id) || 1);
+          const cantidadItems = rng.weighted([1, 2, 3, 4], (k) => [0.35, 0.38, 0.2, 0.07][k - 1]);
+          const disponibles = [...productos];
+          const detalles = [];
+          let total = 0;
+          for (let k = 0; k < cantidadItems && disponibles.length; k++) {
+            const elegido = rng.weighted(disponibles, (p) => p.peso);
+            disponibles.splice(disponibles.indexOf(elegido), 1);
+            const cant = rng.weighted([1, 2, 3], (v) => [0.6, 0.3, 0.1][v - 1]);
+            total += cant * elegido.prod.precio;
+            detalles.push({ cantidad: cant, precio: elegido.prod.precio, productoId: elegido.prod.id });
+          }
+
+          const r = rng.rnd();
+          const estado = r < 0.03 ? EstadosPedido.Cancelado : r < 0.62 ? EstadosPedido.Entregado : EstadosPedido.valorado;
+          const conRepartidor = estado !== EstadosPedido.Cancelado && rng.rnd() < (def.repartidores === 'demo' ? 0.28 : 0.55);
+          const repartidor = conRepartidor ? rng.pick(repartidoresEvento) : null;
+          // Tiempo de entrega: base de cocina + demora por saturación en los picos + traslado.
+          const saturacion = intensidad(def.curva, h) / maxIntensidad;
+          const minutos = Math.max(6, Math.min(48, Math.round(8 + Math.abs(rng.gauss()) * 3 + saturacion * rng.int(4, 16) + (conRepartidor ? 6 : 0))));
+
+          pedidosHist.push({
+            fecha,
+            total,
+            estado,
+            consumidorId: consumidor.id,
+            eventoId: evento.id,
+            puestoId: puesto.id,
+            fechaEntrega: estado === EstadosPedido.Cancelado ? null : new Date(fecha.getTime() + minutos * 60 * 1000),
+            codigoEntrega: estado === EstadosPedido.Cancelado ? null : codigoAleatorio(),
+            repartidorId: repartidor ? repartidor.id : null,
+            puntoEncuentroId: repartidor ? punto.id : null,
+          });
+          meta.push({ detalles, defPuesto, repartidor, estado });
+        }
+      }
     });
+  }
 
-    eventosPorEstado.push({
-      id: eventoDemo.id,
-      nombre: eventoDemo.nombre,
-      estado: def.estado,
-      tienePreventa: def.conPreventa,
-    });
-
-    // Los eventos visibles para el consumidor (y por lo tanto para el chatbot)
-    // necesitan puestos con carta; si no, "¿dónde venden chori?" no tiene
-    // respuesta aunque los productos existan en la base.
-    if (def.estado === 'EnCurso' || def.estado === 'Confirmado') {
-      for (const p of [puesto, puestoParrilla, puestoBebidas]) {
-        await Asociacion.create({
-          estado: EstadosAsociaciones.Aceptada,
-          eventoId: eventoDemo.id,
-          puestoId: p.id,
+  const pedidosCreados = await bulk(Pedido, pedidosHist, 400);
+  const filasDetalle = [];
+  const filasAsignacion = [];
+  const filasValPuesto = [];
+  const filasValRepartidor = [];
+  pedidosCreados.forEach((pedido, i) => {
+    const { detalles, defPuesto, repartidor, estado } = meta[i];
+    for (const d of detalles) filasDetalle.push({ ...d, PedidoId: pedido.id });
+    if (repartidor) filasAsignacion.push({ estado: 'Aceptado', repartidoreId: repartidor.id, PedidoId: pedido.id });
+    if (estado === EstadosPedido.valorado) {
+      const nota = puntuacion(defPuesto.rating);
+      filasValPuesto.push({
+        puntuacion: nota,
+        opinion: nota <= 3 ? rng.pick(OPINION_BAJA) : rng.pick([...defPuesto.opiniones, ...OPINIONES_GENERICAS]),
+        puestoId: pedido.puestoId,
+        pedidoId: pedido.id,
+      });
+      if (repartidor) {
+        const notaRep = puntuacion(4.6);
+        filasValRepartidor.push({
+          puntuacion: notaRep,
+          opinion: notaRep <= 3 ? rng.pick(OPINION_BAJA) : rng.pick(OPINIONES_REPARTIDOR),
+          repartidorId: repartidor.id,
+          pedidoId: pedido.id,
         });
       }
-      // Sin repartidor asociado, seleccionar_repartidor_por_evento() devuelve -1
-      // y el pedido queda "EnCamino" con repartidorId NULL para siempre: el
-      // repartidor nunca lo ve en su lista y la entrega no se puede demostrar.
-      await Asociacion.create({
-        estado: EstadosAsociaciones.Aceptada,
-        eventoId: eventoDemo.id,
-        repartidoreId: repartidor.id,
-      });
-      // procesosAutomaticos usa puntoEncuentroService.getAllInEvent(...)[0] para
-      // cerrar la asignación; sin un punto de encuentro el pedido se queda en
-      // "EnCamino" sin repartidor ni código de entrega.
-      await PuntoEncuentro.create({
-        nombre: `Entrada principal - ${eventoDemo.nombre}`,
+    }
+  });
+  await bulk(DetallePedido, filasDetalle, 1000);
+  await bulk(Asignacion, filasAsignacion, 1000);
+  await bulk(ValoracionPuesto, filasValPuesto, 1000);
+  await bulk(ValoracionRepartidor, filasValRepartidor, 1000);
+  const entregadosPorRepartidorDemo = pedidosHist.filter((p) => p.repartidorId === repartidorDemo.id).length;
+  console.log(`✅ Historial: ${pedidosCreados.length} pedidos, ${filasDetalle.length} ítems, ${filasValPuesto.length} valoraciones de puesto\n`);
+
+  // Paso 6: pedidos "en curso" en el evento principal, uno por cada estado del
+  // flujo, para que el Encargado y el Repartidor vean actividad al entrar.
+  console.log('🔄 Creando pedidos en curso...');
+  const principal = activos[0];
+  const minutosAtras = (min) => new Date(ahora.getTime() - min * 60 * 1000);
+  const crearPedidoEnCurso = async ({ estado, keyPuesto, consumidor, minutos, items }) => {
+    const { puesto, productos } = puestosPorKey.get(keyPuesto);
+    const lineas = items.map(([idx, cant]) => ({ cantidad: cant, precio: productos[idx].prod.precio, productoId: productos[idx].prod.id }));
+    const pedido = await Pedido.create({
+      fecha: minutosAtras(minutos),
+      total: lineas.reduce((s, l) => s + l.cantidad * l.precio, 0),
+      estado,
+      consumidorId: consumidor.id,
+      eventoId: principal.evento.id,
+      puestoId: puesto.id,
+    });
+    for (const l of lineas) await DetallePedido.create({ ...l, PedidoId: pedido.id });
+    return pedido;
+  };
+  const sinDemo = consumidoresRelleno;
+  await crearPedidoEnCurso({ estado: EstadosPedido.Pendiente, keyPuesto: 'la-parrilla-de-tito', consumidor: sinDemo[1], minutos: 1, items: [[0, 1], [2, 1]] });
+  await crearPedidoEnCurso({ estado: EstadosPedido.Aceptado, keyPuesto: 'choripan-don-anselmo', consumidor: sinDemo[8], minutos: 6, items: [[0, 2], [4, 2]] });
+  await crearPedidoEnCurso({ estado: EstadosPedido.EnPreparacion, keyPuesto: 'barra-el-fernetazo', consumidor: sinDemo[15], minutos: 11, items: [[0, 2], [1, 1]] });
+  await crearPedidoEnCurso({ estado: EstadosPedido.Listo, keyPuesto: 'choripan-don-anselmo', consumidor: sinDemo[22], minutos: 16, items: [[1, 1], [3, 1], [4, 1]] });
+  const pedidoEnCamino = await crearPedidoEnCurso({ estado: EstadosPedido.EnCamino, keyPuesto: 'la-parrilla-de-tito', consumidor: consumidorDemo, minutos: 22, items: [[1, 1], [2, 1], [4, 2]] });
+  await Asignacion.create({ estado: 'Aceptado', repartidoreId: repartidorDemo.id, PedidoId: pedidoEnCamino.id });
+  // Se setean repartidorId/puntoEncuentroId/codigoEntrega directo: en la app real
+  // los pone procesosAutomaticos.js, pero solo mira asignaciones recientes con
+  // repartidorId NULL.
+  await pedidoEnCamino.update({ repartidorId: repartidorDemo.id, puntoEncuentroId: principal.punto.id, codigoEntrega: 'CUARTE' });
+  console.log('✅ Pedidos en curso creados\n');
+
+  // Paso 7: eventos para probar filtros por estado y por preventa.
+  console.log('🔄 Creando eventos por estado y preventa...');
+  const eventosPorEstado = [];
+  let semana = 3;
+  for (const def of EVENTOS_POR_ESTADO) {
+    const desde = semana * 7;
+    semana += 1;
+    const evento = await crearEvento(
+      {
+        nombre: def.nombre,
+        descripcion: def.descripcion,
+        tipoEvento: def.tipoEvento,
+        cantidadPuestos: '1',
+        tienePreventa: def.conPreventa,
+        fechaInicioPreventa: def.conPreventa ? ahora : null,
+        linkVentaEntradas: def.conPreventa ? 'https://entradas.demo/qf' : '',
+        ubicacion: 'Villa María, Córdoba',
+        img: imagen(def.imgKey, def.nombre, 1200, 675),
+        estado: def.estado,
         longitud: '-63.2304',
         latitud: '-32.4076',
-        habilitado: true,
-        eventoId: eventoDemo.id,
-      });
+      },
+      desde,
+      desde + 1
+    );
+    await crearDias(evento, def.nombre, desde, desde + 1, def.conPreventa);
+    if (def.conPuestos) {
+      await asociarPuestos(evento, ['choripan-don-anselmo', 'la-parrilla-de-tito', 'barra-el-fernetazo']);
+      await asociarRepartidores(evento, [repartidorDemo]);
+      await crearPuntoEncuentro(evento, '-32.4076', '-63.2304');
     }
+    eventosPorEstado.push({ id: evento.id, nombre: evento.nombre, estado: def.estado, tienePreventa: def.conPreventa });
   }
-  console.log(`✅ ${eventosPorEstado.length} eventos demo creados (uno por combinación estado × preventa)\n`);
+  console.log(`✅ ${eventosPorEstado.length} eventos por estado creados\n`);
 
   // Paso 8: resumen final
+  const resumenActivos = activos.map(({ def, evento, dias }) => ({
+    id: evento.id,
+    nombre: evento.nombre,
+    estado: def.estado,
+    dias: dias.length,
+    puestos: def.puestos.length,
+  }));
   console.log('========================================');
   console.log('🎉 SEED DE DEMO COMPLETADO 🎉');
   console.log('========================================\n');
@@ -1165,26 +728,12 @@ export async function runSeedDemo() {
   console.log(`   - Encargado  -> usuario: Encargado   | email: ${usuarioEncargado.email}`);
   console.log(`   - Repartidor -> usuario: Repartidor  | email: ${usuarioRepartidor.email}`);
   console.log(`   - Consumidor -> usuario: Consumidor  | email: ${usuarioConsumidor.email}\n`);
-  console.log(`🎪 Evento: "${evento.nombre}"`);
-  console.log(`   Inicio: ${inicioEvento.toString()}`);
-  console.log(`   Fin:    ${finEvento.toString()}\n`);
-  console.log(`🆕 Evento sin asociaciones: "${eventoNuevo.nombre}" (estado: ${eventoNuevo.estado})`);
-  console.log(`   Inicio: ${inicioEventoNuevo.toString()}`);
-  console.log(`   Fin:    ${finEventoNuevo.toString()}\n`);
-  console.log(`🗂️  Eventos demo por estado × preventa: ${eventosPorEstado.length}\n`);
-  console.log('🧾 Pedidos creados por estado:');
-  console.log(`   - ${EstadosPedido.Pendiente}: 1 (Cliente1)`);
-  console.log(`   - ${EstadosPedido.Aceptado}: 1 (Cliente2)`);
-  console.log(`   - ${EstadosPedido.EnPreparacion}: 1 (Cliente3)`);
-  console.log(`   - ${EstadosPedido.Listo}: 1 (Cliente4)`);
-  console.log(`   - ${EstadosPedido.EnCamino}: 1 (Consumidor demo, con Asignacion a Repartidor)`);
-  console.log(`   - ${EstadosPedido.Entregado}: 1 (Cliente5)`);
-  console.log(`\n📊 Historial para estadísticas:`);
-  console.log(`   - ${totalHistorial} pedidos Entregado/Valorado repartidos en ${diasEvento.length} días y 3 puestos`);
-  console.log(`   - ${entregadosPorRepartidor} entregados por el Repartidor demo (con valoraciones)`);
+  for (const a of resumenActivos) console.log(`🎪 ${a.nombre} (${a.estado}): ${a.dias} días, ${a.puestos} puestos`);
+  console.log(`\n📊 Historial: ${pedidosCreados.length} pedidos (${entregadosPorRepartidorDemo} entregados por el Repartidor demo)`);
   console.log('========================================');
 
-  const resumen = {
+  const sinAsociaciones = eventosPorEstado.find((e) => e.estado === 'EnPreparacion1' && e.nombre === 'Feria de Otoño');
+  return {
     credenciales: {
       password: '123123123',
       productor: { usuario: usuarioProductor.usuario, email: usuarioProductor.email },
@@ -1192,33 +741,18 @@ export async function runSeedDemo() {
       repartidor: { usuario: usuarioRepartidor.usuario, email: usuarioRepartidor.email },
       consumidor: { usuario: usuarioConsumidor.usuario, email: usuarioConsumidor.email },
     },
-    evento: {
-      nombre: evento.nombre,
-      inicio: inicioEvento,
-      fin: finEvento,
-    },
-    eventoSinAsociaciones: {
-      nombre: eventoNuevo.nombre,
-      estado: eventoNuevo.estado,
-      inicio: inicioEventoNuevo,
-      fin: finEventoNuevo,
-    },
+    eventosActivos: resumenActivos,
+    evento: { nombre: principal.evento.nombre, inicio: principal.evento.fechaHoraInicio, fin: principal.evento.fechaHoraFin },
+    eventoSinAsociaciones: sinAsociaciones || null,
     eventosPorEstado,
     pedidos: {
-      [EstadosPedido.Pendiente]: 1,
-      [EstadosPedido.Aceptado]: 1,
-      [EstadosPedido.EnPreparacion]: 1,
-      [EstadosPedido.Listo]: 1,
-      [EstadosPedido.EnCamino]: 1,
-      [EstadosPedido.Entregado]: 1,
+      enCurso: { [EstadosPedido.Pendiente]: 1, [EstadosPedido.Aceptado]: 1, [EstadosPedido.EnPreparacion]: 1, [EstadosPedido.Listo]: 1, [EstadosPedido.EnCamino]: 1 },
       historialEstadisticas: {
-        totalPedidos: totalHistorial,
-        entregadosPorRepartidorDemo: entregadosPorRepartidor,
-        dias: diasEvento.length,
-        puestos: puestosConProductos.length,
+        totalPedidos: pedidosCreados.length,
+        entregadosPorRepartidorDemo,
+        eventos: activos.length,
+        puestos: puestosPorKey.size,
       },
     },
   };
-
-  return resumen;
 }
