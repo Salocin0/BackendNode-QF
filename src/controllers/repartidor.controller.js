@@ -1,7 +1,7 @@
 import { consumidorService } from '../services/consumidor.service.js';
 import { repartidorService } from '../services/repartidor.service.js';
 class RepartidorController {
-  async getAllController(res) {
+  async getAllController(req, res) {
     try {
       const repartidores = await repartidorService.getAll();
       if (repartidores.length > 0) {

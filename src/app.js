@@ -437,6 +437,12 @@ async function DatosIniciales() {
   }
 }
 
+// A rejected promise nobody awaits (e.g. a fire-and-forget notification, or an async route handler that throws:
+// Express 4 does not catch those) must not take the whole API down. Log it and keep serving.
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled promise rejection:', reason);
+});
+
 // Iniciar servidor solo cuando la DB esté lista para evitar errores de conexión en requests tempranos.
 async function bootstrap() {
   app.listen(port, () => {

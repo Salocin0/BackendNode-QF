@@ -19,6 +19,8 @@ import { Productor } from '../DAO/models/Productor.model.js';
 // GET /pedido/puesto/:id weigh 100+ MB for stands with a few hundred orders.
 const PUESTO_SIN_IMAGENES = { exclude: ['img', 'banner'] };
 const PRODUCTO_SIN_IMAGEN = { exclude: ['img'] };
+// The other party of an order (courier for the consumer, consumer for the courier) only needs its location.
+const USUARIO_DE_OTRA_PARTE = { exclude: ['contraseña', 'email', 'codigoRecuperacion', 'codigoValidacion', 'codigoHabilitacion', 'tokenMobile', 'tokenWeb'] };
 
 class PedidoService {
   async getAll(consumidorId) {
@@ -47,6 +49,7 @@ class PedidoService {
             include: [
               {
                 model: Usuario,
+                attributes: USUARIO_DE_OTRA_PARTE,
               }
             ]
           }
@@ -169,13 +172,13 @@ class PedidoService {
         ],
       },
       { model: Puesto, attributes: PUESTO_SIN_IMAGENES },
-      { model: Consumidor, include: [{ model: Usuario, as: 'usuario' }] }, // Include Usuario relation here
+      { model: Consumidor, include: [{ model: Usuario, as: 'usuario', attributes: USUARIO_DE_OTRA_PARTE }] },
       {
         model: Repartidor,
         include: [
           {
             model: Consumidor,
-            include: [{ model: Usuario, as: 'usuario' }], // Include Usuario for Repartidor's Consumidor
+            include: [{ model: Usuario, as: 'usuario', attributes: USUARIO_DE_OTRA_PARTE }],
           },
         ],
       },
