@@ -375,9 +375,11 @@ class AsociacionController {
       const encargadoId = consumidor.encargadoId;
   
       // Obtener todos los puestos relacionados al encargado
+      // Stand and event images inside the association lists are never shown (only eventos[].img is) and this
+      // endpoint is polled every second by mobile: they made the response weigh several MB.
       const puestos = await Puesto.findAll({
         where: { encargadoId: encargadoId },
-        attributes: { exclude: ['createdAt', 'updatedAt'] }, // Puedes excluir campos si no los necesitas
+        attributes: { exclude: ['createdAt', 'updatedAt', 'img', 'banner'] },
       });
   
       // Obtener los IDs de los puestos
@@ -389,11 +391,11 @@ class AsociacionController {
         include: [
           {
             model: Puesto,
-            attributes: { exclude: ['createdAt', 'updatedAt'] }, // Excluir campos innecesarios
+            attributes: { exclude: ['createdAt', 'updatedAt', 'img', 'banner'] },
           },
           {
             model: Evento,
-            attributes: { exclude: ['createdAt', 'updatedAt'] }, // Incluir Evento y excluir campos innecesarios
+            attributes: { exclude: ['createdAt', 'updatedAt', 'img'] },
           },
         ],
       });
@@ -460,6 +462,7 @@ class AsociacionController {
             },
             {
               model: Puesto,
+              attributes: { exclude: ['img', 'banner'] },
             },
           ],
         });

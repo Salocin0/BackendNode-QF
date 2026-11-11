@@ -166,7 +166,8 @@ class PuestoService {
 
   async getPuestoDetails(puestoId) {
     try {
-      const puestoDetails = await Puesto.findByPk(puestoId);
+      // Used by the association lists, which never show the stand images (polled every second by mobile).
+      const puestoDetails = await Puesto.findByPk(puestoId, { attributes: { exclude: ['img', 'banner'] } });
       return puestoDetails;
     } catch (error) {
       throw new Error('No se pudieron obtener los detalles del puesto');
