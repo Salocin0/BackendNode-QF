@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 import { estadosPedidosRepartidor } from '../util/pedidosRepartidor.js';
 describe('Estados de pedidos del repartidor', () => {
-  it('conserva los pedidos en camino y entregados en la consulta existente', () => {
-    expect(estadosPedidosRepartidor()).to.deep.equal(['EnCamino', 'Entregado']);
-    expect(estadosPedidosRepartidor(false)).to.deep.equal(['EnCamino', 'Entregado']);
+  it('limita la lista activa a los pedidos en camino', () => {
+    expect(estadosPedidosRepartidor()).to.deep.equal(['EnCamino']);
+    expect(estadosPedidosRepartidor(false)).to.deep.equal(['EnCamino']);
   });
   it('incluye los pedidos valorados en el historial porque ya fueron entregados', () => {
     expect(estadosPedidosRepartidor(true)).to.deep.equal(['Entregado', 'Valorado']);

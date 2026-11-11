@@ -156,6 +156,7 @@ class PedidoService {
           {
             model: Producto,
             as: 'producto',
+            attributes: { exclude: ['img'] },
           },
         ],
       },
