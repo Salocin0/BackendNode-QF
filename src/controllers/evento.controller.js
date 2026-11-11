@@ -439,6 +439,7 @@ class EventoController {
         res.status(400).json({ message: 'No se encontró la acción para el estado actual.' });
       }
     } catch (error) {
+      if (error?.name === 'TransicionEventoError') return res.status(400).json({ message: error.message });
       res.status(500).json({ message: 'Error al cambiar el estado del evento.' });
     }
   }

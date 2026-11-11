@@ -1,4 +1,5 @@
 import { cancelarPedidosPendientes } from './pedidoUtils.js';
+import { TransicionEventoError, MENSAJE_EVENTO_INCOMPLETO } from './transicionEventoError.js';
 import { Evento } from "../../DAO/models/evento.model.js";
 
 export const EnPreparacion2 = {
@@ -8,10 +9,9 @@ export const EnPreparacion2 = {
       return evento;
     },
 
-    confirmarEvento: async (evento) => {
-      evento.estado = 'Confirmado';
-      await evento.save();
-      return evento;
+    // A draft still misses steps of the creation wizard: it becomes confirmable once it reaches EnPreparacion.
+    confirmarEvento: async () => {
+      throw new TransicionEventoError(MENSAJE_EVENTO_INCOMPLETO);
     },
 
     cancelarEvento: async (evento) => {
