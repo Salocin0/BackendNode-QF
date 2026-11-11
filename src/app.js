@@ -192,40 +192,79 @@ app.post('/admin/reset-db', requireAdminKey, async (req, res) => {
   }
 });
 
-// Página visual para disparar el seed de demo con un botón y ver el resumen
-app.get('/seed', requireAdminKey, (req, res) => {
+// Página visual para disparar el seed de demo. La página en sí no expone nada
+// (solo HTML estático): la protección está en /seed/demo, al que se le manda la
+// clave de administrador en el header x-admin-key desde el campo del formulario.
+app.get('/seed', (req, res) => {
   res.status(200).send(`<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>QuickFood - Seed Demo</title>
 <style>
-  body { font-family: system-ui, sans-serif; background: #1a1a1a; color: #f0c040; max-width: 720px; margin: 40px auto; padding: 0 16px; }
-  h1 { text-align: center; }
+  body { font-family: system-ui, sans-serif; background: #1a1a1a; color: #f0f0f0; max-width: 760px; margin: 40px auto; padding: 0 16px; }
+  h1 { text-align: center; color: #f0c040; }
+  .warn { color: #ff7043; text-align: center; }
+  label { display: block; margin: 20px 0 6px; color: #f0c040; font-weight: bold; }
+  input { width: 100%; box-sizing: border-box; padding: 12px; font-size: 16px; border-radius: 8px; border: 1px solid #444; background: #111; color: #f0f0f0; }
   button { background: #f0c040; color: #1a1a1a; border: none; padding: 14px 28px; font-size: 18px; font-weight: bold; border-radius: 8px; cursor: pointer; display: block; margin: 24px auto; }
   button:disabled { opacity: .5; cursor: wait; }
+  .box { background: #111; padding: 16px; border-radius: 8px; margin-top: 16px; }
+  .box h2 { margin: 0 0 8px; font-size: 18px; color: #f0c040; }
+  .box ul { margin: 0; padding-left: 20px; }
+  .err { color: #ff7043; }
+  .ok { color: #7ddc7d; }
   pre { background: #111; color: #ddd; padding: 16px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap; }
-  .warn { color: #ff7043; text-align: center; }
 </style>
 </head>
 <body>
 <h1>🌱 Seed de datos de demo</h1>
-<p class="warn">⚠️ Esto VACÍA todas las tablas y siembra el dataset de demo (evento, 3 puestos, historial de pedidos para estadísticas).</p>
+<p class="warn">⚠️ Esto VACÍA todas las tablas y siembra el dataset de demo (usuarios, carritos, eventos y miles de pedidos para estadísticas).</p>
+<label for="key">Clave de administrador</label>
+<input id="key" type="password" autocomplete="off" placeholder="ADMIN_KEY">
 <button id="btn" onclick="seed()">Resetear y sembrar datos de demo</button>
-<pre id="out">Todavía no se ejecutó nada.</pre>
+<div id="out"><p>Todavía no se ejecutó nada.</p></div>
 <script>
+const esc = (v) => String(v).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+const fecha = (v) => new Date(v).toLocaleString('es-AR');
+const prefill = new URLSearchParams(location.search).get('key');
+if (prefill) document.getElementById('key').value = prefill;
+
+function render(d) {
+  const c = d.credenciales || {};
+  const roles = ['productor', 'encargado', 'repartidor', 'consumidor']
+    .filter((r) => c[r])
+    .map((r) => '<li><b>' + r + '</b>: ' + esc(c[r].usuario) + ' / ' + esc(c[r].email) + '</li>')
+    .join('');
+  const activos = (d.eventosActivos || [])
+    .map((e) => '<li>' + esc(e.nombre) + ' (' + esc(e.estado) + ', ' + e.dias + ' días, ' + e.puestos + ' puestos)</li>')
+    .join('');
+  const h = (d.pedidos && d.pedidos.historialEstadisticas) || {};
+  return '<div class="box"><h2 class="ok">✅ Seed completado</h2></div>'
+    + '<div class="box"><h2>Credenciales (clave: ' + esc(c.password) + ')</h2><ul>' + roles + '</ul></div>'
+    + '<div class="box"><h2>Eventos con actividad</h2><ul>' + activos + '</ul></div>'
+    + '<div class="box"><h2>Historial</h2><ul><li>' + (h.totalPedidos || 0) + ' pedidos históricos</li><li>'
+    + (h.entregadosPorRepartidorDemo || 0) + ' entregados por el Repartidor demo</li><li>'
+    + (d.eventosPorEstado || []).length + ' eventos extra por estado</li></ul></div>';
+}
+
 async function seed() {
   const btn = document.getElementById('btn');
   const out = document.getElementById('out');
+  const key = document.getElementById('key').value.trim();
+  if (!key) { out.innerHTML = '<p class="err">Ingresá la clave de administrador.</p>'; return; }
   if (!confirm('¿Seguro? Se borran TODOS los datos actuales.')) return;
   btn.disabled = true;
-  out.textContent = '⏳ Sembrando... (puede tardar un rato por el historial de pedidos)';
+  out.innerHTML = '<p>⏳ Sembrando... (puede tardar un rato por el historial de pedidos)</p>';
   try {
-    const r = await fetch('/seed/demo');
+    const r = await fetch('/seed/demo', { headers: { 'x-admin-key': key } });
     const data = await r.json();
-    out.textContent = JSON.stringify(data, null, 2);
+    out.innerHTML = r.ok && data.status === 'success'
+      ? render(data)
+      : '<p class="err">❌ ' + esc(data.msg || 'Error') + (data.error ? ': ' + esc(data.error) : '') + '</p>';
   } catch (e) {
-    out.textContent = '❌ Error: ' + e.message;
+    out.innerHTML = '<p class="err">❌ Error: ' + esc(e.message) + '</p>';
   } finally {
     btn.disabled = false;
   }
