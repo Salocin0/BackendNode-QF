@@ -17,7 +17,7 @@ describe('chatbotPrompt (unit, no server/DB/LLM required)', () => {
     id: 10,
     nombre: 'Cosquin Rock',
     link: 'https://qf.app/listado-puestos/10',
-    carta: [{ puesto: 'Parrilla', productos: [{ nombre: 'Bondiola', precio: 4500 }] }],
+    carta: [{ puesto: 'Parrilla', productos: [{ nombre: 'Vacío al pan', descripcion: 'Vacío a la parrilla con provoleta y rúcula.', precio: 7200 }] }],
   };
 
   it('injects the event data, including the menu with prices', async () => {
@@ -26,8 +26,9 @@ describe('chatbotPrompt (unit, no server/DB/LLM required)', () => {
       ayuda: '[]',
       input: 'que puedo comer?',
     });
-    expect(out).to.contain('Bondiola');
-    expect(out).to.contain('4500');
+    expect(out).to.contain('Vacío al pan');
+    expect(out).to.contain('Vacío a la parrilla');
+    expect(out).to.contain('7200');
     expect(out).to.contain('https://qf.app/listado-puestos/10');
   });
 
@@ -57,7 +58,7 @@ describe('chatbotPrompt (unit, no server/DB/LLM required)', () => {
   // though the menu was in the payload.
   it('tells the model to search the menu for a product', async () => {
     const out = await render({ chatbotData: '[]', ayuda: '[]', input: 'x' });
-    expect(out).to.match(/buscá ese producto en la "carta"/i);
+    expect(out).to.match(/buscá coincidencias en el nombre Y la descripción del producto/i);
     expect(out).to.match(/nombrando el evento y el puesto/i);
   });
 

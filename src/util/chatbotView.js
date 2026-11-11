@@ -32,7 +32,11 @@ export const CREATE_CHATBOT_VIEW_SQL = `
                       'puesto', ps2."nombreCarro",
                       'productos', (
                         SELECT json_agg(
-                                 json_build_object('nombre', pr.nombre, 'precio', pr.precio)
+                                 json_build_object(
+                                   'nombre', pr.nombre,
+                                   'descripcion', pr.descripcion,
+                                   'precio', pr.precio
+                                 )
                                  ORDER BY pr.nombre
                                )
                         FROM productos pr
