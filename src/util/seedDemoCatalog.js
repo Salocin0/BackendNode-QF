@@ -61,7 +61,7 @@ export const REPARTIDORES_EXTRA = [
 
 export const PUESTOS = [
   {
-    key: 'choripan-don-anselmo', imgKey: 'puesto-cuarteto', nombre: 'Don Choripán', tipoNegocio: 'Food Truck',
+    key: 'don-choripan', nombre: 'Don Choripán', tipoNegocio: 'Food Truck',
     dueño: 'demo', rating: 4.7, popularidad: 1.5,
     opiniones: ['El choripán más rico del festival.', 'Pan crocante y chorizo bien jugoso.', 'La provoleta, imperdible.'],
     productos: [
@@ -73,7 +73,7 @@ export const PUESTOS = [
     ],
   },
   {
-    key: 'la-parrilla-de-tito', nombre: 'Fuego Lento Parrilla', tipoNegocio: 'Food Truck',
+    key: 'fuego-lento-parrilla', nombre: 'Fuego Lento Parrilla', tipoNegocio: 'Food Truck',
     dueño: 'demo', rating: 4.5, popularidad: 1.4,
     opiniones: ['Bondiola tierna y abundante.', 'Las papas con cheddar vuelan.', 'Buena porción y buen precio.'],
     productos: [
@@ -85,7 +85,7 @@ export const PUESTOS = [
     ],
   },
   {
-    key: 'barra-el-fernetazo', nombre: 'La Birra Cervecería Artesanal', tipoNegocio: 'Barra',
+    key: 'la-birra-barra', nombre: 'La Birra Cervecería Artesanal', tipoNegocio: 'Barra',
     dueño: 'demo', rating: 4.3, popularidad: 1.6,
     opiniones: ['Los tragos bien cargados y fríos.', 'Atienden rápido aun con fila.', 'El fernet con coca es el mejor del predio.'],
     productos: [
@@ -97,7 +97,7 @@ export const PUESTOS = [
     ],
   },
   {
-    key: 'empanadas-dona-rosa', nombre: 'Empanadas Tía Rosa', tipoNegocio: 'Food Truck',
+    key: 'empanadas-tia-rosa', nombre: 'Empanadas Tía Rosa', tipoNegocio: 'Food Truck',
     dueño: 0, rating: 4.8, popularidad: 1.3,
     opiniones: ['Empanadas caseras de verdad.', 'La de carne cortada a cuchillo es un lujo.', 'Salen calentitas del horno.'],
     productos: [
@@ -109,7 +109,7 @@ export const PUESTOS = [
     ],
   },
   {
-    key: 'pizza-al-paso-napoli', nombre: 'Napoli Pizza Truck', tipoNegocio: 'Food Truck',
+    key: 'napoli-pizza-truck', nombre: 'Napoli Pizza Truck', tipoNegocio: 'Food Truck',
     dueño: 0, rating: 4.4, popularidad: 1.1,
     opiniones: ['Porciones grandes y bien cargadas.', 'La fugazzeta está espectacular.', 'Rápidos para atender.'],
     productos: [
@@ -121,7 +121,7 @@ export const PUESTOS = [
     ],
   },
   {
-    key: 'dulce-tentacion', nombre: 'Churros del Barrio', tipoNegocio: 'Postres',
+    key: 'churros-del-barrio', nombre: 'Churros del Barrio', tipoNegocio: 'Postres',
     dueño: 1, rating: 4.6, popularidad: 0.9,
     opiniones: ['Los churros llegan crocantes y rellenos.', 'El waffle con helado, un sueño.', 'Ideal para la merienda.'],
     productos: [
@@ -133,7 +133,7 @@ export const PUESTOS = [
     ],
   },
   {
-    key: 'veggie-sierras', nombre: 'Verde Vivo Cocina Vegana', tipoNegocio: 'Food Truck',
+    key: 'verde-vivo', nombre: 'Verde Vivo Cocina Vegana', tipoNegocio: 'Food Truck',
     dueño: 1, rating: 4.7, popularidad: 0.7,
     opiniones: ['Por fin opciones veganas que valen la pena.', 'El wrap de falafel es buenísimo.', 'Sabor casero y porciones generosas.'],
     productos: [
@@ -144,7 +144,7 @@ export const PUESTOS = [
     ],
   },
   {
-    key: 'heladeria-don-bruno', nombre: 'Gelato Bruno', tipoNegocio: 'Postres',
+    key: 'gelato-bruno', nombre: 'Gelato Bruno', tipoNegocio: 'Postres',
     dueño: 1, rating: 4.5, popularidad: 0.8,
     opiniones: ['Helado artesanal cremosísimo.', 'El dulce de leche granizado es otra cosa.', 'Perfecto para el calor.'],
     productos: [
@@ -155,7 +155,7 @@ export const PUESTOS = [
     ],
   },
   {
-    key: 'lomitos-del-centro', nombre: 'El Lomito de la Plaza', tipoNegocio: 'Food Truck',
+    key: 'lomito-de-la-plaza', nombre: 'El Lomito de la Plaza', tipoNegocio: 'Food Truck',
     dueño: 'demo', rating: 4.2, popularidad: 1.0,
     opiniones: ['Lomito enorme, no se termina más.', 'La carne muy tierna.', 'Algo de demora pero valió la pena.'],
     productos: [
@@ -166,7 +166,7 @@ export const PUESTOS = [
     ],
   },
   {
-    key: 'cafe-maridaje', nombre: 'Tostado Café de Especialidad', tipoNegocio: 'Cafetería',
+    key: 'tostado-cafe', nombre: 'Tostado Café de Especialidad', tipoNegocio: 'Cafetería',
     dueño: 'demo', rating: 4.6, popularidad: 0.7,
     opiniones: ['Las medialunas, calentitas y de manteca.', 'Café de verdad, no de máquina.', 'Muy buena atención.'],
     productos: [
@@ -192,7 +192,7 @@ export const EVENTOS_ACTIVOS = [
     descripcion: 'La fiesta del cuarteto más grande de Villa María: tres noches con las mejores bandas cordobesas y una plaza de comidas con puestos de toda la región.',
     ubicacion: 'Anfiteatro Municipal, Villa María', latitud: '-32.4076', longitud: '-63.2304',
     estado: 'EnCurso', diaInicio: -6, diaFin: 8, ventasHasta: 'ahora',
-    puestos: ['choripan-don-anselmo', 'la-parrilla-de-tito', 'barra-el-fernetazo', 'empanadas-dona-rosa', 'pizza-al-paso-napoli', 'dulce-tentacion'],
+    puestos: ['don-choripan', 'fuego-lento-parrilla', 'la-birra-barra', 'empanadas-tia-rosa', 'napoli-pizza-truck', 'churros-del-barrio'],
     pedidosPorDia: 230,
     curva: { base: 0.2, picos: [[17.5, 1.0, 0.5], [20.6, 0.35, 1.0], [23.3, 0.35, 1.3], [24.4, 0.3, 1.0]], shows: [[19, 20.25], [21.25, 23], [24.75, 26.5]], factorShow: 0.2 },
     bandas: ['Los Cuarteteros del Sur', 'La Tierra Colorada', 'Fuego Cordobés', 'Banda Sierra Brava'],
@@ -203,7 +203,7 @@ export const EVENTOS_ACTIVOS = [
     descripcion: 'Festival gastronómico a orillas del río Ctalamochita con cocineros regionales, cervecerías artesanales y música en vivo.',
     ubicacion: 'Costanera del Río Ctalamochita, Villa María', latitud: '-32.4112', longitud: '-63.2458',
     estado: 'EnCurso', diaInicio: -4, diaFin: 10, ventasHasta: 'ahora',
-    puestos: ['la-parrilla-de-tito', 'barra-el-fernetazo', 'empanadas-dona-rosa', 'pizza-al-paso-napoli', 'dulce-tentacion', 'veggie-sierras', 'heladeria-don-bruno', 'lomitos-del-centro'],
+    puestos: ['fuego-lento-parrilla', 'la-birra-barra', 'empanadas-tia-rosa', 'napoli-pizza-truck', 'churros-del-barrio', 'verde-vivo', 'gelato-bruno', 'lomito-de-la-plaza'],
     pedidosPorDia: 170,
     curva: { base: 0.15, picos: [[13.3, 0.7, 1.0], [17.2, 0.7, 0.6], [21.2, 0.9, 1.4]], shows: [[22.5, 24]], factorShow: 0.5 },
     bandas: ['Dúo Costanera', 'Los del Ctalamochita'],
@@ -214,29 +214,29 @@ export const EVENTOS_ACTIVOS = [
     descripcion: 'Kermés a beneficio de las divisiones inferiores del club, con juegos, feria de platos y shows para toda la familia.',
     ubicacion: 'Club Atlético Villa María', latitud: '-32.4021', longitud: '-63.2399',
     estado: 'EnCurso', diaInicio: -2, diaFin: 12, ventasHasta: 'ahora',
-    puestos: ['choripan-don-anselmo', 'empanadas-dona-rosa', 'dulce-tentacion', 'veggie-sierras', 'cafe-maridaje'],
+    puestos: ['don-choripan', 'empanadas-tia-rosa', 'churros-del-barrio', 'verde-vivo', 'tostado-cafe'],
     pedidosPorDia: 85,
     curva: { base: 0.15, picos: [[13, 0.8, 0.8], [16.5, 1.0, 0.7], [20.5, 0.8, 1.0]], shows: [], factorShow: 1 },
     bandas: ['Escuela de Música del Club'],
     repartidores: 'demo',
   },
   {
-    key: 'cosecha', imgKey: 'evento-fiesta-patronal', nombre: 'Fiesta de la Cosecha 2026', tipoEvento: 'Fiesta popular', tipoPago: 'Efectivo',
+    key: 'cosecha', imgKey: 'evento-cosecha', nombre: 'Fiesta de la Cosecha 2026', tipoEvento: 'Fiesta popular', tipoPago: 'Efectivo',
     descripcion: 'Edición 2026 de la Fiesta de la Cosecha, con desfile de tractores, peñas folklóricas y patio de comidas.',
     ubicacion: 'Predio Ferial, Villa María', latitud: '-32.4150', longitud: '-63.2260',
     estado: 'Finalizado', diaInicio: -45, diaFin: -43, ventasHasta: 'fin',
-    puestos: ['choripan-don-anselmo', 'la-parrilla-de-tito', 'empanadas-dona-rosa', 'pizza-al-paso-napoli', 'dulce-tentacion'],
+    puestos: ['don-choripan', 'fuego-lento-parrilla', 'empanadas-tia-rosa', 'napoli-pizza-truck', 'churros-del-barrio'],
     pedidosPorDia: 130,
     curva: { base: 0.2, picos: [[13.3, 0.8, 1.0], [20.8, 0.5, 1.2], [23.5, 0.4, 0.9]], shows: [[21.5, 23], [24, 25.5]], factorShow: 0.3 },
     bandas: ['Los Troperos', 'Cuarteto La Cañada'],
     repartidores: 'extra',
   },
   {
-    key: 'aniversario', imgKey: 'evento-fiesta-patronal', nombre: 'Villa María 159 Años - Gran Festejo', tipoEvento: 'Fiesta popular', tipoPago: 'Efectivo',
+    key: 'aniversario', imgKey: 'evento-aniversario', nombre: 'Villa María 159 Años - Gran Festejo', tipoEvento: 'Fiesta popular', tipoPago: 'Efectivo',
     descripcion: 'Festejos por el aniversario de la ciudad con espectáculos en la plaza, patio de comidas y fuegos artificiales.',
     ubicacion: 'Plaza Centenario, Villa María', latitud: '-32.4089', longitud: '-63.2412',
     estado: 'Finalizado', diaInicio: -80, diaFin: -78, ventasHasta: 'fin',
-    puestos: ['la-parrilla-de-tito', 'barra-el-fernetazo', 'pizza-al-paso-napoli', 'dulce-tentacion', 'heladeria-don-bruno'],
+    puestos: ['fuego-lento-parrilla', 'la-birra-barra', 'napoli-pizza-truck', 'churros-del-barrio', 'gelato-bruno'],
     pedidosPorDia: 150,
     curva: { base: 0.2, picos: [[18, 1.0, 0.6], [21, 0.5, 1.2], [23.7, 0.4, 1.4]], shows: [[22, 23.25], [24.5, 26]], factorShow: 0.25 },
     bandas: ['Orquesta Municipal', 'Rock del Litoral'],

@@ -665,11 +665,11 @@ export async function runSeedDemo() {
     return pedido;
   };
   const sinDemo = consumidoresRelleno;
-  await crearPedidoEnCurso({ estado: EstadosPedido.Pendiente, keyPuesto: 'la-parrilla-de-tito', consumidor: sinDemo[1], minutos: 1, items: [[0, 1], [2, 1]] });
-  await crearPedidoEnCurso({ estado: EstadosPedido.Aceptado, keyPuesto: 'choripan-don-anselmo', consumidor: sinDemo[8], minutos: 6, items: [[0, 2], [4, 2]] });
-  await crearPedidoEnCurso({ estado: EstadosPedido.EnPreparacion, keyPuesto: 'barra-el-fernetazo', consumidor: sinDemo[15], minutos: 11, items: [[0, 2], [1, 1]] });
-  await crearPedidoEnCurso({ estado: EstadosPedido.Listo, keyPuesto: 'choripan-don-anselmo', consumidor: sinDemo[22], minutos: 16, items: [[1, 1], [3, 1], [4, 1]] });
-  const pedidoEnCamino = await crearPedidoEnCurso({ estado: EstadosPedido.EnCamino, keyPuesto: 'la-parrilla-de-tito', consumidor: consumidorDemo, minutos: 22, items: [[1, 1], [2, 1], [4, 2]] });
+  await crearPedidoEnCurso({ estado: EstadosPedido.Pendiente, keyPuesto: 'fuego-lento-parrilla', consumidor: sinDemo[1], minutos: 1, items: [[0, 1], [2, 1]] });
+  await crearPedidoEnCurso({ estado: EstadosPedido.Aceptado, keyPuesto: 'don-choripan', consumidor: sinDemo[8], minutos: 6, items: [[0, 2], [4, 2]] });
+  await crearPedidoEnCurso({ estado: EstadosPedido.EnPreparacion, keyPuesto: 'la-birra-barra', consumidor: sinDemo[15], minutos: 11, items: [[0, 2], [1, 1]] });
+  await crearPedidoEnCurso({ estado: EstadosPedido.Listo, keyPuesto: 'don-choripan', consumidor: sinDemo[22], minutos: 16, items: [[1, 1], [3, 1], [4, 1]] });
+  const pedidoEnCamino = await crearPedidoEnCurso({ estado: EstadosPedido.EnCamino, keyPuesto: 'fuego-lento-parrilla', consumidor: consumidorDemo, minutos: 22, items: [[1, 1], [2, 1], [4, 2]] });
   await Asignacion.create({ estado: 'Aceptado', repartidoreId: repartidorDemo.id, PedidoId: pedidoEnCamino.id });
   // Se setean repartidorId/puntoEncuentroId/codigoEntrega directo: en la app real
   // los pone procesosAutomaticos.js, pero solo mira asignaciones recientes con
@@ -704,7 +704,7 @@ export async function runSeedDemo() {
     );
     await crearDias(evento, def.nombre, desde, desde + 1, def.conPreventa);
     if (def.conPuestos) {
-      await asociarPuestos(evento, ['choripan-don-anselmo', 'la-parrilla-de-tito', 'barra-el-fernetazo']);
+      await asociarPuestos(evento, ['don-choripan', 'fuego-lento-parrilla', 'la-birra-barra']);
       await asociarRepartidores(evento, [repartidorDemo]);
       await crearPuntoEncuentro(evento, '-32.4076', '-63.2304');
     }
