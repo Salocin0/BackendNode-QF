@@ -6,8 +6,6 @@ const expect = chai.expect;
 const requester = supertest('http://127.0.0.1:8000');
 
 describe('Recuperación de contraseña', () => {
-  let recoveryCode = null;
-
   it('Debería enviar un correo de recuperación de contraseña', async () => {
     const email = 'consumidor@consumidor.com';
 
@@ -17,7 +15,8 @@ describe('Recuperación de contraseña', () => {
 
     expect(response.status).to.equal(200);
     expect(response.body.status).to.equal('success');
-    recoveryCode = response.body.data;
+    // The recovery code is sent only by email, never in the response.
+    expect(response.body.data).to.equal(null);
 
   });
 
@@ -31,18 +30,11 @@ describe('Recuperación de contraseña', () => {
     expect(response.body.status).to.equal('error');
   });
 
-  it('Debería actualizar la contraseña con éxito', async () => {
-    if (recoveryCode === null) {
-      throw new Error('No se generó un código de recuperación válido en el primer test');
-    }
-
-    const newPassword = '12345678';
-
+  it('Debería rechazar un código de recuperación inventado', async () => {
     const response = await requester
-      .put(`/user/recuperarcontrasenia/${recoveryCode}`)
-      .send({ contraseña: newPassword });
+      .put(`/user/recuperarcontrasenia/${'0'.repeat(64)}`)
+      .send({ contraseña: '12345678' });
 
-    expect(response.status).to.equal(200);
-
+    expect(response.status).to.equal(400);
   });
 });

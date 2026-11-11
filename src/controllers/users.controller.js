@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import { generarCodigoRecuperacion } from '../util/codigoRecuperacion.js';
 import passport from 'passport';
 import { Consumidor } from '../DAO/models/consumidor.model.js';
 import { Usuario } from '../DAO/models/users.model.js';
@@ -425,7 +425,7 @@ class UserController {
       const { correoElectronico } = req.body;
       const usuario = await userService.getOneByEmail(correoElectronico);
       if (usuario !== null) {
-        const hash = crypto.createHash('sha256').update(Date.now().toString()).digest('hex'); // Usa crypto.createHash
+        const hash = generarCodigoRecuperacion();
         usuario.codigoRecuperacion = hash;
         await usuario.save();
         sendEmail(
@@ -437,7 +437,8 @@ class UserController {
           status: 'success',
           msg: 'Email enviado',
           code: 200,
-          data: usuario.codigoRecuperacion,
+          // The code travels only by email: returning it here let anyone reset any account knowing its email.
+          data: null,
         });
       } else {
         return res.status(400).json({
