@@ -8,7 +8,10 @@
     "skipLibCheck": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": false,
+    "noEmit": true
   },
   "include": ["src/**/*", "types/**/*.d.ts"],
   "exclude": ["node_modules"]
