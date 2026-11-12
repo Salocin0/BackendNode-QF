@@ -2,8 +2,12 @@ import { DiaEvento } from '../DAO/models/diaEvento.model.js';
 import { estadosEvento } from '../estados/estados/estadosEvento.js';
 import { eventoService } from '../services/evento.service.js';
 import { notificacionesService } from '../services/notificaciones.service.js';
-import { EventoPayloadError, normalizeEventoPayload, validateEventoCreate } from '../util/eventoPayload.js';
+import { DRAFT_ESTADOS, EventoPayloadError, normalizeEventoPayload, validateEventoCreate } from '../util/eventoPayload.js';
 import { parseIsoDate, withEstadoEfectivo } from '../util/validation.js';
+
+// States in which PUT /evento/preparacion/:id may edit an event (same rule as the web "Editar evento").
+const ESTADOS_EDITABLES = [...DRAFT_ESTADOS, 'EnPreparacion', 'Pausado'];
+const MENSAJE_NO_EDITABLE = 'Este evento no se puede editar en su estado actual. Pausalo para editarlo.';
 
 class EventoController {
   async getAllController(req, res) {
@@ -183,6 +187,16 @@ class EventoController {
           msg: 'horaInicio y horaFin de cada día deben ser fechas ISO válidas',
           data: {},
         });
+      }
+
+      // Only drafts, completed-but-unconfirmed (EnPreparacion) and paused events can be edited with the wizard:
+      // a confirmed or running event has to be paused first. Nothing is changed for any other state.
+      const eventoActual = await eventoService.getOne(id);
+      if (!eventoActual) {
+        return res.status(404).json({ status: 'error', msg: 'No se encontró el evento con el id proporcionado', data: {} });
+      }
+      if (!ESTADOS_EDITABLES.includes(eventoActual.estado)) {
+        return res.status(400).json({ status: 'error', msg: MENSAJE_NO_EDITABLE, message: MENSAJE_NO_EDITABLE, data: {} });
       }
 
       const result = await eventoService.update(id, datosEventoActualizar);
