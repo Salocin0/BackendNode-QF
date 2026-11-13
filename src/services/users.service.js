@@ -143,26 +143,26 @@ class UserService {
         const productor = await productorService.create(datosRol);
         const consumidor = await consumidorService.getOne(user.consumidorId);
         consumidor.productorId = productor.id;
-        consumidor.save();
+        await consumidor.save();
         user.tipoUsuario = 'productor';
       } else if (rol == 'encargado') {
         const encargado = await encargadoService.create(datosRol);
         const consumidor = await consumidorService.getOne(user.consumidorId);
         consumidor.encargadoId = encargado.id;
-        consumidor.save();
+        await consumidor.save();
         user.tipoUsuario = 'encargado';
       } else if (rol == 'repartidor') {
         const repartidor = await repartidorService.create();
         const consumidor = await consumidorService.getOne(user.consumidorId);
         consumidor.repartidorId = repartidor.id;
-        consumidor.save();
+        await consumidor.save();
         user.tipoUsuario = 'repartidor';
       } else if (rol == 'consumidor') {
         user.tipoUsuario = 'consumidor';
       } else {
         return undefined;
       }
-      user.save();
+      await user.save();
       return user;
     } else {
       return undefined;
