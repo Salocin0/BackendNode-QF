@@ -14,6 +14,7 @@ import Sequelize from 'sequelize';
 import { Usuario } from '../DAO/models/users.model.js';
 import { Evento } from '../DAO/models/evento.model.js';
 import { Productor } from '../DAO/models/Productor.model.js';
+import { PEDIDOS_ULTIMO_PRIMERO } from '../util/ordenPedidos.js';
 
 // Order lists never render stand or product images; their base64 payloads made
 // GET /pedido/puesto/:id weigh 100+ MB for stands with a few hundred orders.
@@ -66,6 +67,7 @@ class PedidoService {
     const pedidos = await Pedido.findAll({
       where: whereConditions,
       include: includeModels,
+      order: PEDIDOS_ULTIMO_PRIMERO,
     });
   
     return pedidos;
@@ -90,6 +92,7 @@ class PedidoService {
     const idPuestos = puestos.map((puesto) => puesto.id);
 
     const pedidos = await Pedido.findAll({
+      order: PEDIDOS_ULTIMO_PRIMERO,
       where: {
         puestoId: idPuestos,
       },
@@ -115,6 +118,7 @@ class PedidoService {
 
   async getAllPedidosOnePuesto(idPuesto) {
     const pedidos = await Pedido.findAll({
+      order: PEDIDOS_ULTIMO_PRIMERO,
       where: {
         puestoId: idPuesto,
       },
@@ -198,6 +202,7 @@ class PedidoService {
         },
       },
       include: includeModels,
+      order: PEDIDOS_ULTIMO_PRIMERO,
     });
     
     console.log('Pedidos obtenidos:', pedidos.length);
