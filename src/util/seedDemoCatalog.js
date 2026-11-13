@@ -40,6 +40,14 @@ export const PERSONAS_DEMO = {
   consumidor: { nombre: 'Camila', apellido: 'Rodríguez' },
 };
 
+// Users that carry the order history behind the statistics, so the demo
+// Consumidor and Repartidor start clean. The data Repartidor is only associated
+// to finished events, never to events that still accept orders.
+export const PERSONAS_DATOS = {
+  repartidor: { nombre: 'Franco', apellido: 'Molina' },
+  consumidor: { nombre: 'Valentina', apellido: 'Sosa' },
+};
+
 export const ENCARGADOS_EXTRA = [
   { nombre: 'Marcelo', apellido: 'Bustos', razonSocial: 'Bustos Alimentos' },
   { nombre: 'Romina', apellido: 'Aguirre', razonSocial: 'Aguirre y Hnos.' },
@@ -186,13 +194,15 @@ export const PUESTOS = [
 // y beber en los cortes entre bandas; "shows" son las franjas con una banda en
 // el escenario, donde casi no se compra.
 
+// The three live events overlap in time, so each one gets its own puestos:
+// a food truck cannot be in two places at once.
 export const EVENTOS_ACTIVOS = [
   {
     key: 'cuarteto', imgKey: 'evento-cuarteto', nombre: 'Cuartetazo Villa María 2026', tipoEvento: 'Música', tipoPago: 'Efectivo',
     descripcion: 'La fiesta del cuarteto más grande de Villa María: tres noches con las mejores bandas cordobesas y una plaza de comidas con puestos de toda la región.',
     ubicacion: 'Anfiteatro Municipal, Villa María', latitud: '-32.4076', longitud: '-63.2304',
     estado: 'EnCurso', diaInicio: -6, diaFin: 8, ventasHasta: 'ahora',
-    puestos: ['don-choripan', 'fuego-lento-parrilla', 'la-birra-barra', 'empanadas-tia-rosa', 'napoli-pizza-truck', 'churros-del-barrio'],
+    puestos: ['don-choripan', 'fuego-lento-parrilla', 'la-birra-barra', 'napoli-pizza-truck'],
     pedidosPorDia: 230,
     curva: { base: 0.2, picos: [[17.5, 1.0, 0.5], [20.6, 0.35, 1.0], [23.3, 0.35, 1.3], [24.4, 0.3, 1.0]], shows: [[19, 20.25], [21.25, 23], [24.75, 26.5]], factorShow: 0.2 },
     bandas: ['Los Cuarteteros del Sur', 'La Tierra Colorada', 'Fuego Cordobés', 'Banda Sierra Brava'],
@@ -203,7 +213,7 @@ export const EVENTOS_ACTIVOS = [
     descripcion: 'Festival gastronómico a orillas del río Ctalamochita con cocineros regionales, cervecerías artesanales y música en vivo.',
     ubicacion: 'Costanera del Río Ctalamochita, Villa María', latitud: '-32.4112', longitud: '-63.2458',
     estado: 'EnCurso', diaInicio: -4, diaFin: 10, ventasHasta: 'ahora',
-    puestos: ['fuego-lento-parrilla', 'la-birra-barra', 'empanadas-tia-rosa', 'napoli-pizza-truck', 'churros-del-barrio', 'verde-vivo', 'gelato-bruno', 'lomito-de-la-plaza'],
+    puestos: ['empanadas-tia-rosa', 'verde-vivo', 'gelato-bruno', 'lomito-de-la-plaza'],
     pedidosPorDia: 170,
     curva: { base: 0.15, picos: [[13.3, 0.7, 1.0], [17.2, 0.7, 0.6], [21.2, 0.9, 1.4]], shows: [[22.5, 24]], factorShow: 0.5 },
     bandas: ['Dúo Costanera', 'Los del Ctalamochita'],
@@ -214,7 +224,7 @@ export const EVENTOS_ACTIVOS = [
     descripcion: 'Kermés a beneficio de las divisiones inferiores del club, con juegos, feria de platos y shows para toda la familia.',
     ubicacion: 'Club Atlético Villa María', latitud: '-32.4021', longitud: '-63.2399',
     estado: 'EnCurso', diaInicio: -2, diaFin: 12, ventasHasta: 'ahora',
-    puestos: ['don-choripan', 'empanadas-tia-rosa', 'churros-del-barrio', 'verde-vivo', 'tostado-cafe'],
+    puestos: ['churros-del-barrio', 'tostado-cafe'],
     pedidosPorDia: 85,
     curva: { base: 0.15, picos: [[13, 0.8, 0.8], [16.5, 1.0, 0.7], [20.5, 0.8, 1.0]], shows: [], factorShow: 1 },
     bandas: ['Escuela de Música del Club'],

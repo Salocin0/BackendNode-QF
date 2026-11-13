@@ -245,7 +245,7 @@ function render(d) {
     + '<div class="box"><h2>Credenciales (clave: ' + esc(c.password) + ')</h2><ul>' + roles + '</ul></div>'
     + '<div class="box"><h2>Eventos con actividad</h2><ul>' + activos + '</ul></div>'
     + '<div class="box"><h2>Historial</h2><ul><li>' + (h.totalPedidos || 0) + ' pedidos históricos</li><li>'
-    + (h.entregadosPorRepartidorDemo || 0) + ' entregados por el Repartidor demo</li><li>'
+    + (h.entregadosPorRepartidorDatos || 0) + ' entregados por el Repartidor de datos</li><li>'
     + (d.eventosPorEstado || []).length + ' eventos extra por estado</li></ul></div>';
 }
 

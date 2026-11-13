@@ -42,9 +42,22 @@ import { ValoracionRepartidor } from '../DAO/models/valoracionRepartidor.model.j
 import { createHashPW } from './bcrypt.js';
 import { EstadosAsociaciones, EstadosPedido } from '../enums/Estados.enums.js';
 import {
-  slug, NOMBRES, APELLIDOS, PERSONAS_DEMO, ENCARGADOS_EXTRA, REPARTIDORES_EXTRA, PUESTOS, EVENTOS_ACTIVOS,
+  slug, NOMBRES, APELLIDOS, PERSONAS_DEMO, PERSONAS_DATOS, ENCARGADOS_EXTRA, REPARTIDORES_EXTRA, PUESTOS, EVENTOS_ACTIVOS,
   EVENTOS_POR_ESTADO, OPINIONES_GENERICAS, OPINIONES_REPARTIDOR, crearRng, intensidad, placeholderSvg,
 } from './seedDemoCatalog.js';
+import { COMISION_SERVICIO } from '../controllers/pedidoCreate.handler.js';
+
+// Repartidores associated to a seeded event. Events that accept orders only get
+// the demo Repartidor, so every order placed during the demo reaches that user;
+// finished events also get the data Repartidor and the extras.
+export const repartidoresAsociados = (tipo, { demo, datos, extras }) =>
+  tipo === 'demo' ? [demo] : [demo, datos, ...extras];
+
+// Historical deliveries go to the data Repartidor (and the extras on finished
+// events), never to the demo Repartidor, so the demo user starts clean.
+const repartidoresHistorial = (tipo, { datos, extras }) => (tipo === 'demo' ? [datos] : [datos, ...extras]);
+
+const conComision = (subtotal) => Math.round(subtotal * (1 + COMISION_SERVICIO) * 100) / 100;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const IMAGES_DIR = path.join(__dirname, '..', 'public', 'images');
@@ -367,12 +380,15 @@ export async function runSeedDemo() {
     return { repartidor, user };
   };
   const { repartidor: repartidorDemo, user: usuarioRepartidor } = await crearRepartidor(pd.repartidor, 'Repartidor', 'repartidor@demo.com');
+  const { repartidor: repartidorDatos, user: usuarioRepartidorDatos } = await crearRepartidor(PERSONAS_DATOS.repartidor, 'RepartidorDatos', 'repartidor.datos@demo.com');
   const repartidoresExtra = [];
   for (const r of REPARTIDORES_EXTRA) {
     repartidoresExtra.push((await crearRepartidor(r, slugUsuario(r.nombre, r.apellido), `${slugUsuario(r.nombre, r.apellido)}@demo.com`)).repartidor);
   }
+  const repartidoresSeed = { demo: repartidorDemo, datos: repartidorDatos, extras: repartidoresExtra };
 
-  const { consumidor: consumidorDemo, user: usuarioConsumidor } = await crearPersona({ ...pd.consumidor, tipoUsuario: 'consumidor', usuario: 'Consumidor', email: 'consumidor@demo.com', nacimiento: new Date(1995, 0, 18) });
+  const { user: usuarioConsumidor } = await crearPersona({ ...pd.consumidor, tipoUsuario: 'consumidor', usuario: 'Consumidor', email: 'consumidor@demo.com', nacimiento: new Date(1995, 0, 18) });
+  const { consumidor: consumidorDatos, user: usuarioConsumidorDatos } = await crearPersona({ ...PERSONAS_DATOS.consumidor, tipoUsuario: 'consumidor', usuario: 'ConsumidorDatos', email: 'consumidor.datos@demo.com', nacimiento: new Date(1994, 6, 9) });
 
   // Consumidores de relleno: se insertan en bloque (son muchos).
   const CANTIDAD_CONSUMIDORES = 48;
@@ -407,11 +423,12 @@ export async function runSeedDemo() {
       consumidorId: c.id,
     }))
   );
-  // El consumidor demo compra más seguido que el resto (su historial se ve rico).
-  const pesoConsumidor = new Map([[consumidorDemo.id, 4]]);
+  // The data Consumidor buys more often than the rest (its history looks rich);
+  // the demo Consumidor has no history at all.
+  const pesoConsumidor = new Map([[consumidorDatos.id, 4]]);
   consumidoresRelleno.forEach((c, i) => pesoConsumidor.set(c.id, i % 6 === 0 ? 3 : 1));
-  const todosConsumidores = [consumidorDemo, ...consumidoresRelleno];
-  console.log(`✅ Usuarios creados (4 demo + ${ENCARGADOS_EXTRA.length} encargados, ${REPARTIDORES_EXTRA.length} repartidores y ${CANTIDAD_CONSUMIDORES} consumidores)\n`);
+  const todosConsumidores = [consumidorDatos, ...consumidoresRelleno];
+  console.log(`✅ Usuarios creados (4 demo + 2 de datos + ${ENCARGADOS_EXTRA.length} encargados, ${REPARTIDORES_EXTRA.length} repartidores y ${CANTIDAD_CONSUMIDORES} consumidores)\n`);
 
   // Paso 3: puestos ("carritos") con sus productos
   console.log('🔄 Creando puestos y productos...');
@@ -516,7 +533,7 @@ export async function runSeedDemo() {
         tipoPago: def.tipoPago,
         cantidadPuestos: String(def.puestos.length),
         capacidadMaxima: def.pedidosPorDia * 40,
-        cantidadRepartidores: def.repartidores === 'demo' ? 1 : 1 + repartidoresExtra.length,
+        cantidadRepartidores: repartidoresAsociados(def.repartidores, repartidoresSeed).length,
         ubicacion: def.ubicacion,
         img: imagen(def.imgKey, def.nombre, 1200, 675),
         estado: def.estado,
@@ -531,7 +548,7 @@ export async function runSeedDemo() {
     // En los eventos vivos solo está asociado el Repartidor demo: la función de
     // asignación elige al azar entre los asociados al evento, y así el pedido
     // que se haga en la demo siempre le llega a ese usuario.
-    await asociarRepartidores(evento, def.repartidores === 'demo' ? [repartidorDemo] : [repartidorDemo, ...repartidoresExtra]);
+    await asociarRepartidores(evento, repartidoresAsociados(def.repartidores, repartidoresSeed));
     const punto = await crearPuntoEncuentro(evento, def.latitud, def.longitud);
     activos.push({ def, evento, dias, punto });
   }
@@ -556,7 +573,7 @@ export async function runSeedDemo() {
     for (let h = 12; h < HORA_FIN_DIA - 0.25; h += 0.25) slots.push(h);
     const sumaIntensidad = slots.reduce((s, h) => s + intensidad(def.curva, h), 0);
     const maxIntensidad = Math.max(...slots.map((h) => intensidad(def.curva, h)));
-    const repartidoresEvento = def.repartidores === 'demo' ? [repartidorDemo] : [repartidorDemo, ...repartidoresExtra];
+    const repartidoresEvento = repartidoresHistorial(def.repartidores, repartidoresSeed);
 
     dias.forEach((dia, idx) => {
       const offset = dia.offset;
@@ -594,7 +611,7 @@ export async function runSeedDemo() {
 
           pedidosHist.push({
             fecha,
-            total,
+            total: conComision(total),
             estado,
             consumidorId: consumidor.id,
             eventoId: evento.id,
@@ -642,7 +659,7 @@ export async function runSeedDemo() {
   await bulk(Asignacion, filasAsignacion, 1000);
   await bulk(ValoracionPuesto, filasValPuesto, 1000);
   await bulk(ValoracionRepartidor, filasValRepartidor, 1000);
-  const entregadosPorRepartidorDemo = pedidosHist.filter((p) => p.repartidorId === repartidorDemo.id).length;
+  const entregadosPorRepartidorDatos = pedidosHist.filter((p) => p.repartidorId === repartidorDatos.id).length;
   console.log(`✅ Historial: ${pedidosCreados.length} pedidos, ${filasDetalle.length} ítems, ${filasValPuesto.length} valoraciones de puesto\n`);
 
   // Paso 6: pedidos "en curso" en el evento principal, uno por cada estado del
@@ -655,7 +672,7 @@ export async function runSeedDemo() {
     const lineas = items.map(([idx, cant]) => ({ cantidad: cant, precio: productos[idx].prod.precio, productoId: productos[idx].prod.id }));
     const pedido = await Pedido.create({
       fecha: minutosAtras(minutos),
-      total: lineas.reduce((s, l) => s + l.cantidad * l.precio, 0),
+      total: conComision(lineas.reduce((s, l) => s + l.cantidad * l.precio, 0)),
       estado,
       consumidorId: consumidor.id,
       eventoId: principal.evento.id,
@@ -669,7 +686,7 @@ export async function runSeedDemo() {
   await crearPedidoEnCurso({ estado: EstadosPedido.Aceptado, keyPuesto: 'don-choripan', consumidor: sinDemo[8], minutos: 6, items: [[0, 2], [4, 2]] });
   await crearPedidoEnCurso({ estado: EstadosPedido.EnPreparacion, keyPuesto: 'la-birra-barra', consumidor: sinDemo[15], minutos: 11, items: [[0, 2], [1, 1]] });
   await crearPedidoEnCurso({ estado: EstadosPedido.Listo, keyPuesto: 'don-choripan', consumidor: sinDemo[22], minutos: 16, items: [[1, 1], [3, 1], [4, 1]] });
-  const pedidoEnCamino = await crearPedidoEnCurso({ estado: EstadosPedido.EnCamino, keyPuesto: 'fuego-lento-parrilla', consumidor: consumidorDemo, minutos: 22, items: [[1, 1], [2, 1], [4, 2]] });
+  const pedidoEnCamino = await crearPedidoEnCurso({ estado: EstadosPedido.EnCamino, keyPuesto: 'fuego-lento-parrilla', consumidor: consumidorDatos, minutos: 22, items: [[1, 1], [2, 1], [4, 2]] });
   await Asignacion.create({ estado: 'Aceptado', repartidoreId: repartidorDemo.id, PedidoId: pedidoEnCamino.id });
   // Se setean repartidorId/puntoEncuentroId/codigoEntrega directo: en la app real
   // los pone procesosAutomaticos.js, pero solo mira asignaciones recientes con
@@ -727,9 +744,10 @@ export async function runSeedDemo() {
   console.log(`   - Productor  -> usuario: Productor   | email: ${usuarioProductor.email}`);
   console.log(`   - Encargado  -> usuario: Encargado   | email: ${usuarioEncargado.email}`);
   console.log(`   - Repartidor -> usuario: Repartidor  | email: ${usuarioRepartidor.email}`);
-  console.log(`   - Consumidor -> usuario: Consumidor  | email: ${usuarioConsumidor.email}\n`);
+  console.log(`   - Consumidor -> usuario: Consumidor  | email: ${usuarioConsumidor.email}`);
+  console.log(`   - Datos      -> usuarios: RepartidorDatos (${usuarioRepartidorDatos.email}), ConsumidorDatos (${usuarioConsumidorDatos.email})\n`);
   for (const a of resumenActivos) console.log(`🎪 ${a.nombre} (${a.estado}): ${a.dias} días, ${a.puestos} puestos`);
-  console.log(`\n📊 Historial: ${pedidosCreados.length} pedidos (${entregadosPorRepartidorDemo} entregados por el Repartidor demo)`);
+  console.log(`\n📊 Historial: ${pedidosCreados.length} pedidos (${entregadosPorRepartidorDatos} entregados por el Repartidor de datos)`);
   console.log('========================================');
 
   const sinAsociaciones = eventosPorEstado.find((e) => e.estado === 'EnPreparacion1' && e.nombre === 'Feria de Otoño');
@@ -740,6 +758,8 @@ export async function runSeedDemo() {
       encargado: { usuario: usuarioEncargado.usuario, email: usuarioEncargado.email },
       repartidor: { usuario: usuarioRepartidor.usuario, email: usuarioRepartidor.email },
       consumidor: { usuario: usuarioConsumidor.usuario, email: usuarioConsumidor.email },
+      repartidorDatos: { usuario: usuarioRepartidorDatos.usuario, email: usuarioRepartidorDatos.email },
+      consumidorDatos: { usuario: usuarioConsumidorDatos.usuario, email: usuarioConsumidorDatos.email },
     },
     eventosActivos: resumenActivos,
     evento: { nombre: principal.evento.nombre, inicio: principal.evento.fechaHoraInicio, fin: principal.evento.fechaHoraFin },
@@ -749,7 +769,7 @@ export async function runSeedDemo() {
       enCurso: { [EstadosPedido.Pendiente]: 1, [EstadosPedido.Aceptado]: 1, [EstadosPedido.EnPreparacion]: 1, [EstadosPedido.Listo]: 1, [EstadosPedido.EnCamino]: 1 },
       historialEstadisticas: {
         totalPedidos: pedidosCreados.length,
-        entregadosPorRepartidorDemo,
+        entregadosPorRepartidorDatos,
         eventos: activos.length,
         puestos: puestosPorKey.size,
       },
