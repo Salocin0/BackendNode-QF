@@ -12,5 +12,6 @@ const chatbotLimiter = createRateLimiter({
 });
 
 RouterChatbot.post('/', chatbotLimiter, chatbotController.createChatbotText);
+RouterChatbot.post('/stream', chatbotLimiter, chatbotController.streamChatbotText);
 
 export default RouterChatbot;

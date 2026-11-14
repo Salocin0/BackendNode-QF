@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import { LLMChain } from "langchain/chains";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { ChatOpenAI } from "@langchain/openai";
 import { sequelize } from './connections.js';
@@ -7,6 +6,7 @@ import { CREATE_CHATBOT_VIEW_SQL } from './chatbotView.js';
 import { sanitizeExternalUrl, enlazarCarta } from './chatbotLinks.js';
 import { normalizeChatInput } from './chatbotInput.js';
 import { CHATBOT_PROMPT_TEMPLATE } from './chatbotPrompt.js';
+import { cerrarRespuestaCortada, cierreDeStreamCortado } from './chatbotText.js';
 
 dotenv.config();
 
@@ -78,45 +78,83 @@ export function enrichEvento(ev) {
 }
 
 const SYSTEM_TEMPLATE = CHATBOT_PROMPT_TEMPLATE;
+const MENSAJE_VACIO = 'Escribime tu consulta sobre los eventos y te ayudo.';
+
+async function construirPrompt(input) {
+  const results = await consultarChatbotData();
+  const ayuda = await consultarAyuda();
+  const eventosConLink = Array.isArray(results) ? results.map(enrichEvento) : results;
+  const template = new PromptTemplate({
+    inputVariables: ['chatbotData', 'ayuda', 'input'],
+    template: SYSTEM_TEMPLATE,
+  });
+  return template.format({
+    input,
+    chatbotData: JSON.stringify(eventosConLink),
+    ayuda: JSON.stringify(ayuda),
+  });
+}
+
+/**
+ * Streams the model answer, calling onPiece(text) for every fragment.
+ * Resolves with { text, truncated }; truncated is true when the model hit maxTokens.
+ */
+async function generarRespuesta(input, onPiece = () => {}, signal) {
+  const prompt = await construirPrompt(input);
+  const openAIModel = new ChatOpenAI({
+    apiKey: process.env.CHATBOT_API_KEY,
+    modelName: process.env.CHATBOT_MODEL || 'gpt-4o-mini',
+    temperature: 0,
+    // Product lists carry one link per puesto/product, which is token-heavy:
+    // 600 cut answers like "...opciones de comida veg".
+    maxTokens: Number(process.env.CHATBOT_MAX_TOKENS || 1500),
+  });
+
+  let text = '';
+  let truncated = false;
+  const stream = await openAIModel.stream(prompt, signal ? { signal } : undefined);
+  for await (const chunk of stream) {
+    if (chunk?.response_metadata?.finish_reason === 'length') truncated = true;
+    const piece = typeof chunk?.content === 'string' ? chunk.content : '';
+    if (piece) {
+      text += piece;
+      onPiece(piece);
+    }
+  }
+  return { text, truncated };
+}
 
 async function getChatResponse(userMessage) {
   const input = normalizeChatInput(userMessage);
-  if (!input) {
-    return 'Escribime tu consulta sobre los eventos y te ayudo.';
-  }
+  if (!input) return MENSAJE_VACIO;
 
   try {
-    const results = await consultarChatbotData();
-    const ayuda = await consultarAyuda();
-
-    const eventosConLink = Array.isArray(results) ? results.map(enrichEvento) : results;
-
-    const openAIModel = new ChatOpenAI({
-      apiKey: process.env.CHATBOT_API_KEY,
-      modelName: process.env.CHATBOT_MODEL || 'gpt-4o-mini',
-      temperature: 0,
-      // 300 truncated answers mid-sentence; 600 leaves room to finish a 4-sentence reply.
-      maxTokens: Number(process.env.CHATBOT_MAX_TOKENS || 600),
-    });
-
-    const template = new PromptTemplate({
-      inputVariables: ['chatbotData', 'ayuda', 'input'],
-      template: SYSTEM_TEMPLATE,
-    });
-
-    const chain = new LLMChain({ llm: openAIModel, prompt: template });
-
-    const response = await chain.call({
-      input,
-      chatbotData: JSON.stringify(eventosConLink),
-      ayuda: JSON.stringify(ayuda),
-    });
-    return response.text;
+    const { text, truncated } = await generarRespuesta(input);
+    return truncated ? cerrarRespuestaCortada(text) : text;
   } catch (error) {
     console.error('Error al obtener la respuesta de OpenAI:', error);
     throw error;
   }
 }
 
-export { getChatResponse };
+/**
+ * Same answer as getChatResponse but delivered piece by piece through onPiece,
+ * so the chat can show it while it is being written.
+ */
+async function streamChatResponse(userMessage, onPiece, signal) {
+  const input = normalizeChatInput(userMessage);
+  if (!input) {
+    onPiece(MENSAJE_VACIO);
+    return;
+  }
+  try {
+    const { truncated } = await generarRespuesta(input, onPiece, signal);
+    if (truncated) onPiece(cierreDeStreamCortado());
+  } catch (error) {
+    console.error('Error al obtener la respuesta de OpenAI (stream):', error);
+    throw error;
+  }
+}
+
+export { getChatResponse, streamChatResponse };
 

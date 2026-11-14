@@ -1,10 +1,4 @@
-import { sendNotificacionesMobile } from "../util/NotificacionesMobile.js";
-import { userController } from "../controllers/users.controller.js";
-import { sendNotificacionesWeb } from "../util/Notificaciones.js";
-import { asociacionService } from "./asociacion.service.js";
-import { productorService } from "./productor.service.js";
-import { puestoService } from "./puesto.service.js";
-import { getChatResponse } from "../util/chatbot.js";
+import { getChatResponse, streamChatResponse } from "../util/chatbot.js";
 
 class ChatbotService {
     async enviarChatbotTexto(userMessage) {
@@ -15,6 +9,10 @@ class ChatbotService {
             "user_message": userMessage,
             "chat_response": chat_response
         }
+    }
+
+    async streamChatbotTexto(userMessage, onPiece, signal) {
+        await streamChatResponse(userMessage, onPiece, signal);
     }
 }
 
