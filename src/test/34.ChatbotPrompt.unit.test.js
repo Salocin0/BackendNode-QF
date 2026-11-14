@@ -46,7 +46,20 @@ describe('chatbotPrompt (unit, no server/DB/LLM required)', () => {
     });
     expect(out).to.contain('Usuario: ¿hay algo vegano?');
     expect(out).to.contain('Foody: Sí, la Burger de lentejas');
-    expect(out).to.match(/Los datos de los eventos de arriba SIEMPRE mandan/i);
+    expect(out).to.match(/buscá SIEMPRE de nuevo en los datos de los eventos/i);
+  });
+
+  it('teaches dietary categories and forbids contradictory "no encontré" openings', async () => {
+    const out = await render({ chatbotData: '[]', ayuda: '[]', input: 'x' });
+    expect(out).to.match(/Vegano: sin ningún ingrediente animal/);
+    expect(out).to.match(/"Sin carne" equivale a vegetariano/);
+    expect(out).to.match(/Nunca te contradigas/);
+  });
+
+  it('offers consultas@QF.com whenever it has no information', async () => {
+    const out = await render({ chatbotData: '[]', ayuda: '[]', input: 'x' });
+    expect(out).to.match(/no lo encontraste en los eventos disponibles y ofrecé escribir a \*\*consultas@QF\.com\*\*/);
+    expect(out).to.match(/Siempre que no tengas la información[^\n]*consultas@QF\.com/);
   });
 
   it('allows only the supported markdown subset', async () => {

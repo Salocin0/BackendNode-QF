@@ -16,6 +16,24 @@ const limpiarTexto = (texto) =>
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 
+const MAX_MENCIONES = 15;
+
+/**
+ * Foody's old answers are reduced to the events, puestos and products they linked
+ * ("Mencioné: Verde Vivo Cocina Vegana, Wrap de falafel"). That is all the model needs to
+ * resolve "ese puesto" or "¿y cuánto sale?", and it never sees its earlier conclusions:
+ * with full answers it copied a wrong "No encontré…" into every following reply.
+ * Answers without links (nothing found, help texts) are dropped from the memory.
+ */
+export const resumirRespuestaFoody = (texto) => {
+  const nombres = [];
+  for (const match of String(texto).matchAll(/\[([^\]]+)\]\([^)]*\)/g)) {
+    const nombre = limpiarTexto(match[1]);
+    if (nombre && !nombres.includes(nombre)) nombres.push(nombre);
+  }
+  return nombres.length ? `Mencioné: ${nombres.slice(0, MAX_MENCIONES).join(', ')}` : '';
+};
+
 /**
  * Accepts the history as an array or as a JSON string (form-encoded requests) of
  * { rol: 'usuario' | 'foody', texto }. Invalid input yields [] so the bot simply
@@ -35,7 +53,7 @@ export const normalizarHistorial = (raw) => {
   return lista
     .filter((m) => m && typeof m === 'object' && (m.rol === 'usuario' || m.rol === 'foody') && typeof m.texto === 'string')
     .map((m) => {
-      const texto = limpiarTexto(m.texto);
+      const texto = m.rol === 'foody' ? resumirRespuestaFoody(m.texto) : limpiarTexto(m.texto);
       return { rol: m.rol, texto: texto.length > MAX_CHARS_POR_MENSAJE ? `${texto.slice(0, MAX_CHARS_POR_MENSAJE)}…` : texto };
     })
     .filter((m) => m.texto)

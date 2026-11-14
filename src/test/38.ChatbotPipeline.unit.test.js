@@ -48,7 +48,8 @@ describe('chatbot pipeline (unit, DB and OpenAI stubbed)', () => {
     expect(promptVisto).to.contain('Empanada de verdura');
     expect(promptVisto).to.contain('/productos-puesto/3?evento=1&producto=7');
     expect(promptVisto).to.contain('Usuario: ¿hay algo vegano?');
-    expect(promptVisto).to.contain('Foody: Sí, en Verde Vivo.');
+    expect(promptVisto).to.contain('Foody: Mencioné: Verde Vivo');
+    expect(promptVisto).to.not.contain('Foody: Sí, en');
   });
 
   it('works without history and streams the pieces', async () => {

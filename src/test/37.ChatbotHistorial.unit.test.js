@@ -11,11 +11,11 @@ const expect = chai.expect;
 
 describe('chatbotHistorial (unit, no server/DB/LLM required)', () => {
   it('keeps only the last 3 exchanges (6 messages)', () => {
-    const lista = Array.from({ length: 10 }, (_, i) => ({ rol: i % 2 ? 'foody' : 'usuario', texto: `m${i}` }));
+    const lista = Array.from({ length: 10 }, (_, i) => (i % 2 ? { rol: 'foody', texto: `[m${i}](https://qf.app/${i})` } : { rol: 'usuario', texto: `m${i}` }));
     const out = normalizarHistorial(lista);
     expect(out).to.have.lengthOf(MAX_MENSAJES_HISTORIAL);
     expect(out[0].texto).to.equal('m4');
-    expect(out[5].texto).to.equal('m9');
+    expect(out[5].texto).to.equal('Mencioné: m9');
   });
 
   it('accepts the JSON string sent by form-encoded requests', () => {
@@ -23,11 +23,28 @@ describe('chatbotHistorial (unit, no server/DB/LLM required)', () => {
     expect(out).to.deep.equal([{ rol: 'usuario', texto: 'hola' }]);
   });
 
-  it('drops link URLs from old answers but keeps their labels', () => {
+  it('reduces old answers to the names they linked, never their conclusions', () => {
     const [m] = normalizarHistorial([
-      { rol: 'foody', texto: 'Probá la [Burger](https://qf.app/productos-puesto/3?evento=1&producto=7) en https://qf.app/x' },
+      { rol: 'foody', texto: 'Probá la [Burger](https://qf.app/productos-puesto/3?evento=1&producto=7) y el [Wrap](https://qf.app/x) en [Verde Vivo](https://qf.app/y). La [Burger](https://qf.app/z) es rica.' },
     ]);
-    expect(m.texto).to.equal('Probá la Burger en');
+    expect(m).to.deep.equal({ rol: 'foody', texto: 'Mencioné: Burger, Wrap, Verde Vivo' });
+  });
+
+  it('drops answers without links so a wrong "No encontré…" is never copied forward', () => {
+    const out = normalizarHistorial([
+      { rol: 'usuario', texto: '¿Hay empanada vegana?' },
+      { rol: 'foody', texto: 'No encontré eventos que ofrezcan empanadas veganas.' },
+      { rol: 'usuario', texto: 'Y vegetarianas?' },
+    ]);
+    expect(out).to.deep.equal([
+      { rol: 'usuario', texto: '¿Hay empanada vegana?' },
+      { rol: 'usuario', texto: 'Y vegetarianas?' },
+    ]);
+  });
+
+  it('drops URLs typed by the user', () => {
+    const [m] = normalizarHistorial([{ rol: 'usuario', texto: 'mirá https://qf.app/x esto' }]);
+    expect(m.texto).to.equal('mirá esto');
   });
 
   it('caps very long messages', () => {
