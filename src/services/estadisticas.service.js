@@ -1017,6 +1017,7 @@ REGLAS DE RIGOR (obligatorias):
 4. Cada oportunidad y recomendación debe apoyarse en un dato concreto citado del informe.
 5. Referite a eventos, puestos y productos por su nombre; nunca menciones IDs ni identificadores numéricos.
 6. Los montos están en pesos argentinos: escribilos con formato $ 1.234.567.
+7. Concentración de recaudación entre puestos: usá únicamente la concentración calculada en el contexto comparativo. No menciones nombres de campos ni hables de una "medición formal". Si no está disponible y el alcance contiene un solo puesto con pedidos entregados, explicá en una frase que no aplica porque no hay otros puestos en el alcance para comparar. Si no está disponible por falta de datos, recaudación o por un error, indicá que no se pudo calcular, sin atribuirlo a un único puesto. No calcules ni estimes concentración por tu cuenta, tampoco a partir de los productos más vendidos.
 
 Generá el informe en español con estas secciones, con títulos en MAYÚSCULAS:
 
@@ -1030,7 +1031,7 @@ OPORTUNIDADES DETECTADAS
 (2-3 oportunidades basadas en los datos)
 
 RIESGOS Y ALERTAS
-(Métricas desfavorables, concentración de ventas y limitaciones de muestra; si no hay, indicalo)
+(Métricas desfavorables, concentración de ventas (según la regla 7) y limitaciones de muestra; si no hay, indicalo)
 
 RECOMENDACIONES ESTRATÉGICAS
 (3-5 acciones concretas y priorizadas)

@@ -161,4 +161,48 @@ describe('estadisticas.service consultas del benchmark (sequelize.query stubbead
     expect(sql).to.contain('GROUP BY p."eventoId", p."puestoId"');
     expect(sql).to.contain('JOIN public."Pedidos" p ON p.id = v."pedidoId"');
   });
+
+  it('envía al modelo las instrucciones de concentración y el contexto correspondiente', async () => {
+    const { LLMChain } = await import('langchain/chains');
+    const nombres = ['getNombreFiltro', 'getTotalRecaudadoEvento', 'getPromedioValoracionPuesto',
+      'getTotalRecaudadoPorPuestoEnEvento', 'getUnidadesComparables', 'getDistribucionEntrega'];
+    const originales = Object.fromEntries(nombres.map((nombre) => [nombre, estadisticasService[nombre]]));
+    const callOriginal = LLMChain.prototype.call;
+    let prompt;
+    let contexto;
+    let filas = [fila(1, 1)];
+
+    try {
+      estadisticasService.getNombreFiltro = async () => 'Evento';
+      estadisticasService.getTotalRecaudadoEvento = async () => 100000;
+      estadisticasService.getPromedioValoracionPuesto = async () => 4;
+      estadisticasService.getTotalRecaudadoPorPuestoEnEvento = async () => [];
+      estadisticasService.getUnidadesComparables = async () => filas;
+      estadisticasService.getDistribucionEntrega = async () => ({ n: 0 });
+      LLMChain.prototype.call = async function (variables) {
+        prompt = await this.prompt.format(variables);
+        contexto = JSON.parse(variables.contexto);
+        return { text: 'Informe de prueba' };
+      };
+
+      await estadisticasService.getAnalisisLLM('productor', 1, 1, 'Todos');
+      expect(contexto.alcance.puestos).to.equal(1);
+      expect(contexto.concentracion).to.equal(null);
+      expect(prompt).to.include('no hay otros puestos en el alcance para comparar');
+      expect(prompt).to.include('No calcules ni estimes concentración por tu cuenta');
+      expect(prompt).to.include('Si no está disponible por falta de datos, recaudación o por un error');
+
+      filas = [fila(1, 1), fila(1, 2)];
+      await estadisticasService.getAnalisisLLM('productor', 1, 1, 'Todos');
+      expect(contexto.concentracion.puestos).to.equal(2);
+
+      filas = [];
+      await estadisticasService.getAnalisisLLM('productor', 1, 1, 'Todos');
+      expect(contexto.concentracion).to.equal(null);
+      expect(contexto.advertencias.join(' ')).to.include('No hay pedidos entregados');
+    } finally {
+      for (const nombre of nombres) estadisticasService[nombre] = originales[nombre];
+      LLMChain.prototype.call = callOriginal;
+    }
+  });
 });
