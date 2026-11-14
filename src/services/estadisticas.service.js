@@ -1024,7 +1024,7 @@ RESUMEN EJECUTIVO
 (2-3 oraciones con los puntos clave)
 
 ANÁLISIS DE RENDIMIENTO
-(Recaudación, valoración, tiempos y productos/puestos top, aplicando las reglas de rigor)
+(En el PDF esta sección empieza con un gráfico que ubica cada métrica del contexto comparativo dentro del rango de su referencia: mínimo-máximo, franja P25-P75, mediana y el valor propio coloreado según su lectura. Tu texto va debajo del gráfico y lo explica: recorré las métricas del gráfico indicando dónde se ubica cada valor frente a la mediana y su percentil, y qué significa para el negocio. Después sumá recaudación y productos/puestos top. Aplicá las reglas de rigor y no repitas cifras sin interpretarlas)
 
 OPORTUNIDADES DETECTADAS
 (2-3 oportunidades basadas en los datos)

@@ -97,7 +97,9 @@ export const compararContra = (actual, unidadesReferencia, claves) => {
     const suficiente = ref.length >= MIN_UNIDADES_REFERENCIA;
     const percentil = suficiente ? percentilDe(valor, ref) : null;
     metricas.push({
+      clave,
       metrica: METRICAS[clave].nombre,
+      menorEsMejor: METRICAS[clave].menorEsMejor,
       valor: redondear(valor),
       referenciaMediana: redondear(cuantil(ref, 0.5)),
       referenciaP25: suficiente ? redondear(cuantil(ref, 0.25)) : null,
