@@ -5,11 +5,13 @@ import { consumidorService } from './consumidor.service.js';
 import { encargadoService } from './encargado.service.js';
 import { repartidorService } from './repartidor.service.js';
 import { userService } from './users.service.js';
-import { ChatOpenAI } from '@langchain/openai';
+import { crearModeloOpenAI } from '../util/openaiModelo.js';
 import { PromptTemplate } from '@langchain/core/prompts';
 import { LLMChain } from 'langchain/chains';
 import { construirContextoComparativo, construirMetodologia } from '../util/benchmarkEstadistico.js';
 import { benchmarksExternos } from '../config/benchmarksExternos.js';
+
+const REPORTE_MODELO_RESPALDO = 'gpt-4o';
 
 class EstadisticasService {
   async getTotalRecaudadoPorPuestoEnEvento(idevento) {
@@ -979,13 +981,18 @@ class EstadisticasService {
         fechaCorte: new Date().toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }),
       });
 
-      const apiKey = process.env.CHATBOT_API_KEY;
-      const model = new ChatOpenAI({
-        apiKey,
-        modelName: 'gpt-4o',
-        temperature: 0.2,
-        maxTokens: 1400,
-      });
+      // Report model: a reasoning model thinks more before writing (REPORTE_MODEL /
+      // REPORTE_REASONING_EFFORT). If OpenAI rejects it (e.g. the key has no access),
+      // the report falls back to gpt-4o so it is still generated.
+      const modeloReporte = process.env.REPORTE_MODEL || 'gpt-6-luna';
+      const crearModeloReporte = (modelName) =>
+        crearModeloOpenAI({
+          modelName,
+          maxTokens: 1400,
+          temperature: 0.2,
+          reasoningEffort: process.env.REPORTE_REASONING_EFFORT || 'medium',
+          reasoningBudget: 6000,
+        });
 
       const template = new PromptTemplate({
         inputVariables: ['statsData', 'contexto', 'benchmarks'],
@@ -1031,12 +1038,20 @@ RECOMENDACIONES ESTRATÉGICAS
 Tono profesional pero accesible. No uses markdown como asteriscos o #.`,
       });
 
-      const chain = new LLMChain({ llm: model, prompt: template });
-      const response = await chain.call({
+      const variables = {
         statsData: JSON.stringify(statsData, null, 2),
         contexto: JSON.stringify(contextoComparativo, null, 2),
         benchmarks: benchmarksExternos.length ? JSON.stringify(benchmarksExternos, null, 2) : 'Ninguno cargado.',
-      });
+      };
+      const generar = (modelName) => new LLMChain({ llm: crearModeloReporte(modelName), prompt: template }).call(variables);
+      let response;
+      try {
+        response = await generar(modeloReporte);
+      } catch (errorModelo) {
+        if (modeloReporte === REPORTE_MODELO_RESPALDO) throw errorModelo;
+        console.warn(`El modelo ${modeloReporte} falló para el reporte; reintentando con ${REPORTE_MODELO_RESPALDO}:`, errorModelo?.message || errorModelo);
+        response = await generar(REPORTE_MODELO_RESPALDO);
+      }
 
       return {
         analisis: response.text,

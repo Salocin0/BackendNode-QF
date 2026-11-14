@@ -55,4 +55,16 @@ describe('chatbot model config (unit, no OpenAI call)', () => {
     expect(p.reasoning_effort).to.equal('none');
     expect(p.max_completion_tokens).to.equal(1500);
   });
+
+  it('report config: Luna thinks more (medium) with a larger reasoning budget; gpt-4o fallback stays classic', async () => {
+    const { crearModeloOpenAI } = await import('../util/openaiModelo.js');
+    const luna = enviados(crearModeloOpenAI({ modelName: 'gpt-6-luna', maxTokens: 1400, temperature: 0.2, reasoningEffort: 'medium', reasoningBudget: 6000 }));
+    expect(luna.reasoning_effort).to.equal('medium');
+    expect(luna.max_completion_tokens).to.equal(7400);
+    expect(luna).to.not.have.property('temperature');
+    const respaldo = enviados(crearModeloOpenAI({ modelName: 'gpt-4o', maxTokens: 1400, temperature: 0.2, reasoningEffort: 'medium' }));
+    expect(respaldo.temperature).to.equal(0.2);
+    expect(respaldo.max_tokens).to.equal(1400);
+    expect(respaldo).to.not.have.property('reasoning_effort');
+  });
 });

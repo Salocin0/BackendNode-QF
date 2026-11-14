@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { PromptTemplate } from "@langchain/core/prompts";
-import { ChatOpenAI } from "@langchain/openai";
+import { crearModeloOpenAI, esModeloDeRazonamiento } from './openaiModelo.js';
 import { sequelize } from './connections.js';
 import { CREATE_CHATBOT_VIEW_SQL } from './chatbotView.js';
 import { sanitizeExternalUrl, enlazarCarta } from './chatbotLinks.js';
@@ -99,38 +99,19 @@ async function construirPrompt(input, historial = []) {
 }
 
 /**
- * Builds the chat model from CHATBOT_MODEL. Reasoning models (o-series, gpt-5*, gpt-6*)
- * reject the sampling params this LangChain version always sends (temperature, top_p,
- * penalties, n, max_tokens) and expect max_completion_tokens + reasoning_effort, so for
- * them those params are cleared through modelKwargs (undefined keys are not serialized).
+ * Builds the chat model from CHATBOT_MODEL (see util/openaiModelo.js for the
+ * reasoning-model compatibility handling).
  */
-export const esModeloDeRazonamiento = (modelo) => /^(o\d|gpt-5|gpt-6)/i.test(String(modelo || ''));
+export { esModeloDeRazonamiento };
 
 export function crearModeloChat() {
-  const modelName = process.env.CHATBOT_MODEL || 'gpt-4o-mini';
   // Product lists carry one link per puesto/product, which is token-heavy:
   // 600 cut answers like "...opciones de comida veg".
-  const maxTokens = Number(process.env.CHATBOT_MAX_TOKENS || 1500);
-  const base = { apiKey: process.env.CHATBOT_API_KEY, modelName };
-
-  if (!esModeloDeRazonamiento(modelName)) {
-    return new ChatOpenAI({ ...base, temperature: 0, maxTokens });
-  }
-
-  const reasoningEffort = process.env.CHATBOT_REASONING_EFFORT || 'low';
-  return new ChatOpenAI({
-    ...base,
-    modelKwargs: {
-      temperature: undefined,
-      top_p: undefined,
-      frequency_penalty: undefined,
-      presence_penalty: undefined,
-      n: undefined,
-      max_tokens: undefined,
-      reasoning_effort: reasoningEffort,
-      // Reasoning tokens count against this limit too, so leave room for them.
-      max_completion_tokens: reasoningEffort === 'none' ? maxTokens : maxTokens + 2000,
-    },
+  return crearModeloOpenAI({
+    modelName: process.env.CHATBOT_MODEL || 'gpt-4o-mini',
+    maxTokens: Number(process.env.CHATBOT_MAX_TOKENS || 1500),
+    temperature: 0,
+    reasoningEffort: process.env.CHATBOT_REASONING_EFFORT || 'low',
   });
 }
 
