@@ -8,6 +8,8 @@ import { userService } from './users.service.js';
 import { ChatOpenAI } from '@langchain/openai';
 import { PromptTemplate } from '@langchain/core/prompts';
 import { LLMChain } from 'langchain/chains';
+import { construirContextoComparativo, construirMetodologia } from '../util/benchmarkEstadistico.js';
+import { benchmarksExternos } from '../config/benchmarksExternos.js';
 
 class EstadisticasService {
   async getTotalRecaudadoPorPuestoEnEvento(idevento) {
@@ -823,9 +825,92 @@ class EstadisticasService {
     }
   }
 
+  // Una fila por (evento, puesto): base del benchmark interno.
+  async getUnidadesComparables() {
+    return sequelize.query(
+      `
+      WITH ped AS (
+        SELECT p."eventoId", p."puestoId",
+          COUNT(*)::int AS pedidos,
+          SUM(p.total)::float AS recaudado,
+          (AVG(EXTRACT(EPOCH FROM (p."fechaEntrega" - p."fecha")) / 60) FILTER (WHERE p."fechaEntrega" IS NOT NULL))::float AS entrega,
+          COUNT(p."fechaEntrega")::int AS entregas
+        FROM public."Pedidos" p
+        WHERE p.estado IN ('Entregado', 'Valorado') AND p."eventoId" IS NOT NULL AND p."puestoId" IS NOT NULL
+        GROUP BY p."eventoId", p."puestoId"
+      ),
+      val AS (
+        SELECT p."eventoId", p."puestoId", AVG(v.puntuacion)::float AS valoracion, COUNT(v.puntuacion)::int AS valoraciones
+        FROM public."valoracionPuestos" v
+        JOIN public."Pedidos" p ON p.id = v."pedidoId"
+        WHERE v.puntuacion IS NOT NULL
+        GROUP BY p."eventoId", p."puestoId"
+      )
+      SELECT ped."eventoId", ped."puestoId", ped.pedidos, ped.recaudado, ped.entrega, ped.entregas,
+        val.valoracion, COALESCE(val.valoraciones, 0) AS valoraciones,
+        pu."encargadoId", e."tipoEvento", e."capacidadMaxima"
+      FROM ped
+      LEFT JOIN val ON val."eventoId" = ped."eventoId" AND val."puestoId" = ped."puestoId"
+      JOIN public.puestos pu ON pu.id = ped."puestoId"
+      JOIN public.eventos e ON e.id = ped."eventoId";
+      `,
+      { type: sequelize.QueryTypes.SELECT }
+    );
+  }
+
+  async getDistribucionEntrega({ idEvento, idPuesto, idEncargado }) {
+    const filtros = [];
+    const replacements = {};
+    if (idEvento && idEvento !== 'Todos') {
+      filtros.push('AND p."eventoId" = :idEvento');
+      replacements.idEvento = idEvento;
+    }
+    if (idPuesto && idPuesto !== 'Todos') {
+      filtros.push('AND p."puestoId" = :idPuesto');
+      replacements.idPuesto = idPuesto;
+    }
+    if (idEncargado) {
+      filtros.push('AND p."puestoId" IN (SELECT id FROM public.puestos WHERE "encargadoId" = :idEncargado)');
+      replacements.idEncargado = idEncargado;
+    }
+    const [row] = await sequelize.query(
+      `
+      SELECT COUNT(*)::int AS n,
+        PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY m) AS mediana,
+        PERCENTILE_CONT(0.9) WITHIN GROUP (ORDER BY m) AS p90
+      FROM (
+        SELECT EXTRACT(EPOCH FROM (p."fechaEntrega" - p."fecha")) / 60 AS m
+        FROM public."Pedidos" p
+        WHERE p.estado IN ('Entregado', 'Valorado') AND p."fechaEntrega" IS NOT NULL
+        ${filtros.join('\n        ')}
+      ) t;
+      `,
+      { replacements, type: sequelize.QueryTypes.SELECT }
+    );
+    return row || null;
+  }
+
+  async getNombreFiltro(tabla, columna, id, valorTodos) {
+    if (!id || id === 'Todos') return valorTodos;
+    try {
+      const [row] = await sequelize.query(`SELECT "${columna}" AS nombre FROM ${tabla} WHERE id = :id LIMIT 1`, {
+        replacements: { id },
+        type: sequelize.QueryTypes.SELECT,
+      });
+      return row?.nombre || (tabla === 'eventos' ? 'Evento seleccionado' : 'Puesto seleccionado');
+    } catch {
+      return tabla === 'eventos' ? 'Evento seleccionado' : 'Puesto seleccionado';
+    }
+  }
+
   async getAnalisisLLM(tipo, idConsumidor, idEvento, idPuesto) {
     try {
       let statsData = {};
+      const nombreEvento = await this.getNombreFiltro('eventos', 'nombre', idEvento, 'Todos los eventos');
+      const sinIds = (rows) =>
+        (rows || []).map((r) =>
+          Object.fromEntries(Object.entries(r).filter(([k]) => !/^id|Id$/.test(k)))
+        );
 
       if (tipo === 'encargado') {
         const [totalRecaudado, valoracion, tiempoPromedio, topProductos] = await Promise.allSettled([
@@ -838,13 +923,13 @@ class EstadisticasService {
         statsData = {
           rol: 'Encargado de Puesto',
           filtros: {
-            evento: idEvento === 'Todos' ? 'Todos los eventos' : `Evento ID ${idEvento}`,
-            puesto: idPuesto === 'Todos' ? 'Todos los puestos' : `Puesto ID ${idPuesto}`,
+            evento: nombreEvento,
+            puesto: await this.getNombreFiltro('puestos', 'nombreCarro', idPuesto, 'Todos los puestos'),
           },
           totalRecaudado: totalRecaudado.status === 'fulfilled' ? totalRecaudado.value : 'Sin datos',
           valoracionPromedio: valoracion.status === 'fulfilled' ? valoracion.value : 'Sin datos',
           tiempoPromedioEntregaMinutos: tiempoPromedio.status === 'fulfilled' ? tiempoPromedio.value : 'Sin datos',
-          topProductos: topProductos.status === 'fulfilled' ? (topProductos.value || []).slice(0, 5) : [],
+          topProductos: topProductos.status === 'fulfilled' ? sinIds(topProductos.value).slice(0, 5) : [],
         };
       } else if (tipo === 'productor') {
         const [totalRecaudado, valoracion, topPuestos] = await Promise.allSettled([
@@ -856,55 +941,108 @@ class EstadisticasService {
         statsData = {
           rol: 'Productor de Evento',
           filtros: {
-            evento: idEvento === 'Todos' ? 'Todos los eventos' : `Evento ID ${idEvento}`,
+            evento: nombreEvento,
           },
           totalRecaudado: totalRecaudado.status === 'fulfilled' ? totalRecaudado.value : 'Sin datos',
           valoracionPromedio: valoracion.status === 'fulfilled' ? valoracion.value : 'Sin datos',
-          topPuestos: topPuestos.status === 'fulfilled' ? (topPuestos.value || []).slice(0, 5) : [],
+          topPuestos: topPuestos.status === 'fulfilled' ? sinIds(topPuestos.value).slice(0, 5) : [],
         };
       }
+
+      let contextoComparativo = { alcance: {}, comparaciones: [], concentracion: null, advertencias: [] };
+      let distribucionEntrega = null;
+      try {
+        const idEncargado =
+          tipo === 'encargado' ? (await consumidorService.getOne(idConsumidor))?.encargadoId ?? null : null;
+        const [filas, distribucion] = await Promise.all([
+          this.getUnidadesComparables(),
+          this.getDistribucionEntrega({ idEvento, idPuesto: tipo === 'encargado' ? idPuesto : 'Todos', idEncargado }),
+        ]);
+        contextoComparativo = construirContextoComparativo({ tipo, filas, idEvento, idPuesto, idEncargado });
+        distribucionEntrega = distribucion;
+        if (distribucion?.n) {
+          contextoComparativo.distribucionEntregaMinutos = {
+            pedidosMedidos: distribucion.n,
+            mediana: Math.round(Number(distribucion.mediana) * 10) / 10,
+            percentil90: Math.round(Number(distribucion.p90) * 10) / 10,
+          };
+        }
+      } catch (error) {
+        console.error('Error calculando el contexto comparativo:', error);
+        contextoComparativo.advertencias.push('No se pudo calcular la comparación interna; no califiques las métricas.');
+      }
+
+      const metodologia = construirMetodologia({
+        contexto: contextoComparativo,
+        distribucionEntrega,
+        benchmarksExternos,
+        fechaCorte: new Date().toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }),
+      });
 
       const apiKey = process.env.CHATBOT_API_KEY;
       const model = new ChatOpenAI({
         apiKey,
         modelName: 'gpt-4o',
-        temperature: 0.4,
-        maxTokens: 1200,
+        temperature: 0.2,
+        maxTokens: 1400,
       });
 
       const template = new PromptTemplate({
-        inputVariables: ['statsData'],
-        template: `Sos un experto en análisis de negocios gastronómicos y eventos. 
-Tenés acceso a los siguientes datos estadísticos de QuickFood, una plataforma de eventos gastronómicos:
+        inputVariables: ['statsData', 'contexto', 'benchmarks'],
+        template: `Sos un analista de negocios gastronómicos en eventos. Redactás un informe para QuickFood basándote EXCLUSIVAMENTE en los datos de abajo.
 
+MÉTRICAS DEL PANEL:
 {statsData}
 
-Generá un informe ejecutivo profesional en español con las siguientes secciones claramente delimitadas con títulos en MAYÚSCULAS:
+CONTEXTO COMPARATIVO INTERNO (calculado por QuickFood con su histórico):
+{contexto}
+
+BENCHMARKS EXTERNOS VERIFICADOS (única referencia externa permitida):
+{benchmarks}
+
+REGLAS DE RIGOR (obligatorias):
+1. No inventes estándares, promedios "del sector", rangos típicos ni cifras que no estén arriba. Si un dato no está, no lo supongas.
+2. Para calificar una métrica (bueno, malo, eficiente, excelente, alto, bajo, etc.) solo podés basarte en:
+   a) una comparación del contexto interno, citando la referencia, la cantidad de unidades y el percentil (ej.: "ubica en el percentil 82 frente a 14 puestos de otros eventos de QuickFood"), usando la "lectura" provista; o
+   b) un benchmark externo, citándolo como "(Fuente: <fuente>, <año>)" y aclarando su comparabilidad si no es del mismo segmento o escala.
+   Si una métrica no tiene base comparativa, describila sin calificarla e indicá que no hay referencia disponible.
+3. Las advertencias de muestra deben aparecer en RIESGOS Y ALERTAS.
+4. Cada oportunidad y recomendación debe apoyarse en un dato concreto citado del informe.
+5. Referite a eventos, puestos y productos por su nombre; nunca menciones IDs ni identificadores numéricos.
+6. Los montos están en pesos argentinos: escribilos con formato $ 1.234.567.
+
+Generá el informe en español con estas secciones, con títulos en MAYÚSCULAS:
 
 RESUMEN EJECUTIVO
-(2-3 oraciones con los puntos clave más importantes)
+(2-3 oraciones con los puntos clave)
 
 ANÁLISIS DE RENDIMIENTO
-(Interpretación detallada de cada métrica: recaudación, valoración, tiempos, productos/puestos top. Indicá si los valores son buenos, regulares o malos según estándares del sector gastronómico)
+(Recaudación, valoración, tiempos y productos/puestos top, aplicando las reglas de rigor)
 
 OPORTUNIDADES DETECTADAS
-(2-3 oportunidades concretas basadas en los datos)
+(2-3 oportunidades basadas en los datos)
 
 RIESGOS Y ALERTAS
-(Señalá métricas preocupantes si las hay, o indicá que no hay alertas)
+(Métricas desfavorables, concentración de ventas y limitaciones de muestra; si no hay, indicalo)
 
 RECOMENDACIONES ESTRATÉGICAS
-(3-5 acciones concretas y priorizadas para mejorar el desempeño)
+(3-5 acciones concretas y priorizadas)
 
-Sé específico con los números. Usá un tono profesional pero accesible. No uses markdown como asteriscos o #.`,
+Tono profesional pero accesible. No uses markdown como asteriscos o #.`,
       });
 
       const chain = new LLMChain({ llm: model, prompt: template });
-      const response = await chain.call({ statsData: JSON.stringify(statsData, null, 2) });
+      const response = await chain.call({
+        statsData: JSON.stringify(statsData, null, 2),
+        contexto: JSON.stringify(contextoComparativo, null, 2),
+        benchmarks: benchmarksExternos.length ? JSON.stringify(benchmarksExternos, null, 2) : 'Ninguno cargado.',
+      });
 
       return {
         analisis: response.text,
         estadisticas: statsData,
+        contextoComparativo,
+        metodologia,
       };
     } catch (error) {
       console.error('Error generando análisis LLM:', error);
