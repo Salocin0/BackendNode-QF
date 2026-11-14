@@ -7,6 +7,7 @@ import { sanitizeExternalUrl, enlazarCarta } from './chatbotLinks.js';
 import { normalizeChatInput } from './chatbotInput.js';
 import { CHATBOT_PROMPT_TEMPLATE } from './chatbotPrompt.js';
 import { cerrarRespuestaCortada, cierreDeStreamCortado } from './chatbotText.js';
+import { normalizarHistorial, formatearHistorial } from './chatbotHistorial.js';
 
 
 dotenv.config();

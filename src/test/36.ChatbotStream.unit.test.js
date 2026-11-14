@@ -73,6 +73,7 @@ describe('POST /chatbot/stream controller (unit, service stubbed)', () => {
     await chatbotController.streamChatbotText({ body: { userMessage: 'hola' } }, res);
     expect(res.statusCode).to.equal(500);
     expect(res.jsonBody.status).to.equal('error');
+    expect(res.jsonBody.msg).to.match(/^No pude responder/);
   });
 
   it('rejects an empty message with 400', async () => {

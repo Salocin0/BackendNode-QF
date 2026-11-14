@@ -1,6 +1,9 @@
 import { chatbotService } from '../services/chatbot.service.js';
 import { normalizeChatInput } from '../util/chatbotInput.js';
 
+// Shown as-is by the chat clients, so it must be user-facing Spanish.
+const MENSAJE_ERROR_CHATBOT = 'No pude responder en este momento. Intentá de nuevo en unos minutos.';
+
 
 class ChatbotController {
   async createChatbotText(req, res) {
@@ -24,7 +27,7 @@ class ChatbotController {
       } else {
         return res.status(404).json({
           status: 'Error',
-          msg: 'text not found',
+          msg: MENSAJE_ERROR_CHATBOT,
           data: {},
         });
       }
@@ -32,7 +35,7 @@ class ChatbotController {
       console.log(e)
       return res.status(500).json({
         status: 'error',
-        msg: 'something went wrong :(',
+        msg: MENSAJE_ERROR_CHATBOT,
         data: {},
       });
     }
@@ -74,7 +77,7 @@ class ChatbotController {
       if (controller.signal.aborted) return;
       console.log(e);
       if (!started) {
-        return res.status(500).json({ status: 'error', msg: 'something went wrong :(', data: {} });
+        return res.status(500).json({ status: 'error', msg: MENSAJE_ERROR_CHATBOT, data: {} });
       }
       res.end('\n\nNo pude terminar la respuesta. Intentá de nuevo en unos minutos.');
     }
