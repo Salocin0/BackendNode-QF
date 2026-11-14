@@ -5,6 +5,7 @@
 // Products are aggregated per puesto as a compact JSON array so the model can answer
 // "what can I eat / how much is it" without the view growing one row per product.
 // Only enabled products (estado = true) are exposed, matching what a consumer can buy.
+// Puesto and product ids are included so util/chatbotLinks.js can build their links.
 export const CREATE_CHATBOT_VIEW_SQL = `
   CREATE OR REPLACE VIEW chatbotData AS
   SELECT ev.id,
@@ -29,10 +30,12 @@ export const CREATE_CHATBOT_VIEW_SQL = `
          (
            SELECT json_agg(
                     json_build_object(
+                      'puestoId', ps2.id,
                       'puesto', ps2."nombreCarro",
                       'productos', (
                         SELECT json_agg(
                                  json_build_object(
+                                   'id', pr.id,
                                    'nombre', pr.nombre,
                                    'descripcion', pr.descripcion,
                                    'precio', pr.precio

@@ -48,3 +48,31 @@ export const sanitizeExternalUrl = (value) => {
 };
 
 export { isPlaceholderHost };
+
+/**
+ * Adds a `link` to every puesto and product of an event's "carta" so the model can
+ * link them like it links events. The ids are dropped afterwards: the model only
+ * needs the link, and fewer fields keep the prompt smaller.
+ * - puesto:   {base}/productos-puesto/{puestoId}?evento={eventoId}
+ * - producto: {base}/productos-puesto/{puestoId}?evento={eventoId}&producto={productoId}
+ */
+export const enlazarCarta = (carta, eventoId, base = '') => {
+  if (!Array.isArray(carta)) return carta;
+  return carta.map((entrada) => {
+    if (!entrada || typeof entrada !== 'object') return entrada;
+    const { puestoId, productos, ...resto } = entrada;
+    if (puestoId == null || eventoId == null) return { ...resto, productos };
+    const linkPuesto = `${base}/productos-puesto/${puestoId}?evento=${eventoId}`;
+    return {
+      ...resto,
+      link: linkPuesto,
+      productos: Array.isArray(productos)
+        ? productos.map((producto) => {
+            if (!producto || typeof producto !== 'object') return producto;
+            const { id, ...datos } = producto;
+            return id == null ? datos : { ...datos, link: `${linkPuesto}&producto=${id}` };
+          })
+        : productos,
+    };
+  });
+};

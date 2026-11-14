@@ -41,4 +41,26 @@ describe('enrichEvento (unit, no server/DB/LLM required)', () => {
     expect(enrichEvento(null)).to.equal(null);
     expect(enrichEvento(undefined)).to.equal(undefined);
   });
+
+  it('links every puesto and product of the carta', () => {
+    const out = enrichEvento({
+      id: 10,
+      carta: [
+        { puestoId: 3, puesto: 'Parrilla', productos: [{ id: 7, nombre: 'Choripán', precio: 3500 }] },
+      ],
+    });
+    const [puesto] = out.carta;
+    expect(puesto.link).to.match(/\/productos-puesto\/3\?evento=10$/);
+    expect(puesto).to.not.have.property('puestoId');
+    expect(puesto.productos[0].link).to.match(/\/productos-puesto\/3\?evento=10&producto=7$/);
+    expect(puesto.productos[0]).to.not.have.property('id');
+    expect(puesto.productos[0].nombre).to.equal('Choripán');
+  });
+
+  it('keeps a carta without published products (null) as is', () => {
+    const out = enrichEvento({ id: 10, carta: [{ puestoId: 3, puesto: 'Parrilla', productos: null }] });
+    expect(out.carta[0].productos).to.equal(null);
+    expect(out.carta[0].link).to.match(/\/productos-puesto\/3\?evento=10$/);
+    expect(enrichEvento({ id: 10, carta: null }).carta).to.equal(null);
+  });
 });

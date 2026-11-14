@@ -4,7 +4,7 @@ import { PromptTemplate } from "@langchain/core/prompts";
 import { ChatOpenAI } from "@langchain/openai";
 import { sequelize } from './connections.js';
 import { CREATE_CHATBOT_VIEW_SQL } from './chatbotView.js';
-import { sanitizeExternalUrl } from './chatbotLinks.js';
+import { sanitizeExternalUrl, enlazarCarta } from './chatbotLinks.js';
 import { normalizeChatInput } from './chatbotInput.js';
 import { CHATBOT_PROMPT_TEMPLATE } from './chatbotPrompt.js';
 
@@ -57,13 +57,18 @@ async function consultarAyuda() {
 /**
  * Enriches a raw chatbotData row so the model never has to build URLs itself:
  * - `link` points at the event detail page (always valid, built from the id).
+ * - every puesto/product in `carta` gets its own `link` (see enlazarCarta).
  * - `linkVentaEntradas` is dropped when it is a dead placeholder, so the bot cannot
  *   offer a ticket link that does not open.
  */
 export function enrichEvento(ev) {
   if (!ev || typeof ev !== 'object') return ev;
   const linkVenta = sanitizeExternalUrl(ev.linkVentaEntradas);
-  const enriched = { ...ev, link: construirLinkEvento(ev.id) };
+  const enriched = {
+    ...ev,
+    link: construirLinkEvento(ev.id),
+    carta: enlazarCarta(ev.carta, ev.id, FRONTEND_URL || ''),
+  };
   if (linkVenta) {
     enriched.linkVentaEntradas = linkVenta;
   } else {
