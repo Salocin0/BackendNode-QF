@@ -80,4 +80,12 @@ describe('POST /chatbot/stream controller (unit, service stubbed)', () => {
     await chatbotController.streamChatbotText({ body: { userMessage: '   ' } }, res);
     expect(res.statusCode).to.equal(400);
   });
+
+  it('passes the recent conversation sent by the client to the service', async () => {
+    let recibido;
+    chatbotService.streamChatbotTexto = async (msg, onPiece, signal, historial) => { recibido = historial; onPiece('ok'); };
+    const historial = JSON.stringify([{ rol: 'usuario', texto: '¿hay algo vegano?' }]);
+    await chatbotController.streamChatbotText({ body: { userMessage: '¿y cuánto sale?', historial } }, fakeRes());
+    expect(recibido).to.equal(historial);
+  });
 });

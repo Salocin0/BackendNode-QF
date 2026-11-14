@@ -9,9 +9,9 @@ const expect = chai.expect;
 describe('chatbotPrompt (unit, no server/DB/LLM required)', () => {
   const render = async (vars) =>
     new PromptTemplate({
-      inputVariables: ['chatbotData', 'ayuda', 'input'],
+      inputVariables: ['chatbotData', 'ayuda', 'input', 'historial'],
       template: CHATBOT_PROMPT_TEMPLATE,
-    }).format(vars);
+    }).format({ historial: '(sin mensajes previos)', ...vars });
 
   const evento = {
     id: 10,
@@ -35,6 +35,18 @@ describe('chatbotPrompt (unit, no server/DB/LLM required)', () => {
   it('injects the user question', async () => {
     const out = await render({ chatbotData: '[]', ayuda: '[]', input: 'hay lugar?' });
     expect(out).to.contain('hay lugar?');
+  });
+
+  it('injects the recent conversation and says the event data wins over it', async () => {
+    const out = await render({
+      chatbotData: '[]',
+      ayuda: '[]',
+      input: '¿y cuánto sale?',
+      historial: 'Usuario: ¿hay algo vegano?\nFoody: Sí, la Burger de lentejas en Verde Vivo.',
+    });
+    expect(out).to.contain('Usuario: ¿hay algo vegano?');
+    expect(out).to.contain('Foody: Sí, la Burger de lentejas');
+    expect(out).to.match(/Los datos de los eventos de arriba SIEMPRE mandan/i);
   });
 
   it('allows only the supported markdown subset', async () => {
@@ -65,6 +77,13 @@ describe('chatbotPrompt (unit, no server/DB/LLM required)', () => {
   it('forbids inventing products or prices', async () => {
     const out = await render({ chatbotData: '[]', ayuda: '[]', input: 'x' });
     expect(out).to.match(/No inventes productos ni precios/i);
+  });
+
+  it('forbids vague filler at the end and asks for exact counts of omitted products', async () => {
+    const out = await render({ chatbotData: '[]', ayuda: '[]', input: 'x' });
+    expect(out).to.match(/No agregues resúmenes ni frases de relleno/i);
+    expect(out).to.match(/cantidad exacta que falta/i);
+    expect(out).to.not.match(/una oración de cierre/i);
   });
 
   it('explains an empty menu instead of claiming the data is missing', async () => {

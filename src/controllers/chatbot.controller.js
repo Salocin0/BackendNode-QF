@@ -14,7 +14,7 @@ class ChatbotController {
         });
       }
 
-      const text_response = await chatbotService.enviarChatbotTexto(message);
+      const text_response = await chatbotService.enviarChatbotTexto(message, req.body?.historial);
       if (text_response) {
         return res.status(200).json({
           status: 'Activo',
@@ -67,7 +67,7 @@ class ChatbotController {
     };
 
     try {
-      await chatbotService.streamChatbotTexto(message, write, controller.signal);
+      await chatbotService.streamChatbotTexto(message, write, controller.signal, req.body?.historial);
       if (!started) write('');
       res.end();
     } catch (e) {

@@ -1,9 +1,9 @@
 import { getChatResponse, streamChatResponse } from "../util/chatbot.js";
 
 class ChatbotService {
-    async enviarChatbotTexto(userMessage) {
+    async enviarChatbotTexto(userMessage, historial) {
         
-        const chat_response = await getChatResponse(userMessage)
+        const chat_response = await getChatResponse(userMessage, historial)
         
         return {
             "user_message": userMessage,
@@ -11,8 +11,9 @@ class ChatbotService {
         }
     }
 
-    async streamChatbotTexto(userMessage, onPiece, signal) {
-        await streamChatResponse(userMessage, onPiece, signal);
+    // historial: last messages sent by the chat client (validated in util/chatbotHistorial.js).
+    async streamChatbotTexto(userMessage, onPiece, signal, historial) {
+        await streamChatResponse(userMessage, onPiece, signal, historial);
     }
 }
 

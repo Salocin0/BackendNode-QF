@@ -8,6 +8,7 @@ import { normalizeChatInput } from './chatbotInput.js';
 import { CHATBOT_PROMPT_TEMPLATE } from './chatbotPrompt.js';
 import { cerrarRespuestaCortada, cierreDeStreamCortado } from './chatbotText.js';
 
+
 dotenv.config();
 
 // URL base del frontend para construir los links que sugiere el chatbot.
@@ -80,18 +81,19 @@ export function enrichEvento(ev) {
 const SYSTEM_TEMPLATE = CHATBOT_PROMPT_TEMPLATE;
 const MENSAJE_VACIO = 'Escribime tu consulta sobre los eventos y te ayudo.';
 
-async function construirPrompt(input) {
+async function construirPrompt(input, historial = []) {
   const results = await consultarChatbotData();
   const ayuda = await consultarAyuda();
   const eventosConLink = Array.isArray(results) ? results.map(enrichEvento) : results;
   const template = new PromptTemplate({
-    inputVariables: ['chatbotData', 'ayuda', 'input'],
+    inputVariables: ['chatbotData', 'ayuda', 'input', 'historial'],
     template: SYSTEM_TEMPLATE,
   });
   return template.format({
     input,
     chatbotData: JSON.stringify(eventosConLink),
     ayuda: JSON.stringify(ayuda),
+    historial: formatearHistorial(historial),
   });
 }
 
@@ -99,8 +101,8 @@ async function construirPrompt(input) {
  * Streams the model answer, calling onPiece(text) for every fragment.
  * Resolves with { text, truncated }; truncated is true when the model hit maxTokens.
  */
-async function generarRespuesta(input, onPiece = () => {}, signal) {
-  const prompt = await construirPrompt(input);
+async function generarRespuesta(input, onPiece = () => {}, signal, historial = []) {
+  const prompt = await construirPrompt(input, historial);
   const openAIModel = new ChatOpenAI({
     apiKey: process.env.CHATBOT_API_KEY,
     modelName: process.env.CHATBOT_MODEL || 'gpt-4o-mini',
@@ -124,12 +126,12 @@ async function generarRespuesta(input, onPiece = () => {}, signal) {
   return { text, truncated };
 }
 
-async function getChatResponse(userMessage) {
+async function getChatResponse(userMessage, historial) {
   const input = normalizeChatInput(userMessage);
   if (!input) return MENSAJE_VACIO;
 
   try {
-    const { text, truncated } = await generarRespuesta(input);
+    const { text, truncated } = await generarRespuesta(input, undefined, undefined, normalizarHistorial(historial));
     return truncated ? cerrarRespuestaCortada(text) : text;
   } catch (error) {
     console.error('Error al obtener la respuesta de OpenAI:', error);
@@ -141,14 +143,14 @@ async function getChatResponse(userMessage) {
  * Same answer as getChatResponse but delivered piece by piece through onPiece,
  * so the chat can show it while it is being written.
  */
-async function streamChatResponse(userMessage, onPiece, signal) {
+async function streamChatResponse(userMessage, onPiece, signal, historial) {
   const input = normalizeChatInput(userMessage);
   if (!input) {
     onPiece(MENSAJE_VACIO);
     return;
   }
   try {
-    const { truncated } = await generarRespuesta(input, onPiece, signal);
+    const { truncated } = await generarRespuesta(input, onPiece, signal, normalizarHistorial(historial));
     if (truncated) onPiece(cierreDeStreamCortado());
   } catch (error) {
     console.error('Error al obtener la respuesta de OpenAI (stream):', error);
