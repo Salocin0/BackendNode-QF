@@ -201,6 +201,7 @@ export const EVENTOS_ACTIVOS = [
     key: 'cuarteto', imgKey: 'evento-cuarteto', nombre: 'Cuartetazo Villa María 2026', tipoEvento: 'Música', tipoPago: 'Efectivo',
     descripcion: 'La fiesta del cuarteto más grande de Villa María: tres noches con las mejores bandas cordobesas y una plaza de comidas con puestos de toda la región.',
     ubicacion: 'Anfiteatro Municipal, Villa María', latitud: '-32.4076', longitud: '-63.2304',
+    puntoEncuentro: { latitud: '-32.40899501728565', longitud: '-63.215875061372614' },
     estado: 'EnCurso', diaInicio: -6, diaFin: 8, ventasHasta: 'ahora',
     puestos: ['don-choripan', 'fuego-lento-parrilla', 'la-birra-barra', 'napoli-pizza-truck'],
     pedidosPorDia: 230,

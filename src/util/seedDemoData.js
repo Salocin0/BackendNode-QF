@@ -549,7 +549,9 @@ export async function runSeedDemo() {
     // asignación elige al azar entre los asociados al evento, y así el pedido
     // que se haga en la demo siempre le llega a ese usuario.
     await asociarRepartidores(evento, repartidoresAsociados(def.repartidores, repartidoresSeed));
-    const punto = await crearPuntoEncuentro(evento, def.latitud, def.longitud);
+    // An event may place its meeting point away from the venue's own coordinates.
+    const coordsPunto = def.puntoEncuentro ?? def;
+    const punto = await crearPuntoEncuentro(evento, coordsPunto.latitud, coordsPunto.longitud);
     activos.push({ def, evento, dias, punto });
   }
   console.log(`✅ ${activos.length} eventos con actividad creados\n`);
